@@ -1,0 +1,25 @@
+{
+  "name": "pvz-fusion-live-studio",
+  "version": "1.0.0",
+  "description": "Interactive Live Streaming Control Studio for Plants vs Zombies Fusion",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "author": "PvZ Fusion Community",
+  "license": "MIT",
+  "build": {
+    "appId": "com.pvzfusion.livestudio",
+    "productName": "PvZ Fusion Studio",
+    "win": {
+      "target": "portable",
+      "icon": "images/super_gargantuar.png"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/*",
+      "!*.log"
+    ]
+  }
+}

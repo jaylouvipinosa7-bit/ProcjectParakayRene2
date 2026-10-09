@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+core/node_modules/
+
+# Diagnostic extracted folder
+s2e_unpacked/
+core/s2e_unpacked/
+
+# User-specific private configs and live session states
+core/user_configs/
+core/tiktok_live_state.json
+tiktok_live_state.json
+
+# Temporary logs & task files
+*.log
+.system_generated/
+scratch/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

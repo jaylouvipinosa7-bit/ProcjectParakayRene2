@@ -1,0 +1,78 @@
+﻿wn_seapumpkin",
+          "label": "Spawn SeaPumpkin"
+        },
+        {
+          "id": "spawn_solarsunflower",
+          "label": "Spawn SolarSunflower"
+        },
+        {
+          "id": "spawn_sunhypno",
+          "label": "Spawn SunHypno"
+        },
+        {
+          "id": "spawn_suniceshroom",
+          "label": "Spawn SunIceShroom"
+        },
+        {
+          "id": "spawn_sunpumpkin",
+          "label": "Spawn SunPumpkin"
+        },
+        {
+          "id": "spawn_ultimatecattail",
+          "label": "Spawn UltimateCattail"
+        },
+        {
+          "id": "spawn_ultimateseashroom",
+          "label": "Spawn UltimateSeaShroom"
+        },
+        {
+          "id": "spawn_ultimatewintermelon",
+          "label": "Spawn UltimateWinterMelon"
+        },
+        {
+          "id": "spawn_allpeater",
+          "label": "Spawn AllPeater"
+        },
+        {
+          "id": "spawn_cabbagecannon",
+          "label": "Spawn CabbageCannon"
+        },
+        {
+          "id": "spawn_cherrysquash",
+          "label": "Spawn CherrySquash"
+        },
+        {
+          "id": "spawn_cornfume",
+          "label": "Spawn CornFume"
+        },
+        {
+          "id": "spawn_doomgarlic",
+          "label": "Spawn DoomGarlic"
+        },
+        {
+          "id": "spawn_doomplantern",
+          "label": "Spawn DoomPlantern"
+        },
+        {
+          "id": "spawn_doomsquash",
+          "label": "Spawn DoomSquash"
+        },
+        {
+          "id": "spawn_fumepumpkin",
+          "label": "Spawn FumePumpkin"
+        },
+        {
+          "id": "spawn_iceplantern",
+          "label": "Spawn IcePlantern"
+        },
+        {
+          "id": "spawn_melonpumpkin",
+          "label": "Spawn MelonPumpkin"
+        },
+        {
+          "id": "spawn_nuclearsquash",
+          "label": "Spawn NuclearSquash"
+        },
+        {
+          "id": "spawn_potatosquash",
+          "label": "Spawn Po

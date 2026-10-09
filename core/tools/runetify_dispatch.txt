@@ -1,0 +1,145 @@
+﻿: "10"
+  },
+  "start_lawnmowers": {
+    "endpoint": "/startlawnmowers",
+    "effect": "1"
+  },
+  "restart_lawnmowers": {
+    "endpoint": "/restartlawnmowers",
+    "effect": "1"
+  },
+  "remove_lawnmowers": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "delete_lawnmowers": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "delete_lawnmower": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "spawn_peashooter": {
+    "endpoint": "/spawnplant",
+    "effect": "0"
+  },
+  "spawn_pea_sun_flower": {
+    "endpoint": "/spawnplant",
+    "effect": "1000"
+  },
+  "spawn_cherry_bomb": {
+    "endpoint": "/spawnplant",
+    "effect": "2"
+  },
+  "spawn_wall_nut": {
+    "endpoint": "/spawnplant",
+    "effect": "3"
+  },
+  "spawn_potato_mine": {
+    "endpoint": "/spawnplant",
+    "effect": "4"
+  },
+  "spawn_snow_pea_shooter": {
+    "endpoint": "/spawnplant",
+    "effect": "1034"
+  },
+  "spawn_chomper": {
+    "endpoint": "/spawnplant",
+    "effect": "5"
+  },
+  "spawn_gatling_pea": {
+    "endpoint": "/spawnplant",
+    "effect": "1032"
+  },
+  "spawn_small_puff": {
+    "endpoint": "/spawnplant",
+    "effect": "6"
+  },
+  "spawn_sun_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "1031"
+  },
+  "spawn_fume_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "7"
+  },
+  "spawn_gravebuster": {
+    "endpoint": "/spawnplant",
+    "effect": "239"
+  },
+  "spawn_hypno_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "8"
+  },
+  "spawn_scaredy_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "9"
+  },
+  "spawn_ice_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "10"
+  },
+  "spawn_doom_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "11"
+  },
+  "spawn_lily_pad": {
+    "endpoint": "/spawnplant",
+    "effect": "12"
+  },
+  "spawn_squash": {
+    "endpoint": "/spawnplant",
+    "effect": "13"
+  },
+  "spawn_three_peater": {
+    "endpoint": "/spawnplant",
+    "effect": "14"
+  },
+  "spawn_kelpnut": {
+    "endpoint": "/spawnplant",
+    "effect": "1313"
+  },
+  "spawn_jalapeno": {
+    "endpoint": "/spawnplant",
+    "effect": "16"
+  },
+  "spawn_caltrop": {
+    "endpoint": "/spawnplant",
+    "effect": "17"
+  },
+  "spawn_torch_wood": {
+    "endpoint": "/spawnplant",
+    "effect": "18"
+  },
+  "spawn_tall_nut": {
+    "endpoint": "/spawnplant",
+    "effect": "1027"
+  },
+  "spawn_sea_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "19"
+  },
+  "spawn_plantern": {
+    "endpoint": "/spawnplant",
+    "effect": "20"
+  },
+  "spawn_cactus": {
+    "endpoint": "/spawnplant",
+    "effect": "21"
+  },
+  "spawn_blover": {
+    "endpoint": "/spawnplant",
+    "effect": "22"
+  },
+  "spawn_split_pea": {
+    "endpoint": "/spawnplant",
+    "effect": "1090"
+  },
+  "spawn_star_fruit": {
+    "endpoint": "/spawnplant",
+    "effect": "23"
+  },
+  "spawn_pumpkin": {
+    "endpoint": "/spawnplant",
+

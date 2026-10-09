@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion 4.0 Live Stream Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pvz-green: #10b981;
+            --pvz-gold: #f59e0b;
+            --pvz-purple: #8b5cf6;
+            --pvz-red: #ef4444;
+            --text-white: #ffffff;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: transparent;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Card Container */
+        .overlay-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 380px;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Goal / Gift Card */
+        .live-card, .s2e-card {
+            background: linear-gradient(135deg, rgba(15, 20, 26, 0.88), rgba(26, 32, 44, 0.78));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-lg);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: cardSlideIn 0.35s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-card, .s2e-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--pvz-green);
+            box-shadow: 0 0 10px var(--pvz-green);
+        }
+
+        .live-card, .s2e-card.zombie-side::before { background: var(--pvz-red); box-shadow: 0 0 10px var(--pvz-red); }
+        .live-card, .s2e-card.plant-side::before { background: var(--pvz-green); box-shadow: 0 0 10px var(--pvz-green); }
+        .live-card, .s2e-card.power-side::before { background: var(--pvz-gold); box-shadow: 0 0 10px var(--pvz-gold); }
+        .live-card, .s2e-card.spinner-side::before { background: var(--pvz-purple); box-shadow: 0 0 10px var(--pvz-purple); }
+
+        .live-card, .s2e-card.bump {
+            animation: bumpAnimation 0.35s ease;
+        }
+
+        @keyframes bumpAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); filter: brightness(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Left: Gift / Trigger Icon */
+        .card-trigger-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trigger-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .trigger-icon-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .trigger-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .trigger-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        .trigger-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--pvz-gold);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Center arrow separator */
+        .card-arrow {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        /* Right: In-Game Action Preview */
+        .card-action-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .action-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            overflow: hidden;
+        }
+
+        .count-pill {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            min-width: 38px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        /* Floating Alert Banner */
+        .alert-toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .alert-popup {
+            background: linear-gradient(135deg, rgba(16, 24, 39, 0.96), rgba(30, 41, 59, 0.92));
+            backdrop-filter: blur(16px);
+            border: 2px solid var(--pvz-green);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: alertSlideIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            min-width: 320px;
+        }
+
+        @keyframes alertSlideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--pvz-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+
+        .alert-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .alert-username {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .alert-action {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--pvz-green);
+        }
+
+        /* Fullscreen Wheel Modal */
+        #wheelOverlayModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #wheelOverlayModal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .wheel-modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .wheel-banner-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 4px 8px rgba(0,0,0,0.8);
+            letter-spacing: -0.5px;
+        }
+
+        .wheel-box {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        #overlayWheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.4), 0 10px 40px rgba(0, 0, 0, 0.9);
+            transition: transform 4.5s cubic-bezier(0.12, 0.95, 0.22, 1);
+        }
+
+        .wheel-pin {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 30px solid #f59e0b;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9));
+            z-index: 20;
+        }
+
+        .wheel-center-gold {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #111827;
+            border: 4px solid #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
+            z-index: 10;
+        }
+
+        .winner-banner {
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #10b981;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .winner-banner.show {
+            transform: scale(1);
+        }
+
+        /* Horizontal Reel Styles */
+        .reel-outer, .s2e-reel-outer {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            overflow: hidden;
+            background: #090d14;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.95);
+        }
+
+        .reel-track, .s2e-reel-track {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 0 10px;
+            will-change: transform;
+        }
+
+        .reel-card, .s2e-reel-card {
+            width: 120px;
+            height: 114px;
+            margin: 0 6px;
+            border-radius: 12px;
+            background: rgba(15, 20, 28, 0.95);
+            border: 2px solid #334155;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .reel-card, .s2e-reel-card .card-glow-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.12;
+            background: currentColor;
+            pointer-events: none;
+        }
+
+        .reel-card, .s2e-reel-card .rarity-tag {
+            position: absolute;
+            top: 4px;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1px 5px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .reel-card, .s2e-reel-card .card-img-wrap {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            z-index: 2;
+        }
+
+        .reel-card, .s2e-reel-card .card-img-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
+        }
+
+        .reel-card, .s2e-reel-card .card-title {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.15;
+            max-width: 92px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 2;
+        }
+
+        .reel-card, .s2e-reel-card .card-amount {
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
+            z-index: 2;
+        }
+
+        .rarity-mythic { border-color: #ef4444 !important; box-shadow: 0 0 18px rgba(239, 68, 68, 0.6) !important; color: #ef4444; }
+        .rarity-mythic .rarity-tag { color: #fca5a5; background: rgba(239, 68, 68, 0.3); border: 1px solid rgba(239, 68, 68, 0.5); }
+
+        .rarity-legendary { border-color: #f59e0b !important; box-shadow: 0 0 18px rgba(245, 158, 11, 0.6) !important; color: #f59e0b; }
+        .rarity-legendary .rarity-tag { color: #fde68a; background: rgba(245, 158, 11, 0.3); border: 1px solid rgba(245, 158, 11, 0.5); }
+
+        .rarity-epic { border-color: #a855f7 !important; box-shadow: 0 0 16px rgba(168, 85, 247, 0.55) !important; color: #a855f7; }
+        .rarity-epic .rarity-tag { color: #e9d5ff; background: rgba(168, 85, 247, 0.3); border: 1px solid rgba(168, 85, 247, 0.5); }
+
+        .rarity-rare { border-color: #3b82f6 !important; box-shadow: 0 0 14px rgba(59, 130, 246, 0.5) !important; color: #3b82f6; }
+        .rarity-rare .rarity-tag { color: #bfdbfe; background: rgba(59, 130, 246, 0.3); border: 1px solid rgba(59, 130, 246, 0.5); }
+
+        .rarity-normal { border-color: #94a3b8 !important; box-shadow: 0 0 10px rgba(148, 163, 184, 0.35) !important; color: #94a3b8; }
+        .rarity-normal .rarity-tag { color: #e2e8f0; background: rgba(148, 163, 184, 0.25); border: 1px solid rgba(148, 163, 184, 0.4); }
+
+        .reel-pointer, .s2e-reel-pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .reel-pointer, .s2e-reel-pointer .pointer-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 18px rgba(245, 158, 11, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .reel-pointer, .s2e-reel-pointer .pointer-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reel-pointer, .s2e-reel-pointer .pointer-triangle {
+            width: 0;
+            height: 0;
+            border-left: 11px solid transparent;
+            border-right: 11px solid transparent;
+            border-top: 15px solid #f59e0b;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.85));
+            margin-top: -3px;
+        }
+
+        .reel-fade-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90px;
+            height: 100%;
+            background: linear-gradient(90deg, #090d14 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .reel-fade-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 90px;
+            height: 100%;
+            background: linear-gradient(270deg, #090d14 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LIVE CARDS DOCK (LEFT SIDE) -->
+    <div id="cardsDock" class="overlay-container">
+        <!-- Dynamically populated from config and counts -->
+    </div>
+
+    <!-- FLOATING ALERT POPUPS (TOP RIGHT) -->
+    <div id="alertDock" class="alert-toast-container"></div>
+
+    <!-- FULLSCREEN WHEEL / REEL POPUP -->
+    <div id="wheelOverlayModal">
+        <div class="wheel-modal-content">
+            <div class="wheel-banner-title" id="wheelOverlayTitle">LUCKY ROULETTE</div>
+
+            <!-- CLASSIC CANVAS WHEEL -->
+            <div class="wheel-box" id="overlayCanvasWheelBox">
+                <div class="wheel-pin"></div>
+                <canvas id="overlayWheelCanvas" width="400" height="400"></canvas>
+                <div class="wheel-center-gold">*</div>
+            </div>
+
+            <!-- HORIZONTAL REEL ROULETTE -->
+            <div id="overlayReelBox" style="display: none; position: relative; width: 680px; max-width: 94vw; background: rgba(9, 13, 20, 0.96); border: 2px solid rgba(255, 255, 255, 0.18); border-radius: 20px; padding: 24px 16px; box-shadow: 0 10px 50px rgba(0,0,0,0.9);">
+                <div class="s2e-reel-outer" id="overlayReelOuter">
+                    <div class="reel-fade-left"></div>
+                    <div class="reel-fade-right"></div>
+                    <div class="s2e-reel-pointer" id="overlayReelPointer">
+                        <div class="pointer-badge" id="overlayPointerBadge">
+                            <img id="overlayPointerImg" src="images/game-icons/pvz/spawn_ultimatecattail.webp" onerror="this.src='images/func_2.png'" alt="Marker">
+                        </div>
+                        <div class="pointer-triangle"></div>
+                    </div>
+                    <div class="s2e-reel-track" id="overlayReelTrack"></div>
+                </div>
+            </div>
+
+            <div id="wheelWinnerBanner" class="winner-banner"></div>
+        </div>
+    </div>
+
+    <script>
+        let config = null;
+        let counts = {};
+        let lastEventTimestamp = 0;
+        let isWheelActive = false;
+        let wheelRotation = 0;
+
+        // Web Audio Synthesizer (Zero-asset sound effects!)
+        const AudioEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playAlert() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            },
+            playTick() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(320, now);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            },
+            playVictory() {
+                this.init();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const now = this.ctx.currentTime + (idx * 0.12);
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                });
+            }
+        };
+
+        // Initialize Overlay
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchConfig();
+            await fetchCounts();
+            renderCards();
+            drawOverlayWheel();
+            startPolling();
+        });
+
+        async function fetchConfig() {
+            try {
+                const res = await fetch('/api/config');
+                config = await res.json();
+            } catch (err) {
+                console.error("Config fetch error:", err);
+            }
+        }
+
+        async function fetchCounts() {
+            try {
+                const res = await fetch('/api/counts');
+                counts = await res.json();
+            } catch (err) {
+                console.error("Counts fetch error:", err);
+            }
+        }
+
+        // Render Cards
+        function renderCards() {
+            const dock = document.getElementById('cardsDock');
+            dock.innerHTML = '';
+            if (!config || !config.gifts) return;
+
+            // Render top 5 active gifts
+            config.gifts.filter(g => g.enabled !== false).slice(0, 6).forEach(gift => {
+                const card = document.createElement('div');
+                card.id = `overlayCard_${gift.id}`;
+                card.className = `s2e-card ${gift.actionType}-side`;
+
+                const actionEmoji = getActionEmoji(gift.actionType);
+                const currentCount = counts[gift.id] || 0;
+
+                const unitImgSrc = gift.unitIcon || ('images/game-icons/pvz/' + (gift.command ? gift.command.split(';')[0].trim() : '') + '.webp');
+                const giftIconSrc = gift.icon || 'images/tiktok-gifts/5655_rose.webp';
+
+                card.innerHTML = `
+                    <div class="card-trigger-section">
+                        <div class="trigger-icon-box">
+                            <img src="${giftIconSrc}" class="trigger-icon-img" alt="" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                        </div>
+                        <div class="trigger-meta">
+                            <div class="trigger-title">${gift.giftName}</div>
+                            <div class="trigger-subtitle">${(() => {
+                                if (String(gift.id) === '1' || gift.eventType === 'team_plants_likes') return `Every ${gift.likeThreshold || 50} Likes (Team Plants)`;
+                                if (String(gift.id) === '2' || gift.eventType === 'team_zombies_likes') return `Every ${gift.likeThreshold || 50} Likes (Team Zombies)`;
+                                if (String(gift.id) === '3' || gift.eventType === 'total_likes' || (gift.giftName && gift.giftName.toLowerCase().includes('total likes'))) {
+                                    const kStr = (gift.likeThreshold >= 1000) ? (gift.likeThreshold / 1000) + 'K' : (gift.likeThreshold || '50K');
+                                    return `Total Goal: ${kStr}`;
+                                }
+                                if (String(gift.id) === '4' || gift.eventType === 'follow' || (gift.giftName && gift.giftName.toLowerCase().includes('follow'))) return `On Follow`;
+                                return `${gift.coins || 1} Coins`;
+                            })()}</div>
+                        </div>
+                    </div>
+                    <div class="card-arrow">&rarr;</div>
+                    <div class="card-action-section">
+                        <div class="action-icon-box" style="padding: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <img src="${unitImgSrc}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${gift.label || ''}" onerror="this.outerHTML='<span style=\'font-size:20px;\'>${actionEmoji}</span>'">
+                        </div>
+                        <div id="countPill_${gift.id}" class="count-pill">${currentCount}</div>
+                    </div>
+                `;
+                dock.appendChild(card);
+            });
+        }
+
+        function getActionEmoji(type) {
+            switch(type) {
+                case 'zombie': return 'Z';
+                case 'plant': return 'P';
+                case 'power': return 'PWR';
+                case 'spinner': return 'WHEEL';
+                default: return 'ACT';
+            }
+        }
+
+        // Real-Time Event Polling
+        function startPolling() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTimestamp = data.serverTime;
+
+                    if (data.events && data.events.length > 0) {
+                        data.events.forEach(ev => {
+                            handleLiveEvent(ev);
+                        });
+                    }
+                } catch {}
+            }, 400);
+
+            // Sync counts every 1.5s
+            setInterval(async () => {
+                try {
+                    const res = await fetch('/api/counts');
+                    const newCounts = await res.json();
+                    for (const [id, count] of Object.entries(newCounts)) {
+                        const pill = document.getElementById(`countPill_${id}`);
+                        if (pill && pill.innerText !== String(count)) {
+                            pill.innerText = count;
+                            const card = document.getElementById(`overlayCard_${id}`);
+                            if (card) {
+                                card.classList.remove('bump');
+                                void card.offsetWidth;
+                                card.classList.add('bump');
+                            }
+                        }
+                    }
+                } catch {}
+            }, 1500);
+        }
+
+        // Handle Event
+        function handleLiveEvent(ev) {
+            if (ev.hideInOverlay === true) {
+                return; // Silently execute without showing alert/popup on stream overlay
+            }
+            // Trigger Sound
+            AudioEngine.playAlert();
+
+            // Trigger Alert Banner
+            showAlertBanner(ev);
+
+            // If wheel spin
+            if (ev.type === 'spin_result' || ev.actionType === 'spinner') {
+                triggerWheelAnimation(ev.slice, ev);
+            }
+        }
+
+        // Show Toast Alert Banner
+        function showAlertBanner(ev) {
+            const dock = document.getElementById('alertDock');
+            const alert = document.createElement('div');
+            alert.className = 'alert-popup';
+
+            const alertTag = ev.type === 'gift' ? 'GIFT' : (ev.type === 'like' ? 'LIKE' : (ev.type === 'follow' ? 'FOLLOW' : 'LIVE'));
+
+            alert.innerHTML = `
+                <div class="alert-avatar" style="font-size:12px; font-weight:800; background:#3b82f6; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">${alertTag}</div>
+                <div class="alert-text-group">
+                    <div class="alert-username">${ev.username || 'Stream Viewer'}</div>
+                    <div class="alert-action">Triggered: ${ev.label} (x${ev.amount || 1})</div>
+                </div>
+            `;
+
+            dock.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                alert.style.transition = 'all 0.4s ease';
+                setTimeout(() => alert.remove(), 400);
+            }, 3500);
+        }
+
+        // Overlay Wheel Drawing & Animation
+        function drawOverlayWheel() {
+            const canvas = document.getElementById('overlayWheelCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const slices = (config && config.spinner && config.spinner.slices) ? config.spinner.slices : [];
+            const numSlices = slices.length || 8;
+            const arc = (2 * Math.PI) / numSlices;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSlices; i++) {
+                const angle = i * arc;
+                const slice = slices[i] || { label: 'Prize ' + (i+1), color: '#10b981' };
+
+                ctx.beginPath();
+                ctx.fillStyle = slice.color || '#10b981';
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius - 6, angle, angle + arc);
+                ctx.lineTo(radius, radius);
+                ctx.fill();
+
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Draw Text
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 15px Plus Jakarta Sans';
+                ctx.shadowColor = 'rgba(0,0,0,0.9)';
+                ctx.shadowBlur = 6;
+                ctx.fillText(slice.label, radius - 24, 6);
+                ctx.restore();
+            }
+        }
+
+        function triggerWheelAnimation(winnerSlice, ev = {}) {
+            if (isWheelActive) return;
+            isWheelActive = true;
+
+            const modal = document.getElementById('wheelOverlayModal');
+            const title = document.getElementById('wheelOverlayTitle');
+            const canvasBox = document.getElementById('overlayCanvasWheelBox');
+            const reelBox = document.getElementById('overlayReelBox');
+            const banner = document.getElementById('wheelWinnerBanner');
+
+            banner.className = 'winner-banner';
+            banner.innerText = '';
+            modal.classList.add('active');
+
+            const mode = (config && config.spinner && config.spinner.mode) || 'reel';
+            const durationMs = ev.duration || (config && config.spinner && config.spinner.duration) || 2500;
+            const spinnerTitle = ev.spinnerName || (config && config.spinner && config.spinner.name) || 'LUCKY ROULETTE';
+
+            if (mode === 'reel') {
+                if (title) title.innerText = spinnerTitle.toUpperCase();
+                if (canvasBox) canvasBox.style.display = 'none';
+                if (reelBox) reelBox.style.display = 'block';
+
+                const outer = document.getElementById('overlayReelOuter');
+                const track = document.getElementById('overlayReelTrack');
+                const ptrImg = document.getElementById('overlayPointerImg');
+                const pointerSrc = ev.pointerIcon || (config && config.spinner && config.spinner.pointerIcon);
+                if (ptrImg && pointerSrc) {
+                    ptrImg.src = pointerSrc;
+                }
+
+                const slices = (ev.slices && ev.slices.length > 0) ? ev.slices : ((config && config.spinner && config.spinner.slices) ? config.spinner.slices : []);
+                if (!slices || slices.length === 0) {
+                    isWheelActive = false;
+                    modal.classList.remove('active');
+                    return;
+                }
+
+                const actualWinner = winnerSlice || slices[0];
+                const targetIndex = 35;
+                const cardList = [];
+                for (let i = 0; i < 46; i++) {
+                    if (i === targetIndex) {
+                        cardList.push(actualWinner);
+                    } else {
+                        const randomSlice = slices[Math.floor(Math.random() * slices.length)];
+                        cardList.push(randomSlice);
+                    }
+                }
+
+                let trackHtml = '';
+                cardList.forEach((slice, idx) => {
+                    const rarity = slice.rarity || 'Normal';
+                    const rarityClass = `rarity-${rarity.toLowerCase()}`;
+                    const imgUrl = slice.unitIcon || slice.icon || 'images/func_2.png';
+                    trackHtml += `
+                        <div class="s2e-reel-card ${rarityClass}" id="overlayReelCard_${idx}">
+                            <div class="card-glow-bg"></div>
+                            <span class="rarity-tag">${rarity}</span>
+                            <div class="card-img-wrap">
+                                <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
+                            </div>
+                            <div class="card-title">${slice.label}</div>
+                            <div class="card-amount">x${slice.amount || 1}</div>
+                        </div>
+                    `;
+                });
+
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(0px)';
+                track.innerHTML = trackHtml;
+                void track.offsetWidth; // Force reflow
+
+                if (config && config.spinner && config.spinner.hideEventInOverlay) {
+                    isWheelActive = false;
+                    modal.classList.remove('active');
+                    return;
+                }
+
+                // BULLETPROOF EXACT MEASUREMENT FROM DOM
+                const targetCardEl = document.getElementById(`overlayReelCard_${targetIndex}`);
+                const cardCenterInTrack = targetCardEl.offsetLeft + (targetCardEl.offsetWidth / 2);
+                const outerCenter = outer.offsetWidth / 2;
+                const stopOffset = cardCenterInTrack - outerCenter;
+
+                track.style.transition = `transform ${durationMs}ms cubic-bezier(0.12, 0.95, 0.18, 1)`;
+                track.style.transform = `translateX(-${stopOffset}px)`;
+
+                // Dynamic ticking audio
+                let tickCount = 0;
+                const totalTicks = 32;
+                let currentTickDelay = 70;
+                function scheduleReelTick() {
+                    if (!isWheelActive || tickCount >= totalTicks) return;
+                    AudioEngine.playTick();
+                    tickCount++;
+                    currentTickDelay = 70 + Math.pow(tickCount / totalTicks, 3) * 360;
+                    setTimeout(scheduleReelTick, currentTickDelay);
+                }
+                setTimeout(scheduleReelTick, 100);
+
+                setTimeout(() => {
+                    const winningCardEl = document.getElementById(`overlayReelCard_${targetIndex}`);
+                    if (winningCardEl) {
+                        winningCardEl.style.transform = 'scale(1.1)';
+                        winningCardEl.style.boxShadow = '0 0 30px #ffffff, 0 0 50px var(--pvz-gold)';
+                        winningCardEl.style.zIndex = '15';
+                    }
+                    AudioEngine.playVictory();
+                    banner.innerHTML = `<span style="color:#ffffff;">WON:</span> <span style="color:${actualWinner.color || '#f59e0b'};">${actualWinner.label}</span> <span style="font-size:18px; color:#94a3b8;">(x${actualWinner.amount || 1})</span>`;
+                    banner.classList.add('show');
+
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        isWheelActive = false;
+                    }, 3500);
+                }, durationMs + 100);
+
+            } else {
+                // Classic canvas wheel mode
+                if (title) title.innerText = 'LUCKY MYSTERY WHEEL';
+                if (canvasBox) canvasBox.style.display = 'block';
+                if (reelBox) reelBox.style.display = 'none';
+
+                const canvas = document.getElementById('overlayWheelCanvas');
+                const slices = (config && config.spinner && config.spinner.slices) ? config.spinner.slices : [];
+                let winIdx = slices.findIndex(s => winnerSlice && s.id === winnerSlice.id);
+                if (winIdx === -1) winIdx = 0;
+
+                const sliceAngle = 360 / (slices.length || 8);
+                // Winning slice center is at (winIdx + 0.5) * sliceAngle in canvas space (where 0 deg = 3 o'clock).
+                // The pin indicator is at the top (12 o'clock = 270 deg).
+                const targetNormalized = ((270 - (winIdx + 0.5) * sliceAngle) % 360 + 360) % 360;
+                const currentMod = ((wheelRotation % 360) + 360) % 360;
+                let delta = (targetNormalized - currentMod) % 360;
+                if (delta <= 0) delta += 360;
+                const totalRotation = wheelRotation + (360 * 5) + delta;
+                wheelRotation = totalRotation;
+
+                let ticks = 0;
+                const tickInterval = setInterval(() => {
+                    AudioEngine.playTick();
+                    ticks++;
+                    if (ticks > 25) clearInterval(tickInterval);
+                }, 160);
+
+                canvas.style.transform = `rotate(${totalRotation}deg)`;
+
+                setTimeout(() => {
+                    clearInterval(tickInterval);
+                    AudioEngine.playVictory();
+                    const prizeLabel = winnerSlice ? winnerSlice.label : 'Mystery Prize';
+                    banner.innerText = `WON: ${prizeLabel}!`;
+                    banner.classList.add('show');
+
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        isWheelActive = false;
+                    }, 3500);
+                }, durationMs);
+            }
+        }
+    </script>
+</body>
+</html>

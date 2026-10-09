@@ -1,0 +1,4022 @@
+﻿{
+    "spawn_ultimate_portal_nut":  {
+                                      "effect":  "945",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_tumble_furnace":  {
+                                 "effect":  "1481",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_i_f_v_pumpkin":  {
+                                "effect":  "24",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_tower_threemine":  {
+                                  "effect":  "368",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_gold_zomboss":  {
+                               "effect":  "46",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_bucketpaper":  {
+                              "effect":  "82",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_random_plus_zombie":  {
+                                     "effect":  "110",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_ultimatepoisonfume":  {
+                                     "effect":  "306",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_red_emerald_umbrella":  {
+                                       "effect":  "923",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_pea_blover":  {
+                             "effect":  "1216",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_super_gatling_gloom":  {
+                                      "effect":  "1484",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_iceseashroom":  {
+                               "effect":  "1297",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_torch":  {
+                              "effect":  "1052",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_bamboodragon":  {
+                               "effect":  "979",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_umbrella":  {
+                                 "effect":  "1148",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "snorkel":  {
+                    "effect":  "17",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_blackfootball_c2":  {
+                                   "effect":  "306",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_ultimatehorse2":  {
+                                 "effect":  "230",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "win_level":  {
+                      "effect":  "1",
+                      "endpoint":  "/spawntrophy"
+                  },
+    "dolphin_rider":  {
+                          "effect":  "19",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_tower_cherrychomper":  {
+                                      "effect":  "5",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_minisandmonster":  {
+                                  "effect":  "67",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_zombie_conehead":  {
+                                  "effect":  "0",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_tower_bigsunshroom":  {
+                                     "effect":  "351",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_cherry_chomper":  {
+                                 "effect":  "1016",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_garlic_ultimate_chomper":  {
+                                          "effect":  "921",
+                                          "endpoint":  "/spawnplant"
+                                      },
+    "spawn_star_pumpkin":  {
+                               "effect":  "1089",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_end_pumpiner":  {
+                               "effect":  "5002",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_melon_fume":  {
+                             "effect":  "1196",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimate_furnace":  {
+                                   "effect":  "5004",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_drownpult":  {
+                            "effect":  "216",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_gold_hypno_doom":  {
+                                  "effect":  "938",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_electric_onion":  {
+                                 "effect":  "34",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_abyss_sword_star":  {
+                                   "effect":  "300",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_gold_doom":  {
+                            "effect":  "1252",
+                            "endpoint":  "/spawnplant"
+                        },
+    "ultimate_football_drown":  {
+                                    "effect":  "218",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_pea_chomper":  {
+                              "effect":  "1011",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_blackelephantzombie":  {
+                                      "effect":  "254",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_nut_chomper":  {
+                              "effect":  "1012",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_biggloom":  {
+                           "effect":  "1300",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_gold_magnet":  {
+                              "effect":  "1150",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_melonnut":  {
+                           "effect":  "1261",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_snow_present":  {
+                               "effect":  "233",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jackson_a":  {
+                            "effect":  "307",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_caltrop_kelp_land":  {
+                                    "effect":  "1238",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "drownpult":  {
+                      "effect":  "216",
+                      "endpoint":  "/spawnzombie"
+                  },
+    "spawn_lost_machine_iv":  {
+                                  "effect":  "99",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_big_sun_shroom":  {
+                                 "effect":  "1245",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "golden_zomboss":  {
+                           "effect":  "46",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "snorkle_zombie":  {
+                           "effect":  "17",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "spawn_squalour":  {
+                           "effect":  "248",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_jackbox_pumpkin":  {
+                                  "effect":  "1098",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_sun_bomb":  {
+                           "effect":  "1002",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_gatling_black_football":  {
+                                         "effect":  "225",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "spawn_ultimate_spring":  {
+                                  "effect":  "940",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimate_big_sniper":  {
+                                      "effect":  "946",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_iron_squash":  {
+                              "effect":  "1253",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cactusfume":  {
+                             "effect":  "1393",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimatehypnopumpkin":  {
+                                       "effect":  "967",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_snownormalzombie":  {
+                                   "effect":  "84",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_gold_sunflower":  {
+                                 "effect":  "1188",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_melon_umbrella":  {
+                                 "effect":  "1131",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_cornfume":  {
+                           "effect":  "1346",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_goldnut":  {
+                          "effect":  "1285",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_squash_nut":  {
+                             "effect":  "1250",
+                             "endpoint":  "/spawnplant"
+                         },
+    "delete_lawnmowers":  {
+                              "effect":  "1",
+                              "endpoint":  "/deletelawnmowers"
+                          },
+    "spawn_thornsbamboo":  {
+                               "effect":  "1402",
+                               "endpoint":  "/spawnplant"
+                           },
+    "clear_all_plants":  {
+                             "effect":  "1",
+                             "endpoint":  "/killallplants"
+                         },
+    "spawn_hypnojalapenozombie":  {
+                                      "effect":  "74",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_machine_nut_zombie":  {
+                                     "effect":  "40",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_ultimateportalsniper":  {
+                                       "effect":  "986",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_super_gatling_blover":  {
+                                       "effect":  "1471",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_puffjalapeno":  {
+                               "effect":  "1384",
+                               "endpoint":  "/spawnplant"
+                           },
+    "start_lawnmowers":  {
+                             "effect":  "1",
+                             "endpoint":  "/startlawnmowers"
+                         },
+    "spawn_super_hypno":  {
+                              "effect":  "1026",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_snow_football_drown":  {
+                                      "effect":  "262",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_thronsaloes":  {
+                              "effect":  "1409",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ice_nut":  {
+                          "effect":  "1189",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_ultimatesnowzombie":  {
+                                     "effect":  "228",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_doomsquash":  {
+                             "effect":  "1345",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_gold_zombie":  {
+                              "effect":  "42",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_twin_flower":  {
+                              "effect":  "1033",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_torchsunflower":  {
+                                 "effect":  "1304",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_drown_b":  {
+                          "effect":  "316",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_jalacaltrop":  {
+                              "effect":  "1062",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_star_torch":  {
+                             "effect":  "1197",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ice_chomper":  {
+                              "effect":  "1462",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_hypnochomper":  {
+                               "effect":  "1335",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_cherry_pot":  {
+                             "effect":  "1243",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_supercaltroppot":  {
+                                  "effect":  "978",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_iceplantern":  {
+                              "effect":  "1338",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_gatlingpaper_b":  {
+                                 "effect":  "325",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_machinelevatation":  {
+                                    "effect":  "245",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_superthreepeater":  {
+                                   "effect":  "919",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_caltropfume":  {
+                              "effect":  "1438",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_hypno_garlic":  {
+                               "effect":  "1230",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_lanterngatling":  {
+                                 "effect":  "1383",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_threenut":  {
+                           "effect":  "1295",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_cacstus_star":  {
+                               "effect":  "1085",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_zombie_dr_zomboss":  {
+                                    "effect":  "44",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_doomplantern":  {
+                               "effect":  "1341",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimate_cactus":  {
+                                  "effect":  "933",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_cherry_shooter_zombie":  {
+                                        "effect":  "101",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_firemine":  {
+                           "effect":  "1422",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_doompumpkin":  {
+                              "effect":  "1371",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_submarine_b2":  {
+                               "effect":  "312",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_squash_pumpkin":  {
+                                 "effect":  "1202",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "snorkle":  {
+                    "effect":  "17",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_zombie_football":  {
+                                  "effect":  "0",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_sun_mine":  {
+                           "effect":  "1009",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_ultimate_gatling_blover":  {
+                                          "effect":  "939",
+                                          "endpoint":  "/spawnplant"
+                                      },
+    "spawn_bamboo_spruce":  {
+                                "effect":  "1260",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_magnet_fume":  {
+                              "effect":  "1158",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_lanternnut":  {
+                             "effect":  "1309",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_driver_zombie":  {
+                                "effect":  "16",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_jackbox_jump_zombie":  {
+                                      "effect":  "209",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_squashmelon":  {
+                              "effect":  "1343",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cherryshooter":  {
+                                "effect":  "1001",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_super_melon":  {
+                              "effect":  "1126",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_diamondimitater":  {
+                                  "effect":  "227",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimate_magnet":  {
+                                  "effect":  "944",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimate_big_chomper":  {
+                                       "effect":  "951",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "remove_lawnmowers":  {
+                              "effect":  "1",
+                              "endpoint":  "/deletelawnmowers"
+                          },
+    "spawn_penguinzombie":  {
+                                "effect":  "83",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_chomperpumpkin":  {
+                                 "effect":  "1327",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_sun_cabbage":  {
+                              "effect":  "1111",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_umbrellaleaf":  {
+                               "effect":  "30",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ice_lotus":  {
+                            "effect":  "37",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_star_nut":  {
+                           "effect":  "1257",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_yellowfootball":  {
+                                 "effect":  "79",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_doom_seed":  {
+                            "effect":  "1249",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_ultimatewintermelon":  {
+                                      "effect":  "957",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_hypno_doom":  {
+                             "effect":  "1045",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_cabbage_nut":  {
+                              "effect":  "1262",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_machine_nut":  {
+                              "effect":  "1129",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_icepot":  {
+                         "effect":  "1287",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_pea_nut":  {
+                          "effect":  "1004",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_caltrop_pumpkin":  {
+                                  "effect":  "1464",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_tower_doomfume":  {
+                                 "effect":  "360",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_cherry_puff":  {
+                              "effect":  "1451",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_scared_fume":  {
+                              "effect":  "1025",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_water_swordshroom":  {
+                                    "effect":  "1469",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_elephantzombie_c":  {
+                                   "effect":  "88",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_cherry_magnet":  {
+                                "effect":  "1166",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_nuclearsquash":  {
+                                "effect":  "965",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_minisnowmonster":  {
+                                  "effect":  "62",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_water_lichen":  {
+                               "effect":  "1479",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_suniceshroom":  {
+                               "effect":  "1325",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_fumepumpkin":  {
+                              "effect":  "1350",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ice_cherry":  {
+                             "effect":  "1212",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_gatlingpaper_c":  {
+                                 "effect":  "326",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_sea_starfruit":  {
+                                "effect":  "1083",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_horsezombie":  {
+                              "effect":  "69",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_ironconezombie":  {
+                                 "effect":  "87",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_imitatewheat":  {
+                               "effect":  "303",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_cabbage_umbrella":  {
+                                   "effect":  "1128",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_plantern":  {
+                           "effect":  "20",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_gatlingpeazombie":  {
+                                   "effect":  "130",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_hypnomelon":  {
+                             "effect":  "1286",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_torchfirepumpkin":  {
+                                   "effect":  "1289",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_iron_fume":  {
+                            "effect":  "1159",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_balloon_zombie":  {
+                                 "effect":  "25",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_ulti_cherrygatling":  {
+                                     "effect":  "1017",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_fusion_gargantuar":  {
+                                    "effect":  "0",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_fireseashroom":  {
+                                "effect":  "1431",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_zombie_buckethead":  {
+                                    "effect":  "0",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_super_sun_nut":  {
+                                "effect":  "905",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_sea_sun_shroom":  {
+                                 "effect":  "1077",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "kill_all_plants":  {
+                            "effect":  "1",
+                            "endpoint":  "/killallplants"
+                        },
+    "spawn_tumble_snow":  {
+                              "effect":  "41",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_jackbox_plant":  {
+                                "effect":  "212",
+                                "endpoint":  "/spawnplant"
+                            },
+    "drown":  {
+                  "effect":  "20",
+                  "endpoint":  "/spawnzombie"
+              },
+    "spawn_doom_umbrella":  {
+                                "effect":  "1455",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_smallumbrella":  {
+                                "effect":  "1301",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_lantern_blover":  {
+                                 "effect":  "1080",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_cherryfume":  {
+                             "effect":  "1428",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_drownpult_c":  {
+                              "effect":  "335",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_seasquash":  {
+                            "effect":  "1392",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_thornsshulk":  {
+                              "effect":  "1416",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_sea_blover":  {
+                             "effect":  "1086",
+                             "endpoint":  "/spawnplant"
+                         },
+    "drown_b":  {
+                    "effect":  "316",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_gold_umbrella":  {
+                                "effect":  "1144",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_iron_gargantuar":  {
+                                  "effect":  "38",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_pickaxe_a":  {
+                            "effect":  "318",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_supergatlingpeamine":  {
+                                      "effect":  "1432",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "footballdrown":  {
+                          "effect":  "202",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_squash_spike":  {
+                               "effect":  "1063",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_iron_corn":  {
+                            "effect":  "1211",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_garlic_cabbage":  {
+                                 "effect":  "1118",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimatedolphin":  {
+                                  "effect":  "249",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_super_three_peater":  {
+                                     "effect":  "919",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_hypno_blover":  {
+                               "effect":  "1176",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_winter_melon":  {
+                               "effect":  "1116",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_big_sun_nut":  {
+                              "effect":  "251",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_jackson_driver":  {
+                                 "effect":  "201",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_allpeater":  {
+                            "effect":  "1347",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_ultimategarlicsplit":  {
+                                      "effect":  "989",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_torchmine":  {
+                            "effect":  "1421",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_gatling_pea":  {
+                              "effect":  "1032",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_suncaltrop":  {
+                             "effect":  "1419",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_icepumpkin":  {
+                             "effect":  "1436",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_sea_shroom":  {
+                             "effect":  "19",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_cactus":  {
+                         "effect":  "21",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_garlicsniper":  {
+                               "effect":  "1329",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_golden_zomboss":  {
+                                 "effect":  "46",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_ultimate_potato_nut":  {
+                                      "effect":  "925",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_dolphin_rider":  {
+                                "effect":  "19",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_super_spruce":  {
+                               "effect":  "1220",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_drown_zombie":  {
+                               "effect":  "20",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_magic_snow_pea":  {
+                                 "effect":  "1443",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "snorkel_zombie":  {
+                           "effect":  "17",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "spawn_red_gargantuar":  {
+                                 "effect":  "36",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_tall_nut":  {
+                           "effect":  "1027",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_ice_fume_shroom":  {
+                                  "effect":  "1037",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_tumble_shield":  {
+                                "effect":  "1466",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_doomcabbage":  {
+                              "effect":  "1399",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ice_star":  {
+                           "effect":  "1457",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_present_zombie":  {
+                                 "effect":  "250",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_holographicplant":  {
+                                   "effect":  "217",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_cactus_blover":  {
+                                "effect":  "1082",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_driver_a":  {
+                           "effect":  "321",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "spawn_goldthreeplantern":  {
+                                    "effect":  "982",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_shulk_lotus":  {
+                              "effect":  "1222",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimate_paper_zombie":  {
+                                        "effect":  "223",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_lantern_pot":  {
+                              "effect":  "1195",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_garlic_star":  {
+                              "effect":  "1461",
+                              "endpoint":  "/spawnplant"
+                          },
+    "delete_lawnmower":  {
+                             "effect":  "1",
+                             "endpoint":  "/deletelawnmowers"
+                         },
+    "spawn_split_pea":  {
+                            "effect":  "1090",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_squash_torch":  {
+                               "effect":  "1059",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_snow_gatling":  {
+                                     "effect":  "1165",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_sun_shroom":  {
+                             "effect":  "1031",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ice_three_peater":  {
+                                   "effect":  "1485",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_tower_gravebuster":  {
+                                    "effect":  "361",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_super_cherry_shooter":  {
+                                       "effect":  "1005",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_garlictorch":  {
+                              "effect":  "1391",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_icelaserumbrella":  {
+                                   "effect":  "975",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_hypnosplit":  {
+                             "effect":  "1269",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_seapumpkin":  {
+                             "effect":  "1334",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_lotus_spruce":  {
+                               "effect":  "1221",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_cabbage_pot":  {
+                              "effect":  "1112",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cherry_scaredy":  {
+                                 "effect":  "1274",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_coin_shroom":  {
+                              "effect":  "1446",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_melonpuff":  {
+                            "effect":  "1280",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_iron_puff":  {
+                            "effect":  "1152",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_icecactus":  {
+                            "effect":  "1427",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_frozen_pear":  {
+                              "effect":  "236",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cherry_catapult_zombie":  {
+                                         "effect":  "112",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "spawn_supersnowmonsterzombie":  {
+                                         "effect":  "57",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "spawn_water_shieldshroom":  {
+                                     "effect":  "1470",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_ultimate_star":  {
+                                "effect":  "909",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_deathchomper":  {
+                               "effect":  "956",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_drown_gargantuar":  {
+                                   "effect":  "76",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_seamine_water":  {
+                                "effect":  "1340",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_lichen":  {
+                         "effect":  "44",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_water_spruce":  {
+                               "effect":  "1219",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_lost_machine_iii":  {
+                                   "effect":  "94",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_sunpumpkin":  {
+                             "effect":  "1324",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_fertilizer":  {
+                             "effect":  "1",
+                             "endpoint":  "/spawnfertilizer"
+                         },
+    "spawn_cherry_paper_z95":  {
+                                   "effect":  "95",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "add_sun":  {
+                    "effect":  "500",
+                    "endpoint":  "/addsun"
+                },
+    "spawn_submarine_b":  {
+                              "effect":  "311",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_garlicrepeater":  {
+                                 "effect":  "1386",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_tower_icegloom":  {
+                                 "effect":  "355",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_garlicgatling":  {
+                                "effect":  "1388",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_spruce_shulk":  {
+                               "effect":  "1217",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimateiceshroom":  {
+                                    "effect":  "992",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_portal_pea":  {
+                             "effect":  "1208",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_zombie_golden_zomboss":  {
+                                        "effect":  "46",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_silver_cabbage":  {
+                                 "effect":  "1134",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimatejalanut":  {
+                                  "effect":  "969",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_doomcherry":  {
+                             "effect":  "1332",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_doomzombie":  {
+                             "effect":  "120",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_nutfume":  {
+                          "effect":  "1312",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_obsidian_jalapeno":  {
+                                    "effect":  "1173",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_dark_three_peater":  {
+                                    "effect":  "1058",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_corn_puff":  {
+                            "effect":  "1203",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_gatling_football_zombie":  {
+                                          "effect":  "118",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_ultimate_football_drown":  {
+                                          "effect":  "218",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_garlic_pot":  {
+                             "effect":  "1130",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_tower_electriconion":  {
+                                      "effect":  "34",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_portal_doom":  {
+                              "effect":  "1214",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimatebamboo":  {
+                                 "effect":  "980",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_gravebuster":  {
+                              "effect":  "239",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ice_squash":  {
+                             "effect":  "1228",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_sprout":  {
+                         "effect":  "1",
+                         "endpoint":  "/spawnsprout"
+                     },
+    "spawn_cherry_torch":  {
+                               "effect":  "1178",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jala_squash":  {
+                              "effect":  "1054",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimatecabbagecannon":  {
+                                        "effect":  "966",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "spawn_potato_mine":  {
+                              "effect":  "4",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_nutpot":  {
+                         "effect":  "1311",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_super_jackbox_zombie":  {
+                                       "effect":  "30",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_doom_chomper":  {
+                               "effect":  "1192",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_small_ice_shroom":  {
+                                   "effect":  "1036",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_polevaulter_zombie":  {
+                                     "effect":  "3",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_doom_fume":  {
+                            "effect":  "1043",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_portalmelon":  {
+                              "effect":  "1316",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimate_plantern":  {
+                                    "effect":  "949",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_jackbox_star":  {
+                               "effect":  "1094",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jala_pot":  {
+                           "effect":  "1474",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_double_cherry":  {
+                                "effect":  "1008",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_drown_c":  {
+                          "effect":  "317",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_silver_sunflower":  {
+                                   "effect":  "1187",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_twin_marigold":  {
+                                "effect":  "1140",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimateimpking":  {
+                                  "effect":  "234",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_zombie_boss":  {
+                              "effect":  "44",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_sword_star":  {
+                             "effect":  "249",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_lotus_bamboo":  {
+                               "effect":  "1258",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_zombie_drown_gargantuar":  {
+                                          "effect":  "76",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_jalasplit":  {
+                            "effect":  "1321",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_blackflagfootball":  {
+                                    "effect":  "256",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_puffpumpkin":  {
+                              "effect":  "1349",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_submarine_a":  {
+                              "effect":  "310",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_melon_cannon":  {
+                               "effect":  "1132",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimate_torch":  {
+                                 "effect":  "902",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_qing_zombie":  {
+                              "effect":  "208",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "dr_zomboss":  {
+                       "effect":  "44",
+                       "endpoint":  "/spawnzombie"
+                   },
+    "spawn_blovermine":  {
+                             "effect":  "1426",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_portalballoonzombie":  {
+                                      "effect":  "250",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_summonedhorse":  {
+                                "effect":  "232",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_sniperchomper":  {
+                                "effect":  "1424",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimate_pumpkin":  {
+                                   "effect":  "911",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_lost_machine":  {
+                               "effect":  "92",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "submarine_zombie":  {
+                             "effect":  "14",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_goldscarypot":  {
+                               "effect":  "220",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_scaredynut":  {
+                             "effect":  "1310",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_sun_pot":  {
+                          "effect":  "1184",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_pudding":  {
+                          "effect":  "218",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_threepot":  {
+                           "effect":  "1442",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_double_shooer":  {
+                                "effect":  "0",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_doll_gold":  {
+                            "effect":  "22",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_footballdolphin":  {
+                                  "effect":  "61",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_impking":  {
+                          "effect":  "235",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_protal_zombie":  {
+                                "effect":  "52",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_iron_pea_zombie":  {
+                                  "effect":  "108",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_ender_pumpkin":  {
+                                "effect":  "1444",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_tumble_sword":  {
+                               "effect":  "1465",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_zomboss":  {
+                          "effect":  "44",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_tower_peapuff":  {
+                                "effect":  "358",
+                                "endpoint":  "/spawnplant"
+                            },
+    "hypno_cattail_girl":  {
+                               "effect":  "993",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_solar_lily":  {
+                             "effect":  "950",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_doomthreepeater":  {
+                                  "effect":  "1440",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimate_kelp":  {
+                                "effect":  "941",
+                                "endpoint":  "/spawnplant"
+                            },
+    "set_sun":  {
+                    "effect":  "9990",
+                    "endpoint":  "/setsun"
+                },
+    "spawn_jalagatling":  {
+                              "effect":  "1322",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_plant_peashooter":  {
+                                   "effect":  "0",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_caltrop_nut":  {
+                              "effect":  "1048",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_doomgarlic":  {
+                             "effect":  "1355",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_kelpnut":  {
+                          "effect":  "1313",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_super_kirov":  {
+                              "effect":  "205",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_double_snow":  {
+                              "effect":  "1105",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_big_sea_shroom":  {
+                                 "effect":  "1175",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_nut_umbrella":  {
+                               "effect":  "1206",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimate_machine_nut":  {
+                                       "effect":  "310",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_ultimate_cannon":  {
+                                  "effect":  "915",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_fusion_hypno_shroom":  {
+                                      "effect":  "1176",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_dance_pol_zombie":  {
+                                   "effect":  "6",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_ultimate_jackson_driver":  {
+                                          "effect":  "222",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_bedrocksnowzombie":  {
+                                    "effect":  "132",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_elephantzombie_a":  {
+                                   "effect":  "88",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_kelp_mine_water":  {
+                                  "effect":  "1233",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_passion_fruit":  {
+                                "effect":  "235",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_blue_gargantuar":  {
+                                  "effect":  "122",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_hypno_shroom":  {
+                               "effect":  "8",
+                               "endpoint":  "/spawnplant"
+                           },
+    "sub_sun":  {
+                    "effect":  "-200",
+                    "endpoint":  "/addsun"
+                },
+    "spawn_cherrysubmarine":  {
+                                  "effect":  "237",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_thornsspruce":  {
+                               "effect":  "1406",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_hypno_doom":  {
+                                   "effect":  "928",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_superthreegatling":  {
+                                    "effect":  "1271",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_tower_doomstar":  {
+                                 "effect":  "364",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_hypno_squash":  {
+                               "effect":  "1229",
+                               "endpoint":  "/spawnplant"
+                           },
+    "no_game_over":  {
+                         "effect":  "1",
+                         "endpoint":  "/stopgameover"
+                     },
+    "spawn_spike_rock":  {
+                             "effect":  "1060",
+                             "endpoint":  "/spawnplant"
+                         },
+    "endo_flame_girl":  {
+                            "effect":  "242",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_cabbagepult":  {
+                              "effect":  "26",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_tall_ice_nut":  {
+                               "effect":  "1039",
+                               "endpoint":  "/spawnplant"
+                           },
+    "super_submarine":  {
+                            "effect":  "200",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_puff_doom":  {
+                            "effect":  "1044",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_cherry_blover":  {
+                                "effect":  "1244",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_twinshulk":  {
+                            "effect":  "1177",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_threemelon":  {
+                             "effect":  "1433",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimate_gatling":  {
+                                   "effect":  "901",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_ice_doom":  {
+                           "effect":  "1040",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_snowbucketzombie":  {
+                                   "effect":  "85",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_shieldshroom":  {
+                               "effect":  "43",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_lantern_umbrella":  {
+                                   "effect":  "1185",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_three_mine":  {
+                             "effect":  "1240",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_snow_crab":  {
+                            "effect":  "97",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_ultimate_hypno":  {
+                                 "effect":  "924",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimatelanternsplit":  {
+                                       "effect":  "984",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_ultimate_kirov_zombie":  {
+                                        "effect":  "221",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_sniperpot":  {
+                            "effect":  "1405",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_doomblover":  {
+                             "effect":  "1275",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_pickaxezombie":  {
+                                "effect":  "58",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_cabbage_melon":  {
+                                "effect":  "1124",
+                                "endpoint":  "/spawnplant"
+                            },
+    "restart_lawnmowers":  {
+                               "effect":  "1",
+                               "endpoint":  "/restartlawnmowers"
+                           },
+    "spawn_seafume":  {
+                          "effect":  "1291",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_superblackfootball":  {
+                                     "effect":  "257",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_threecorn":  {
+                            "effect":  "1434",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_big_coin_shroom":  {
+                                  "effect":  "1447",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_sunhypno":  {
+                           "effect":  "1326",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_ultimateexplodecannon":  {
+                                        "effect":  "953",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "spawn_torch_wood":  {
+                             "effect":  "18",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_legionsniperzombie":  {
+                                     "effect":  "246",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_pickaxe":  {
+                          "effect":  "1",
+                          "endpoint":  "/spawnpickaxe"
+                      },
+    "spawn_cherry_gatling":  {
+                                 "effect":  "1017",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_plant_sunflower":  {
+                                  "effect":  "1",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_firekelp":  {
+                           "effect":  "1156",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_lost_machine_ii":  {
+                                  "effect":  "93",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_jala_spike":  {
+                             "effect":  "0",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_pea_puff":  {
+                           "effect":  "1018",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_potato_chomper":  {
+                                 "effect":  "1015",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_deathmine":  {
+                            "effect":  "983",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_cactus_umbrella":  {
+                                  "effect":  "1186",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_torchseashroom":  {
+                                 "effect":  "1430",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ifvstar":  {
+                          "effect":  "976",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_normal_zombie":  {
+                                "effect":  "0",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_iceblover":  {
+                            "effect":  "1276",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_tower_peasunflower":  {
+                                     "effect":  "350",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_ultimateendoflamezombie":  {
+                                          "effect":  "259",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_snowconezombie":  {
+                                 "effect":  "55",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_armoredimpzombie":  {
+                                   "effect":  "258",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_torchfirenut":  {
+                               "effect":  "1283",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_star_blover":  {
+                              "effect":  "1084",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_obsidian_juggernaut":  {
+                                      "effect":  "997",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_acientsunnut":  {
+                               "effect":  "307",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_star":  {
+                             "effect":  "1104",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_cherry_mine":  {
+                              "effect":  "1162",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_zombie_gargantuar":  {
+                                    "effect":  "35",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "snow_dolphinrider":  {
+                              "effect":  "27",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_dragon_pot":  {
+                             "effect":  "5005",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_gatlingblackfootball2":  {
+                                        "effect":  "257",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_jalapumpkin":  {
+                              "effect":  "1413",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_sniper_pea":  {
+                             "effect":  "1109",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_tumble_water":  {
+                               "effect":  "1468",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_spruce_ballista":  {
+                                  "effect":  "1247",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_torchpumpkin":  {
+                               "effect":  "1288",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_blackfootball_a":  {
+                                  "effect":  "303",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_snowgatlingpeazombie":  {
+                                       "effect":  "131",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_water_bamboo":  {
+                               "effect":  "1259",
+                               "endpoint":  "/spawnplant"
+                           },
+    "drown_c":  {
+                    "effect":  "317",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_coffee_bean":  {
+                              "effect":  "211",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_magnet_corn":  {
+                              "effect":  "1209",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_magnet_pumpkin":  {
+                                 "effect":  "1092",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_lantern_star":  {
+                               "effect":  "1081",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_umbrella_pot":  {
+                               "effect":  "1133",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_tower_watercan":  {
+                                 "effect":  "365",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_silvernut":  {
+                            "effect":  "1284",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_firesunshroom_a":  {
+                                  "effect":  "230",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimatejalapeno":  {
+                                   "effect":  "977",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_scaredy_star":  {
+                               "effect":  "1201",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_hypnotorch":  {
+                             "effect":  "1394",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimate_cabbage":  {
+                                   "effect":  "934",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_thorns":  {
+                         "effect":  "40",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_jack":  {
+                       "effect":  "1",
+                       "endpoint":  "/spawnjack"
+                   },
+    "spawn_ice_hypno":  {
+                            "effect":  "1041",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_jalapeno":  {
+                           "effect":  "16",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_scaredy_doom":  {
+                               "effect":  "1042",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_drownpult_a":  {
+                              "effect":  "333",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_hypnogatling":  {
+                               "effect":  "1270",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_driver_b":  {
+                           "effect":  "322",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "drownpult_b":  {
+                        "effect":  "334",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_sunblover":  {
+                            "effect":  "1348",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_silver_melon":  {
+                               "effect":  "1141",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_endo_flame_girl":  {
+                                  "effect":  "242",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_random_gargantuar":  {
+                                    "effect":  "121",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_ultimateiceshroom2":  {
+                                     "effect":  "995",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_kirov_zombie":  {
+                               "effect":  "26",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_supercaltrop":  {
+                               "effect":  "970",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ice_gloom":  {
+                            "effect":  "1072",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_torchfume":  {
+                            "effect":  "1389",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_snow_split":  {
+                             "effect":  "1107",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_pickaxe_pumpkin":  {
+                                  "effect":  "1099",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_zombie_drown":  {
+                               "effect":  "20",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_imitater":  {
+                           "effect":  "245",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_magic_snow_pea2":  {
+                                  "effect":  "5001",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_superladderzombie":  {
+                                    "effect":  "72",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_three_spike":  {
+                              "effect":  "1064",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cattail_lour":  {
+                               "effect":  "926",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_potato_pumpkin":  {
+                                 "effect":  "1190",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_cherryhypno":  {
+                              "effect":  "1333",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_big_chomper":  {
+                              "effect":  "1174",
+                              "endpoint":  "/spawnplant"
+                          },
+    "invulnerable_plants":  {
+                                "effect":  "10",
+                                "endpoint":  "/invulnerableplants"
+                            },
+    "spawn_seascaredyshroom":  {
+                                   "effect":  "1294",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_pea_mine":  {
+                           "effect":  "1007",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_zombie_star":  {
+                              "effect":  "65",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_eternalzombie_b":  {
+                                  "effect":  "331",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_xxspot":  {
+                         "effect":  "226",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_cabbagecaltrop":  {
+                                 "effect":  "1417",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_three_peater":  {
+                               "effect":  "14",
+                               "endpoint":  "/spawnplant"
+                           },
+    "unlimited_sun":  {
+                          "effect":  "10",
+                          "endpoint":  "/unlimitedsun"
+                      },
+    "spawn_garlic_blover":  {
+                                "effect":  "1181",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_kirov_b":  {
+                          "effect":  "328",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_corn_melon":  {
+                             "effect":  "1121",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_wheat":  {
+                        "effect":  "253",
+                        "endpoint":  "/spawnplant"
+                    },
+    "spawn_split_puff":  {
+                             "effect":  "1153",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_fire_cannon":  {
+                              "effect":  "1122",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_superhypnogatling":  {
+                                    "effect":  "1292",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "snow_drown_zombie":  {
+                              "effect":  "51",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "drowngargantuar":  {
+                            "effect":  "76",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_sun_nut":  {
+                          "effect":  "1006",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_ultimate_fly":  {
+                               "effect":  "912",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jala_star":  {
+                            "effect":  "1198",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_doomstar":  {
+                           "effect":  "1277",
+                           "endpoint":  "/spawnplant"
+                       },
+    "charm_all_zombies":  {
+                              "effect":  "1",
+                              "endpoint":  "/charmallzombies"
+                          },
+    "spawn_cone_zombie":  {
+                              "effect":  "2",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_firesunshroom_b":  {
+                                  "effect":  "231",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ice_bean":  {
+                           "effect":  "241",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_super_gatling_fume":  {
+                                     "effect":  "1445",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_dr_zomboss":  {
+                             "effect":  "44",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_lantern_pumpkin":  {
+                                  "effect":  "1087",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_dolphinpaper":  {
+                               "effect":  "59",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_water_ballista":  {
+                                 "effect":  "1254",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimatemeloncannon":  {
+                                      "effect":  "964",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_super_gargantuar":  {
+                                   "effect":  "43",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_thornslotus":  {
+                              "effect":  "1403",
+                              "endpoint":  "/spawnplant"
+                          },
+    "invulnerable_zombies":  {
+                                 "effect":  "10",
+                                 "endpoint":  "/zombiesx0demage"
+                             },
+    "spawn_snow_gatling":  {
+                               "effect":  "1106",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_seamine_land":  {
+                               "effect":  "1339",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jackbox_b":  {
+                            "effect":  "325",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_caltrop":  {
+                          "effect":  "17",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_ice_zombie":  {
+                             "effect":  "51",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_big_wall_nut":  {
+                               "effect":  "255",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_starpea":  {
+                          "effect":  "1412",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_pot":  {
+                      "effect":  "27",
+                      "endpoint":  "/spawnplant"
+                  },
+    "spawn_cabbagefume":  {
+                              "effect":  "1369",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cherrythreepeater":  {
+                                    "effect":  "1330",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "drownpultzombie":  {
+                            "effect":  "216",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_super_machine_nut":  {
+                                    "effect":  "1151",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_kirov_a":  {
+                          "effect":  "327",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_ice_cattail":  {
+                              "effect":  "1068",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_submarine_zombie":  {
+                                   "effect":  "14",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_squashkelp":  {
+                             "effect":  "1050",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_pogo_zombie":  {
+                              "effect":  "32",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_ice_shroom":  {
+                             "effect":  "10",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_hugewallnut":  {
+                              "effect":  "1266",
+                              "endpoint":  "/spawnplant"
+                          },
+    "drown_zombie":  {
+                         "effect":  "20",
+                         "endpoint":  "/spawnzombie"
+                     },
+    "duck_zombie":  {
+                        "effect":  "11",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_gold_garlic":  {
+                              "effect":  "1146",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_fire_caltrop":  {
+                               "effect":  "1155",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_football_zombie":  {
+                                  "effect":  "9",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_starsquash":  {
+                             "effect":  "1441",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_drown":  {
+                        "effect":  "20",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_corn_pot":  {
+                           "effect":  "1114",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_seanut":  {
+                         "effect":  "1293",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_obsidianclawzombie":  {
+                                     "effect":  "248",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_gloom_shroom":  {
+                               "effect":  "1070",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_cob_cannon":  {
+                             "effect":  "1120",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_sniperpuff":  {
+                             "effect":  "1290",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_tall_ice_nut_zombie":  {
+                                      "effect":  "111",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_scaredyblover":  {
+                                "effect":  "1273",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_garlic_melon":  {
+                               "effect":  "1119",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_bamboo_furnace":  {
+                                 "effect":  "1265",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_kelpfume":  {
+                           "effect":  "1395",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_silver_zombie":  {
+                                "effect":  "41",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_ultimatelegionzombie":  {
+                                       "effect":  "243",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_blackjackboxzombie":  {
+                                     "effect":  "253",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_ultimatecornfume":  {
+                                   "effect":  "991",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_random_zombie":  {
+                                "effect":  "105",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_hypno_nut":  {
+                            "effect":  "1147",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_lost_penguin":  {
+                               "effect":  "95",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_doomsniper":  {
+                             "effect":  "1272",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimatesnipergatling":  {
+                                        "effect":  "309",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "spawn_tall_nut_football":  {
+                                    "effect":  "1028",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_ice_torch":  {
+                            "effect":  "1182",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_snow_dolphinrider":  {
+                                    "effect":  "27",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_sea_cactus":  {
+                             "effect":  "1076",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_garlicsplit":  {
+                              "effect":  "1387",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_corn_umbrella":  {
+                                "effect":  "1115",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_chomper_scaredy":  {
+                                  "effect":  "1452",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_spruce_shooter":  {
+                                 "effect":  "36",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "football_drown":  {
+                           "effect":  "202",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "spawn_snow_bird_zombie":  {
+                                   "effect":  "98",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_corncaltrop":  {
+                              "effect":  "1337",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_mix_bomb":  {
+                           "effect":  "244",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_armedgargantuar":  {
+                                  "effect":  "233",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_present":  {
+                          "effect":  "256",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_portal_corn":  {
+                              "effect":  "1210",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_super_furnace":  {
+                                "effect":  "1234",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_diamond_random_zombie":  {
+                                        "effect":  "215",
+                                        "endpoint":  "/spawnzombie"
+                                    },
+    "spawn_superhurricaneblover":  {
+                                       "effect":  "998",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_garlicnut":  {
+                            "effect":  "1278",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_snow_zombie":  {
+                              "effect":  "47",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "stop_zombie_spawn":  {
+                              "effect":  "10",
+                              "endpoint":  "/stopzombiespawn"
+                          },
+    "spawn_emerald_umbrella":  {
+                                   "effect":  "916",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_gatling_puff":  {
+                               "effect":  "1065",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_snow_drown_zombie":  {
+                                    "effect":  "51",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_cactus_nut":  {
+                             "effect":  "1256",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_peapot":  {
+                         "effect":  "1404",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_ironmelon":  {
+                            "effect":  "1315",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_miner_zombie":  {
+                               "effect":  "28",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_puff_nut":  {
+                           "effect":  "1021",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_pumpkin":  {
+                          "effect":  "24",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_nutpumpkin":  {
+                             "effect":  "1299",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_cherry_umbrella":  {
+                                  "effect":  "1207",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_cherry_ultimate_pumpkin":  {
+                                          "effect":  "922",
+                                          "endpoint":  "/spawnplant"
+                                      },
+    "spawn_jackbox_doom":  {
+                               "effect":  "1242",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_scaredy_pumpkin":  {
+                                  "effect":  "1200",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_three_torch":  {
+                              "effect":  "1055",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_caltroppot":  {
+                             "effect":  "1372",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_jalapeno_zombie":  {
+                                  "effect":  "117",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_tall_nut_football_zombie":  {
+                                           "effect":  "109",
+                                           "endpoint":  "/spawnzombie"
+                                       },
+    "spawn_blacktrainzombie":  {
+                                   "effect":  "255",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "free_plants_on":  {
+                           "effect":  "10",
+                           "endpoint":  "/unlimitedsun"
+                       },
+    "spawn_superpenguinzombie":  {
+                                     "effect":  "86",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_ultimate_chomper":  {
+                                   "effect":  "903",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_iron_star":  {
+                            "effect":  "1096",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_threecabbage":  {
+                               "effect":  "1439",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_pickaxe_c":  {
+                            "effect":  "320",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_shulkbamboo":  {
+                              "effect":  "1264",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_blackfootball_b":  {
+                                  "effect":  "304",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_bucket":  {
+                         "effect":  "1",
+                         "endpoint":  "/spawnbucket"
+                     },
+    "spawn_doom_gatling":  {
+                               "effect":  "907",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimatemelonpuff":  {
+                                    "effect":  "952",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_coachpaper":  {
+                             "effect":  "81",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_hypno_emperor":  {
+                                "effect":  "900",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_threeplantern":  {
+                                "effect":  "1379",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_levatation_zombie":  {
+                                    "effect":  "53",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_doomkelp":  {
+                           "effect":  "1414",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_melon_pot":  {
+                            "effect":  "1125",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_peapumpkin":  {
+                             "effect":  "1318",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_flying_three_peater_sp":  {
+                                         "effect":  "5000",
+                                         "endpoint":  "/spawnplant"
+                                     },
+    "snowdrownzombie":  {
+                            "effect":  "51",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_sea_chomper":  {
+                              "effect":  "1456",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_puff_chomper":  {
+                               "effect":  "1459",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_magnetnut":  {
+                            "effect":  "1279",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_jackson_b":  {
+                            "effect":  "308",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_garlic_umbrella":  {
+                                  "effect":  "1127",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_hypno_fume":  {
+                             "effect":  "1023",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_supernutshooter":  {
+                                  "effect":  "1423",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_luckyblover":  {
+                              "effect":  "229",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ifvblover":  {
+                            "effect":  "961",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_scaredy_potato":  {
+                                 "effect":  "1171",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ash_three_peater":  {
+                                   "effect":  "918",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_umbrella_fume":  {
+                                "effect":  "1453",
+                                "endpoint":  "/spawnplant"
+                            },
+    "sun":  {
+                "effect":  "1000",
+                "endpoint":  "/addsun"
+            },
+    "spawn_gold_three_torch":  {
+                                   "effect":  "932",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_cone_zombie_duck":  {
+                                   "effect":  "12",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_snow_gatling_puff":  {
+                                    "effect":  "908",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_helmet_fume":  {
+                              "effect":  "1160",
+                              "endpoint":  "/spawnplant"
+                          },
+    "plant_everywahre":  {
+                             "effect":  "1",
+                             "endpoint":  "/planteverywhere"
+                         },
+    "spawn_obsidian_spike":  {
+                                 "effect":  "906",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_elephantzombie":  {
+                                 "effect":  "88",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_gold_pot":  {
+                           "effect":  "1137",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_pickaxe_plant":  {
+                                "effect":  "213",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimatehorse":  {
+                                "effect":  "229",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "double_demage":  {
+                          "effect":  "10",
+                          "endpoint":  "/zombiesx2demage"
+                      },
+    "spawn_chomper_blover":  {
+                                 "effect":  "1486",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_horseboss":  {
+                            "effect":  "231",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_obsidian_wheat":  {
+                                 "effect":  "240",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_yellow_gargantuar":  {
+                                    "effect":  "124",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_super_machine_shard_plant":  {
+                                            "effect":  "216",
+                                            "endpoint":  "/spawnplant"
+                                        },
+    "spawn_chrysantheautumn":  {
+                                   "effect":  "238",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "submarine":  {
+                      "effect":  "14",
+                      "endpoint":  "/spawnzombie"
+                  },
+    "spawn_tower_sunshroom":  {
+                                  "effect":  "359",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ultimatesunflower":  {
+                                    "effect":  "954",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_drownpult_zombie":  {
+                                   "effect":  "216",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_icecabbage":  {
+                             "effect":  "1375",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_super_driver":  {
+                               "effect":  "18",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_ultimate_blover":  {
+                                  "effect":  "920",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_squashblover":  {
+                               "effect":  "1374",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimatefireseashroom":  {
+                                        "effect":  "996",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "spawn_tower_sunmine":  {
+                                "effect":  "354",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_gold_melon":  {
+                             "effect":  "1142",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_portal_nut":  {
+                             "effect":  "1215",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_eternalzombie_c":  {
+                                  "effect":  "332",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_jackbox_a":  {
+                            "effect":  "324",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_gold_corn":  {
+                            "effect":  "1139",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_green_gargantuar":  {
+                                   "effect":  "123",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_supergatlingpumpkin":  {
+                                      "effect":  "1407",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_kelp_torch":  {
+                             "effect":  "1056",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_double_puff":  {
+                              "effect":  "1019",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_pickaxe_b":  {
+                            "effect":  "319",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_sword_shieldshroom":  {
+                                     "effect":  "1467",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_firesunshroom_c":  {
+                                  "effect":  "232",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_snow_shield_zombie":  {
+                                     "effect":  "50",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_chickenimp":  {
+                             "effect":  "68",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_cherry_pumpkin":  {
+                                 "effect":  "1164",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "drownpult_zombie":  {
+                             "effect":  "216",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_nuttorch":  {
+                           "effect":  "1282",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_super_fume":  {
+                             "effect":  "1046",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_football_drown":  {
+                                 "effect":  "202",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_catapult_zombie":  {
+                                  "effect":  "31",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_superlevatation":  {
+                                  "effect":  "236",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_blackfootball_c":  {
+                                  "effect":  "305",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_big_pumpkin":  {
+                              "effect":  "1169",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cherry_split":  {
+                               "effect":  "1108",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_sun_chomper":  {
+                              "effect":  "1014",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_zombie_boss2":  {
+                               "effect":  "46",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_blover":  {
+                         "effect":  "22",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_jala_squash_zombie":  {
+                                     "effect":  "116",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_jackbox_c":  {
+                            "effect":  "326",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_helmet":  {
+                         "effect":  "1",
+                         "endpoint":  "/spawnhelmet"
+                     },
+    "spawn_helmetgatling":  {
+                                "effect":  "1306",
+                                "endpoint":  "/spawnplant"
+                            },
+    "restart_lawnmower":  {
+                              "effect":  "1",
+                              "endpoint":  "/restartlawnmowers"
+                          },
+    "spawn_dolphinrider":  {
+                               "effect":  "19",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_magnet_doom":  {
+                              "effect":  "1213",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimatehelmetgatling":  {
+                                        "effect":  "985",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "spawn_mixanim":  {
+                          "effect":  "221",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_super_bomb_thrower":  {
+                                     "effect":  "206",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_corn_nut":  {
+                           "effect":  "1263",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_ultimate_tall_nut":  {
+                                    "effect":  "913",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_nucleardoomcherry":  {
+                                    "effect":  "959",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_bucket_zombie":  {
+                                "effect":  "4",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_sandjackson":  {
+                              "effect":  "64",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_bedrocktallnut":  {
+                                 "effect":  "308",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_projectilezombie":  {
+                                   "effect":  "60",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_plant_repeater":  {
+                                 "effect":  "7",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_pine_furnace":  {
+                               "effect":  "35",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_shulkflower":  {
+                              "effect":  "33",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_starfume":  {
+                           "effect":  "1356",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_super_cherry_shooter_zombie":  {
+                                              "effect":  "102",
+                                              "endpoint":  "/spawnzombie"
+                                          },
+    "spawn_garlicpumpkin":  {
+                                "effect":  "1323",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_torch_spike":  {
+                              "effect":  "1061",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_caltrop_kelp_water":  {
+                                     "effect":  "1237",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_iron_red_gargantuar":  {
+                                      "effect":  "39",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_water_aloes":  {
+                              "effect":  "38",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_scaredy_shroom":  {
+                                 "effect":  "9",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_submarine_c2":  {
+                               "effect":  "314",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_cherry_nut":  {
+                             "effect":  "1003",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_marigold":  {
+                           "effect":  "31",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_wall_nut_zombie":  {
+                                  "effect":  "103",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_doom_peashooter":  {
+                                  "effect":  "1194",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_sunsquash":  {
+                            "effect":  "1351",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_redzombieloonnut":  {
+                                   "effect":  "90",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_snow_gun_zombie":  {
+                                  "effect":  "49",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_starsniper":  {
+                             "effect":  "1429",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_cattail_plant":  {
+                                "effect":  "1067",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_snorkle_zombie":  {
+                                 "effect":  "17",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_fire_fume":  {
+                            "effect":  "1193",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_ice_peach":  {
+                            "effect":  "237",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_doll_silver":  {
+                              "effect":  "23",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_dance_pol_zombie2":  {
+                                    "effect":  "7",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_doom_cactus":  {
+                              "effect":  "1191",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_lantern_chomper":  {
+                                  "effect":  "1241",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_magnetmelon":  {
+                              "effect":  "1314",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_tower_iceblover":  {
+                                  "effect":  "363",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_hypno_puff":  {
+                             "effect":  "1022",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_doomseashroom":  {
+                                "effect":  "1303",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_cabbagecannon":  {
+                                "effect":  "1342",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_cabbagesquash":  {
+                                "effect":  "1378",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_fusion_gatling_pea":  {
+                                     "effect":  "1176",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_bamboo":  {
+                         "effect":  "39",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_obsidian_imp_zombie":  {
+                                      "effect":  "213",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_hurricaneblover":  {
+                                  "effect":  "1420",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_sea_magnet":  {
+                             "effect":  "1101",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_potatosquashbody":  {
+                                   "effect":  "1353",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_curse_peashooter":  {
+                                   "effect":  "3500",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_sun_magnet":  {
+                             "effect":  "1154",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_endo_flame":  {
+                             "effect":  "254",
+                             "endpoint":  "/spawnplant"
+                         },
+    "ultimatefootballdrown":  {
+                                  "effect":  "218",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_portalpolevaulter":  {
+                                    "effect":  "80",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_kirov_c":  {
+                          "effect":  "329",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_waterjackboxjumpzombie":  {
+                                         "effect":  "239",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "spawn_snow_bird":  {
+                            "effect":  "4001",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_elephantzombie_b":  {
+                                   "effect":  "88",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_iron_nut":  {
+                           "effect":  "1029",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_star_fruit":  {
+                             "effect":  "23",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_lanternrepeater":  {
+                                  "effect":  "1381",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ice_puff":  {
+                           "effect":  "1035",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_iron_balloon_zombie2":  {
+                                       "effect":  "25",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_fusion_doom_shroom":  {
+                                     "effect":  "1176",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_garlic":  {
+                         "effect":  "29",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_sea_lantern":  {
+                              "effect":  "1078",
+                              "endpoint":  "/spawnplant"
+                          },
+    "drownpult_c":  {
+                        "effect":  "335",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_chomper":  {
+                          "effect":  "5",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_cherry_nut_zombie":  {
+                                    "effect":  "107",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_door_zombie":  {
+                              "effect":  "8",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_squash_zombie":  {
+                                "effect":  "115",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_ultimate_big_gatling":  {
+                                       "effect":  "927",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_super_dance_pol_zombie":  {
+                                         "effect":  "217",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "kill_all_zombies":  {
+                             "effect":  "1",
+                             "endpoint":  "/killallzombies"
+                         },
+    "spawn_i_f_v_iron_puff":  {
+                                  "effect":  "942",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_cactuscaltrop":  {
+                                "effect":  "1415",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimate_star_torch":  {
+                                      "effect":  "948",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_firecabbage":  {
+                              "effect":  "1398",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_garlic_corn":  {
+                              "effect":  "1117",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_meteor":  {
+                         "effect":  "1",
+                         "endpoint":  "/spawnmeteor"
+                     },
+    "spawn_tall_fire_nut":  {
+                                "effect":  "1073",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_fire_gloom":  {
+                             "effect":  "1071",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_super_gatling":  {
+                                "effect":  "1168",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_puffsquash":  {
+                             "effect":  "1370",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_quick_jackson_zombie":  {
+                                       "effect":  "207",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_ultimate_spruce":  {
+                                  "effect":  "947",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_ice_cannon":  {
+                             "effect":  "1123",
+                             "endpoint":  "/spawnplant"
+                         },
+    "drown_a":  {
+                    "effect":  "315",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_jalacorn":  {
+                           "effect":  "1400",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_pickaxe_star":  {
+                               "effect":  "1095",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_potato_puff":  {
+                              "effect":  "1170",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_zombieendoflame":  {
+                                  "effect":  "228",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_three_squash":  {
+                               "effect":  "1047",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_sniper_lily":  {
+                              "effect":  "1473",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ice_claw_zombie":  {
+                                  "effect":  "227",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_sea_pot":  {
+                          "effect":  "1460",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_hypno_pumpkin":  {
+                                "effect":  "1205",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_lanternpea":  {
+                             "effect":  "1373",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimate_machine_nut_zombie":  {
+                                              "effect":  "219",
+                                              "endpoint":  "/spawnzombie"
+                                          },
+    "spawn_fusion_jackson":  {
+                                 "effect":  "1176",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "remove_lawnmower":  {
+                             "effect":  "1",
+                             "endpoint":  "/deletelawnmowers"
+                         },
+    "spawn_tumble_lichen":  {
+                                "effect":  "1475",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_cactus_pumpkin":  {
+                                 "effect":  "1088",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_potato_nut":  {
+                             "effect":  "1010",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_super_pumpkin":  {
+                                "effect":  "1110",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimatesunnut":  {
+                                 "effect":  "963",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_garlicpea":  {
+                            "effect":  "1385",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_hypnojalapeno":  {
+                                "effect":  "1336",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_garlicthreepeater":  {
+                                    "effect":  "1328",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_dolphin_pea_zombie":  {
+                                     "effect":  "113",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_fume_shroom":  {
+                              "effect":  "7",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_tower_starnut":  {
+                                "effect":  "353",
+                                "endpoint":  "/spawnplant"
+                            },
+    "drownpult_a":  {
+                        "effect":  "333",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_solar_pot":  {
+                            "effect":  "936",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_lanternsplit":  {
+                               "effect":  "1382",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_zombie_regular":  {
+                                 "effect":  "0",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_flagfootball":  {
+                               "effect":  "66",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_magnet_blover":  {
+                                "effect":  "1102",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_nut_blover":  {
+                             "effect":  "1255",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_hypnorepeater":  {
+                                "effect":  "1268",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_cattail_girl":  {
+                               "effect":  "252",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_snow_pea_shooter":  {
+                                   "effect":  "1034",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_ice_scaredy_shroom":  {
+                                     "effect":  "1038",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_jalakelp":  {
+                           "effect":  "1049",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_bloverpot":  {
+                            "effect":  "1437",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_swordshroom":  {
+                              "effect":  "42",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_jala_torch":  {
+                             "effect":  "1053",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_laser_umbrella":  {
+                                 "effect":  "937",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_squalour_zombie":  {
+                                  "effect":  "133",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_doom_shroom":  {
+                              "effect":  "11",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_paper_zombie":  {
+                               "effect":  "5",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_whitefootball":  {
+                                "effect":  "78",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_superthreepeater_sp":  {
+                                      "effect":  "999",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_plant_cherry_bomb":  {
+                                    "effect":  "2",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_ultimateicedoom":  {
+                                  "effect":  "981",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_super_machine_nut_zombie":  {
+                                           "effect":  "210",
+                                           "endpoint":  "/spawnzombie"
+                                       },
+    "spawn_ultimate_football_zombie":  {
+                                           "effect":  "220",
+                                           "endpoint":  "/spawnzombie"
+                                       },
+    "spawn_magnet_star":  {
+                              "effect":  "1093",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_threepumpkin":  {
+                               "effect":  "1435",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_diamond_potato_nut":  {
+                                     "effect":  "234",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_pumpiner":  {
+                           "effect":  "1410",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_small_puff":  {
+                             "effect":  "6",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_eternalzombie_a":  {
+                                  "effect":  "330",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_solarsunflower":  {
+                                 "effect":  "304",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimateswordzombie":  {
+                                      "effect":  "244",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_silver_corn":  {
+                              "effect":  "1138",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_driver_c":  {
+                           "effect":  "323",
+                           "endpoint":  "/spawnzombie"
+                       },
+    "spawn_tower_squashnut":  {
+                                  "effect":  "13",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_iron_pumpkin":  {
+                               "effect":  "1097",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_gold_cabbage":  {
+                               "effect":  "1135",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_silver_umbrella":  {
+                                  "effect":  "1143",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_drowngargantuar":  {
+                                  "effect":  "76",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "zombie_duck":  {
+                        "effect":  "11",
+                        "endpoint":  "/spawnzombie"
+                    },
+    "spawn_melonpumpkin":  {
+                               "effect":  "1352",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jackson_driver_boss":  {
+                                      "effect":  "261",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_hypno_mine":  {
+                             "effect":  "1231",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_iron_balloon_zombie":  {
+                                      "effect":  "29",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_ultimate_fume":  {
+                                "effect":  "904",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_magnet_cactus":  {
+                                "effect":  "1103",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_treasuremine":  {
+                               "effect":  "1296",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_snow_monster_zombie":  {
+                                      "effect":  "56",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_portal_plant":  {
+                               "effect":  "214",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_chompersquash":  {
+                                "effect":  "1390",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_ultimate_holy_star":  {
+                                     "effect":  "311",
+                                     "endpoint":  "/spawnplant"
+                                 },
+    "spawn_silver_hypno_shroom":  {
+                                      "effect":  "1449",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_melonpult":  {
+                            "effect":  "32",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_pea_sun_flower":  {
+                                 "effect":  "1000",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_garlic_fume":  {
+                              "effect":  "1172",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_firecracker":  {
+                              "effect":  "222",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_doomcorn":  {
+                           "effect":  "1411",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_superjalanut":  {
+                               "effect":  "968",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_sun_gatling_puff":  {
+                                   "effect":  "929",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_legion":  {
+                         "effect":  "4000",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_three_fume":  {
+                             "effect":  "1472",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_thorns_furnace":  {
+                                 "effect":  "1480",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_icemine":  {
+                          "effect":  "1401",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_doom_nut":  {
+                           "effect":  "1236",
+                           "endpoint":  "/spawnplant"
+                       },
+    "free_plants_off":  {
+                            "effect":  "0",
+                            "endpoint":  "/unlimitedsun"
+                        },
+    "spawn_jalapeashooter":  {
+                                 "effect":  "1319",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_sunstar":  {
+                          "effect":  "1307",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_ice_spike_rock":  {
+                                 "effect":  "1074",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_scared_sun_plant":  {
+                                   "effect":  "1246",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_sword_furnace":  {
+                                "effect":  "1482",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_black_football":  {
+                                 "effect":  "204",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_snowmonsterrider":  {
+                                   "effect":  "238",
+                                   "endpoint":  "/spawnzombie"
+                               },
+    "spawn_ultimatepuff":  {
+                               "effect":  "0",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_ultimateseashroom":  {
+                                    "effect":  "960",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_corn_cabbage":  {
+                               "effect":  "1113",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_magnetshroom":  {
+                               "effect":  "25",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_fire_squash":  {
+                              "effect":  "1057",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_squash":  {
+                         "effect":  "13",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_jaladoubleshooter":  {
+                                    "effect":  "1320",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_mecha":  {
+                        "effect":  "1",
+                        "endpoint":  "/spawnmecha"
+                    },
+    "start_lawnmower":  {
+                            "effect":  "1",
+                            "endpoint":  "/startlawnmowers"
+                        },
+    "spawn_hypno_queen":  {
+                              "effect":  "917",
+                              "endpoint":  "/spawnplant"
+                          },
+    "hypnocattailgirl":  {
+                             "effect":  "993",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_pea_shooter_zombie":  {
+                                     "effect":  "100",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_ladder_zombie":  {
+                                "effect":  "33",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_ultimatejalapuff":  {
+                                   "effect":  "990",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_blower_pumpkin":  {
+                                 "effect":  "1091",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "x100_demage":  {
+                        "effect":  "10",
+                        "endpoint":  "/zombiesx100demage"
+                    },
+    "spawn_ultimatehypnodoom":  {
+                                    "effect":  "305",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_super_chomper":  {
+                                "effect":  "1013",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_jackbox_zombie":  {
+                                 "effect":  "24",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_hypnocattailgirl":  {
+                                   "effect":  "993",
+                                   "endpoint":  "/spawnplant"
+                               },
+    "spawn_ultimate_melon":  {
+                                 "effect":  "914",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_doom_sunflower":  {
+                                 "effect":  "1248",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_cherrysquash":  {
+                               "effect":  "1344",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_doom_pot":  {
+                           "effect":  "1454",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_zombieloonnut":  {
+                                "effect":  "89",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_ultimatesnowgatlingpuff":  {
+                                          "effect":  "987",
+                                          "endpoint":  "/spawnplant"
+                                      },
+    "spawn_doom_torch":  {
+                             "effect":  "1199",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_drown_a":  {
+                          "effect":  "315",
+                          "endpoint":  "/spawnzombie"
+                      },
+    "spawn_submarine_c":  {
+                              "effect":  "313",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_gold_hypno_shroom":  {
+                                    "effect":  "1450",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_lost_snow_monster":  {
+                                    "effect":  "96",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_bucket_doom":  {
+                              "effect":  "1239",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_cornpult":  {
+                           "effect":  "28",
+                           "endpoint":  "/spawnplant"
+                       },
+    "dolphinrider":  {
+                         "effect":  "19",
+                         "endpoint":  "/spawnzombie"
+                     },
+    "spawn_threekelp":  {
+                            "effect":  "1051",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_silver_pot":  {
+                             "effect":  "1136",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_ultimatecattail":  {
+                                  "effect":  "958",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_gargantuar":  {
+                             "effect":  "35",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_sniper_scaredy":  {
+                                 "effect":  "1448",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "drown_gargantuar":  {
+                             "effect":  "76",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "spawn_ultimate_jackbox_zombie":  {
+                                          "effect":  "224",
+                                          "endpoint":  "/spawnzombie"
+                                      },
+    "spawn_cabbage_puff":  {
+                               "effect":  "1281",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_drownpult_b":  {
+                              "effect":  "334",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_iron_pea_door_zombie":  {
+                                       "effect":  "114",
+                                       "endpoint":  "/spawnzombie"
+                                   },
+    "spawn_ultimate_gloom":  {
+                                 "effect":  "910",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_hypnopot":  {
+                           "effect":  "1380",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_doommelon":  {
+                            "effect":  "1408",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_star_puff":  {
+                            "effect":  "1183",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_fire_spike_rock":  {
+                                  "effect":  "1075",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_elite_paper_zombie":  {
+                                     "effect":  "15",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_fire_cattail":  {
+                               "effect":  "1069",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_super_submarine":  {
+                                  "effect":  "200",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_big_spike_rock":  {
+                                 "effect":  "1487",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_jackson_c":  {
+                            "effect":  "309",
+                            "endpoint":  "/spawnzombie"
+                        },
+    "spawn_meloncaltrop":  {
+                               "effect":  "1418",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_bungi_zombie":  {
+                               "effect":  "45",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_tower_cherryshooter":  {
+                                      "effect":  "352",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_scaredy_hypno":  {
+                                "effect":  "1024",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_cherry_jalapeno":  {
+                                  "effect":  "1179",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_fusion_zomboni":  {
+                                 "effect":  "1176",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_fume_chomper":  {
+                               "effect":  "1458",
+                               "endpoint":  "/spawnplant"
+                           },
+    "zomboss":  {
+                    "effect":  "44",
+                    "endpoint":  "/spawnzombie"
+                },
+    "spawn_legion_zombie":  {
+                                "effect":  "226",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_gatling_doom_scaredy":  {
+                                       "effect":  "930",
+                                       "endpoint":  "/spawnplant"
+                                   },
+    "spawn_ice_caltrop":  {
+                              "effect":  "1180",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_peashooter":  {
+                             "effect":  "0",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_fire_nut":  {
+                           "effect":  "1235",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_shield_lichen":  {
+                                "effect":  "1477",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_sword_lichen":  {
+                               "effect":  "1476",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_jackson_zombie":  {
+                                 "effect":  "10",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_hypno_magnet":  {
+                               "effect":  "1157",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_cactus_squash":  {
+                                "effect":  "1463",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_potatosquash":  {
+                               "effect":  "1354",
+                               "endpoint":  "/spawnplant"
+                           },
+    "spawn_hypnojalapenopickaxezombie":  {
+                                             "effect":  "75",
+                                             "endpoint":  "/spawnzombie"
+                                         },
+    "spawn_iron_pea":  {
+                           "effect":  "1020",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_icecorn":  {
+                          "effect":  "1376",
+                          "endpoint":  "/spawnplant"
+                      },
+    "spawn_big_gatling":  {
+                              "effect":  "1161",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_tower_scaredyfume":  {
+                                    "effect":  "362",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_doll_diamond":  {
+                               "effect":  "21",
+                               "endpoint":  "/spawnzombie"
+                           },
+    "spawn_lantern_magnet":  {
+                                 "effect":  "1100",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_obsidian_wall_nut":  {
+                                    "effect":  "931",
+                                    "endpoint":  "/spawnplant"
+                                },
+    "spawn_super_kelp":  {
+                             "effect":  "1066",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_wall_nut":  {
+                           "effect":  "3",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_ultimate_corn":  {
+                                "effect":  "943",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_scaredypot":  {
+                             "effect":  "1357",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_lily_pad":  {
+                           "effect":  "12",
+                           "endpoint":  "/spawnplant"
+                       },
+    "spawn_kelp_mine_land":  {
+                                 "effect":  "1232",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_sunjalapeno":  {
+                              "effect":  "1308",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_ultimate_gargantuar":  {
+                                      "effect":  "212",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_bucket_nut_zombie":  {
+                                    "effect":  "106",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_silver_garlic":  {
+                                "effect":  "1145",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_jala_mine":  {
+                            "effect":  "1163",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_super_pogo_zombie":  {
+                                    "effect":  "34",
+                                    "endpoint":  "/spawnzombie"
+                                },
+    "spawn_hypnopeashooter":  {
+                                  "effect":  "1267",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_shield_furnace":  {
+                                 "effect":  "1483",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "cattail_girl":  {
+                         "effect":  "252",
+                         "endpoint":  "/spawnplant"
+                     },
+    "spawn_ultimatesungatlingpuff":  {
+                                         "effect":  "988",
+                                         "endpoint":  "/spawnplant"
+                                     },
+    "spawn_blover_umbrella":  {
+                                  "effect":  "1204",
+                                  "endpoint":  "/spawnplant"
+                              },
+    "spawn_silver_doom":  {
+                              "effect":  "1251",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_gatlingpaper_a":  {
+                                 "effect":  "324",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_cherry_bomb":  {
+                              "effect":  "2",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_snorkel_zombie":  {
+                                 "effect":  "17",
+                                 "endpoint":  "/spawnzombie"
+                             },
+    "spawn_new_year_zombie":  {
+                                  "effect":  "48",
+                                  "endpoint":  "/spawnzombie"
+                              },
+    "spawn_spruce_furnace":  {
+                                 "effect":  "1223",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_flying_three_peater":  {
+                                      "effect":  "962",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "seed_rain":  {
+                      "effect":  "10",
+                      "endpoint":  "/seedrain"
+                  },
+    "spawn_bucket_zombie_duck":  {
+                                     "effect":  "13",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_dolphin_gatling_zombie":  {
+                                         "effect":  "214",
+                                         "endpoint":  "/spawnzombie"
+                                     },
+    "spawn_imp_zombie":  {
+                             "effect":  "37",
+                             "endpoint":  "/spawnzombie"
+                         },
+    "ultimate_gold_gargantuar":  {
+                                     "effect":  "241",
+                                     "endpoint":  "/spawnzombie"
+                                 },
+    "spawn_zombie_duck":  {
+                              "effect":  "11",
+                              "endpoint":  "/spawnzombie"
+                          },
+    "spawn_fire_sniper":  {
+                              "effect":  "1167",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_hamburger":  {
+                            "effect":  "243",
+                            "endpoint":  "/spawnplant"
+                        },
+    "spawn_cherry_paper_zombie":  {
+                                      "effect":  "104",
+                                      "endpoint":  "/spawnzombie"
+                                  },
+    "spawn_water_shulk":  {
+                              "effect":  "1218",
+                              "endpoint":  "/spawnplant"
+                          },
+    "spawn_fire_melon":  {
+                             "effect":  "1149",
+                             "endpoint":  "/spawnplant"
+                         },
+    "spawn_lantern_cactus":  {
+                                 "effect":  "1079",
+                                 "endpoint":  "/spawnplant"
+                             },
+    "spawn_ultimate_present_kelp":  {
+                                        "effect":  "5003",
+                                        "endpoint":  "/spawnplant"
+                                    },
+    "free_cooldown":  {
+                          "effect":  "10",
+                          "endpoint":  "/freecooldown"
+                      },
+    "spawn_machine_shard_plant":  {
+                                      "effect":  "215",
+                                      "endpoint":  "/spawnplant"
+                                  },
+    "spawn_plant_wallnut":  {
+                                "effect":  "3",
+                                "endpoint":  "/spawnplant"
+                            },
+    "spawn_football_boss":  {
+                                "effect":  "260",
+                                "endpoint":  "/spawnzombie"
+                            },
+    "spawn_peascaredy":  {
+                             "effect":  "1425",
+                             "endpoint":  "/spawnplant"
+                         }
+}

@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion 4.0 - Live Stream Cards Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="socket.io.min.js"></script>
+    <script>
+        if (typeof io === 'undefined') {
+            document.write('<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"><\/script>');
+        }
+    </script>
+    <script src="cards-data.js"></script>
+    <style>
+        :root {
+            --zoom-level: 1;
+            --bg-color1: #0a0015;
+            --bg-color2: #1a0030;
+            --bg-color3: #0d001a;
+            --bg-speed: 12s;
+            --particle-count: 30;
+            --card-opacity: 0.95;
+            --overlay-border-color: #23272e;
+            --overlay-border-glow: 0 8px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 6px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* ==================== CUSTOMIZABLE BACKGROUND (overlay-only) ==================== */
+        .bg-gradient-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transition: opacity 0.4s ease;
+            border-radius: 11px;
+            pointer-events: none;
+        }
+
+        .bg-gradient-layer.animated {
+            background: linear-gradient(135deg, var(--bg-color1), var(--bg-color2), var(--bg-color3), var(--bg-color1));
+            background-size: 400% 400%;
+            animation: bgShift var(--bg-speed) ease infinite;
+        }
+
+        .bg-gradient-layer.static {
+            background: linear-gradient(135deg, var(--bg-color1), var(--bg-color2), var(--bg-color3));
+        }
+
+        .bg-gradient-layer.solid {
+            background: var(--bg-color1);
+        }
+
+        .bg-gradient-layer.image-bg {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 11px;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ==================== SETTINGS PANEL ==================== */
+        .bg-settings-btn {
+            position: fixed;
+            bottom: 14px;
+            right: 14px;
+            z-index: 9999;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(30, 30, 45, 0.85);
+            border: 1.5px solid #555;
+            color: #ccc;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+        .bg-settings-btn:hover {
+            background: rgba(60, 40, 120, 0.95);
+            color: #fff;
+            border-color: #a855f7;
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.5);
+        }
+
+        .bg-settings-panel {
+            position: fixed;
+            bottom: 60px;
+            right: 14px;
+            z-index: 9998;
+            background: rgba(16, 14, 28, 0.97);
+            border: 1.5px solid #3b3065;
+            border-radius: 14px;
+            padding: 18px 16px;
+            min-width: 280px;
+            max-width: 320px;
+            color: #e0e0e0;
+            font-size: 12px;
+            display: none;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 20px rgba(120, 60, 200, 0.15);
+            animation: panelSlideIn 0.25s ease;
+        }
+        .bg-settings-panel.open { display: block; }
+
+        @keyframes panelSlideIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .bg-settings-panel h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .bg-setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        .bg-setting-row label {
+            font-size: 11.5px;
+            color: #b0a8c8;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        .bg-setting-row input[type="color"] {
+            width: 32px;
+            height: 26px;
+            border: 1.5px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            padding: 1px;
+        }
+        .bg-setting-row input[type="range"] {
+            width: 100px;
+            accent-color: #a855f7;
+            cursor: pointer;
+        }
+        .bg-setting-row select {
+            background: #1e1b2e;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            outline: none;
+        }
+        .bg-setting-row select:focus { border-color: #a855f7; }
+
+        .bg-preset-row {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .bg-preset-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+        .bg-preset-swatch:hover {
+            border-color: #fff;
+            transform: scale(1.15);
+            box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+        .bg-preset-swatch.active {
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+        }
+
+        .bg-btn-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .bg-btn-row button {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #444;
+            border-radius: 7px;
+            background: #1e1b2e;
+            color: #ccc;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .bg-btn-row button:hover {
+            background: #a855f7;
+            color: #fff;
+            border-color: #a855f7;
+        }
+        .bg-btn-row button.danger:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Master container that holds both cards and controls, scaling them together to fit screen */
+        .overlay-master-container {
+            display: inline-block;
+            transform-origin: top left;
+            transform: scale(var(--zoom-level, 1));
+            transition: transform 0.12s ease-out;
+            max-width: 100%;
+        }
+
+        /* Outer board matching StreamToEarn style */
+        .overlay-wrapper {
+            display: inline-block;
+            background: rgba(14, 16, 20, 0.96);
+            padding: 5px;
+            border-radius: 13px;
+            box-shadow: var(--overlay-border-glow, 0 8px 30px rgba(0, 0, 0, 0.9));
+            border: 2px solid var(--overlay-border-color, #23272e);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overlay-wrapper .items {
+            position: relative;
+            z-index: 3;
+        }
+
+        /* 7-column layout - Compact so all 7 columns fit into 700px-800px without being cropped */
+        .items {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-columns, 12), 96px);
+            gap: 5px;
+        }
+
+        /* Event card container with distinct neon borders matching streamer setup */
+        .event-border {
+            border-radius: 10px;
+            padding: 2px;
+            display: flex;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.16s ease, filter 0.16s ease;
+            background: rgba(20, 23, 26, var(--card-opacity, 0.95));
+            backdrop-filter: blur(4px);
+        }
+
+        .border-red {
+            border: 2px solid #ff2b56;
+            box-shadow: 0 0 7px rgba(255, 43, 86, 0.5);
+        }
+
+        .border-blue {
+            border: 2px solid #00d2ff;
+            box-shadow: 0 0 7px rgba(0, 210, 255, 0.5);
+        }
+
+        .border-white {
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+        }
+
+        .event-border:hover {
+            transform: translateY(-2px) scale(1.03);
+            filter: brightness(1.15);
+        }
+
+        /* Flash animation when donated */
+        .event-border.donated {
+            transform: scale(1.08);
+            border-color: #fffa65 !important;
+            box-shadow: 0 0 25px #fffa65, 0 0 40px #ffffff !important;
+        }
+
+        /* Inner card body */
+        .event {
+            background: rgba(25, 28, 32, var(--card-opacity, 0.95));
+            border-radius: 7px;
+            padding: 3px 4px;
+            width: 100%;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Left Side: Plant / Zombie Image */
+        .function-image-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 50%;
+            height: 100%;
+        }
+
+        .function-icon {
+            max-height: 92%;
+            max-width: 92%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+            pointer-events: none;
+        }
+
+        .repetition {
+            display: none !important;
+        }
+
+        /* Right Side: TikTok Trigger / Gift */
+        .trigger-img-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 50%;
+            height: 100%;
+        }
+
+        .trigger-icon {
+            max-height: 88%;
+            max-width: 88%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+            pointer-events: none;
+        }
+
+        /* ==========================================================
+           TOP-RIGHT PURPLE DONATION COUNTER BADGE
+           Matches requested pill style: purple fill + white border
+           ========================================================== */
+        .donation-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #7c1256, #580d3d);
+            border: 1.8px solid #ffffff;
+            color: #ffffff;
+            font-family: "Arial Black", Impact, sans-serif;
+            font-weight: 900;
+            font-size: 0.74rem;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 5px rgba(255, 0, 128, 0.5);
+            z-index: 20;
+            pointer-events: none;
+            letter-spacing: -0.2px;
+            transition: transform 0.15s ease;
+        }
+
+        .donation-badge.pop-animate {
+            animation: popBadge 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); background: #ff007f; }
+            100% { transform: scale(1); }
+        }
+
+        /* Streamer Control Panel on bottom */
+        .streamer-controls {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(18, 20, 24, 0.96);
+            border: 1.5px solid #2d323c;
+            border-radius: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: fit-content;
+            max-width: 100%;
+            box-sizing: border-box;
+            color: #e0e0e0;
+            font-size: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .streamer-controls button {
+            background: #252a32;
+            color: #ffffff;
+            border: 1px solid #444c5a;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .streamer-controls button:hover {
+            background: #00c8ff;
+            color: #000;
+            border-color: #00c8ff;
+            transform: translateY(-1px);
+        }
+
+        .streamer-controls button.btn-trigger {
+            background: #181c22;
+            border-color: #383f4d;
+            color: #eceff4;
+        }
+
+        .streamer-controls button.btn-trigger:hover {
+            background: #ff2b56;
+            color: #ffffff;
+            border-color: #ff2b56;
+            box-shadow: 0 0 8px rgba(255, 43, 86, 0.6);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffaa00;
+            display: inline-block;
+            box-shadow: 0 0 6px #ffaa00;
+        }
+
+        .status-dot.connected {
+            background: #00f076;
+            box-shadow: 0 0 8px #00f076;
+        }
+
+        .hide-controls .streamer-controls {
+            display: none !important;
+        }
+
+        .hide-controls .bg-settings-btn,
+        .hide-controls .bg-settings-panel {
+            display: none !important;
+        }
+
+        /* ==================== SPLIT OVERLAY MODAL & TEAMS ==================== */
+        .split-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .split-modal-backdrop.open {
+            display: flex;
+        }
+
+        .split-modal {
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            width: 94%;
+            max-width: 620px;
+            padding: 20px 22px;
+            color: #f4f4f5;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.2s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .split-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .split-modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .split-modal-close {
+            background: none;
+            border: none;
+            color: #71717a;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .split-modal-close:hover {
+            color: #ffffff;
+            background: #27272a;
+        }
+
+        .split-section {
+            margin-bottom: 18px;
+        }
+
+        .split-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .split-url-input {
+            flex: 1;
+            background: #09090b;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            padding: 7px 10px;
+            color: #a1a1aa;
+            font-size: 11.5px;
+            outline: none;
+            min-width: 120px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .split-select {
+            background: #09090b;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            padding: 7px 8px;
+            color: #f4f4f5;
+            font-size: 11.5px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .split-copy-btn {
+            background: #0084ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .split-copy-btn:hover {
+            background: #0070d6;
+            transform: translateY(-1px);
+        }
+
+        .split-preview-box {
+            background: #0e0e11;
+            border: 1px solid #242429;
+            border-radius: 8px;
+            min-height: 86px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .split-mini-card {
+            position: relative;
+            background: #17181c;
+            border: 1.5px solid #2d3139;
+            border-radius: 6px;
+            padding: 2px 4px;
+            height: 38px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .split-mini-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #7c1256, #580d3d);
+            border: 1.2px solid #ffffff;
+            color: #ffffff;
+            font-family: "Arial Black", Impact, sans-serif;
+            font-size: 7.5px;
+            font-weight: 900;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .split-mini-card img {
+            max-height: 26px;
+            max-width: 20px;
+            object-fit: contain;
+        }
+
+        .team-badge-header {
+            display: none;
+            font-family: Impact, "Arial Black", sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+        }
+
+        .team-plants {
+            background: linear-gradient(135deg, #15803d, #166534);
+            color: #dcfce7;
+            border: 1.5px solid #4ade80;
+        }
+
+        .team-zombies {
+            background: linear-gradient(135deg, #7e22ce, #581c87);
+            color: #f3e8ff;
+            border: 1.5px solid #c084fc;
+        }
+    </style>
+</head>
+<body onclick="window.focus()">
+
+<!-- Settings Gear Button -->
+<button class="bg-settings-btn" id="bgSettingsBtn" title="Background Settings">⚙</button>
+
+<!-- Settings Panel -->
+<div class="bg-settings-panel" id="bgSettingsPanel">
+    <h3>🎨 Overlay Background Settings</h3>
+
+    <div class="bg-setting-row">
+        <label>Type</label>
+        <select id="bgType">
+            <option value="none">Default Dark</option>
+            <option value="animated">Animated Gradient</option>
+            <option value="static">Static Gradient</option>
+            <option value="solid">Solid Color</option>
+            <option value="image">Custom Image URL</option>
+        </select>
+    </div>
+
+    <div class="bg-setting-row" id="imgUrlRow" style="display:none;">
+        <label>Image URL</label>
+        <input type="text" id="bgImageUrl" placeholder="https://... or images/bg.png" style="width:170px;background:#1e1b2e;color:#fff;border:1px solid #444;border-radius:6px;padding:3px 6px;font-size:11px;">
+    </div>
+
+    <div class="bg-setting-row" id="colorsRow">
+        <label>Colors</label>
+        <div style="display:flex;gap:4px;">
+            <input type="color" id="bgColor1" value="#0a0015" title="Color 1">
+            <input type="color" id="bgColor2" value="#1a0030" title="Color 2">
+            <input type="color" id="bgColor3" value="#0d001a" title="Color 3">
+        </div>
+    </div>
+
+    <label style="font-size:11px;color:#b0a8c8;font-weight:600;margin-bottom:4px;display:block;">Presets</label>
+    <div class="bg-preset-row" id="bgPresets"></div>
+
+    <div class="bg-setting-row">
+        <label>Speed</label>
+        <input type="range" id="bgSpeed" min="3" max="30" value="12">
+        <span id="bgSpeedVal" style="font-size:10px;color:#888;width:28px;">12s</span>
+    </div>
+
+    <div class="bg-setting-row">
+        <label>Particles</label>
+        <select id="bgParticles">
+            <option value="0">None</option>
+            <option value="15">Few (15)</option>
+            <option value="30" selected>Normal (30)</option>
+            <option value="60">Many (60)</option>
+            <option value="100">Heavy (100)</option>
+        </select>
+    </div>
+
+    <div class="bg-setting-row">
+        <label>Particle Glow</label>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <input type="color" id="particleColor" value="#a855f7" title="Particle Color">
+            <input type="range" id="particleGlow" min="0" max="20" value="8" style="width:75px;" title="Particle Glow">
+        </div>
+    </div>
+
+    <div class="bg-setting-row">
+        <label>Card Style</label>
+        <input type="range" id="cardOpacity" min="50" max="100" value="95" style="width:85px;" title="Card Opacity">
+        <span id="cardOpacityVal" style="font-size:10px;color:#888;width:32px;">95%</span>
+    </div>
+
+    <div class="bg-setting-row">
+        <label>Overlay Glow</label>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <input type="color" id="borderColor" value="#23272e" title="Border / Glow Color">
+            <input type="range" id="borderGlow" min="0" max="35" value="0" style="width:65px;" title="Glow Size">
+            <span id="borderGlowVal" style="font-size:10px;color:#888;width:24px;">0px</span>
+        </div>
+    </div>
+
+    <div class="bg-btn-row">
+        <button onclick="resetBgSettings()" class="danger">Reset</button>
+        <button onclick="saveBgSettings()">💾 Save</button>
+    </div>
+    <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <button onclick="copyTikTokStudioLink()" id="btnCopyTikTokLink" style="width: 100%; padding: 8px 10px; background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; border: none; border-radius: 7px; font-weight: 700; cursor: pointer; font-size: 11.5px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 10px rgba(0, 242, 254, 0.3); transition: all 0.2s ease;">
+            📋 Copy Link for TikTok Studio
+        </button>
+        <button onclick="openSplitModal()" style="width: 100%; padding: 7px 10px; background: #27272a; color: #c084fc; border: 1px solid #493b6e; border-radius: 7px; font-weight: 700; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            ⚡ Split Overlay (Teams)
+        </button>
+    </div>
+</div>
+
+<div class="overlay-master-container" id="overlayMasterContainer">
+<div class="overlay-wrapper" id="s2eOverlay">
+    <!-- Background Layers (inside overlay only) -->
+    <div class="bg-gradient-layer" id="bgGradient"></div>
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Team Headers (visible when in split mode) -->
+    <div class="team-badge-header team-plants" id="teamHeaderPlants">🌿 TEAM PLANTS (Split 1)</div>
+    <div class="team-badge-header team-zombies" id="teamHeaderZombies">🧟 TEAM ZOMBIES (Split 2)</div>
+
+    <div class="items" id="cardsGrid">
+        <!-- Dynamically rendered from cards.json (all 57+ cards) -->
+    </div>
+</div>
+
+<!-- Streamer Quick Test & Control Bar (All 17 Triggers) -->
+<div class="streamer-controls">
+    <!-- Utility & Status Bar -->
+    <div class="controls-row" style="border-bottom: 1px solid #282d37; padding-bottom: 6px; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-dot" id="liveDot"></span>
+            <span id="liveStatus" style="font-weight: bold; font-size: 12px;">Connecting to StreamToEarn...</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <button onclick="donateRandom()" style="background: #1f334d; border-color: #00d2ff; color: #00d2ff;">🎲 +1 Random</button>
+            <button onclick="openSplitModal()" style="background: #2b1f4d; border-color: #a855f7; color: #c084fc;">⚡ Split Overlay</button>
+            <button onclick="adjustZoom(-0.05)" title="Press [ or - to make smaller">🔍 [-]</button>
+            <button onclick="adjustZoom(0.05)" title="Press ] or + to make bigger">🔍 [+]</button>
+            <button onclick="setZoom(1)">100%</button>
+            <span id="zoomDisplay" style="opacity: 0.85; font-size: 11px; font-weight: bold;">100%</span>
+            <button onclick="resetAll()">🔄 Reset All (R)</button>
+            <button onclick="document.body.classList.toggle('hide-controls'); setTimeout(autoFitOverlay, 30);">👁️ Hide Controls (H)</button>
+        </div>
+    </div>
+
+    <!-- Dynamic Trigger Buttons Container (Organized into neat rows matching cards) -->
+    <div id="controlsTriggersContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; padding-right: 2px;">
+    </div>
+</div>
+</div>
+
+<script src="cards-data.js"></script>
+<script>
+    // =========================================================================
+    // ZOOM, SCALING & RESPONSIVE AUTO-FIT MANAGEMENT
+    // =========================================================================
+    let currentZoom = 1;
+
+    // Check URL parameters (e.g. ?zoom=0.9 or ?scale=0.85)
+    try {
+        const params = new URLSearchParams(window.location.search || (window.location.hash ? window.location.hash.replace(/^#\??/, '?') : ''));
+        const urlZoom = parseFloat(params.get('zoom') || params.get('scale'));
+        if (urlZoom && urlZoom >= 0.3 && urlZoom <= 2.5) {
+            currentZoom = urlZoom;
+        }
+    } catch(e) {}
+
+    function applyZoom() {
+        document.documentElement.style.setProperty('--zoom-level', currentZoom);
+        const display = document.getElementById('zoomDisplay');
+        if (display) {
+            display.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+    }
+
+    function adjustZoom(delta) {
+        currentZoom = Math.min(2.0, Math.max(0.3, Math.round((currentZoom + delta) * 100) / 100));
+        applyZoom();
+    }
+
+    function setZoom(val) {
+        currentZoom = val;
+        applyZoom();
+    }
+
+    // Auto-fits the overlay to the browser source width (e.g. TikTok Studio 800px)
+    function autoFitOverlay() {
+        const wrapper = document.getElementById('s2eOverlay');
+        if (!wrapper) return;
+
+        const params = new URLSearchParams(window.location.search || (window.location.hash ? window.location.hash.replace(/^#\??/, '?') : ''));
+        const urlZoom = parseFloat(params.get('zoom') || params.get('scale'));
+        if (urlZoom && urlZoom >= 0.3 && urlZoom <= 2.5) {
+            currentZoom = urlZoom;
+            applyZoom();
+            return;
+        }
+
+        // Available viewport width inside TikTok LIVE Studio (leave margin for padding)
+        const availWidth = window.innerWidth - 14;
+        if (availWidth <= 120) return;
+
+        // Temporarily set to 1 to measure unscaled width
+        document.documentElement.style.setProperty('--zoom-level', '1');
+
+        const overlayWidth = wrapper.offsetWidth || 918;
+        const controls = document.querySelector('.streamer-controls');
+        let controlsWidth = 0;
+        if (controls && !document.body.classList.contains('hide-controls') && window.getComputedStyle(controls).display !== 'none') {
+            controlsWidth = controls.offsetWidth || 0;
+        }
+
+        const naturalWidth = Math.max(overlayWidth, controlsWidth);
+
+        if (naturalWidth > availWidth) {
+            // Window is narrower than overlay, scale down to fit 100% without cropping
+            const fitScale = Math.max(0.35, Math.min(1.0, availWidth / naturalWidth));
+            currentZoom = Math.round(fitScale * 100) / 100;
+        } else {
+            currentZoom = 1.0;
+        }
+
+        applyZoom();
+    }
+
+    window.addEventListener('resize', autoFitOverlay);
+    applyZoom();
+
+    // Starting counts: 0 by default, saved in localStorage (supports up to 100 cards)
+    const currentCounts = {};
+    for (let i = 1; i <= 100; i++) {
+        currentCounts[String(i)] = 0;
+    }
+
+    // Update display badge
+    function updateDisplay(id) {
+        const badge = document.getElementById(`badge-${id}`);
+        if (badge) {
+            badge.textContent = Number(currentCounts[id] || 0).toLocaleString();
+        }
+    }
+
+    // Initialize all badges
+    for (let i = 1; i <= 100; i++) {
+        updateDisplay(String(i));
+    }
+
+    // API Base URL: port 8080 is standard (matches start_overlay_server.bat / server.ps1)
+    let API_BASE = (window.location.protocol === 'file:' || !window.location.origin.startsWith('http'))
+        ? 'http://localhost:8080'
+        : window.location.origin;
+
+    // Donate action: increments badge, triggers animation, and syncs across all windows
+    const processedEventIds = new Map();
+    const lastCardDonationTimes = new Map();
+
+    function cleanProcessedEvents() {
+        const now = Date.now();
+        for (const [k, t] of processedEventIds.entries()) {
+            if (now - t > 30000) processedEventIds.delete(k);
+        }
+    }
+    setInterval(cleanProcessedEvents, 10000);
+
+    function donate(id, amount = 1, syncServer = true, eventId = null) {
+        if (!id || amount <= 0) return;
+        const key = String(id);
+        const now = Date.now();
+
+        // 1. Deduplication per event ID (prevents identical event across windows or sockets)
+        if (eventId) {
+            if (processedEventIds.has(eventId)) {
+                return;
+            }
+            processedEventIds.set(eventId, now);
+        }
+
+        // 2. Strict Per-Card Cooldown for Live Inbound Events (350ms):
+        // Prevents simultaneous socket duplicates (e.g. gifts-jar + alerts-board + local 7704 echo)
+        // while allowing normal testing and combo increments.
+        if (syncServer) {
+            const lastTime = lastCardDonationTimes.get(key) || 0;
+            if (now - lastTime < 350) {
+                console.log(`[Overlay] Filtered duplicate rapid trigger for Card ${key} (<350ms)`);
+                return;
+            }
+            lastCardDonationTimes.set(key, now);
+        }
+
+        if (!currentCounts[key]) currentCounts[key] = 0;
+        currentCounts[key] += amount;
+
+        // INSTANT ZERO-DELAY UI UPDATE
+        const badge = document.getElementById(`badge-${key}`);
+        const card = document.getElementById(`card-${key}`);
+
+        if (badge) {
+            badge.textContent = currentCounts[key].toLocaleString();
+            badge.classList.remove('pop-animate');
+            void badge.offsetWidth; // Force immediate CSS reflow
+            badge.classList.add('pop-animate');
+        }
+
+        if (card) {
+            card.classList.add('donated');
+            setTimeout(() => card.classList.remove('donated'), 500);
+        }
+
+        if (syncServer) {
+            const evParam = eventId ? `&eventId=${encodeURIComponent(eventId)}` : '';
+            const query = `/api/donate?id=${key}&amount=${amount}${evParam}`;
+            fetch(`${API_BASE}${query}`).catch(() => {
+                if (API_BASE !== 'http://localhost:8080') {
+                    fetch(`http://localhost:8080${query}`).catch(() => {});
+                }
+            });
+        }
+    }
+
+    function donateRandom() {
+        const total = (dynamicCards && dynamicCards.length > 0) ? dynamicCards.length : 57;
+        const randomId = String(Math.floor(Math.random() * total) + 1);
+        donate(randomId, 1);
+    }
+
+    function resetAll(syncServer = true) {
+        const total = (dynamicCards && dynamicCards.length > 0) ? dynamicCards.length : 100;
+        for (let i = 1; i <= total; i++) {
+            currentCounts[String(i)] = 0;
+            updateDisplay(String(i));
+        }
+        processedEventIds.clear();
+        lastCardDonationTimes.clear();
+        if (syncServer) {
+            fetch(`${API_BASE}/api/reset`).catch(() => {});
+        }
+    }
+
+    // =========================================================================
+    // REAL-TIME SERVER SYNC (Chrome <-> TikTok LIVE Studio Sync)
+    // =========================================================================
+    let isPolling = false;
+    async function syncServerCounts() {
+        if (isPolling) return;
+        isPolling = true;
+        try {
+            let res = null;
+            try { res = await fetch(`${API_BASE}/api/counts`); } catch(e) {}
+            if ((!res || !res.ok) && API_BASE !== 'http://localhost:8080') {
+                try { res = await fetch(`http://localhost:8080/api/counts`); } catch(e) {}
+            }
+            if ((!res || !res.ok) && API_BASE !== 'http://localhost:8888') {
+                try { res = await fetch(`http://localhost:8888/api/counts`); } catch(e) {}
+            }
+
+            if (res && res.ok) {
+                const serverCounts = await res.json();
+                Object.keys(serverCounts).forEach(key => {
+                    const sVal = Number(serverCounts[key] || 0);
+                    const cVal = Number(currentCounts[key] || 0);
+                    if (sVal > cVal) {
+                        donate(key, sVal - cVal, false);
+                    } else if (sVal === 0 && cVal > 0) {
+                        currentCounts[key] = 0;
+                        updateDisplay(key);
+                    }
+                });
+            }
+        } catch(e) {}
+        isPolling = false;
+    }
+
+    // Fast sync polling (400ms)
+    setInterval(syncServerCounts, 400);
+    syncServerCounts();
+
+    // Keyboard shortcuts
+    function handleKey(e) {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        if (e.key === 't' || e.key === 'T') {
+            donateRandom();
+        } else if (e.key === 'r' || e.key === 'R') {
+            resetAll();
+        } else if (e.key === 'h' || e.key === 'H') {
+            document.body.classList.toggle('hide-controls');
+            setTimeout(autoFitOverlay, 30);
+        } else if (e.key === '-' || e.key === '_' || e.key === '[') {
+            adjustZoom(-0.05);
+        } else if (e.key === '+' || e.key === '=' || e.key === ']') {
+            adjustZoom(0.05);
+        } else if (e.key === '0' || e.key === '\\') {
+            setZoom(1);
+        }
+    }
+
+    window.addEventListener('keydown', handleKey);
+
+    // =========================================================================
+    // STATUS DISPLAY MANAGER
+    // =========================================================================
+    let s2eCloudConnected = false;
+    let tikFinityConnected = false;
+
+    function updateLiveStatus(statusMsg) {
+        const statusText = document.getElementById('liveStatus');
+        const statusDot = document.getElementById('liveDot');
+        if (!statusText || !statusDot) return;
+
+        if (s2eCloudConnected) {
+            statusText.textContent = "LIVE Connected";
+            statusDot.classList.add('connected');
+        } else if (tikFinityConnected) {
+            statusText.textContent = "TikFinity Connected";
+            statusDot.classList.add('connected');
+        } else {
+            statusText.textContent = statusMsg || "Connecting to Live Stream...";
+            statusDot.classList.remove('connected');
+        }
+    }
+
+    // =========================================================================
+    // GIFT & EVENT TO CARD MAPPING (DYNAMICALLY SYNCED VIA sync_icons.bat)
+    // =========================================================================
+    const giftIdMap = {};
+    let dynamicCards = (typeof cardsData !== 'undefined' && Array.isArray(cardsData)) ? cardsData : [];
+    if (dynamicCards.length > 0) {
+        dynamicCards.forEach(card => {
+            if (card.giftId) {
+                giftIdMap[String(card.giftId)] = String(card.id);
+            }
+        });
+    }
+
+    function initCardsFromData(cards) {
+        if (!cards || !Array.isArray(cards) || cards.length === 0) return;
+        const newJson = JSON.stringify(cards);
+        if (initCardsFromData._lastJson === newJson) return;
+        initCardsFromData._lastJson = newJson;
+
+        dynamicCards = cards;
+        console.log("[Overlay] Applying cards data (" + dynamicCards.length + " cards):", dynamicCards);
+
+        // Clear and repopulate giftIdMap
+        Object.keys(giftIdMap).forEach(k => delete giftIdMap[k]);
+        dynamicCards.forEach(card => {
+            if (card.giftId) {
+                giftIdMap[String(card.giftId)] = String(card.id);
+            }
+            if (currentCounts[String(card.id)] === undefined) {
+                currentCounts[String(card.id)] = 0;
+            }
+        });
+
+        // Set grid columns to match card count (e.g. 8 cards = 8 columns, up to 12)
+        const cols = (cards.length <= 12) ? cards.length : 12;
+        document.documentElement.style.setProperty('--grid-columns', cols);
+
+        renderAllCards(dynamicCards);
+        updateControlsButtons();
+    }
+
+    function getCardByAction(actionName) {
+        if (!actionName) return null;
+        const target = actionName.toLowerCase().trim();
+        const found = dynamicCards.find(c => {
+            const act = String(c.action || '').toLowerCase().trim();
+            const name = String(c.giftName || '').toLowerCase().trim();
+            return act === target || name === target || name.includes(target);
+        });
+        return found ? String(found.id) : null;
+    }
+
+    // Render all cards dynamically into cardsGrid matching StreamToEarn layout
+    function renderAllCards(cards) {
+        const grid = document.getElementById('cardsGrid');
+        if (!grid || !cards || cards.length === 0) return;
+
+        grid.innerHTML = '';
+        const borderCycle = ['border-red', 'border-white', 'border-blue', 'border-red', 'border-blue', 'border-white'];
+
+        cards.forEach((card, idx) => {
+            const cardNum = idx + 1;
+            const borderClass = borderCycle[(cardNum - 1) % borderCycle.length];
+
+            const cardEl = document.createElement('div');
+            cardEl.className = `event-border ${borderClass}`;
+            cardEl.id = `card-${card.id}`;
+            cardEl.onclick = () => donate(String(card.id), 1);
+
+            const followSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><circle cx="36" cy="32" r="18" fill="#3ac956"/><path d="M 8 76 C 8 56 22 50 36 50 C 50 50 64 56 64 76 Z" fill="#3ac956"/><path d="M 78 36 L 78 56 M 68 46 L 88 46" stroke="#3ac956" stroke-width="8" stroke-linecap="round"/></svg>';
+            const followDataUrl = 'data:image/svg+xml,' + encodeURIComponent(followSvg);
+
+            let trigSrc = card.trigImg || `images/trig_${card.id}.png`;
+            if (card.action === 'Follow') {
+                trigSrc = followDataUrl;
+            } else if (card.action === 'LikeForEach' || card.action === 'LikeAmount' || card.action === 'Like') {
+                const likeNum = Number(card.triggerValue) || 50;
+                const fontSize = likeNum >= 1000 ? 28 : likeNum >= 100 ? 36 : 44;
+                const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="46" fill="#ff0000"/><text x="50" y="${fontSize >= 36 ? 62 : 65}" font-family="'Arial Black', Impact, sans-serif" font-size="${fontSize}" font-weight="900" fill="#ffffff" text-anchor="middle">${likeNum}</text></svg>`;
+                trigSrc = 'data:image/svg+xml,' + encodeURIComponent(svgData);
+            }
+
+            const countVal = currentCounts[String(card.id)] || 0;
+
+            cardEl.innerHTML = `
+                <div class="event">
+                    <span class="donation-badge" id="badge-${card.id}">${countVal.toLocaleString()}</span>
+                    <div class="function-image-wrapper">
+                        <img class="function-icon" src="${card.funcImg}" alt="${card.funcName || ''}" onerror="this.style.opacity='0.4'">
+                    </div>
+                    <div class="trigger-img-wrapper">
+                        <img class="trigger-icon" src="${trigSrc}" alt="${card.giftName || card.action}" onerror="if('${card.action}'==='Follow')this.src='${followDataUrl}';else if('${card.action}'.startsWith('Like'))this.src='images/trig_7.svg';">
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(cardEl);
+        });
+
+        // Re-apply split filtering if active
+        if (typeof checkUrlSplit === 'function') {
+            checkUrlSplit();
+        } else if (typeof autoFitOverlay === 'function') {
+            autoFitOverlay();
+        }
+
+        // Update Split Modal selectors & previews with the newly loaded cards
+        if (typeof initSplitSelectors === 'function') {
+            initSplitSelectors();
+        }
+    }
+
+    function updateControlsButtons() {
+        const container = document.getElementById('controlsTriggersContainer');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        const cardsToRender = (dynamicCards && dynamicCards.length > 0)
+            ? dynamicCards
+            : Array.from({ length: 57 }, (_, idx) => ({ id: String(idx + 1), giftName: `Card ${idx + 1}` }));
+
+        // Group into rows of 12 buttons (matching the 12 columns of cards)
+        const colsPerRow = 12;
+        const totalRows = Math.ceil(cardsToRender.length / colsPerRow);
+
+        for (let r = 0; r < totalRows; r++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'controls-row';
+            rowDiv.id = `controlsRow${r + 1}`;
+
+            const labelSpan = document.createElement('span');
+            labelSpan.style.cssText = 'font-size: 10px; color: #8a94a6; font-weight: bold; width: 48px; flex-shrink: 0;';
+            labelSpan.textContent = `ROW ${r + 1}:`;
+            rowDiv.appendChild(labelSpan);
+
+            const slice = cardsToRender.slice(r * colsPerRow, (r + 1) * colsPerRow);
+            slice.forEach(card => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-trigger';
+                btn.id = `btn-trigger-${card.id}`;
+                btn.onclick = () => donate(String(card.id), 1);
+
+                let label = card.giftName || card.action || `Card ${card.id}`;
+                if (card.action === 'Follow') label = 'Follow';
+                else if (card.action === 'LikeForEach' || card.action === 'LikeAmount' || card.action === 'Like') {
+                    const tv = Number(card.triggerValue) || 50;
+                    label = `${tv} Likes`;
+                }
+
+                let icon = '🎁';
+                const low = label.toLowerCase();
+                if (low.includes('follow')) icon = '👤';
+                else if (low.includes('like')) icon = '❤️';
+                else if (low.includes('rose') || low.includes('rosa')) icon = '🌹';
+                else if (low.includes('heart')) icon = '🧡';
+                else if (low.includes('stick') || low.includes('glow')) icon = '🛼';
+                else if (low.includes('cake')) icon = '🍰';
+                else if (low.includes('awesome') || low.includes('cat')) icon = '🐱';
+                else if (low.includes('arrow') || low.includes('bow')) icon = '🏹';
+                else if (low.includes('goten') || low.includes('zombie')) icon = '🧟';
+                else if (low.includes('gg') || low.includes('tnt')) icon = '🎮';
+                else if (low.includes('tiktok') || low.includes('music')) icon = '🎵';
+                else if (low.includes('shard') || low.includes('hope')) icon = '✨';
+                else if (low.includes('freestyle')) icon = '🎹';
+                else if (low.includes('ice cream')) icon = '🍦';
+                else if (low.includes('shell')) icon = '🐚';
+                else if (low.includes('journey') || low.includes('pass') || low.includes('ticket')) icon = '🎟️';
+                else if (low.includes('wink') || low.includes('pig')) icon = '💖';
+                else if (low.includes('donut') || low.includes('doughnut')) icon = '🍩';
+                else if (low.includes('chicken')) icon = '🍗';
+                else if (low.includes('see')) icon = '👀';
+                else if (low.includes('shoutout')) icon = '📢';
+                else if (low.includes('overreact')) icon = '😮';
+                else if (low.includes('intimacy')) icon = '💞';
+                else if (low.includes('clap')) icon = '👏';
+                else if (low.includes('sun')) icon = '☀️';
+                else if (low.includes('star')) icon = '⭐';
+                else if (low.includes('fire')) icon = '🔥';
+                else if (low.includes('box')) icon = '🥊';
+                else if (low.includes('spider')) icon = '🕷️';
+                else if (low.includes('dog') || low.includes('puppy') || low.includes('corgi')) icon = '🐶';
+
+                btn.textContent = `${icon} ${card.id}. ${label}`;
+                rowDiv.appendChild(btn);
+            });
+
+            container.appendChild(rowDiv);
+        }
+
+        if (typeof checkUrlSplit === 'function') {
+            checkUrlSplit();
+        } else if (typeof autoFitOverlay === 'function') {
+            autoFitOverlay();
+        }
+    }
+
+    async function loadCardsConfig() {
+        try {
+            const res = await fetch(`${API_BASE}/cards.json?v=${Date.now()}`);
+            if (res.ok) {
+                const newCards = await res.json();
+                
+                const newJson = JSON.stringify(newCards);
+                if (loadCardsConfig._lastJson === newJson) return;
+                loadCardsConfig._lastJson = newJson;
+                
+                dynamicCards = newCards;
+                console.log("[Overlay] Loaded dynamic cards.json from sync_icons (" + dynamicCards.length + " cards):", dynamicCards);
+
+                // Clear and repopulate giftIdMap
+                Object.keys(giftIdMap).forEach(k => delete giftIdMap[k]);
+                dynamicCards.forEach(card => {
+                    if (card.giftId) {
+                        giftIdMap[String(card.giftId)] = String(card.id);
+                    }
+                    if (currentCounts[String(card.id)] === undefined) {
+                        currentCounts[String(card.id)] = 0;
+                    }
+                });
+
+                // Render ALL cards in cardsGrid!
+                renderAllCards(dynamicCards);
+
+                // Update bottom streamer control buttons!
+                updateControlsButtons();
+            }
+        } catch(e) {
+            console.log("[Overlay] Error loading cards.json:", e);
+        }
+    }
+    loadCardsConfig();
+    setInterval(loadCardsConfig, 5000);
+
+    function matchGift(giftId, giftName) {
+        const gIdStr = String(giftId || '').trim();
+        const rawName = String(giftName || '').toLowerCase().trim();
+        let name = rawName.replace(/^sent\s+/i, '')
+                          .replace(/\p{Extended_Pictographic}/gu, '')
+                          .replace(/[^\w\s]/g, '')
+                          .trim();
+
+        // 1. Dynamic cards config exact giftId match (highest priority & 100% precision from synced game preset!)
+        if (gIdStr) {
+            for (const card of dynamicCards) {
+                if (card.giftId && String(card.giftId) === gIdStr) {
+                    return String(card.id);
+                }
+            }
+        }
+
+        // 2. Dynamic cards config giftName match (from synced game preset!)
+        if (name) {
+            for (const card of dynamicCards) {
+                const cName = String(card.giftName || '').toLowerCase().trim();
+                const cleanCName = cName.replace(/^sent\s+/i, '')
+                                        .replace(/\p{Extended_Pictographic}/gu, '')
+                                        .replace(/[^\w\s]/g, '')
+                                        .trim();
+                if (cleanCName && (name === cleanCName || name.includes(cleanCName) || cleanCName.includes(name))) {
+                    return String(card.id);
+                }
+            }
+        }
+
+        // 3. Fallback to giftIdMap (built-in preset ID / known gift ID mapping)
+        if (gIdStr && giftIdMap[gIdStr]) {
+            return giftIdMap[gIdStr];
+        }
+
+        // 4. Fallback search by action or common aliases strictly against dynamicCards
+        if (name) {
+            const byAction = getCardByAction(name);
+            if (byAction) return byAction;
+            if (name.includes('donut') || name.includes('doughnut')) return getCardByAction('doughnut');
+            if (name === 'rose' || name.startsWith('rose')) return getCardByAction('rose');
+            if (name.includes('heart me')) return getCardByAction('heart me');
+            if (name.includes('glow stick') || name.includes('stick')) return getCardByAction('glow stick');
+            if (name.includes('goten')) return getCardByAction('goten');
+            if (name.includes('gg')) return getCardByAction('gg');
+            if (name.includes('perfume')) return getCardByAction('perfume');
+            if (name.includes('mind blown')) return getCardByAction('mind blown');
+            if (name.includes('fried chicken')) return getCardByAction('fried chicken');
+            if (name.includes('star light')) return getCardByAction('star light');
+        }
+
+        return null;
+    }
+
+    // =========================================================================
+    // DEDUPLICATION & ACCURATE 1 GIFT = +1 COUNTER
+    // =========================================================================
+    const activeCombos = new Map();
+    const recentSocketPackets = new Map(); // [key] = timestamp
+    const recentCardDonations = new Map(); // [cardId] = { time, lastRepeat, userId }
+
+    function cleanCombos() {
+        const now = Date.now();
+        for (const [k, d] of activeCombos.entries()) {
+            if (now - d.time > 8000) activeCombos.delete(k);
+        }
+        for (const [k, t] of recentSocketPackets.entries()) {
+            if (now - t > 4000) recentSocketPackets.delete(k);
+        }
+    }
+    setInterval(cleanCombos, 2000);
+
+    function processGiftDonation(giftId, giftName, repeatCount, userId, msgId, isReveal = false) {
+        const matchedCard = matchGift(giftId, giftName);
+        if (!matchedCard) {
+            console.log(`[Overlay] Ignored unmatched gift: "${giftName}" (ID: ${giftId})`);
+            return;
+        }
+
+        const now = Date.now();
+        const safeUserId = String(userId || 'viewer').replace(/[^\w]/g, '');
+
+        // 1. Filter Delayed AlertsBoardReveal Echoes:
+        // AlertsBoardReveal is delayed by 3-4s due to alert animation queue.
+        // If this card was ALREADY triggered recently (<6s) by an instant EditsEvent or webcast gift,
+        // drop the delayed reveal echo so it never double-increments!
+        const lastCardHit = recentCardDonations.get(matchedCard);
+        if (isReveal && lastCardHit && (now - lastCardHit.time < 6000)) {
+            console.log(`[Overlay] Filtered delayed reveal echo for Card ${matchedCard} (${now - lastCardHit.time}ms after instant trigger)`);
+            return;
+        }
+
+        // 2. Simultaneous cross-channel card debounce (350ms):
+        // If the EXACT same card received ANY trigger in the last 350ms,
+        // it's an echo from parallel sockets (gifts-jar vs edits vs local 7704).
+        if (lastCardHit) {
+            const timeDiff = now - lastCardHit.time;
+            if (timeDiff < 350) {
+                // If it's not a combo streak advance (> lastRepeat), drop as duplicate echo
+                if (repeatCount <= lastCardHit.lastRepeat || userId === 'preset_trigger' || lastCardHit.userId === 'preset_trigger') {
+                    console.log(`[Overlay] Filtered duplicate socket echo for Card ${matchedCard} (${timeDiff}ms)`);
+                    return;
+                }
+            }
+        }
+        recentCardDonations.set(matchedCard, { time: now, lastRepeat: repeatCount, userId: safeUserId });
+
+        // 3. Simultaneous cross-socket packet echo filter:
+        const isPresetId = msgId && (giftIdMap[msgId] || msgId.length <= 10);
+        const validMsgId = (msgId && !isPresetId && msgId.length > 10) ? msgId : null;
+        
+        const socketEchoKey = validMsgId ? `msg_${validMsgId}` : `c${matchedCard}_${safeUserId}_r${repeatCount}`;
+        const lastSocketTime = recentSocketPackets.get(socketEchoKey);
+        if (lastSocketTime && (now - lastSocketTime < 350)) {
+            return; // Duplicate packet echo across channels
+        }
+        recentSocketPackets.set(socketEchoKey, now);
+
+        // 4. Combo & Delta Calculation:
+        // Every single gift click/tap must count as exactly +1!
+        let delta = 1;
+        const comboKey = `${safeUserId}_c${matchedCard}`;
+
+        if (activeCombos.has(comboKey)) {
+            const combo = activeCombos.get(comboKey);
+            if (repeatCount > combo.lastCount) {
+                // Streak continued: +diff
+                delta = repeatCount - combo.lastCount;
+                combo.lastCount = repeatCount;
+                combo.time = now;
+            } else if (repeatCount < combo.lastCount) {
+                // New streak started: +repeatCount
+                delta = repeatCount;
+                combo.lastCount = repeatCount;
+                combo.time = now;
+            } else {
+                // Same repeatCount (e.g. viewer sent 1 gift again)
+                if (now - combo.time < 350) {
+                    return; // Ignore sub-350ms duplicate from parallel socket
+                }
+                delta = 1;
+                combo.time = now;
+            }
+        } else {
+            delta = repeatCount;
+            activeCombos.set(comboKey, { lastCount: repeatCount, time: now });
+        }
+
+        // 5. Deterministic eventId (ensures multiple windows like Chrome + TikTok LIVE Studio produce identical eventId)
+        const timeBucket = Math.floor(now / 500);
+        const eventId = validMsgId ? `msg_${validMsgId}_r${repeatCount}` : `c_${matchedCard}_r${repeatCount}_b${timeBucket}`;
+
+        console.log(`[Overlay] INSTANT DONATION -> Card ${matchedCard} ("${giftName}" / ID: ${giftId}) +${delta} [eventId: ${eventId}]`);
+        donate(matchedCard, delta, true, eventId);
+    }
+
+    function handleGiftData(raw, eventName = '') {
+        if (!raw) return;
+
+        const item = raw;
+        const isReveal = (eventName === 'AlertsBoardReveal' || item?.type === 'AlertsBoardReveal');
+
+        // Handle arrays / batches
+        if (Array.isArray(item)) {
+            item.forEach(sub => handleGiftData(sub, eventName));
+            return;
+        }
+        if (Array.isArray(item.events)) {
+            item.events.forEach(sub => handleGiftData(sub, eventName));
+            return;
+        }
+        if (Array.isArray(item.data)) {
+            item.data.forEach(sub => handleGiftData(sub, eventName));
+            return;
+        }
+
+        // 1. Direct Trigger Extraction (Instant EditsEvent, AlertsBoardReveal, event, preset)
+        const ev = item?.event || item?.data?.event || (item?.trigger ? item : (item?.data?.trigger ? item.data : null));
+        if (ev && ev.trigger) {
+            const trig = ev.trigger;
+            const act = String(trig.action || '');
+            if (act === 'Follow') {
+                triggerFollow(1, String(ev.id || ''));
+                return;
+            }
+            if (act === 'LikeForEach' || act === 'LikeAmount' || act === 'Like') {
+                const likeCard = (typeof getCardByAction === 'function' ? getCardByAction('LikeForEach') : '') || '1'; donate(likeCard, 1);
+                return;
+            }
+            if (act === 'SelectedGift' || act === 'GiftMinValCoins') {
+                const gId = String(trig.giftId || trig.giftData?.id || ev.id || '');
+                const gName = String(trig.giftData?.name || trig.giftName || '');
+                const donorPayload = item?.data?.data || item?.data || item;
+                const repeatCount = Math.max(1, Number(donorPayload?.repeatCount || donorPayload?.giftDetails?.repeatCount || 1) || 1);
+                const userId = String(donorPayload?.user?.userId || donorPayload?.user?.uniqueId || donorPayload?.user?.nickname || 'viewer');
+                processGiftDonation(gId, gName, repeatCount, userId, null, isReveal);
+                return;
+            }
+        }
+
+        // Special handling for S2E giftSpinner "spin" events
+        if (item.streamData) {
+            handleGiftData(item.streamData, eventName);
+            return;
+        }
+        if (item.eventIndex !== undefined && Array.isArray(item.events) && item.events[item.eventIndex]) {
+            handleGiftData(item.events[item.eventIndex], eventName);
+            return;
+        }
+
+        // 2. Standard TikTok Gift webcast payload (instant direct gift event)
+        const details = item?.data?.giftDetails || item?.giftDetails || item?.data?.gift || item?.gift || item?.data?.giftData || item?.giftData || item?.data || item;
+        let giftId = String(
+            details?.giftId ||
+            details?.gift_id ||
+            item?.giftId ||
+            item?.gift_id ||
+            details?.giftData?.id ||
+            item?.giftData?.id ||
+            item?.id ||
+            details?.id ||
+            ''
+        ).trim();
+
+        let giftName = String(
+            details?.giftName ||
+            details?.gift_name ||
+            details?.name ||
+            item?.giftName ||
+            item?.gift_name ||
+            item?.name ||
+            details?.describe ||
+            item?.describe ||
+            details?.title ||
+            item?.title ||
+            item?.trigger?.giftData?.name ||
+            item?.trigger?.giftName ||
+            ''
+        ).trim();
+
+        const repeatCount = Math.max(1, Number(details?.repeatCount || item?.repeatCount || details?.count || item?.count || 1) || 1);
+        const userObj = item?.user || details?.user || item?.data?.user;
+        const userId = String(userObj?.userId || userObj?.uniqueId || userObj?.nickname || item?.nickname || details?.nickname || 'viewer');
+        const msgId = String(item?.msgId || details?.msgId || item?.messageId || details?.messageId || '');
+
+        if (giftId || giftName) {
+            processGiftDonation(giftId, giftName, repeatCount, userId, msgId, isReveal);
+        }
+    }
+
+    // =========================================================================
+    // MULTI-CHANNEL FOLLOW & LIKES TRACKER
+    // =========================================================================
+    const seenFollowers = new Set();
+    let isFollowInitialSync = true;
+    let lastFollowTimestamp = 0;
+
+    function triggerFollow(count = 1, uid = '') {
+        const now = Date.now();
+        if (now - lastFollowTimestamp < 1200 && !uid) {
+            return;
+        }
+
+        const followEventId = uid ? `follow_${uid}` : `follow_${Math.floor(now / 1500)}`;
+        if (processedEventIds.has(followEventId)) {
+            return;
+        }
+
+        const followCard = getCardByAction('Follow') || '1';
+        lastFollowTimestamp = now;
+        console.log(`[Overlay] ACCURATE FOLLOW: Card ${followCard} +${count} [eventId: ${followEventId}]`);
+        donate(followCard, count, true, followEventId);
+    }
+
+    function handleFollowEvent(payload) {
+        if (!payload) {
+            triggerFollow(1);
+            return;
+        }
+
+        // 1. Array of followers
+        const list = payload?.followers || (Array.isArray(payload) ? payload : null);
+        if (Array.isArray(list)) {
+            if (isFollowInitialSync) {
+                list.forEach(f => {
+                    const uid = f?.userId || f?.id || f?.uniqueId || f?.nickname;
+                    if (uid) seenFollowers.add(String(uid));
+                });
+                isFollowInitialSync = false;
+                console.log(`[S2E] Initial followers primed (${seenFollowers.size} existing)`);
+                return;
+            }
+
+            let newFollows = 0;
+            list.forEach(f => {
+                const uid = f?.userId || f?.id || f?.uniqueId || f?.nickname;
+                if (uid && !seenFollowers.has(String(uid))) {
+                    seenFollowers.add(String(uid));
+                    triggerFollow(1, String(uid));
+                    newFollows++;
+                }
+            });
+            if (newFollows > 0) {
+                console.log(`[S2E] +${newFollows} new follower(s)!`);
+            }
+            return;
+        }
+
+        // 2. Single user follower
+        const singleUser = payload?.user || payload?.follower || (payload?.userId ? payload : null);
+        const uid = singleUser?.userId || singleUser?.id || singleUser?.uniqueId || singleUser?.nickname;
+        if (uid) {
+            if (isFollowInitialSync) {
+                seenFollowers.add(String(uid));
+                isFollowInitialSync = false;
+                return;
+            }
+            if (!seenFollowers.has(String(uid))) {
+                seenFollowers.add(String(uid));
+                console.log(`[S2E] New follower: ${uid}`);
+                triggerFollow(1, String(uid));
+            }
+            return;
+        }
+
+        // 3. Fallback generic follow notification
+        triggerFollow(1);
+    }
+
+    // Likes Threshold Tracker (Dynamic Card + threshold from cards.json)
+    let lastStreamLikesCount = null;
+    let completedLikeUnits = 0;
+
+    function getLikeThreshold() {
+        const likeCard = getCardByAction('LikeForEach') || getCardByAction('LikeAmount') || getCardByAction('Like');
+        if (likeCard) {
+            const cardData = dynamicCards.find(c => String(c.id) === likeCard);
+            if (cardData && cardData.triggerValue && Number(cardData.triggerValue) > 0) {
+                return Number(cardData.triggerValue);
+            }
+        }
+        return 50; // fallback default
+    }
+
+    function handleLikesCount(payload) {
+        const totalLikes = Number(
+            payload?.likesCount ??
+            payload?.data?.likesCount ??
+            payload?.totalLikeCount ??
+            payload?.count ??
+            (typeof payload === 'number' ? payload : NaN)
+        );
+        if (isNaN(totalLikes) || totalLikes <= 0) return;
+
+        const threshold = getLikeThreshold();
+        const targetUnits = Math.floor(totalLikes / threshold);
+
+        if (lastStreamLikesCount === null) {
+            lastStreamLikesCount = totalLikes;
+            completedLikeUnits = targetUnits;
+            console.log(`[S2E] Likes baseline set to ${totalLikes} (${targetUnits} units of ${threshold})`);
+            return;
+        }
+
+        if (targetUnits > completedLikeUnits) {
+            const diff = targetUnits - completedLikeUnits;
+            const likeCard = getCardByAction('LikeForEach') || getCardByAction('LikeAmount') || getCardByAction('Like') || '7';
+            for (let u = completedLikeUnits + 1; u <= targetUnits; u++) {
+                const likeEventId = `likes_unit_${u}`;
+                donate(likeCard, 1, true, likeEventId);
+            }
+            completedLikeUnits = targetUnits;
+            lastStreamLikesCount = totalLikes;
+            console.log(`[S2E] Likes milestone: Card ${likeCard} +${diff} (total likes: ${totalLikes}, threshold: ${threshold})`);
+        } else {
+            lastStreamLikesCount = totalLikes;
+        }
+    }
+
+    // =========================================================================
+    // STREAMTOEARN CLOUD SOCKET.IO LISTENER (Multi-Channel Full Coverage)
+    // =========================================================================
+    function initStreamToEarnListener() {
+        const userId = "6a7037f3324251772e699846";
+        if (typeof io === 'undefined') {
+            console.warn("Socket.io library not ready, retrying in 500ms");
+            setTimeout(initStreamToEarnListener, 500);
+            return;
+        }
+
+        try {
+            console.log("[S2E] Connecting to StreamToEarn live channels...");
+
+            const socketOptions = {
+                transports: ["websocket", "polling"],
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: Infinity
+            };
+
+            const channels = [
+                { name: "EditsEvent-1", type: "EditsEvent", subtype: "1" },
+                { name: "EditsEvent-0", type: "EditsEvent", subtype: "0" },
+                { name: "EditsEvent-default", type: "EditsEvent", subtype: "" },
+                { name: "topGiftsCombo", type: "topGiftsCombo", subtype: "gift" },
+                { name: "topGift", type: "topGift", subtype: "gift" },
+                { name: "gifts-jar", type: "gifts-jar", subtype: "gift" },
+                { name: "alerts-board", type: "alerts-board", subtype: "" },
+                { name: "board", type: "board", subtype: "" },
+                { name: "giftSpinner", type: "giftSpinner", subtype: "giftSpinner" },
+                { name: "goal", type: "goal", subtype: "likes" },
+                { name: "lastFollowers", type: "lastFollowers", subtype: "lastFollowers" }
+            ];
+
+            const giftEvents = [
+                "gift", "gift-solo", "gift-batch", "topGift", "topGiftCombo", "topGiftsCombo",
+                "spin", "AlertsBoardReveal", "event", "events", "EditsEvent", "onTikTokEvent", "message",
+                "taskBoardEvent"
+            ];
+
+            channels.forEach(ch => {
+                const sock = io("https://api.streamtoearn.io:2053", socketOptions);
+                sock.on("connect", () => {
+                    console.log(`[S2E] Channel ${ch.name} connected!`);
+                    s2eCloudConnected = true;
+                    updateLiveStatus();
+                    sock.emit("newOverlayConnection", {
+                        user_id: userId,
+                        type: ch.type,
+                        subtype: ch.subtype,
+                        wsVersion: 2
+                    });
+                });
+
+                if (ch.type === "goal") {
+                    sock.on("likesCount", (e) => handleLikesCount(e));
+                } else if (ch.type === "lastFollowers") {
+                    sock.on("lastFollowers", (e) => handleFollowEvent(e));
+                    sock.on("follow", () => triggerFollow(1));
+                } else {
+                    giftEvents.forEach(evtName => {
+                        sock.on(evtName, (e) => handleGiftData(e, evtName));
+                    });
+                }
+
+                sock.on("disconnect", () => {
+                    s2eCloudConnected = false;
+                    updateLiveStatus("Connecting to Live Stream...");
+                });
+            });
+
+        } catch(err) {
+            console.error("S2E Socket setup error:", err);
+            setTimeout(initStreamToEarnListener, 3000);
+        }
+    }
+
+    // =========================================================================
+    // LOCAL STREAMTOEARN / TIKFINITY WEBSOCKET FALLBACK (Ports 7704 & 21213)
+    // =========================================================================
+    function initLocalListeners() {
+        // 1. Local Stream To Earn Desktop bridge on Port 7704
+        try {
+            const localS2E = new WebSocket('ws://127.0.0.1:7704/');
+            localS2E.onopen = () => {
+                console.log("[Live Bridge] Connected to desktop bridge ws://127.0.0.1:7704");
+            };
+            localS2E.onmessage = (event) => {
+                try {
+                    const parsed = JSON.parse(event.data);
+                    handleGiftData(parsed, 'local_7704');
+                } catch(e) {}
+            };
+            localS2E.onclose = () => {
+                setTimeout(initLocalListeners, 8000);
+            };
+        } catch(e) {}
+
+        // 2. TikFinity / TikTokLiveConnector fallback on Port 21213
+        try {
+            const ws = new WebSocket('ws://localhost:21213/');
+            ws.onopen = () => {
+                console.log("[TikFinity] Connected on ws://localhost:21213");
+                tikFinityConnected = true;
+                updateLiveStatus();
+            };
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    const eventType = String(data?.event || data?.type || '').toLowerCase();
+                    const gift = String(data?.giftName || data?.name || '').toLowerCase();
+                    const count = Math.max(1, Number(data?.repeatCount || data?.count || 1) || 1);
+
+                    if (eventType.includes('follow') || gift.includes('follow')) {
+                        console.log(`[TikFinity] Follow detected! x${count}`);
+                        triggerFollow(count);
+                    } else if (eventType.includes('like') || gift.includes('like')) {
+                        const likeCard = (typeof getCardByAction === 'function' ? getCardByAction('LikeForEach') : '') || '1'; donate(likeCard, 1);
+                    } else {
+                        handleGiftData(data, 'tikfinity');
+                    }
+                } catch(err) {}
+            };
+            ws.onclose = () => {
+                tikFinityConnected = false;
+                updateLiveStatus();
+            };
+            ws.onerror = () => { ws.close(); };
+        } catch(e) {}
+    }
+
+    // Initialize all listeners
+    initStreamToEarnListener();
+    initLocalListeners();
+</script>
+
+<!-- ==================== BACKGROUND ENGINE ==================== -->
+<script>
+(function() {
+    // ===== COLOR PRESETS =====
+    const BG_PRESETS = [
+        { name: 'Neon Purple', c1: '#0a0015', c2: '#1a0030', c3: '#0d001a', pc: '#a855f7', border: '#a855f7', glow: 12 },
+        { name: 'Ocean Blue', c1: '#001220', c2: '#00263d', c3: '#001830', pc: '#38bdf8', border: '#00d2ff', glow: 12 },
+        { name: 'Midnight', c1: '#0a0a1a', c2: '#111128', c3: '#08081a', pc: '#6366f1', border: '#6366f1', glow: 10 },
+        { name: 'Forest', c1: '#001a0a', c2: '#002d15', c3: '#001510', pc: '#22c55e', border: '#22c55e', glow: 10 },
+        { name: 'Sunset', c1: '#1a0800', c2: '#2d1200', c3: '#1a0500', pc: '#f97316', border: '#f97316', glow: 12 },
+        { name: 'Blood Red', c1: '#1a0005', c2: '#2d000a', c3: '#150008', pc: '#ef4444', border: '#ff2b56', glow: 12 },
+        { name: 'Cyberpunk', c1: '#0d001a', c2: '#1a002e', c3: '#001a1a', pc: '#f0abfc', border: '#ec4899', glow: 14 },
+        { name: 'Golden', c1: '#1a1000', c2: '#2d1c00', c3: '#1a1200', pc: '#fbbf24', border: '#fbbf24', glow: 12 },
+        { name: 'Ice', c1: '#001318', c2: '#002028', c3: '#001520', pc: '#67e8f9', border: '#38bdf8', glow: 12 },
+        { name: 'Void Dark', c1: '#0e1014', c2: '#14171d', c3: '#0a0c0f', pc: '#64748b', border: '#23272e', glow: 0 },
+    ];
+
+    const STORAGE_KEY = 's2e_bg_settings';
+
+    // BroadcastChannel for cross-window real-time sync (Chrome <-> TikTok Studio / OBS)
+    let bgChannel = null;
+    try {
+        bgChannel = new BroadcastChannel('s2e_bg_sync');
+        bgChannel.onmessage = (e) => {
+            if (e.data && typeof e.data === 'object') {
+                Object.assign(bgState, e.data);
+                applyBgState(false);
+            }
+        };
+    } catch(e) {}
+
+    // ===== DEFAULT STATE (Active by default so it shows immediately in TikTok LIVE Studio) =====
+    let bgState = {
+        type: 'animated',
+        preset: 'Neon Purple',
+        c1: '#0a0015',
+        c2: '#1a0030',
+        c3: '#0d001a',
+        speed: 12,
+        particles: 30,
+        particleColor: '#a855f7',
+        particleGlow: 8,
+        cardOpacity: 95,
+        borderColor: '#a855f7',
+        borderGlow: 12,
+        imageUrl: '',
+    };
+
+    let particlesArray = [];
+    let animFrameId = null;
+
+    // ===== DOM REFS =====
+    const overlayWrapper = document.getElementById('s2eOverlay');
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+    const gradientEl = document.getElementById('bgGradient');
+    const settingsBtn = document.getElementById('bgSettingsBtn');
+    const settingsPanel = document.getElementById('bgSettingsPanel');
+
+    // ===== CANVAS RESIZE (sized strictly to overlay wrapper) =====
+    function resizeCanvas() {
+        if (!overlayWrapper || !canvas) return;
+        const w = overlayWrapper.offsetWidth || 710;
+        const h = overlayWrapper.offsetHeight || 230;
+        if (w > 0 && h > 0) {
+            canvas.width = w;
+            canvas.height = h;
+        }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('load', resizeCanvas);
+    if (window.ResizeObserver && overlayWrapper) {
+        new ResizeObserver(resizeCanvas).observe(overlayWrapper);
+    }
+    resizeCanvas();
+
+    // ===== PARTICLES =====
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            const w = canvas && canvas.width > 0 ? canvas.width : 710;
+            const h = canvas && canvas.height > 0 ? canvas.height : 230;
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.size = Math.random() * 2.2 + 0.6;
+            this.speedX = (Math.random() - 0.5) * 0.35;
+            this.speedY = (Math.random() - 0.5) * 0.25 - 0.12;
+            this.opacity = Math.random() * 0.6 + 0.2;
+            this.pulse = Math.random() * Math.PI * 2;
+            this.pulseSpeed = Math.random() * 0.02 + 0.005;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.pulse += this.pulseSpeed;
+            if (this.x < -10 || this.x > canvas.width + 10 || this.y < -10 || this.y > canvas.height + 10) {
+                this.reset();
+                this.y = this.speedY < 0 ? canvas.height + 5 : -5;
+            }
+        }
+        draw() {
+            if (!ctx) return;
+            const osc = Math.sin(this.pulse) * 0.3 + 0.7;
+            const alpha = this.opacity * osc;
+            ctx.save();
+            if (bgState.particleGlow > 0) {
+                ctx.shadowBlur = bgState.particleGlow;
+                ctx.shadowColor = bgState.particleColor;
+            }
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = bgState.particleColor;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    function initParticles(count) {
+        particlesArray = [];
+        for (let i = 0; i < count; i++) {
+            particlesArray.push(new Particle());
+        }
+    }
+
+    function animateParticles() {
+        if (ctx && canvas) {
+            if (canvas.width <= 0 || canvas.height <= 0) {
+                resizeCanvas();
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (bgState.type !== 'none') {
+                for (const p of particlesArray) {
+                    p.update();
+                    p.draw();
+                }
+            }
+        }
+        animFrameId = requestAnimationFrame(animateParticles);
+    }
+
+    // ===== APPLY STATE =====
+    function applyBgState(broadcast = true) {
+        const root = document.documentElement;
+        root.style.setProperty('--bg-color1', bgState.c1);
+        root.style.setProperty('--bg-color2', bgState.c2);
+        root.style.setProperty('--bg-color3', bgState.c3);
+        root.style.setProperty('--bg-speed', bgState.speed + 's');
+        root.style.setProperty('--card-opacity', ((bgState.cardOpacity !== undefined ? bgState.cardOpacity : 95) / 100));
+        root.style.setProperty('--overlay-border-color', bgState.borderColor || '#23272e');
+        if (bgState.borderGlow && bgState.borderGlow > 0) {
+            root.style.setProperty('--overlay-border-glow', `0 0 ${bgState.borderGlow}px ${bgState.borderColor}, 0 8px 30px rgba(0, 0, 0, 0.9)`);
+        } else {
+            root.style.setProperty('--overlay-border-glow', '0 8px 30px rgba(0, 0, 0, 0.9)');
+        }
+
+        if (gradientEl) {
+            gradientEl.className = 'bg-gradient-layer';
+            gradientEl.style.backgroundImage = '';
+            if (bgState.type === 'animated') gradientEl.classList.add('animated');
+            else if (bgState.type === 'static') gradientEl.classList.add('static');
+            else if (bgState.type === 'solid') gradientEl.classList.add('solid');
+            else if (bgState.type === 'image' && bgState.imageUrl) {
+                gradientEl.classList.add('image-bg');
+                gradientEl.style.backgroundImage = `url("${bgState.imageUrl}")`;
+            }
+            gradientEl.style.opacity = bgState.type === 'none' ? '0' : '1';
+        }
+
+        // Toggle rows based on type
+        const imgRow = document.getElementById('imgUrlRow');
+        const colorsRow = document.getElementById('colorsRow');
+        if (imgRow) imgRow.style.display = bgState.type === 'image' ? 'flex' : 'none';
+        if (colorsRow) colorsRow.style.display = bgState.type === 'image' ? 'none' : 'flex';
+
+        // Particles
+        const targetCount = bgState.type === 'none' ? 0 : bgState.particles;
+        if (particlesArray.length !== targetCount) {
+            initParticles(targetCount);
+        }
+
+        // Sync UI controls
+        const ids = {
+            bgType: bgState.type, bgColor1: bgState.c1, bgColor2: bgState.c2, bgColor3: bgState.c3,
+            bgSpeed: bgState.speed, bgParticles: String(bgState.particles),
+            particleColor: bgState.particleColor, particleGlow: bgState.particleGlow,
+            cardOpacity: bgState.cardOpacity !== undefined ? bgState.cardOpacity : 95,
+            borderColor: bgState.borderColor || '#23272e', borderGlow: bgState.borderGlow || 0,
+            bgImageUrl: bgState.imageUrl || '',
+        };
+        for (const [id, val] of Object.entries(ids)) {
+            const el = document.getElementById(id);
+            if (el) el.value = val;
+        }
+        const speedVal = document.getElementById('bgSpeedVal');
+        if (speedVal) speedVal.textContent = bgState.speed + 's';
+        const opacVal = document.getElementById('cardOpacityVal');
+        if (opacVal) opacVal.textContent = (bgState.cardOpacity !== undefined ? bgState.cardOpacity : 95) + '%';
+        const glowVal = document.getElementById('borderGlowVal');
+        if (glowVal) glowVal.textContent = (bgState.borderGlow || 0) + 'px';
+
+        resizeCanvas();
+
+        // Broadcast to other open tabs / TikTok Studio CEF if available
+        if (broadcast && bgChannel) {
+            try { bgChannel.postMessage(bgState); } catch(e) {}
+        }
+    }
+
+    // Build URL query string with current state
+    function buildQueryString() {
+        const p = new URLSearchParams();
+        p.set('bg', bgState.type);
+        if (bgState.preset) p.set('preset', bgState.preset);
+        p.set('c1', bgState.c1);
+        p.set('c2', bgState.c2);
+        p.set('c3', bgState.c3);
+        p.set('speed', bgState.speed);
+        p.set('particles', bgState.particles);
+        p.set('pc', bgState.particleColor);
+        p.set('pglow', bgState.particleGlow);
+        p.set('cardOpac', bgState.cardOpacity);
+        p.set('border', bgState.borderColor);
+        p.set('bglow', bgState.borderGlow);
+        if (bgState.imageUrl) p.set('img', bgState.imageUrl);
+        return p.toString();
+    }
+
+    // ===== COPY LINK FOR TIKTOK STUDIO =====
+    window.copyTikTokStudioLink = function() {
+        let base = 'http://localhost:8080/s2e-overlay.html';
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+            base = window.location.origin + window.location.pathname;
+        }
+        const fullUrl = base + '?' + buildQueryString();
+
+        const copySuccess = () => {
+            const btn = document.getElementById('btnCopyTikTokLink');
+            if (btn) {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '✅ Copied! Paste into TikTok Studio';
+                btn.style.background = '#22c55e';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.style.background = 'linear-gradient(135deg, #00f2fe, #4facfe)';
+                    btn.style.color = '#000';
+                }, 2500);
+            }
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(fullUrl).then(copySuccess).catch(() => {
+                prompt('Copy this URL and paste into TikTok LIVE Studio:', fullUrl);
+            });
+        } else {
+            prompt('Copy this URL and paste into TikTok LIVE Studio:', fullUrl);
+        }
+    };
+
+    // ===== SETTINGS PANEL =====
+    if (settingsBtn && settingsPanel) {
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsPanel.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+                settingsPanel.classList.remove('open');
+            }
+        });
+    }
+
+    // Live-update handlers
+    function bindControl(id, key, transform) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+            bgState[key] = transform ? transform(el.value) : el.value;
+            applyBgState(true);
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bgState)); } catch(e) {}
+        });
+    }
+
+    bindControl('bgType', 'type');
+    bindControl('bgColor1', 'c1');
+    bindControl('bgColor2', 'c2');
+    bindControl('bgColor3', 'c3');
+    bindControl('bgSpeed', 'speed', Number);
+    bindControl('bgParticles', 'particles', Number);
+    bindControl('particleColor', 'particleColor');
+    bindControl('particleGlow', 'particleGlow', Number);
+    bindControl('cardOpacity', 'cardOpacity', Number);
+    bindControl('borderColor', 'borderColor');
+    bindControl('borderGlow', 'borderGlow', Number);
+    bindControl('bgImageUrl', 'imageUrl');
+
+    // ===== PRESETS =====
+    function renderPresets() {
+        const row = document.getElementById('bgPresets');
+        if (!row) return;
+        row.innerHTML = '';
+        BG_PRESETS.forEach((preset, idx) => {
+            const swatch = document.createElement('div');
+            swatch.className = 'bg-preset-swatch';
+            swatch.title = preset.name;
+            swatch.style.background = `linear-gradient(135deg, ${preset.c1}, ${preset.c2}, ${preset.c3})`;
+            swatch.addEventListener('click', () => {
+                bgState.preset = preset.name;
+                bgState.c1 = preset.c1;
+                bgState.c2 = preset.c2;
+                bgState.c3 = preset.c3;
+                bgState.particleColor = preset.pc;
+                bgState.borderColor = preset.border;
+                bgState.borderGlow = preset.glow;
+                if (bgState.type === 'none') bgState.type = 'animated';
+                applyBgState(true);
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bgState)); } catch(e) {}
+                document.querySelectorAll('.bg-preset-swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+            });
+            row.appendChild(swatch);
+        });
+    }
+    renderPresets();
+
+    // ===== SAVE / LOAD / RESET =====
+    window.saveBgSettings = function() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(bgState));
+            const btn = document.querySelector('.bg-btn-row button:last-child');
+            if (btn) {
+                btn.textContent = '✅ Saved!';
+                btn.style.background = '#22c55e';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.textContent = '💾 Save';
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 1200);
+            }
+        } catch(e) {}
+    };
+
+    window.resetBgSettings = function() {
+        bgState = {
+            type: 'animated',
+            preset: 'Neon Purple',
+            c1: '#0a0015',
+            c2: '#1a0030',
+            c3: '#0d001a',
+            speed: 12,
+            particles: 30,
+            particleColor: '#a855f7',
+            particleGlow: 8,
+            cardOpacity: 95,
+            borderColor: '#a855f7',
+            borderGlow: 12,
+            imageUrl: '',
+        };
+        try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+        applyBgState(true);
+    };
+
+    function loadBgSettings() {
+        let fromUrl = false;
+        try {
+            // 1. Check URL search or hash parameters (e.g. ?theme=Cyberpunk or ?bg=animated&c1=...)
+            const searchStr = window.location.search || (window.location.hash ? window.location.hash.replace(/^#\??/, '?') : '');
+            if (searchStr && (searchStr.includes('bg=') || searchStr.includes('theme=') || searchStr.includes('preset='))) {
+                const p = new URLSearchParams(searchStr.startsWith('?') ? searchStr : '?' + searchStr);
+                const presetName = p.get('theme') || p.get('preset');
+                if (presetName) {
+                    const found = BG_PRESETS.find(item => item.name.toLowerCase() === presetName.toLowerCase() || item.name.toLowerCase().replace(/\s+/g, '_') === presetName.toLowerCase());
+                    if (found) {
+                        bgState.preset = found.name;
+                        bgState.c1 = found.c1;
+                        bgState.c2 = found.c2;
+                        bgState.c3 = found.c3;
+                        bgState.particleColor = found.pc;
+                        bgState.borderColor = found.border;
+                        bgState.borderGlow = found.glow;
+                        bgState.type = 'animated';
+                    }
+                }
+                if (p.has('bg')) bgState.type = p.get('bg');
+                if (p.has('c1')) bgState.c1 = p.get('c1');
+                if (p.has('c2')) bgState.c2 = p.get('c2');
+                if (p.has('c3')) bgState.c3 = p.get('c3');
+                if (p.has('speed')) bgState.speed = Number(p.get('speed'));
+                if (p.has('particles')) bgState.particles = Number(p.get('particles'));
+                if (p.has('pc')) bgState.particleColor = p.get('pc');
+                if (p.has('pglow')) bgState.particleGlow = Number(p.get('pglow'));
+                if (p.has('cardOpac')) bgState.cardOpacity = Number(p.get('cardOpac'));
+                if (p.has('border')) bgState.borderColor = p.get('border');
+                if (p.has('bglow')) bgState.borderGlow = Number(p.get('bglow'));
+                if (p.has('img')) bgState.imageUrl = p.get('img');
+                fromUrl = true;
+            }
+        } catch(e) {}
+
+        // 2. If not in URL, load from localStorage
+        if (!fromUrl) {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(bgState, parsed);
+                }
+            } catch(e) {}
+        }
+
+        applyBgState(false);
+    }
+
+    // ===== INIT =====
+    loadBgSettings();
+    animateParticles();
+})();
+</script>
+
+<!-- ==================== SPLIT OVERLAY MODAL ==================== -->
+<div class="split-modal-backdrop" id="splitModalBackdrop" onclick="if(event.target === this) closeSplitModal()">
+    <div class="split-modal">
+        <div class="split-modal-header">
+            <h2>⚡ Split Overlay <span style="font-size:10px; font-weight:600; background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.3); border-radius:12px; padding:2px 8px;">🟢 HTTP Server: http://localhost:8080</span></h2>
+            <button class="split-modal-close" onclick="closeSplitModal()" title="Close">✕</button>
+        </div>
+        <p style="font-size:11px; color:#a1a1aa; margin:-8px 0 10px 0;">Use these <strong>http://localhost:8080</strong> links in TikTok LIVE Studio to avoid the <em>"Enter correct URL"</em> error.</p>
+
+        <!-- Resolution Tips & Options -->
+        <div style="background: rgba(30, 27, 46, 0.7); border: 1px solid #3b3065; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #f4f4f5; font-weight: 600; margin-bottom: 5px;">
+                <input type="checkbox" id="splitHideControlsCheckbox" onchange="updateSplitUrls()" style="accent-color: #a855f7; cursor: pointer;">
+                <span>👁️ Hide test buttons on stream (Recommended for clean live overlay)</span>
+            </label>
+            <div style="color: #a1a1aa; font-size: 10.5px; line-height: 1.4;">
+                📏 <strong>TikTok LIVE Studio Resolution:</strong> Set Width: <strong>950</strong>, Height: <strong>115</strong> (for clean cards) or Height: <strong>240</strong> (with buttons).<br>
+                ✨ <em>Auto-fit is also active: if your window is smaller (e.g. 800px), cards & buttons dynamically scale down so nothing is cropped!</em>
+            </div>
+        </div>
+
+        <!-- Split 1 Section (Team Plants) -->
+        <div class="split-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-size:11px; font-weight:700; color:#4ade80;">🌿 SPLIT 1 (Team Plants)</span>
+                <span id="split1CardCountBadge" style="font-size:10px; color:#71717a;">9 items</span>
+            </div>
+            <div class="split-controls-bar">
+                <input type="text" class="split-url-input" id="split1Url" readonly>
+                <select class="split-select" id="split1CountSelect" onchange="onSplitCountChange(1, this.value)">
+                </select>
+                <select class="split-select" id="split1TemplateSelect" onchange="onSplitTemplateChange()">
+                    <option value="1row" selected>1 Row (Horizontal)</option>
+                    <option value="2row">2 Rows (Grid)</option>
+                    <option value="grid">Default Grid</option>
+                </select>
+                <button class="split-copy-btn" id="btnCopySplit1" onclick="copySplitUrl(1)">
+                    📋 Copy URL
+                </button>
+            </div>
+            <div class="split-preview-box" id="split1Preview"></div>
+        </div>
+
+        <!-- Split 2 Section (Team Zombies) -->
+        <div class="split-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-size:11px; font-weight:700; color:#c084fc;">🧟 SPLIT 2 (Team Zombies)</span>
+                <span id="split2CardCountBadge" style="font-size:10px; color:#71717a;">8 items</span>
+            </div>
+            <div class="split-controls-bar">
+                <input type="text" class="split-url-input" id="split2Url" readonly>
+                <select class="split-select" id="split2CountSelect" onchange="onSplitCountChange(2, this.value)">
+                </select>
+                <select class="split-select" id="split2TemplateSelect" onchange="onSplitTemplateChange()">
+                    <option value="1row" selected>1 Row (Horizontal)</option>
+                    <option value="2row">2 Rows (Grid)</option>
+                    <option value="grid">Default Grid</option>
+                </select>
+                <button class="split-copy-btn" id="btnCopySplit2" onclick="copySplitUrl(2)">
+                    📋 Copy URL
+                </button>
+            </div>
+            <div class="split-preview-box" id="split2Preview"></div>
+        </div>
+
+        <!-- Quick actions footer -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid #27272a; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; gap:6px;">
+                <button onclick="openSplitNewTab(1)" style="background:#27272a; color:#e4e4e7; border:1px solid #3f3f46; border-radius:6px; padding:6px 10px; font-size:11px; cursor:pointer;">🔗 Test Split 1 in Tab</button>
+                <button onclick="openSplitNewTab(2)" style="background:#27272a; color:#e4e4e7; border:1px solid #3f3f46; border-radius:6px; padding:6px 10px; font-size:11px; cursor:pointer;">🔗 Test Split 2 in Tab</button>
+            </div>
+            <div style="display:flex; gap:6px;">
+                <button onclick="toggleOnScreenSplitView()" id="btnToggleTeamView" style="background:#1e1b2e; border:1px solid #a855f7; color:#c084fc; border-radius:6px; padding:6px 12px; font-size:11.5px; font-weight:700; cursor:pointer;">
+                    👁️ View Split on Current Screen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SPLIT OVERLAY CONTROLLER ==================== -->
+<script>
+(function() {
+    let currentSplit1Count = 9;
+    let onScreenSplitMode = 0; // 0 = all 17, 1 = split 1 only, 2 = split 2 only
+
+    // Initialize Split Count Selectors
+    function initSplitSelectors() {
+        const s1 = document.getElementById('split1CountSelect');
+        const s2 = document.getElementById('split2CountSelect');
+        if (!s1 || !s2) return;
+
+        s1.innerHTML = '';
+        s2.innerHTML = '';
+
+        for (let i = 1; i <= 16; i++) {
+            const opt1 = document.createElement('option');
+            opt1.value = i;
+            opt1.textContent = i;
+            if (i === currentSplit1Count) opt1.selected = true;
+            s1.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = i;
+            opt2.textContent = i;
+            if (i === (17 - currentSplit1Count)) opt2.selected = true;
+            s2.appendChild(opt2);
+        }
+
+        updateSplitUrls();
+        renderSplitPreviews();
+    }
+
+    // Render Preview mini-cards matching screenshot
+    function renderSplitPreviews() {
+        const p1 = document.getElementById('split1Preview');
+        const p2 = document.getElementById('split2Preview');
+        const countBadge1 = document.getElementById('split1CardCountBadge');
+        const countBadge2 = document.getElementById('split2CardCountBadge');
+        if (!p1 || !p2) return;
+
+        p1.innerHTML = '';
+        p2.innerHTML = '';
+
+        const allCards = Array.from(document.querySelectorAll('.items .event-border'));
+        
+        allCards.forEach((card, idx) => {
+            const num = idx + 1;
+            const funcImg = card.querySelector('.function-icon')?.src || `images/func_${num}.png`;
+            const trigImg = card.querySelector('.trigger-icon')?.src || `images/trig_${num}.webp`;
+            const currentBadgeVal = card.querySelector('.donation-badge')?.textContent || '0';
+
+            const mini = document.createElement('div');
+            mini.className = 'split-mini-card';
+            mini.title = `Card ${num} (Gifts: ${currentBadgeVal})`;
+            mini.innerHTML = `
+                <span class="split-mini-badge" title="Gifting counter indicator">${currentBadgeVal}</span>
+                <img src="${funcImg}" alt="Func">
+                <img src="${trigImg}" alt="Trig">
+            `;
+
+            if (num <= currentSplit1Count) {
+                p1.appendChild(mini);
+            } else {
+                p2.appendChild(mini);
+            }
+        });
+
+        if (countBadge1) countBadge1.textContent = `${currentSplit1Count} items`;
+        if (countBadge2) countBadge2.textContent = `${17 - currentSplit1Count} items`;
+    }
+
+    // Build URL for a specific split
+    function getSplitUrl(splitNum) {
+        let base = 'http://localhost:8080/s2e-overlay.html';
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+            base = window.location.origin + window.location.pathname;
+        }
+
+        const t1 = document.getElementById('split1TemplateSelect')?.value || '1row';
+        const t2 = document.getElementById('split2TemplateSelect')?.value || '1row';
+
+        const p = new URLSearchParams();
+        p.set('split', String(splitNum));
+        if (splitNum === 1) {
+            p.set('count', String(currentSplit1Count));
+            p.set('template', t1);
+        } else {
+            p.set('from', String(currentSplit1Count + 1));
+            p.set('count', String(17 - currentSplit1Count));
+            p.set('template', t2);
+        }
+
+        const hideControls = document.getElementById('splitHideControlsCheckbox')?.checked;
+        if (hideControls) {
+            p.set('controls', '0');
+        }
+
+        // Include current background settings if available
+        if (window.bgState) {
+            p.set('bg', window.bgState.type);
+            if (window.bgState.preset) p.set('preset', window.bgState.preset);
+            p.set('c1', window.bgState.c1);
+            p.set('c2', window.bgState.c2);
+            p.set('c3', window.bgState.c3);
+            p.set('speed', window.bgState.speed);
+            p.set('particles', window.bgState.particles);
+            p.set('pc', window.bgState.particleColor);
+            p.set('pglow', window.bgState.particleGlow);
+            p.set('cardOpac', window.bgState.cardOpacity);
+            p.set('border', window.bgState.borderColor);
+            p.set('bglow', window.bgState.borderGlow);
+        }
+
+        return base + '?' + p.toString();
+    }
+
+    function updateSplitUrls() {
+        const u1 = document.getElementById('split1Url');
+        const u2 = document.getElementById('split2Url');
+        if (u1) u1.value = getSplitUrl(1);
+        if (u2) u2.value = getSplitUrl(2);
+    }
+
+    // Handler when user changes count dropdown
+    window.onSplitCountChange = function(splitSource, val) {
+        val = parseInt(val) || 9;
+        if (splitSource === 1) {
+            currentSplit1Count = Math.max(1, Math.min(16, val));
+        } else {
+            currentSplit1Count = Math.max(1, Math.min(16, 17 - val));
+        }
+
+        const s1 = document.getElementById('split1CountSelect');
+        const s2 = document.getElementById('split2CountSelect');
+        if (s1) s1.value = currentSplit1Count;
+        if (s2) s2.value = 17 - currentSplit1Count;
+
+        updateSplitUrls();
+        renderSplitPreviews();
+    };
+
+    window.onSplitTemplateChange = function() {
+        updateSplitUrls();
+    };
+
+    // Modal open / close
+    window.openSplitModal = function() {
+        const backdrop = document.getElementById('splitModalBackdrop');
+        if (backdrop) {
+            backdrop.classList.add('open');
+            initSplitSelectors();
+        }
+    };
+
+    window.closeSplitModal = function() {
+        const backdrop = document.getElementById('splitModalBackdrop');
+        if (backdrop) backdrop.classList.remove('open');
+    };
+
+    // Copy Split URL
+    window.copySplitUrl = function(splitNum) {
+        const url = getSplitUrl(splitNum);
+        const btn = document.getElementById(`btnCopySplit${splitNum}`);
+
+        const onDone = () => {
+            if (btn) {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                btn.style.background = '#22c55e';
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.style.background = '#0084ff';
+                }, 1800);
+            }
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(onDone).catch(() => prompt(`Copy Split ${splitNum} URL:`, url));
+        } else {
+            prompt(`Copy Split ${splitNum} URL:`, url);
+        }
+    };
+
+    window.openSplitNewTab = function(splitNum) {
+        window.open(getSplitUrl(splitNum), '_blank');
+    };
+
+    // Toggle on-screen split preview
+    window.toggleOnScreenSplitView = function() {
+        onScreenSplitMode = (onScreenSplitMode + 1) % 3;
+        const btn = document.getElementById('btnToggleTeamView');
+        if (onScreenSplitMode === 1) {
+            applySplit(1, currentSplit1Count, '1row', true);
+            if (btn) btn.textContent = '👁️ View Split 2 (Zombies)';
+        } else if (onScreenSplitMode === 2) {
+            applySplit(2, currentSplit1Count, '1row', true);
+            if (btn) btn.textContent = '🔄 View All 17 Cards';
+        } else {
+            applySplit(0, currentSplit1Count, 'grid', false);
+            if (btn) btn.textContent = '👁️ View Split on Current Screen';
+        }
+        closeSplitModal();
+    };
+
+    // Apply split view to DOM
+    function applySplit(splitMode, count = 9, template = '1row', showHeader = false, from = 1) {
+        const allCards = Array.from(document.querySelectorAll('.items .event-border'));
+        const itemsGrid = document.querySelector('.items');
+        const headerPlants = document.getElementById('teamHeaderPlants');
+        const headerZombies = document.getElementById('teamHeaderZombies');
+
+        if (!itemsGrid) return;
+
+        splitMode = parseInt(splitMode) || 0;
+
+        if (splitMode === 0) {
+            // Show all 17 cards
+            allCards.forEach(c => c.style.display = 'flex');
+            itemsGrid.style.gridTemplateColumns = 'repeat(var(--grid-columns, 12), 96px)';
+            if (headerPlants) headerPlants.style.display = 'none';
+            if (headerZombies) headerZombies.style.display = 'none';
+            const row1 = document.getElementById('controlsRow1');
+            const row2 = document.getElementById('controlsRow2');
+            if (row1) row1.style.display = 'flex';
+            if (row2) row2.style.display = 'flex';
+            document.querySelectorAll('.streamer-controls .btn-trigger').forEach(b => b.style.display = '');
+            document.title = 'StreamToEarn PvZ Overlay - All Cards';
+        } else if (splitMode === 1) {
+            // Split 1: Cards 1 to count
+            allCards.forEach((c, idx) => {
+                const cardNum = idx + 1;
+                c.style.display = (cardNum <= count) ? 'flex' : 'none';
+            });
+            if (template === '1row') {
+                itemsGrid.style.gridTemplateColumns = `repeat(${count}, 96px)`;
+            } else if (template === '2row') {
+                itemsGrid.style.gridTemplateColumns = `repeat(${Math.ceil(count / 2)}, 96px)`;
+            } else {
+                itemsGrid.style.gridTemplateColumns = 'repeat(var(--grid-columns, 12), 96px)';
+            }
+            if (headerPlants) headerPlants.style.display = showHeader ? 'inline-block' : 'none';
+            if (headerZombies) headerZombies.style.display = 'none';
+            const row1 = document.getElementById('controlsRow1');
+            const row2 = document.getElementById('controlsRow2');
+            if (row1) row1.style.display = 'flex';
+            if (row2) row2.style.display = 'none';
+            document.querySelectorAll('.streamer-controls .btn-trigger').forEach(b => {
+                const id = parseInt(b.id.replace('btn-trigger-', ''));
+                b.style.display = (id <= count) ? '' : 'none';
+            });
+            document.title = 'StreamToEarn PvZ Overlay - Team Plants';
+        } else if (splitMode === 2) {
+            // Split 2: Cards from 'from' to 'from + count - 1' (or count+1 to 17)
+            const startNum = from > 1 ? from : (count + 1);
+            const numCards = from > 1 ? count : (17 - count);
+
+            allCards.forEach((c, idx) => {
+                const cardNum = idx + 1;
+                c.style.display = (cardNum >= startNum && cardNum < startNum + numCards) ? 'flex' : 'none';
+            });
+
+            if (template === '1row') {
+                itemsGrid.style.gridTemplateColumns = `repeat(${numCards}, 96px)`;
+            } else if (template === '2row') {
+                itemsGrid.style.gridTemplateColumns = `repeat(${Math.ceil(numCards / 2)}, 96px)`;
+            } else {
+                itemsGrid.style.gridTemplateColumns = 'repeat(var(--grid-columns, 12), 96px)';
+            }
+            if (headerPlants) headerPlants.style.display = 'none';
+            if (headerZombies) headerZombies.style.display = showHeader ? 'inline-block' : 'none';
+            const row1 = document.getElementById('controlsRow1');
+            const row2 = document.getElementById('controlsRow2');
+            if (row1) row1.style.display = 'none';
+            if (row2) row2.style.display = 'flex';
+            document.querySelectorAll('.streamer-controls .btn-trigger').forEach(b => {
+                const id = parseInt(b.id.replace('btn-trigger-', ''));
+                b.style.display = (id >= startNum && id < startNum + numCards) ? '' : 'none';
+            });
+            document.title = 'StreamToEarn PvZ Overlay - Team Zombies';
+        }
+
+        // Trigger auto-fit to scale properly
+        if (typeof autoFitOverlay === 'function') autoFitOverlay();
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    // Auto-detect URL parameter on page load (e.g. ?split=1 or ?split=2)
+    function checkUrlSplit() {
+        try {
+            const params = new URLSearchParams(window.location.search || (window.location.hash ? window.location.hash.replace(/^#\??/, '?') : ''));
+            
+            // Check if controls should be hidden (e.g. ?controls=0 or ?controls=hide)
+            const ctrl = params.get('controls');
+            if (ctrl === '0' || ctrl === 'hide' || ctrl === 'false') {
+                document.body.classList.add('hide-controls');
+            } else if (ctrl === '1' || ctrl === 'show' || ctrl === 'true') {
+                document.body.classList.remove('hide-controls');
+            }
+
+            const split = params.get('split');
+            if (split === '1' || split === '2') {
+                const count = parseInt(params.get('count') || '9');
+                const from = parseInt(params.get('from') || '1');
+                const template = params.get('template') || '1row';
+                const showHeader = params.get('header') === '1';
+                currentSplit1Count = (split === '1') ? count : (from > 1 ? (from - 1) : count);
+                applySplit(parseInt(split), count, template, showHeader, from);
+            } else {
+                if (typeof autoFitOverlay === 'function') autoFitOverlay();
+            }
+        } catch(e) {}
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', () => {
+        checkUrlSplit();
+        initSplitSelectors();
+    });
+    checkUrlSplit();
+})();
+</script>
+
+</body>
+</html>

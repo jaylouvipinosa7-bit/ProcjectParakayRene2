@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion 4.0 - Live Stream Grid Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cell-width: 82px;
+            --cell-height: 52px;
+            --grid-cols: 14;
+            --scale-factor: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 8px;
+        }
+
+        /* Top control bar (Hideable in OBS via ?standalone=true or toggle button) */
+        .overlay-control-bar {
+            width: 100%;
+            max-width: 1200px;
+            background: #11141a;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+        }
+
+        .overlay-control-bar.hidden {
+            display: none !important;
+        }
+
+        .dropdown-badge {
+            background: #1a1e26;
+            border: 1px solid #30363d;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .url-display-box {
+            flex: 1;
+            background: #090c10;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #8b949e;
+            font-size: 12px;
+            font-family: monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-obs {
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+            transition: all 0.15s ease;
+        }
+
+        .btn-copy-url { background: #0969da; }
+        .btn-copy-url:hover { background: #218bff; }
+
+        .btn-split { background: #238636; }
+        .btn-split:hover { background: #2ea043; }
+
+        .btn-settings { background: #30363d; }
+        .btn-settings:hover { background: #484f58; }
+
+        .btn-toggle-bar {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* The Authentic StreamToEarn Grid Strip */
+        .s2e-panoramic-container {
+            width: fit-content;
+            background: #000000;
+            border: 2px solid #2d333b;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85);
+            position: relative;
+            transform-origin: top center;
+        }
+
+        /* Continuous Color Bands Background matching Photo 2 */
+        .color-zones-layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .zone-pink {
+            width: 28%;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.55) 0%, rgba(236, 72, 153, 0.35) 100%);
+        }
+
+        .zone-purple {
+            width: 14%;
+            background: linear-gradient(135deg, rgba(192, 132, 252, 0.55) 0%, rgba(168, 85, 247, 0.35) 100%);
+        }
+
+        .zone-yellow {
+            width: 43%;
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.55) 0%, rgba(234, 179, 8, 0.35) 100%);
+        }
+
+        .zone-blue {
+            width: 15%;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.55) 0%, rgba(14, 165, 233, 0.35) 100%);
+        }
+
+        /* Grid of cells */
+        .grid-cells-table {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(var(--grid-cols, 14), var(--cell-width, 82px));
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .grid-cell {
+            height: var(--cell-height, 52px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 6px;
+            background: rgba(18, 22, 28, 0.52);
+            backdrop-filter: blur(4px);
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .grid-cell:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .grid-cell.active-trigger {
+            animation: cellPulse 0.8s ease;
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: inset 0 0 12px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.8);
+            z-index: 10;
+        }
+
+        @keyframes cellPulse {
+            0% { transform: scale(1); filter: brightness(1); }
+            35% { transform: scale(1.15); filter: brightness(1.7); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+
+        /* Left: In-game Unit Icon */
+        .cell-unit-img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .grid-cell:hover .cell-unit-img {
+            transform: scale(1.1);
+        }
+
+        /* Right: Trigger Badge */
+        .cell-trig-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            min-width: 28px;
+        }
+
+        .cell-trig-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        }
+
+        /* Numeric Like Pill */
+        .pill-badge {
+            font-size: 11px;
+            font-weight: 900;
+            color: #ffffff;
+            padding: 2px 6px;
+            border-radius: 12px;
+            border: 1.5px solid #ffffff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            white-space: nowrap;
+        }
+
+        .pill-likes-100 {
+            background: #ef4444;
+            border-color: #fecaca;
+        }
+
+        .pill-likes-50k {
+            background: #0284c7;
+            border-color: #bae6fd;
+        }
+
+        .pill-follow {
+            background: #10b981;
+            border-color: #a7f3d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        /* Split Mode Layout */
+        .s2e-panoramic-container.split-mode .grid-cells-table {
+            grid-template-columns: repeat(7, calc(var(--cell-width) * 2));
+        }
+
+        /* Modal for settings */
+        .settings-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .settings-modal.active { display: flex; }
+        .settings-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 20px;
+            width: 360px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP OBS CONTROLS BAR (Exact match to Photo 2) -->
+    <div class="overlay-control-bar" id="controlBar">
+        <div class="dropdown-badge" onclick="toggleSettingsModal()">
+            <span>Overlay</span>
+            <span style="font-size: 9px;">▼</span>
+        </div>
+        <div class="url-display-box" id="urlDisplay">http://localhost:8080/overlay-grid.html</div>
+        <button type="button" class="btn-obs btn-copy-url" onclick="copyOverlayUrl()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy URL
+        </button>
+        <button type="button" class="btn-obs btn-split" onclick="toggleSplitMode()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            Split
+        </button>
+        <button type="button" class="btn-obs btn-settings" onclick="toggleSettingsModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Overlay Settings
+        </button>
+        <button type="button" class="btn-toggle-bar" onclick="hideControlBar()" title="Hide toolbar (for OBS)">▲</button>
+    </div>
+
+    <!-- THE AUTHENTIC STREAMTOEARN PANORAMIC GRID OVERLAY -->
+    <div class="s2e-panoramic-container" id="gridContainer">
+        <!-- 4 Continuous Color Zones -->
+        <div class="color-zones-layer">
+            <div class="zone-pink"></div>
+            <div class="zone-purple"></div>
+            <div class="zone-yellow"></div>
+            <div class="zone-blue"></div>
+        </div>
+
+        <!-- Multi-Column Grid Cells -->
+        <div class="grid-cells-table" id="cellsGrid">
+            <!-- Dynamically populated from cards.json -->
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="font-size:15px; font-weight:800;">Overlay Settings</h3>
+                <button type="button" onclick="toggleSettingsModal()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <div>
+                    <label style="font-size:12px; color:#8b949e; display:block; margin-bottom:4px;">Scale Size</label>
+                    <input type="range" min="0.5" max="1.5" step="0.05" value="1" oninput="setScale(this.value)" style="width:100%;">
+                </div>
+                <div>
+                    <label style="font-size:12px; color:#8b949e; display:block; margin-bottom:4px;">Grid Columns (Default: 14)</label>
+                    <input type="number" id="colsInput" min="6" max="20" value="14" onchange="setCols(this.value)" style="width:100%; background:#0d1117; border:1px solid #30363d; border-radius:4px; padding:6px; color:#fff;">
+                </div>
+                <button type="button" class="btn-obs btn-copy-url" onclick="toggleSettingsModal()" style="margin-top:8px; justify-content:center;">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cards = [];
+        let lastEventTime = 0;
+        let isSplit = false;
+
+        // Initialize URL display
+        document.getElementById('urlDisplay').innerText = window.location.href;
+
+        // Check standalone / OBS query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('standalone') === 'true' || urlParams.get('obs') === 'true') {
+            document.getElementById('controlBar').classList.add('hidden');
+        }
+        if (urlParams.get('cols')) {
+            setCols(parseInt(urlParams.get('cols')));
+        }
+
+        async function loadCards() {
+            try {
+                const res = await fetch('/api/cards');
+                cards = await res.json();
+                renderGrid();
+            } catch (err) {
+                console.error("Failed to load cards:", err);
+            }
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('cellsGrid');
+            if (!grid || !cards) return;
+            grid.innerHTML = '';
+
+            cards.forEach(card => {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.id = `cell_${card.id}`;
+                cell.title = `${card.giftName} -> ${card.funcName}`;
+
+                // Left: Unit Image
+                const unitImg = document.createElement('img');
+                unitImg.className = 'cell-unit-img';
+                unitImg.src = card.funcImg || 'images/func_2.png';
+                unitImg.onerror = () => { unitImg.src = 'images/func_2.png'; };
+
+                // Right: Trigger Image or Pill Badge
+                const trigWrap = document.createElement('div');
+                trigWrap.className = 'cell-trig-wrap';
+
+                const trigVal = String(card.triggerValue || '').toLowerCase();
+                const cardAct = String(card.action || '');
+
+                if (card.id === '1' || trigVal === '50' || trigVal === '100') {
+                    // Likes pill
+                    const pill = document.createElement('span');
+                    pill.className = 'pill-badge pill-likes-100';
+                    pill.innerText = card.triggerValue || '100';
+                    trigWrap.appendChild(pill);
+                } else if (card.id === '3' || trigVal === '50000' || trigVal === '50k') {
+                    // Stream goal pill
+                    const pill = document.createElement('span');
+                    pill.className = 'pill-badge pill-likes-50k';
+                    pill.innerText = '50k';
+                    trigWrap.appendChild(pill);
+                } else if (card.id === '4' || cardAct === 'Follow') {
+                    // Follower green icon
+                    const pill = document.createElement('div');
+                    pill.className = 'pill-follow';
+                    pill.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>`;
+                    trigWrap.appendChild(pill);
+                } else {
+                    // TikTok Gift Icon
+                    const trigImg = document.createElement('img');
+                    trigImg.className = 'cell-trig-img';
+                    trigImg.src = card.trigImg || 'images/tiktok-gifts/5655_rose.webp';
+                    trigImg.onerror = () => { trigImg.src = 'images/tiktok-gifts/5655_rose.webp'; };
+                    trigWrap.appendChild(trigImg);
+                }
+
+                cell.appendChild(unitImg);
+                cell.appendChild(trigWrap);
+                grid.appendChild(cell);
+            });
+        }
+
+        // Live Event Polling for pulse/glow animation
+        function startEventPolling() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/events?since=${lastEventTime}`);
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTime = data.serverTime;
+
+                    if (data.events && data.events.length > 0) {
+                        data.events.forEach(ev => {
+                            if (ev.hideInOverlay) return;
+                            highlightTrigger(ev);
+                        });
+                    }
+                } catch {}
+            }, 300);
+        }
+
+        function highlightTrigger(ev) {
+            let targetCardId = ev.cardId;
+            if (!targetCardId && cards) {
+                const match = cards.find(c => (c.giftName && ev.label && ev.label.toLowerCase().includes(c.giftName.toLowerCase())) || (c.commands && ev.command && ev.command.includes(c.commands)));
+                if (match) targetCardId = match.id;
+            }
+
+            if (targetCardId) {
+                const cell = document.getElementById(`cell_${targetCardId}`);
+                if (cell) {
+                    cell.classList.remove('active-trigger');
+                    void cell.offsetWidth;
+                    cell.classList.add('active-trigger');
+                }
+            }
+        }
+
+        function copyOverlayUrl() {
+            const standaloneUrl = window.location.origin + window.location.pathname + '?standalone=true';
+            navigator.clipboard.writeText(standaloneUrl).then(() => {
+                alert("Copied OBS Browser Source URL to clipboard!\n\n" + standaloneUrl);
+            });
+        }
+
+        function toggleSplitMode() {
+            isSplit = !isSplit;
+            const container = document.getElementById('gridContainer');
+            if (isSplit) {
+                container.classList.add('split-mode');
+            } else {
+                container.classList.remove('split-mode');
+            }
+        }
+
+        function toggleSettingsModal() {
+            document.getElementById('settingsModal').classList.toggle('active');
+        }
+
+        function hideControlBar() {
+            document.getElementById('controlBar').classList.add('hidden');
+        }
+
+        function setScale(val) {
+            const container = document.getElementById('gridContainer');
+            container.style.transform = `scale(${val})`;
+        }
+
+        function setCols(cols) {
+            document.documentElement.style.setProperty('--grid-cols', cols);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCards();
+            startEventPolling();
+        });
+    </script>
+</body>
+</html>

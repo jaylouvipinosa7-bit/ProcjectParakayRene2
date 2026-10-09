@@ -1,0 +1,18 @@
+﻿{
+    "spinners":  [
+
+                 ],
+    "streamer":  {
+                     "soundEnabled":  true,
+                     "userName":  "Gohan Malunggay",
+                     "volume":  0.6,
+                     "userPicture":  "https://ui-avatars.com/api/?name=gohanmalunggay\u0026background=000000\u0026color=25f4ee\u0026size=128\u0026bold=true",
+                     "autoConnect":  true,
+                     "userEmail":  "tiktok_gohanmalunggay@tiktok.live",
+                     "platform":  "tiktok",
+                     "tiktokUsername":  "gohanmalunggay"
+                 },
+    "gifts":  [
+
+              ]
+}

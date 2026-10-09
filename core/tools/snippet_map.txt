@@ -1,0 +1,72 @@
+﻿,
+    "effect": "1"
+  },
+  "invulnerable_plants": {
+    "endpoint": "/invulnerableplants",
+    "effect": "10"
+  },
+  "invulnerable_zombies": {
+    "endpoint": "/zombiesx0demage",
+    "effect": "10"
+  },
+  "start_lawnmowers": {
+    "endpoint": "/startlawnmowers",
+    "effect": "1"
+  },
+  "restart_lawnmowers": {
+    "endpoint": "/restartlawnmowers",
+    "effect": "1"
+  },
+  "remove_lawnmowers": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "delete_lawnmowers": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "delete_lawnmower": {
+    "endpoint": "/deletelawnmowers",
+    "effect": "1"
+  },
+  "spawn_peashooter": {
+    "endpoint": "/spawnplant",
+    "effect": "0"
+  },
+  "spawn_pea_sun_flower": {
+    "endpoint": "/spawnplant",
+    "effect": "1000"
+  },
+  "spawn_cherry_bomb": {
+    "endpoint": "/spawnplant",
+    "effect": "2"
+  },
+  "spawn_wall_nut": {
+    "endpoint": "/spawnplant",
+    "effect": "3"
+  },
+  "spawn_potato_mine": {
+    "endpoint": "/spawnplant",
+    "effect": "4"
+  },
+  "spawn_snow_pea_shooter": {
+    "endpoint": "/spawnplant",
+    "effect": "1034"
+  },
+  "spawn_chomper": {
+    "endpoint": "/spawnplant",
+    "effect": "5"
+  },
+  "spawn_gatling_pea": {
+    "endpoint": "/spawnplant",
+    "effect": "1032"
+  },
+  "spawn_small_puff": {
+    "endpoint": "/spawnplant",
+    "effect": "6"
+  },
+  "spawn_sun_shroom": {
+    "endpoint": "/spawnplant",
+    "effect": "1031"
+  },
+  
