@@ -113,6 +113,60 @@ function SaveCounts {
     } catch {}
 }
 
+# Win / Lose Widget State & Persistence
+$winWidgetFile = Join-Path $folder "win_widget_state.json"
+function Load-WinWidget {
+    if (Test-Path $winWidgetFile) {
+        try {
+            $w = Get-Content $winWidgetFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($w) { return $w }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        enabled = $true
+        score = -4
+        target = 5
+        wins = 472
+        losses = 6724
+        autoWin = $true
+        hotkeysEnabled = $true
+        label = "Win"
+    }
+}
+
+function Save-WinWidget($w) {
+    try {
+        $json = $w | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($winWidgetFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:winWidget = Load-WinWidget
+
+function Update-WinWidgetScore([int]$delta, [string]$reason = "spinner", [string]$label = "") {
+    if (-not $script:winWidget) { $script:winWidget = Load-WinWidget }
+    $script:winWidget.score = [int]$script:winWidget.score + $delta
+    if ($delta -gt 0) {
+        $script:winWidget.wins = [int]$script:winWidget.wins + 1
+    } elseif ($delta -lt 0) {
+        $script:winWidget.losses = [int]$script:winWidget.losses + 1
+    }
+    Save-WinWidget $script:winWidget
+
+    AddEventLog @{
+        type = "win_widget_update"
+        score = $script:winWidget.score
+        target = $script:winWidget.target
+        wins = $script:winWidget.wins
+        losses = $script:winWidget.losses
+        delta = $delta
+        reason = $reason
+        label = $label
+        enabled = [bool]$script:winWidget.enabled
+    }
+    return $script:winWidget
+}
+
 function LoadConfig {
     if (Test-Path $configFile) {
         try {
@@ -1110,6 +1164,114 @@ while ($true) {
             continue
         }
 
+        # 6.95. Win / Lose Widget Endpoints
+        if ($reqPath -eq '/api/win-widget') {
+            if ($request.HttpMethod -eq 'GET') {
+                Send-JsonResponse $response (Load-WinWidget)
+                continue
+            }
+            if ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $data = $body | ConvertFrom-Json
+                    $cur = Load-WinWidget
+                    if ($data.score -ne $null) { $cur.score = [int]$data.score }
+                    if ($data.target -ne $null) { $cur.target = [int]$data.target }
+                    if ($data.wins -ne $null) { $cur.wins = [int]$data.wins }
+                    if ($data.losses -ne $null) { $cur.losses = [int]$data.losses }
+                    if ($data.autoWin -ne $null) { $cur.autoWin = [bool]$data.autoWin }
+                    if ($data.enabled -ne $null) { $cur.enabled = [bool]$data.enabled }
+                    if ($data.label) { $cur.label = [string]$data.label }
+                    
+                    Save-WinWidget $cur
+                    $script:winWidget = $cur
+
+                    AddEventLog @{
+                        type = "win_widget_update"
+                        score = $cur.score
+                        target = $cur.target
+                        wins = $cur.wins
+                        losses = $cur.losses
+                        autoWin = $cur.autoWin
+                        enabled = $cur.enabled
+                        label = $cur.label
+                        reason = "manual_update"
+                    }
+                    Send-JsonResponse $response $cur
+                } catch {
+                    Send-JsonResponse $response @{ error = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/win-widget/adjust' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                $cur = Load-WinWidget
+                $action = if ($data.action) { [string]$data.action } else { "" }
+                $delta = if ($data.delta -ne $null) { [int]$data.delta } else { 0 }
+
+                switch ($action) {
+                    "win" {
+                        $cur.wins = [int]$cur.wins + 1
+                        $cur.score = [int]$cur.score + 1
+                    }
+                    "lose" {
+                        $cur.losses = [int]$cur.losses + 1
+                        $cur.score = [int]$cur.score - 1
+                    }
+                    "win_plus" {
+                        $cur.wins = [int]$cur.wins + 1
+                    }
+                    "win_minus" {
+                        $cur.wins = [Math]::Max(0, [int]$cur.wins - 1)
+                    }
+                    "lose_plus" {
+                        $cur.losses = [int]$cur.losses + 1
+                    }
+                    "lose_minus" {
+                        $cur.losses = [Math]::Max(0, [int]$cur.losses - 1)
+                    }
+                    "reset" {
+                        $cur.score = 0
+                        $cur.wins = 0
+                        $cur.losses = 0
+                    }
+                    default {
+                        if ($delta -ne 0) {
+                            $cur.score = [int]$cur.score + $delta
+                            if ($delta -gt 0) {
+                                $cur.wins = [int]$cur.wins + 1
+                            } else {
+                                $cur.losses = [int]$cur.losses + 1
+                            }
+                        }
+                    }
+                }
+
+                Save-WinWidget $cur
+                $script:winWidget = $cur
+
+                AddEventLog @{
+                    type = "win_widget_update"
+                    score = $cur.score
+                    target = $cur.target
+                    wins = $cur.wins
+                    losses = $cur.losses
+                    delta = $delta
+                    action = $action
+                    enabled = $cur.enabled
+                    reason = "adjust"
+                }
+                Send-JsonResponse $response $cur
+            } catch {
+                Send-JsonResponse $response @{ error = $_.Exception.Message } 400
+            }
+            continue
+        }
+
         # 7. Spin Lucky Wheel / Reel (Multi-Spinner Support)
         if ($reqPath -eq '/api/spin') {
             $config = LoadConfig
@@ -1158,11 +1320,27 @@ while ($true) {
             $exec = @{ success = $true }
             $spHide = $false
             if ($pickedSlice -and -not $noGame) {
-                $spReps = if ($pickedSlice.repetition) { [int]$pickedSlice.repetition } else { 1 }
-                $spDelay = if ($pickedSlice.delay) { [int]$pickedSlice.delay } else { 0 }
-                $spInterval = if ($pickedSlice.interval) { [int]$pickedSlice.interval } else { 100 }
-                $spHide = ($pickedSlice.hideInOverlay -eq $true -or $pickedSlice.hideInOverlay -eq "true")
-                $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $pickedSlice.amount $username "" $spReps $spDelay $spInterval
+                if ($pickedSlice.actionType -and $pickedSlice.actionType -ne "score" -and $pickedSlice.command) {
+                    $spReps = if ($pickedSlice.repetition) { [int]$pickedSlice.repetition } else { 1 }
+                    $spDelay = if ($pickedSlice.delay) { [int]$pickedSlice.delay } else { 0 }
+                    $spInterval = if ($pickedSlice.interval) { [int]$pickedSlice.interval } else { 100 }
+                    $spHide = ($pickedSlice.hideInOverlay -eq $true -or $pickedSlice.hideInOverlay -eq "true")
+                    $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $pickedSlice.amount $username "" $spReps $spDelay $spInterval
+                }
+            }
+
+            # If slice has positive/negative numerical value, auto-update Win Widget!
+            $deltaVal = 0
+            if ($pickedSlice.delta -ne $null) {
+                $deltaVal = [int]$pickedSlice.delta
+            } elseif ($pickedSlice.value -ne $null) {
+                $deltaVal = [int]$pickedSlice.value
+            } elseif ($pickedSlice.label -match '^([+-]?\d+)$') {
+                $deltaVal = [int]$matches[1]
+            }
+
+            if ($deltaVal -ne 0) {
+                Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
             }
 
             $spName = if ($targetSpinner -and $targetSpinner.name) { $targetSpinner.name } else { "Spinner" }
@@ -1192,6 +1370,7 @@ while ($true) {
                 winner = $pickedSlice
                 spinner = $targetSpinner
                 gameExecuted = $exec.success
+                winWidgetScore = $script:winWidget.score
             }
             $bytes = [System.Text.Encoding]::UTF8.GetBytes(($resObj | ConvertTo-Json -Depth 6))
             $response.ContentType = 'application/json; charset=utf-8'
@@ -1261,9 +1440,25 @@ while ($true) {
                         }
 
                         if ($picked) {
-                            # Summon the won unit directly in PvZ Fusion mod!
-                            $totalSpawns = [int]($picked.amount) * [Math]::Max(1, $repeatCount)
-                            SendToPvZGame $picked.actionType $picked.command $totalSpawns $user | Out-Null
+                            if ($picked.actionType -and $picked.actionType -ne "score" -and $picked.command) {
+                                # Summon the won unit directly in PvZ Fusion mod!
+                                $totalSpawns = [int]($picked.amount) * [Math]::Max(1, $repeatCount)
+                                SendToPvZGame $picked.actionType $picked.command $totalSpawns $user | Out-Null
+                            }
+
+                            # Auto-adjust Win Widget score if slice has delta or numerical value!
+                            $deltaVal = 0
+                            if ($picked.delta -ne $null) {
+                                $deltaVal = [int]$picked.delta
+                            } elseif ($picked.value -ne $null) {
+                                $deltaVal = [int]$picked.value
+                            } elseif ($picked.label -match '^([+-]?\d+)$') {
+                                $deltaVal = [int]$matches[1]
+                            }
+
+                            if ($deltaVal -ne 0) {
+                                Update-WinWidgetScore $deltaVal "tiktok_gift" $picked.label
+                            }
                         }
 
                         $spName = $matchedSpinner.name

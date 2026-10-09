@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion - Win Widget OBS Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* OBS TRANSPARENT BACKGROUND */
+        html, body {
+            background: transparent !important;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 24px;
+        }
+
+        /* FLOATING PARTICLES CONTAINER */
+        #floatingDeltaLayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* ================= COMPACT BADGE (MATCHES IMAGE 2) ================= */
+        .win-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(18, 21, 31, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 9999px;
+            padding: 8px 22px 8px 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.2);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+            position: relative;
+        }
+
+        .win-badge-pill.pop-anim {
+            animation: badgePop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.15); border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+            100% { transform: scale(1); }
+        }
+
+        .trophy-icon {
+            font-size: 26px;
+            line-height: 1;
+            filter: drop-shadow(0 3px 6px rgba(245, 158, 11, 0.6));
+            animation: trophyWiggle 3s ease-in-out infinite;
+        }
+
+        @keyframes trophyWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-8deg); }
+            40% { transform: rotate(8deg); }
+            60% { transform: rotate(-4deg); }
+            80% { transform: rotate(4deg); }
+        }
+
+        .win-label-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: #f0f6fc;
+            letter-spacing: -0.2px;
+        }
+
+        /* SCORE BOX (PINK/RED WHEN NEGATIVE, GREEN/GOLD WHEN POSITIVE) */
+        .score-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 36, 51, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 2px 14px;
+            min-width: 44px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            transition: color 0.3s ease, transform 0.2s ease, text-shadow 0.3s ease;
+        }
+
+        .score-box.is-negative {
+            color: #ff007f; /* Matches authentic pink in Image 2 */
+            text-shadow: 0 0 14px rgba(255, 0, 127, 0.6);
+            border-color: rgba(255, 0, 127, 0.3);
+        }
+
+        .score-box.is-positive {
+            color: #10b981;
+            text-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .score-box.is-zero {
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .divider-slash {
+            font-size: 22px;
+            font-weight: 800;
+            color: #8b949e;
+            margin: 0 -2px;
+        }
+
+        .target-goal {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        /* ================= CARDS MODE (MATCHES IMAGE 3) ================= */
+        .win-cards-container {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(13, 17, 23, 0.94);
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+            max-width: 380px;
+        }
+
+        body.mode-cards .win-cards-container {
+            display: flex;
+        }
+
+        body.mode-cards .win-badge-pill {
+            display: none;
+        }
+
+        .cards-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #f0f6fc;
+        }
+
+        .cards-dual-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .win-card-box {
+            border-radius: 12px;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1.5px solid transparent;
+        }
+
+        .win-card-box.card-lose {
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.16) 0%, rgba(20, 10, 15, 0.85) 100%);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .win-card-box.card-win {
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.16) 0%, rgba(10, 20, 15, 0.85) 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .card-tag {
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .card-lose .card-tag { color: #f87171; }
+        .card-win .card-tag { color: #34d399; }
+
+        .card-big-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        /* DELTA FLOATING BUBBLE */
+        .delta-bubble {
+            position: absolute;
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            animation: floatFade 1.4s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .delta-bubble.positive {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+        }
+
+        .delta-bubble.negative {
+            color: #ff007f;
+            background: rgba(255, 0, 127, 0.2);
+            border: 1px solid #ff007f;
+            box-shadow: 0 0 16px rgba(255, 0, 127, 0.6);
+        }
+
+        @keyframes floatFade {
+            0% { opacity: 0; transform: translateY(0) scale(0.6); }
+            20% { opacity: 1; transform: translateY(-15px) scale(1.15); }
+            80% { opacity: 0.9; transform: translateY(-40px) scale(1); }
+            100% { opacity: 0; transform: translateY(-65px) scale(0.85); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COMPACT WIN BADGE (IMAGE 2) -->
+    <div id="winBadgePill" class="win-badge-pill">
+        <span class="trophy-icon">🏆</span>
+        <span class="win-label-text" id="winLabelText">Win</span>
+        <span class="score-box is-negative" id="scoreValue">-4</span>
+        <span class="divider-slash">/</span>
+        <span class="target-goal" id="targetValue">5</span>
+    </div>
+
+    <!-- DUAL CARDS VIEW (IMAGE 3) -->
+    <div id="winCardsContainer" class="win-cards-container">
+        <div class="cards-header">
+            <span>🏆</span>
+            <span id="cardsTitle">Win Widget</span>
+        </div>
+        <div class="cards-dual-row">
+            <div class="win-card-box card-lose">
+                <div class="card-tag">🌿 LOSE 🌿</div>
+                <div class="card-big-number" id="cardLoseCount">6724</div>
+            </div>
+            <div class="win-card-box card-win">
+                <div class="card-tag">🌿 WIN 🌿</div>
+                <div class="card-big-number" id="cardWinCount">472</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="floatingDeltaLayer"></div>
+
+    <script>
+        let currentScore = -4;
+        let currentTarget = 5;
+        let currentWins = 472;
+        let currentLosses = 6724;
+        let lastServerTime = 0;
+
+        // Check URL params (?mode=cards)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'cards' || urlParams.get('view') === 'cards') {
+            document.body.classList.add('mode-cards');
+        }
+
+        function updateUI(data, delta = null) {
+            if (!data) return;
+
+            const scoreEl = document.getElementById('scoreValue');
+            const targetEl = document.getElementById('targetValue');
+            const labelEl = document.getElementById('winLabelText');
+            const loseEl = document.getElementById('cardLoseCount');
+            const winEl = document.getElementById('cardWinCount');
+            const badgeEl = document.getElementById('winBadgePill');
+
+            currentScore = Number(data.score ?? currentScore);
+            currentTarget = Number(data.target ?? currentTarget);
+            currentWins = Number(data.wins ?? currentWins);
+            currentLosses = Number(data.losses ?? currentLosses);
+
+            if (labelEl && data.label) labelEl.textContent = data.label;
+            if (targetEl) targetEl.textContent = currentTarget;
+            if (loseEl) loseEl.textContent = currentLosses;
+            if (winEl) winEl.textContent = currentWins;
+
+            if (scoreEl) {
+                scoreEl.textContent = currentScore;
+                scoreEl.className = 'score-box';
+                if (currentScore < 0) {
+                    scoreEl.classList.add('is-negative');
+                } else if (currentScore > 0) {
+                    scoreEl.classList.add('is-positive');
+                } else {
+                    scoreEl.classList.add('is-zero');
+                }
+            }
+
+            if (delta !== null && delta !== 0) {
+                spawnDeltaBubble(delta);
+                if (badgeEl) {
+                    badgeEl.classList.remove('pop-anim');
+                    void badgeEl.offsetWidth; // trigger reflow
+                    badgeEl.classList.add('pop-anim');
+                }
+            }
+        }
+
+        function spawnDeltaBubble(delta) {
+            const layer = document.getElementById('floatingDeltaLayer');
+            if (!layer) return;
+
+            const badge = document.getElementById('winBadgePill');
+            const rect = badge.getBoundingClientRect();
+
+            const bubble = document.createElement('div');
+            const isPos = delta > 0;
+            bubble.className = `delta-bubble ${isPos ? 'positive' : 'negative'}`;
+            bubble.textContent = (isPos ? '+' : '') + delta;
+
+            bubble.style.left = (rect.left + rect.width / 2 - 20) + 'px';
+            bubble.style.top = (rect.top) + 'px';
+
+            layer.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 1500);
+        }
+
+        async function fetchInitialState() {
+            try {
+                const res = await fetch('/api/win-widget?t=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    updateUI(data);
+                }
+            } catch (err) {
+                console.warn('Initial win-widget fetch error:', err);
+            }
+        }
+
+        async function pollEvents() {
+            try {
+                const res = await fetch(`/api/events?since=${lastServerTime}&t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    lastServerTime = data.serverTime || lastServerTime;
+
+                    if (data.events && Array.isArray(data.events)) {
+                        for (const ev of data.events) {
+                            if (ev.type === 'win_widget_update') {
+                                updateUI(ev, ev.delta);
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                // Ignore transient network errors
+            } finally {
+                setTimeout(pollEvents, 500);
+            }
+        }
+
+        fetchInitialState();
+        pollEvents();
+    </script>
+</body>
+</html>

@@ -587,15 +587,32 @@
                 card.dataset.index = index;
                 card.dataset.id = item.id;
 
+                const isScore = item.actionType === 'score' || (item.delta !== undefined && item.delta !== null) || /^([+-]?\d+)$/.test(String(item.label || ''));
+                const col = item.color || '#38bdf8';
                 const imgSrc = item.unitIcon || item.image || item.icon || 'images/func_2.png';
                 const labelText = item.label || item.text || item.name || 'Unit';
 
-                card.innerHTML = `
-                    <div class="card-img-wrap">
-                        <img src="${imgSrc}" onerror="this.src='images/func_2.png'" alt="${labelText}">
-                    </div>
-                    <div class="card-label" title="${labelText}">${labelText}</div>
-                `;
+                if (isScore) {
+                    card.style.borderColor = col;
+                    card.style.boxShadow = `0 0 18px ${col}40`;
+                    card.innerHTML = `
+                        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; padding:8px;">
+                            <div style="font-family:'Outfit', sans-serif; font-size:42px; font-weight:900; color:${col}; text-shadow:0 0 16px ${col}; line-height:1; letter-spacing:-1px;">
+                                ${labelText}
+                            </div>
+                            <div style="font-size:11px; font-weight:800; color:#94a3b8; margin-top:6px; letter-spacing:0.5px;">
+                                ${parseInt(labelText) >= 0 ? 'WIN +' : 'LOSE -'}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="card-img-wrap">
+                            <img src="${imgSrc}" onerror="this.src='images/func_2.png'" alt="${labelText}">
+                        </div>
+                        <div class="card-label" title="${labelText}">${labelText}</div>
+                    `;
+                }
                 track.appendChild(card);
             });
 
@@ -731,7 +748,14 @@
                 // Show Winner Celebration Banner
                 const banner = document.getElementById('winnerBanner');
                 const itemNameSpan = document.getElementById('winnerItemName');
-                itemNameSpan.innerText = winningItem.label || winningItem.text || 'Prize';
+                const isScoreWin = winningItem.actionType === 'score' || (winningItem.delta !== undefined && winningItem.delta !== null) || /^([+-]?\d+)$/.test(String(winningItem.label || ''));
+                if (isScoreWin) {
+                    const deltaVal = parseInt(winningItem.delta ?? winningItem.label ?? 0);
+                    const isPos = deltaVal >= 0;
+                    itemNameSpan.innerHTML = `<span style="color:${isPos ? '#10b981' : '#f43f5e'}; font-weight:900;">${isPos ? '+' : ''}${deltaVal} ${isPos ? 'Score Added to WIN!' : 'Score Deducted!'}</span>`;
+                } else {
+                    itemNameSpan.innerText = winningItem.label || winningItem.text || 'Prize';
+                }
                 banner.style.display = 'flex';
 
                 if (onComplete) onComplete(winningItem);

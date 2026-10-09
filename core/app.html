@@ -1311,6 +1311,300 @@
             flex-shrink: 0;
         }
 
+        /* ==================== WIN WIDGET CONTROL (EXACT MATCH TO PHOTO 3) ==================== */
+        .win-widget-card-container {
+            background: #0d1117;
+            border: 1.5px solid #21262d;
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            user-select: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .win-widget-card-container:hover {
+            border-color: #30363d;
+        }
+
+        .win-widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .win-widget-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .win-widget-title-wrap .trophy-emoji {
+            font-size: 22px;
+            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.4));
+        }
+
+        .win-widget-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .win-widget-cards-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .lose-card-box {
+            background: linear-gradient(180deg, rgba(92, 18, 28, 0.35) 0%, rgba(20, 24, 33, 0.85) 100%);
+            border: 1.5px solid #671e27;
+            border-radius: 12px;
+            padding: 12px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: inset 0 0 16px rgba(239, 68, 68, 0.08);
+        }
+
+        .win-card-box {
+            background: linear-gradient(180deg, rgba(16, 85, 48, 0.35) 0%, rgba(20, 24, 33, 0.85) 100%);
+            border: 1.5px solid #165b38;
+            border-radius: 12px;
+            padding: 12px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: inset 0 0 16px rgba(16, 185, 129, 0.08);
+        }
+
+        .wreath-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .laurel-leaf {
+            font-size: 13px;
+            line-height: 1;
+        }
+        .laurel-leaf.flip {
+            transform: scaleX(-1);
+        }
+
+        .lose-wreath {
+            color: #f87171;
+        }
+
+        .win-wreath {
+            color: #34d399;
+        }
+
+        .card-tag {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .lose-tag {
+            color: #ef4444;
+        }
+
+        .win-tag {
+            color: #10b981;
+        }
+
+        .card-big-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            color: #ffffff;
+            text-align: center;
+            margin: 4px 0 10px;
+            line-height: 1;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-btn-duo {
+            display: flex;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(13, 17, 23, 0.7);
+        }
+
+        .duo-btn {
+            flex: 1;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: #38bdf8;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .duo-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            color: #ffffff;
+        }
+
+        .duo-btn:active {
+            transform: scale(0.96);
+        }
+
+        .card-btn-duo .duo-btn:first-child {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .win-widget-score-pill-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(22, 27, 34, 0.7);
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 8px 12px;
+            gap: 10px;
+        }
+
+        .win-score-badge-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-num-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 10px;
+            border-radius: 6px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            min-width: 38px;
+            transition: all 0.25s;
+        }
+
+        .score-num-box.is-negative {
+            color: #f43f5e;
+            border-color: rgba(244, 63, 94, 0.4);
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.25);
+        }
+
+        .score-num-box.is-positive {
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+        }
+
+        .target-inline-input {
+            width: 44px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            text-align: center;
+            padding: 2px 4px;
+        }
+
+        .win-widget-hotkeys-caption {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            letter-spacing: 0.3px;
+        }
+
+        .win-widget-hotkeys-caption strong {
+            font-size: 14px;
+            padding: 0 2px;
+        }
+
+        .win-widget-footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 4px;
+        }
+
+        .win-checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            color: #c9d1d9;
+        }
+
+        .btn-reset-counter {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #58a6ff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-reset-counter:hover {
+            background: #21262d;
+            border-color: #58a6ff;
+            color: #ffffff;
+        }
+
+        /* NEON NUMBER MINI CARDS STRIP (MATCHES USER IMAGE 1) */
+        .mini-neon-badge {
+            min-width: 28px;
+            height: 32px;
+            padding: 0 5px;
+            border-radius: 4px;
+            background: #090d14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 13px;
+            line-height: 1;
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .mini-neon-badge:hover {
+            transform: scale(1.18);
+            z-index: 5;
+        }
+
         /* ==================== COMMAND SEQUENCE BUILDER (PHOTO MATCH) ==================== */
         .cmd-seq-box {
             background: #14171d;
@@ -2649,6 +2943,105 @@
                 </div>
             </div>
 
+            <!-- ==================== WIN / LOSE WIDGET CONTROLLER (MATCHES USER IMAGE 3) ==================== -->
+            <div class="win-widget-panel" id="winWidgetDashboardPanel" style="margin-bottom: 22px; background: linear-gradient(180deg, #161b26 0%, #0d111a 100%); border: 1.5px solid #2d3748; border-radius: 16px; padding: 18px 22px; box-shadow: 0 10px 32px rgba(0,0,0,0.55);">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 24px; filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.6));">🏆</span>
+                        <h3 style="font-size: 19px; font-weight: 800; color: #ffffff; letter-spacing: -0.3px; margin: 0;">Win Widget</h3>
+                        <span id="winWidgetStatusBadge" class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 11px; padding: 2px 8px; border-radius: 6px;">Live OBS Active</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <span style="font-size: 11px; color: #8b949e; font-weight: 700;">OBS Link:</span>
+                            <span style="font-size: 12px; color: #38bdf8; font-weight: 800; font-family: monospace;">/overlay-win.html</span>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="copyWinOverlayUrl()" style="padding: 2px 8px; font-size: 10.5px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">Copy</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="window.open('/overlay-win.html', '_blank')" style="padding: 2px 8px; font-size: 10.5px; color: #f0f6fc;">Open</button>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;" title="Enable/Disable Win Widget in stream overlays">
+                            <input type="checkbox" id="winWidgetEnabledToggle" checked onchange="toggleWinWidgetEnabled(this.checked)" style="width: 18px; height: 18px; accent-color: #3b82f6; cursor: pointer;">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Dual Cards: LOSE & WIN (Pixel-matching Image 3) + Score & Goal Streak Bar (Image 2) -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                    <!-- 1. LOSE CARD -->
+                    <div style="background: linear-gradient(180deg, rgba(239, 68, 68, 0.14) 0%, rgba(20, 10, 14, 0.95) 100%); border: 1.5px solid rgba(239, 68, 68, 0.45); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.12);">
+                        <div style="display: flex; align-items: center; gap: 6px; color: #f87171; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 6px;">
+                            <span>🌿</span>
+                            <span>LOSE</span>
+                            <span>🌿</span>
+                        </div>
+                        <div id="dashLoseCounter" style="font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 900; color: #ffffff; line-height: 1.1; margin-bottom: 12px;">6724</div>
+                        <div style="display: flex; width: 100%; gap: 10px;">
+                            <button type="button" onclick="adjustWinWidget('lose_minus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Decrement Losses (−)">−</button>
+                            <button type="button" onclick="adjustWinWidget('lose_plus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Increment Losses (+)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. WIN CARD -->
+                    <div style="background: linear-gradient(180deg, rgba(16, 185, 129, 0.14) 0%, rgba(10, 20, 15, 0.95) 100%); border: 1.5px solid rgba(16, 185, 129, 0.45); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);">
+                        <div style="display: flex; align-items: center; gap: 6px; color: #34d399; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 6px;">
+                            <span>🌿</span>
+                            <span>WIN</span>
+                            <span>🌿</span>
+                        </div>
+                        <div id="dashWinCounter" style="font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 900; color: #ffffff; line-height: 1.1; margin-bottom: 12px;">472</div>
+                        <div style="display: flex; width: 100%; gap: 10px;">
+                            <button type="button" onclick="adjustWinWidget('win_minus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Decrement Wins (−)">−</button>
+                            <button type="button" onclick="adjustWinWidget('win_plus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Increment Wins (+)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. SCORE & TARGET STREAK CARD (IMAGE 2 INTEGRATION) -->
+                    <div style="background: rgba(18, 22, 34, 0.92); border: 1.5px solid #30363d; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 12px; font-weight: 800; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">
+                            Stream Overlay Streak (Win / Goal)
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0 12px 0;">
+                            <div style="background: rgba(0,0,0,0.5); border: 1px solid #30363d; border-radius: 10px; padding: 6px 12px; flex: 1; text-align: center;">
+                                <div style="font-size: 10.5px; color: #8b949e; font-weight: 700; margin-bottom: 2px;">Score (Can be − or +)</div>
+                                <input type="number" id="dashScoreInput" value="-4" onchange="updateWinScoreFromInput()" style="width: 100%; background: transparent; border: none; font-size: 26px; font-weight: 900; font-family: 'Outfit', sans-serif; text-align: center; color: #ff007f; outline: none;">
+                            </div>
+                            <span style="font-size: 24px; font-weight: 900; color: #8b949e;">/</span>
+                            <div style="background: rgba(0,0,0,0.5); border: 1px solid #30363d; border-radius: 10px; padding: 6px 12px; flex: 1; text-align: center;">
+                                <div style="font-size: 10.5px; color: #8b949e; font-weight: 700; margin-bottom: 2px;">Target Goal</div>
+                                <input type="number" id="dashTargetInput" value="5" min="1" onchange="updateWinTargetFromInput()" style="width: 100%; background: transparent; border: none; font-size: 26px; font-weight: 900; font-family: 'Outfit', sans-serif; text-align: center; color: #ffffff; outline: none;">
+                            </div>
+                        </div>
+                        <!-- Quick delta buttons -->
+                        <div style="display: flex; gap: 6px;">
+                            <button type="button" class="btn btn-sm" onclick="adjustWinScore(-5)" style="flex: 1; background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-size: 11px; font-weight: 800;">−5</button>
+                            <button type="button" class="btn btn-sm" onclick="adjustWinScore(-1)" style="flex: 1; background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-size: 11px; font-weight: 800;">−1</button>
+                            <button type="button" class="btn btn-sm" onclick="adjustWinScore(1)" style="flex: 1; background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); font-size: 11px; font-weight: 800;">+1</button>
+                            <button type="button" class="btn btn-sm" onclick="adjustWinScore(5)" style="flex: 1; background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); font-size: 11px; font-weight: 800;">+5</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotkeys & Settings Row (Matches Image 3) -->
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span style="font-size: 12.5px; color: #8b949e; font-weight: 700;">Hotkeys:</span>
+                        <kbd style="background: rgba(0,0,0,0.6); border: 1px solid #30363d; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 800; color: #f87171;">Alt + "-"</kbd>
+                        <kbd style="background: rgba(0,0,0,0.6); border: 1px solid #30363d; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 800; color: #34d399;">Alt + "="</kbd>
+                        <span style="font-size: 11px; color: #6e7681;">(Press keys to adjust Win/Lose in real-time)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
+                            <input type="checkbox" id="winWidgetAutoWinToggle" checked onchange="toggleWinWidgetAutoWin(this.checked)" style="width: 16px; height: 16px; accent-color: #3b82f6;">
+                            Auto Win
+                        </label>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="resetWinWidgetCounters()" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-weight: 700; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
+                            <span>🔄</span>
+                            <span>Reset Counter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- PANORAMIC GIFT COMMANDS GRID OVERLAY BAR -->
             <div class="s2e-overlay-bar-wrap overlay-bar-wrap">
                 <div class="s2e-overlay-bar-top">
@@ -2799,36 +3192,123 @@
                 </div>
             </div>
 
-            <!-- GIFT SPINNER OVERLAY CONTROL BAR (EXACT MATCH TO PHOTO 3) -->
-            <div class="s2e-overlay-bar-wrap" style="margin-bottom: 20px;">
-                <div class="s2e-overlay-bar-top">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: #ffffff;">Gift Spinner</span>
-                        <span class="pill" style="font-size: 10px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">STANDALONE OBS OVERLAY</span>
+            <!-- WIN WIDGET & OVERLAY DASHBOARD TOP ROW -->
+            <div style="display: grid; grid-template-columns: minmax(320px, 380px) 1fr; gap: 16px; margin-bottom: 20px; align-items: stretch; flex-wrap: wrap;">
+                
+                <!-- 1. WIN WIDGET CONTROL CARD (EXACT MATCH TO USER PHOTO 3) -->
+                <div class="win-widget-card-container">
+                    <div class="win-widget-header">
+                        <div class="win-widget-title-wrap">
+                            <span class="trophy-emoji">🏆</span>
+                            <span class="win-widget-title">Win Widget</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <a href="/overlay-win.html" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px; color: #38bdf8;" title="Open OBS Browser Source Overlay">↗ Overlay</a>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="copyWinOverlayUrl()" style="font-size: 11px; padding: 3px 8px;" title="Copy Overlay URL for OBS">Copy</button>
+                            <input type="checkbox" id="chkWinWidgetEnabled" class="custom-checkbox" onchange="toggleWinWidgetEnabled(this.checked)" checked title="Toggle Overlay Display On/Off">
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="openAboutSpinnerModal()">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            About Spinner
+
+                    <!-- Dual Cards: LOSE (Red) and WIN (Green) -->
+                    <div class="win-widget-cards-row">
+                        <!-- LOSE CARD -->
+                        <div class="lose-card-box">
+                            <div class="wreath-header lose-wreath">
+                                <span class="laurel-leaf">🌿</span>
+                                <span class="card-tag lose-tag">LOSE</span>
+                                <span class="laurel-leaf flip">🌿</span>
+                            </div>
+                            <div class="card-big-num" id="winWidgetLossesDisplay">6724</div>
+                            <div class="card-btn-duo">
+                                <button type="button" class="duo-btn lose-btn-minus" onclick="adjustWinWidget('lose_minus')" title="Minus 1 Loss">−</button>
+                                <button type="button" class="duo-btn lose-btn-plus" onclick="adjustWinWidget('lose_plus')" title="Add 1 Loss (Alt + -)">+</button>
+                            </div>
+                        </div>
+
+                        <!-- WIN CARD -->
+                        <div class="win-card-box">
+                            <div class="wreath-header win-wreath">
+                                <span class="laurel-leaf">🌿</span>
+                                <span class="card-tag win-tag">WIN</span>
+                                <span class="laurel-leaf flip">🌿</span>
+                            </div>
+                            <div class="card-big-num" id="winWidgetWinsDisplay">472</div>
+                            <div class="card-btn-duo">
+                                <button type="button" class="duo-btn win-btn-minus" onclick="adjustWinWidget('win_minus')" title="Minus 1 Win">−</button>
+                                <button type="button" class="duo-btn win-btn-plus" onclick="adjustWinWidget('win_plus')" title="Add 1 Win (Alt + =)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Net Score Badge (Matches User Photo 2: Win -4 / 5) -->
+                    <div class="win-widget-score-pill-row">
+                        <div class="win-score-badge-preview" id="winBadgePreview">
+                            <span style="font-size: 20px;">🏆</span>
+                            <span style="font-weight: 800; font-size: 15px; color: #f0f6fc;">Win</span>
+                            <span class="score-num-box is-negative" id="winWidgetScoreDisplay">-4</span>
+                            <span style="font-size: 15px; font-weight: 800; color: #94a3b8;">/</span>
+                            <input type="number" id="winWidgetTargetInput" class="target-inline-input" value="5" onchange="updateWinTargetFromInput(this.value)" title="Goal / Target Wins">
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="adjustWinScore(-1)" style="color: #f43f5e; font-weight: 800; padding: 4px 8px;" title="Subtract 1 score">-1</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="adjustWinScore(1)" style="color: #10b981; font-weight: 800; padding: 4px 8px;" title="Add 1 score">+1</button>
+                        </div>
+                    </div>
+
+                    <!-- Hotkeys Caption -->
+                    <div class="win-widget-hotkeys-caption">
+                        Hotkeys: <span class="hotkey-label">Alt + <strong style="color: #ef4444;">"-"</strong></span> &nbsp; <span class="hotkey-label">Alt + <strong style="color: #10b981;">"="</strong></span>
+                    </div>
+
+                    <!-- Bottom Controls: Auto Win & Reset Counter -->
+                    <div class="win-widget-footer-row">
+                        <label class="win-checkbox-label">
+                            <input type="checkbox" id="chkAutoWin" onchange="toggleWinWidgetAutoWin(this.checked)" checked>
+                            <span>Auto Win</span>
+                        </label>
+                        <button type="button" class="btn-reset-counter" onclick="resetWinWidgetCounters()">
+                            <span class="refresh-icon">🔄</span> Reset Counter
                         </button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="spinWheel()" style="background: #0969da; border-color: #388bfd;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            Spin
-                        </button>
-                        <a href="/overlay-spinner.html" target="_blank" class="btn btn-secondary btn-sm" style="color: #38bdf8;">
-                            ↗ Open Overlay
-                        </a>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="s2e-overlay-url-box" id="spinnerOverlayUrlDisplay">
-                        http://localhost:8080/overlay-spinner.html
+
+                <!-- 2. GIFT SPINNER OVERLAY CONTROL BAR (EXACT MATCH TO PHOTO 3) -->
+                <div class="s2e-overlay-bar-wrap" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="s2e-overlay-bar-top">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: #ffffff;">Gift Spinner</span>
+                            <span class="pill" style="font-size: 10px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">STANDALONE OBS OVERLAY</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="openAboutSpinnerModal()">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                About Spinner
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="spinWheel()" style="background: #0969da; border-color: #388bfd;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                Spin
+                            </button>
+                            <a href="/overlay-spinner.html" target="_blank" class="btn btn-secondary btn-sm" style="color: #38bdf8;">
+                                ↗ Open Overlay
+                            </a>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-secondary btn-sm" id="btnCopySpinnerUrl" onclick="copySpinnerStandaloneUrl()">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Copy
-                    </button>
+
+                    <div style="margin: 12px 0; font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                        Add this URL as an <strong>OBS Browser Source</strong> (Width: 1920, Height: 1080). When viewers send assigned gifts on TikTok, the spinner automatically pops up, lands on a prize, and updates your Win Score!
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="s2e-overlay-url-box" id="spinnerOverlayUrlDisplay">
+                            http://localhost:8080/overlay-spinner.html
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnCopySpinnerUrl" onclick="copySpinnerStandaloneUrl()">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
             <!-- MULTI-SPINNER DASHBOARD -->
@@ -4373,6 +4853,7 @@
                 await loadConfig();
             }
             initWheel();
+            await initWinWidget();
             startPollingStatus();
             startPollingEvents();
         });
@@ -4389,7 +4870,10 @@
             if (targetPane) targetPane.classList.add('active');
 
             if (tabId === 'spinner') {
-                setTimeout(renderSpinnerStudio, 50);
+                setTimeout(() => {
+                    renderSpinnerStudio();
+                    fetchWinWidget();
+                }, 50);
             }
         }
 
@@ -4691,9 +5175,12 @@
                     if (data.events && data.events.length > 0) {
                         const ticker = document.getElementById('logTicker');
                         data.events.forEach(ev => {
+                            if (ev.type === 'win_widget_update') {
+                                renderWinWidgetData(ev);
+                            }
                             const item = document.createElement('span');
                             item.className = 'log-item';
-                            item.innerText = `${ev.username}: ${ev.label} (x${ev.amount || 1})`;
+                            item.innerText = `${ev.username || 'System'}: ${ev.label || ev.reason || 'Update'} (x${ev.amount || 1})`;
                             ticker.prepend(item);
                         });
                         while (ticker.children.length > 6) {
@@ -4748,6 +5235,181 @@
                     osc.stop(now + idx * 0.09 + 0.36);
                 });
             } catch {}
+        }
+
+        // ==================== WIN / LOSE WIDGET SYSTEM ====================
+        let winWidgetState = {
+            enabled: true,
+            score: -4,
+            target: 5,
+            wins: 472,
+            losses: 6724,
+            autoWin: true,
+            hotkeysEnabled: true,
+            label: "Win"
+        };
+
+        async function initWinWidget() {
+            setupWinWidgetHotkeys();
+            await fetchWinWidget();
+        }
+
+        async function fetchWinWidget() {
+            try {
+                const res = await fetch('/api/win-widget?t=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    renderWinWidgetData(data);
+                }
+            } catch (err) {
+                console.warn('Failed to fetch win widget state:', err);
+            }
+        }
+
+        function renderWinWidgetData(data) {
+            if (!data) return;
+            winWidgetState = { ...winWidgetState, ...data };
+
+            // Update displays
+            const lossesEl = document.getElementById('winWidgetLossesDisplay');
+            if (lossesEl) lossesEl.innerText = winWidgetState.losses ?? 0;
+
+            const winsEl = document.getElementById('winWidgetWinsDisplay');
+            if (winsEl) winsEl.innerText = winWidgetState.wins ?? 0;
+
+            const scoreEl = document.getElementById('winWidgetScoreDisplay');
+            if (scoreEl) {
+                const sc = winWidgetState.score ?? 0;
+                scoreEl.innerText = sc > 0 ? `+${sc}` : `${sc}`;
+                scoreEl.className = `score-num-box ${sc < 0 ? 'is-negative' : 'is-positive'}`;
+            }
+
+            const targetInput = document.getElementById('winWidgetTargetInput');
+            if (targetInput && document.activeElement !== targetInput) {
+                targetInput.value = winWidgetState.target ?? 5;
+            }
+
+            const chkEnabled = document.getElementById('chkWinWidgetEnabled');
+            if (chkEnabled) chkEnabled.checked = winWidgetState.enabled !== false;
+
+            const chkAuto = document.getElementById('chkAutoWin');
+            if (chkAuto) chkAuto.checked = winWidgetState.autoWin !== false;
+        }
+
+        async function adjustWinWidget(action) {
+            try {
+                const res = await fetch('/api/win-widget/adjust', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                }
+            } catch (err) {
+                console.error('adjustWinWidget error:', err);
+            }
+        }
+
+        async function adjustWinScore(delta) {
+            try {
+                const res = await fetch('/api/win-widget/adjust', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ delta: parseInt(delta) })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Score adjusted by ${delta > 0 ? '+' + delta : delta}!`);
+                }
+            } catch (err) {
+                console.error('adjustWinScore error:', err);
+            }
+        }
+
+        async function updateWinTargetFromInput(val) {
+            const num = parseInt(val) || 5;
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target: num })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Goal target set to ${num}!`);
+                }
+            } catch (err) {
+                console.error('updateWinTarget error:', err);
+            }
+        }
+
+        async function toggleWinWidgetEnabled(checked) {
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: !!checked })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Win Widget overlay ${checked ? 'enabled' : 'hidden'}!`);
+                }
+            } catch (err) {}
+        }
+
+        async function toggleWinWidgetAutoWin(checked) {
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ autoWin: !!checked })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                }
+            } catch (err) {}
+        }
+
+        async function resetWinWidgetCounters() {
+            if (!confirm("Are you sure you want to reset Win/Lose and Score counters back to 0?")) return;
+            adjustWinWidget('reset');
+            showToast("Win/Lose counters reset to 0!", "OK");
+        }
+
+        function copyWinOverlayUrl() {
+            const url = `${window.location.origin}/overlay-win.html`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast("Win Widget Overlay URL copied to clipboard!", "OK");
+            }).catch(() => {
+                prompt("Copy this URL for OBS Browser Source:", url);
+            });
+        }
+
+        function setupWinWidgetHotkeys() {
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+                if (e.altKey) {
+                    // Alt + '-' => Minus / Lose
+                    if (e.key === '-' || e.key === '_') {
+                        e.preventDefault();
+                        adjustWinWidget('lose_plus');
+                        showToast("Hotkey: Alt + '-' -> Added 1 to LOSE!", "WARN");
+                    }
+                    // Alt + '=' or Alt + '+' => Win
+                    else if (e.key === '=' || e.key === '+') {
+                        e.preventDefault();
+                        adjustWinWidget('win_plus');
+                        showToast("Hotkey: Alt + '=' -> Added 1 to WIN!", "OK");
+                    }
+                }
+            });
         }
 
         // ==================== MULTI-SPINNER SYSTEM & DASHBOARD ====================
@@ -4852,17 +5514,27 @@
                 const isSelected = (activeSp && sp.id === activeSp.id);
                 const slices = sp.slices || [];
 
-                // Render mini square prize cards strip (up to 18 cards shown)
+                // Render mini square prize cards strip (up to 20 cards shown)
                 let miniCardsHtml = '';
-                const previewSlices = slices.slice(0, 18);
+                const previewSlices = slices.slice(0, 20);
                 previewSlices.forEach(sl => {
-                    const r = (sl.rarity || 'Normal').toLowerCase();
-                    const icon = sl.unitIcon || sl.icon || 'images/func_2.png';
-                    miniCardsHtml += `
-                        <div class="mini-prize-card rarity-${r}" title="${sl.label} (${sl.rarity || 'Normal'})">
-                            <img src="${icon}" onerror="this.src='images/func_2.png'" alt="${sl.label}">
-                        </div>
-                    `;
+                    const isScoreSlice = sl.actionType === 'score' || (sl.delta !== undefined && sl.delta !== null) || /^([+-]?\d+)$/.test(String(sl.label || ''));
+                    if (isScoreSlice) {
+                        const col = sl.color || '#38bdf8';
+                        miniCardsHtml += `
+                            <div class="mini-neon-badge" style="border: 2px solid ${col}; color: ${col}; text-shadow: 0 0 6px ${col}; box-shadow: inset 0 0 4px ${col}40, 0 0 6px ${col}60;" title="${sl.label} (Chance: ${sl.chance || sl.weight || 10}%)">
+                                ${sl.label}
+                            </div>
+                        `;
+                    } else {
+                        const r = (sl.rarity || 'Normal').toLowerCase();
+                        const icon = sl.unitIcon || sl.icon || 'images/func_2.png';
+                        miniCardsHtml += `
+                            <div class="mini-prize-card rarity-${r}" title="${sl.label} (${sl.rarity || 'Normal'})">
+                                <img src="${icon}" onerror="this.src='images/func_2.png'" alt="${sl.label}">
+                            </div>
+                        `;
+                    }
                 });
                 if (slices.length === 0) {
                     miniCardsHtml = `<div style="font-size:11px; color:var(--text-muted); padding:4px 0;">No prize cards in pool. Click "Edit Pool" to add cards.</div>`;
@@ -5201,23 +5873,40 @@
                 cardList.forEach((slice, idx) => {
                     const rarity = slice.rarity || 'Normal';
                     const rarityClass = showRarity ? `rarity-${rarity.toLowerCase()}` : '';
+                    const isScoreSlice = slice.actionType === 'score' || (slice.delta !== undefined && slice.delta !== null) || /^([+-]?\d+)$/.test(String(slice.label || ''));
+                    const col = slice.color || '#38bdf8';
                     const imgUrl = slice.unitIcon || slice.icon || 'images/game-icons/pvz/spawn_random_zombie.webp';
                     
-                    let textHtml = '';
-                    if (textMode === 'name_amount') {
-                        textHtml = `<div class="card-title">${slice.label}</div><div class="card-amount">x${slice.amount || 1}</div>`;
-                    } else if (textMode === 'name') {
-                        textHtml = `<div class="card-title">${slice.label}</div>`;
-                    }
-
-                    trackHtml += `
-                        <div class="s2e-reel-card ${rarityClass}" id="reelCard_${idx}">
+                    let cardInnerHtml = '';
+                    if (isScoreSlice) {
+                        cardInnerHtml = `
+                            <div class="card-glow-bg" style="background: radial-gradient(circle, ${col}25 0%, transparent 70%);"></div>
+                            ${showRarity ? `<span class="rarity-tag" style="border-color:${col}; color:${col};">${rarity}</span>` : ''}
+                            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px;">
+                                <div style="font-family:'Outfit'; font-size:38px; font-weight:900; color:${col}; text-shadow:0 0 12px ${col}; line-height:1;">${slice.label}</div>
+                                <div style="font-size:10px; font-weight:700; color:#94a3b8; margin-top:4px;">${parseInt(slice.label) >= 0 ? 'WIN' : 'LOSE'}</div>
+                            </div>
+                        `;
+                    } else {
+                        let textHtml = '';
+                        if (textMode === 'name_amount') {
+                            textHtml = `<div class="card-title">${slice.label}</div><div class="card-amount">x${slice.amount || 1}</div>`;
+                        } else if (textMode === 'name') {
+                            textHtml = `<div class="card-title">${slice.label}</div>`;
+                        }
+                        cardInnerHtml = `
                             <div class="card-glow-bg"></div>
                             ${showRarity ? `<span class="rarity-tag">${rarity}</span>` : ''}
                             <div class="card-img-wrap">
                                 <img src="${imgUrl}" onerror="this.src='images/game-icons/pvz/spawn_random_zombie.webp'" alt="${slice.label}">
                             </div>
                             ${textHtml}
+                        `;
+                    }
+
+                    trackHtml += `
+                        <div class="s2e-reel-card ${rarityClass}" id="reelCard_${idx}" style="${isScoreSlice ? `border-color: ${col}; box-shadow: 0 0 12px ${col}40;` : ''}">
+                            ${cardInnerHtml}
                         </div>
                     `;
                 });
