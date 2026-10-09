@@ -1,10 +1,11 @@
 {
     "enabled":  true,
-    "score":  -4,
+    "score":  -3,
     "target":  5,
     "wins":  472,
     "losses":  6724,
     "autoWin":  true,
     "hotkeysEnabled":  true,
-    "label":  "Win"
+    "label":  "Win",
+    "style":  "fraction"
 }

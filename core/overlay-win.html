@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PvZ Fusion - Win Widget OBS Overlay</title>
+    <title>PvZ Fusion - Win Fraction & Trophy Overlay</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,6 @@
             padding: 24px;
         }
 
-        /* FLOATING PARTICLES CONTAINER */
         #floatingDeltaLayer {
             position: fixed;
             top: 0;
@@ -40,9 +39,111 @@
             z-index: 99;
         }
 
-        /* ================= COMPACT BADGE (MATCHES IMAGE 2) ================= */
+        /* ================= 1. WIN FRACTION TROPHY BOX (EXACT MATCH TO PHOTO) ================= */
+        .trophy-fraction-card {
+            width: 220px;
+            height: 220px;
+            border-radius: 20px;
+            background: rgba(13, 17, 24, 0.94);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .trophy-fraction-card.pop-anim {
+            animation: cardPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.12); border-color: #ff007f; box-shadow: 0 0 35px rgba(255, 0, 127, 0.5); }
+            100% { transform: scale(1); }
+        }
+
+        .trophy-bg-graphic {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 175px;
+            height: 175px;
+            pointer-events: none;
+            opacity: 0.42;
+            z-index: 1;
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+        }
+
+        .trophy-bg-graphic img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .fraction-content-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .fraction-numerator {
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -1.5px;
+            text-align: center;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .fraction-numerator.is-negative {
+            color: #ff007f; /* Exact vibrant pink from user photo */
+            text-shadow: 0 0 18px rgba(255, 0, 127, 0.75), 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .fraction-numerator.is-positive {
+            color: #10b981;
+            text-shadow: 0 0 18px rgba(16, 185, 129, 0.75), 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .fraction-numerator.is-zero {
+            color: #38bdf8;
+            text-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+        }
+
+        .fraction-divider-bar {
+            width: 120px;
+            height: 4.5px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            margin: 4px 0 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        .fraction-denominator {
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -1.5px;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* ================= 2. COMPACT BADGE PILL MODE (IMAGE 2) ================= */
         .win-badge-pill {
-            display: inline-flex;
+            display: none;
             align-items: center;
             gap: 12px;
             background: rgba(18, 21, 31, 0.92);
@@ -88,7 +189,6 @@
             letter-spacing: -0.2px;
         }
 
-        /* SCORE BOX (PINK/RED WHEN NEGATIVE, GREEN/GOLD WHEN POSITIVE) */
         .score-box {
             display: inline-flex;
             align-items: center;
@@ -105,7 +205,7 @@
         }
 
         .score-box.is-negative {
-            color: #ff007f; /* Matches authentic pink in Image 2 */
+            color: #ff007f;
             text-shadow: 0 0 14px rgba(255, 0, 127, 0.6);
             border-color: rgba(255, 0, 127, 0.3);
         }
@@ -136,7 +236,7 @@
             letter-spacing: -0.3px;
         }
 
-        /* ================= CARDS MODE (MATCHES IMAGE 3) ================= */
+        /* ================= 3. DUAL CARDS MODE (IMAGE 3) ================= */
         .win-cards-container {
             display: none;
             flex-direction: column;
@@ -147,14 +247,6 @@
             padding: 16px 20px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
             max-width: 380px;
-        }
-
-        body.mode-cards .win-cards-container {
-            display: flex;
-        }
-
-        body.mode-cards .win-badge-pill {
-            display: none;
         }
 
         .cards-header {
@@ -178,89 +270,109 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            border: 1.5px solid transparent;
         }
 
-        .win-card-box.card-lose {
-            background: linear-gradient(180deg, rgba(239, 68, 68, 0.16) 0%, rgba(20, 10, 15, 0.85) 100%);
-            border-color: rgba(239, 68, 68, 0.5);
+        .card-lose {
+            background: linear-gradient(180deg, rgba(92, 18, 28, 0.4) 0%, rgba(20, 24, 33, 0.9) 100%);
+            border: 1.5px solid #671e27;
         }
 
-        .win-card-box.card-win {
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.16) 0%, rgba(10, 20, 15, 0.85) 100%);
-            border-color: rgba(16, 185, 129, 0.5);
+        .card-win {
+            background: linear-gradient(180deg, rgba(16, 85, 48, 0.4) 0%, rgba(20, 24, 33, 0.9) 100%);
+            border: 1.5px solid #165b38;
         }
 
         .card-tag {
-            font-size: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
             font-weight: 900;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
         }
 
-        .card-lose .card-tag { color: #f87171; }
-        .card-win .card-tag { color: #34d399; }
+        .card-lose .card-tag { color: #ef4444; }
+        .card-win .card-tag { color: #10b981; }
 
         .card-big-number {
             font-family: 'Outfit', sans-serif;
-            font-size: 38px;
+            font-size: 42px;
             font-weight: 900;
             color: #ffffff;
             line-height: 1;
+            margin: 6px 0;
+            letter-spacing: -1px;
         }
 
-        /* DELTA FLOATING BUBBLE */
-        .delta-bubble {
+        /* VIEW SWITCHING CLASSES */
+        body.mode-fraction .trophy-fraction-card { display: flex; }
+        body.mode-fraction .win-badge-pill { display: none; }
+        body.mode-fraction .win-cards-container { display: none; }
+
+        body.mode-badge .trophy-fraction-card { display: none; }
+        body.mode-badge .win-badge-pill { display: inline-flex; }
+        body.mode-badge .win-cards-container { display: none; }
+
+        body.mode-cards .trophy-fraction-card { display: none; }
+        body.mode-cards .win-badge-pill { display: none; }
+        body.mode-cards .win-cards-container { display: flex; }
+
+        /* FLOATING DELTA CHIPS */
+        .delta-chip {
             position: absolute;
             font-family: 'Outfit', sans-serif;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            padding: 4px 12px;
-            border-radius: 20px;
-            animation: floatFade 1.4s ease-out forwards;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            animation: floatUpFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             pointer-events: none;
             z-index: 100;
         }
 
-        .delta-bubble.positive {
+        .delta-chip.plus {
             color: #10b981;
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid #10b981;
-            box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+            background: rgba(16, 185, 129, 0.25);
+            border: 1.5px solid #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
         }
 
-        .delta-bubble.negative {
+        .delta-chip.minus {
             color: #ff007f;
-            background: rgba(255, 0, 127, 0.2);
-            border: 1px solid #ff007f;
-            box-shadow: 0 0 16px rgba(255, 0, 127, 0.6);
+            background: rgba(255, 0, 127, 0.25);
+            border: 1.5px solid #ff007f;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
         }
 
-        @keyframes floatFade {
-            0% { opacity: 0; transform: translateY(0) scale(0.6); }
-            20% { opacity: 1; transform: translateY(-15px) scale(1.15); }
-            80% { opacity: 0.9; transform: translateY(-40px) scale(1); }
-            100% { opacity: 0; transform: translateY(-65px) scale(0.85); }
+        @keyframes floatUpFade {
+            0% { transform: translateY(0) scale(0.85); opacity: 0; }
+            20% { transform: translateY(-15px) scale(1.15); opacity: 1; }
+            100% { transform: translateY(-75px) scale(1); opacity: 0; }
         }
     </style>
 </head>
-<body>
+<body class="mode-fraction">
 
-    <!-- COMPACT WIN BADGE (IMAGE 2) -->
+    <!-- 1. WIN FRACTION TROPHY BOX (EXACT MATCH TO PHOTO) -->
+    <div id="trophyFractionCard" class="trophy-fraction-card">
+        <div class="trophy-bg-graphic">
+            <img src="images/trophy_cup.svg" alt="Trophy" onerror="this.src='images/func_2.png'">
+        </div>
+        <div class="fraction-content-wrap">
+            <div id="fractionScore" class="fraction-numerator is-negative">-3</div>
+            <div class="fraction-divider-bar"></div>
+            <div id="fractionTarget" class="fraction-denominator">5</div>
+        </div>
+    </div>
+
+    <!-- 2. COMPACT WIN BADGE PILL (IMAGE 2) -->
     <div id="winBadgePill" class="win-badge-pill">
         <span class="trophy-icon">🏆</span>
         <span class="win-label-text" id="winLabelText">Win</span>
-        <span class="score-box is-negative" id="scoreValue">-4</span>
+        <span class="score-box is-negative" id="scoreValue">-3</span>
         <span class="divider-slash">/</span>
         <span class="target-goal" id="targetValue">5</span>
     </div>
 
-    <!-- DUAL CARDS VIEW (IMAGE 3) -->
+    <!-- 3. DUAL CARDS VIEW (IMAGE 3) -->
     <div id="winCardsContainer" class="win-cards-container">
         <div class="cards-header">
             <span>🏆</span>
@@ -281,77 +393,101 @@
     <div id="floatingDeltaLayer"></div>
 
     <script>
-        let currentScore = -4;
+        let currentScore = -3;
         let currentTarget = 5;
         let currentWins = 472;
         let currentLosses = 6724;
         let lastServerTime = 0;
 
-        // Check URL params (?mode=cards)
+        // Parse mode from URL query (?mode=classic / fraction / badge / cards)
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('mode') === 'cards' || urlParams.get('view') === 'cards') {
-            document.body.classList.add('mode-cards');
+        const modeParam = urlParams.get('mode') || urlParams.get('style') || urlParams.get('view') || 'fraction';
+        setMode(modeParam);
+
+        function setMode(mode) {
+            document.body.classList.remove('mode-fraction', 'mode-badge', 'mode-cards');
+            if (mode === 'badge' || mode === 'pill') {
+                document.body.classList.add('mode-badge');
+            } else if (mode === 'cards' || mode === 'dual') {
+                document.body.classList.add('mode-cards');
+            } else {
+                // Classic fraction default
+                document.body.classList.add('mode-fraction');
+            }
         }
 
         function updateUI(data, delta = null) {
             if (!data) return;
-
-            const scoreEl = document.getElementById('scoreValue');
-            const targetEl = document.getElementById('targetValue');
-            const labelEl = document.getElementById('winLabelText');
-            const loseEl = document.getElementById('cardLoseCount');
-            const winEl = document.getElementById('cardWinCount');
-            const badgeEl = document.getElementById('winBadgePill');
 
             currentScore = Number(data.score ?? currentScore);
             currentTarget = Number(data.target ?? currentTarget);
             currentWins = Number(data.wins ?? currentWins);
             currentLosses = Number(data.losses ?? currentLosses);
 
-            if (labelEl && data.label) labelEl.textContent = data.label;
-            if (targetEl) targetEl.textContent = currentTarget;
-            if (loseEl) loseEl.textContent = currentLosses;
-            if (winEl) winEl.textContent = currentWins;
+            // Update fraction numerator & denominator
+            const fScore = document.getElementById('fractionScore');
+            const fTarget = document.getElementById('fractionTarget');
+            if (fScore) {
+                fScore.textContent = currentScore;
+                fScore.className = 'fraction-numerator';
+                if (currentScore < 0) fScore.classList.add('is-negative');
+                else if (currentScore > 0) fScore.classList.add('is-positive');
+                else fScore.classList.add('is-zero');
+            }
+            if (fTarget) fTarget.textContent = currentTarget;
 
+            // Update badge pill elements
+            const scoreEl = document.getElementById('scoreValue');
+            const targetEl = document.getElementById('targetValue');
+            const labelEl = document.getElementById('winLabelText');
             if (scoreEl) {
                 scoreEl.textContent = currentScore;
                 scoreEl.className = 'score-box';
-                if (currentScore < 0) {
-                    scoreEl.classList.add('is-negative');
-                } else if (currentScore > 0) {
-                    scoreEl.classList.add('is-positive');
-                } else {
-                    scoreEl.classList.add('is-zero');
-                }
+                if (currentScore < 0) scoreEl.classList.add('is-negative');
+                else if (currentScore > 0) scoreEl.classList.add('is-positive');
+                else scoreEl.classList.add('is-zero');
+            }
+            if (targetEl) targetEl.textContent = currentTarget;
+            if (labelEl && data.label) labelEl.textContent = data.label;
+
+            // Update dual cards
+            const loseEl = document.getElementById('cardLoseCount');
+            const winEl = document.getElementById('cardWinCount');
+            if (loseEl) loseEl.textContent = currentLosses;
+            if (winEl) winEl.textContent = currentWins;
+
+            // Update mode if remote style is provided and URL didn't lock it
+            if (data.style && !urlParams.get('mode')) {
+                setMode(data.style);
             }
 
+            // Animate card pop
+            const fCard = document.getElementById('trophyFractionCard');
+            if (fCard) {
+                fCard.classList.remove('pop-anim');
+                void fCard.offsetWidth;
+                fCard.classList.add('pop-anim');
+            }
+
+            // Spawn floating delta chip if score adjusted
             if (delta !== null && delta !== 0) {
-                spawnDeltaBubble(delta);
-                if (badgeEl) {
-                    badgeEl.classList.remove('pop-anim');
-                    void badgeEl.offsetWidth; // trigger reflow
-                    badgeEl.classList.add('pop-anim');
-                }
+                spawnDeltaChip(delta);
             }
         }
 
-        function spawnDeltaBubble(delta) {
+        function spawnDeltaChip(delta) {
             const layer = document.getElementById('floatingDeltaLayer');
             if (!layer) return;
 
-            const badge = document.getElementById('winBadgePill');
-            const rect = badge.getBoundingClientRect();
+            const chip = document.createElement('div');
+            chip.className = `delta-chip ${delta > 0 ? 'plus' : 'minus'}`;
+            chip.textContent = delta > 0 ? `+${delta}` : `${delta}`;
 
-            const bubble = document.createElement('div');
-            const isPos = delta > 0;
-            bubble.className = `delta-bubble ${isPos ? 'positive' : 'negative'}`;
-            bubble.textContent = (isPos ? '+' : '') + delta;
+            chip.style.left = '70px';
+            chip.style.top = '120px';
 
-            bubble.style.left = (rect.left + rect.width / 2 - 20) + 'px';
-            bubble.style.top = (rect.top) + 'px';
-
-            layer.appendChild(bubble);
-            setTimeout(() => bubble.remove(), 1500);
+            layer.appendChild(chip);
+            setTimeout(() => chip.remove(), 1600);
         }
 
         async function fetchInitialState() {
@@ -361,35 +497,53 @@
                     const data = await res.json();
                     updateUI(data);
                 }
-            } catch (err) {
-                console.warn('Initial win-widget fetch error:', err);
-            }
+            } catch (err) {}
         }
 
-        async function pollEvents() {
-            try {
-                const res = await fetch(`/api/events?since=${lastServerTime}&t=${Date.now()}`);
-                if (res.ok) {
+        // Live SSE / Polling for instant updates from dashboard and spinner spins
+        function startEventStream() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/events?since=${lastServerTime}`);
+                    if (!res.ok) return;
                     const data = await res.json();
-                    lastServerTime = data.serverTime || lastServerTime;
+                    if (data.serverTime) lastServerTime = data.serverTime;
 
-                    if (data.events && Array.isArray(data.events)) {
+                    if (Array.isArray(data.events)) {
                         for (const ev of data.events) {
                             if (ev.type === 'win_widget_update') {
                                 updateUI(ev, ev.delta);
                             }
                         }
                     }
-                }
-            } catch (e) {
-                // Ignore transient network errors
-            } finally {
-                setTimeout(pollEvents, 500);
-            }
+                } catch (err) {}
+            }, 300);
         }
 
-        fetchInitialState();
-        pollEvents();
+        // Hotkeys directly supported in overlay as well
+        window.addEventListener('keydown', (e) => {
+            const isMinus = e.code === 'Minus' || e.code === 'NumpadSubtract' || e.key === '-' || e.key === '_';
+            const isEqualOrPlus = e.code === 'Equal' || e.code === 'NumpadAdd' || e.key === '=' || e.key === '+';
+
+            if ((e.altKey && isMinus) || e.key === '[') {
+                fetch('/api/win-widget/adjust', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'lose_plus' })
+                });
+            } else if ((e.altKey && isEqualOrPlus) || e.key === ']') {
+                fetch('/api/win-widget/adjust', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'win_plus' })
+                });
+            }
+        }, true);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchInitialState();
+            startEventStream();
+        });
     </script>
 </body>
 </html>

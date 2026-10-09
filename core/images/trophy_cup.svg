@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="goldCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe066" />
+      <stop offset="35%" stop-color="#f59e0b" />
+      <stop offset="70%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#fef3c7" stop-opacity="0.1" />
+    </linearGradient>
+    <linearGradient id="baseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="50%" stop-color="#92400e" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+    <filter id="trophyGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Sparkles around trophy -->
+  <circle cx="35" cy="50" r="3" fill="#fbbf24" opacity="0.8" />
+  <circle cx="165" cy="45" r="3.5" fill="#fde68a" opacity="0.9" />
+  <circle cx="170" cy="95" r="2.5" fill="#f59e0b" opacity="0.7" />
+  <circle cx="30" cy="110" r="2" fill="#fbbf24" opacity="0.6" />
+  <polygon points="160,35 162,42 169,44 162,46 160,53 158,46 151,44 158,42" fill="#fffbeb" opacity="0.85" />
+  <polygon points="40,40 41.5,45 46.5,46.5 41.5,48 40,53 38.5,48 33.5,46.5 38.5,45" fill="#fef3c7" opacity="0.75" />
+
+  <!-- Left Handle -->
+  <path d="M 65 55 C 30 55, 25 105, 68 115 C 62 102, 58 85, 65 72 Z" fill="url(#goldCup)" stroke="#b45309" stroke-width="2.5" />
+  <!-- Right Handle -->
+  <path d="M 135 55 C 170 55, 175 105, 132 115 C 138 102, 142 85, 135 72 Z" fill="url(#goldCup)" stroke="#b45309" stroke-width="2.5" />
+
+  <!-- Main Trophy Cup -->
+  <path d="M 60 40 L 140 40 C 140 75, 130 120, 100 135 C 70 120, 60 75, 60 40 Z" fill="url(#goldCup)" stroke="#b45309" stroke-width="3" filter="url(#trophyGlow)" />
+  
+  <!-- Cup Rim -->
+  <ellipse cx="100" cy="40" rx="40" ry="7" fill="#fef08a" stroke="#d97706" stroke-width="2" />
+  
+  <!-- Cup Inner Depth Highlight -->
+  <path d="M 70 48 Q 100 62 130 48 Q 125 110 100 125 Q 75 110 70 48 Z" fill="url(#goldHighlight)" opacity="0.35" />
+
+  <!-- Trophy Star on Front -->
+  <polygon points="100,68 104,80 116,81 107,89 110,101 100,94 90,101 93,89 84,81 96,80" fill="#fef08a" stroke="#d97706" stroke-width="1.5" opacity="0.9" />
+
+  <!-- Stem -->
+  <path d="M 94 135 L 106 135 L 108 155 L 92 155 Z" fill="url(#goldCup)" stroke="#b45309" stroke-width="2" />
+  <ellipse cx="100" cy="155" rx="16" ry="4" fill="#fef08a" />
+
+  <!-- Pedestal / Base -->
+  <path d="M 80 157 L 120 157 L 130 180 L 70 180 Z" fill="url(#baseGrad)" stroke="#451a03" stroke-width="2" />
+  <!-- Base Plaque -->
+  <rect x="78" y="162" width="44" height="12" rx="2" fill="#d97706" stroke="#fef08a" stroke-width="1" />
+  <rect x="65" y="180" width="70" height="7" rx="2" fill="#292524" />
+</svg>

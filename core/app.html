@@ -1312,7 +1312,7 @@
         }
 
         /* ==================== WIN WIDGET CONTROL (EXACT MATCH TO PHOTO 3) ==================== */
-        .win-widget-card-container {
+        .win-fraction-dashboard-box {
             background: #0d1117;
             border: 1.5px solid #21262d;
             border-radius: 14px;
@@ -1326,8 +1326,186 @@
             transition: border-color 0.2s ease;
         }
 
-        .win-widget-card-container:hover {
+        .win-fraction-dashboard-box:hover {
             border-color: #30363d;
+        }
+
+        .win-fraction-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .win-fraction-url-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .win-fraction-url-input {
+            flex: 1;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #c9d1d9;
+            font-size: 12px;
+            font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-copy-fraction {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-copy-fraction:hover {
+            background: #30363d;
+            color: #ffffff;
+            border-color: #58a6ff;
+        }
+
+        .win-fraction-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .win-fraction-style-select {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #f0f6fc;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 10px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .win-fraction-goal-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #c9d1d9;
+        }
+
+        .win-fraction-goal-input {
+            width: 48px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            padding: 4px 6px;
+            outline: none;
+        }
+
+        /* TROPHY FRACTION PREVIEW CARD (MATCHES USER PHOTO) */
+        .dash-trophy-card {
+            width: 100%;
+            height: 190px;
+            border-radius: 14px;
+            background: rgba(13, 17, 24, 0.95);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+        }
+
+        .dash-trophy-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            opacity: 0.42;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .dash-trophy-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .dash-fraction-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dash-fraction-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -1.5px;
+            text-align: center;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .dash-fraction-num.is-negative {
+            color: #ff007f;
+            text-shadow: 0 0 16px rgba(255, 0, 127, 0.7);
+        }
+
+        .dash-fraction-num.is-positive {
+            color: #10b981;
+            text-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+        }
+
+        .dash-fraction-num.is-zero {
+            color: #38bdf8;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+        }
+
+        .dash-fraction-bar {
+            width: 105px;
+            height: 4px;
+            background: #ffffff;
+            border-radius: 3px;
+            margin: 4px 0 2px;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        .dash-fraction-den {
+            font-family: 'Outfit', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -1.5px;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
         }
 
         .win-widget-header {
@@ -3195,21 +3373,51 @@
             <!-- WIN WIDGET & OVERLAY DASHBOARD TOP ROW -->
             <div style="display: grid; grid-template-columns: minmax(320px, 380px) 1fr; gap: 16px; margin-bottom: 20px; align-items: stretch; flex-wrap: wrap;">
                 
-                <!-- 1. WIN WIDGET CONTROL CARD (EXACT MATCH TO USER PHOTO 3) -->
-                <div class="win-widget-card-container">
-                    <div class="win-widget-header">
-                        <div class="win-widget-title-wrap">
-                            <span class="trophy-emoji">🏆</span>
-                            <span class="win-widget-title">Win Widget</span>
-                        </div>
+                <!-- 1. WIN FRACTION CONTROL CARD (EXACT MATCH TO USER PHOTO) -->
+                <div class="win-fraction-dashboard-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="win-fraction-title">Win fraction</span>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <a href="/overlay-win.html" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px; color: #38bdf8;" title="Open OBS Browser Source Overlay">↗ Overlay</a>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="copyWinOverlayUrl()" style="font-size: 11px; padding: 3px 8px;" title="Copy Overlay URL for OBS">Copy</button>
-                            <input type="checkbox" id="chkWinWidgetEnabled" class="custom-checkbox" onchange="toggleWinWidgetEnabled(this.checked)" checked title="Toggle Overlay Display On/Off">
+                            <input type="checkbox" id="chkWinWidgetEnabled" class="custom-checkbox" onchange="toggleWinWidgetEnabled(this.checked)" checked title="Enable/Disable Overlay">
                         </div>
                     </div>
 
-                    <!-- Dual Cards: LOSE (Red) and WIN (Green) -->
+                    <!-- URL & Copy Row -->
+                    <div class="win-fraction-url-row">
+                        <input type="text" id="winOverlayUrlInput" class="win-fraction-url-input" value="http://localhost:8080/overlay-win.html" readonly>
+                        <button type="button" class="btn-copy-fraction" onclick="copyWinOverlayUrl()">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Copy
+                        </button>
+                    </div>
+
+                    <!-- Controls: Style Dropdown & Goal Input -->
+                    <div class="win-fraction-controls-row">
+                        <select id="winWidgetStyleSelect" class="win-fraction-style-select" onchange="updateWinStyleFromSelect(this.value)">
+                            <option value="fraction" selected>Classic</option>
+                            <option value="badge">Pill Badge</option>
+                            <option value="cards">Dual Cards</option>
+                        </select>
+                        <div class="win-fraction-goal-wrap">
+                            <span>Goal:</span>
+                            <input type="number" id="winWidgetTargetInput" class="win-fraction-goal-input" value="5" onchange="updateWinTargetFromInput(this.value)">
+                        </div>
+                    </div>
+
+                    <!-- TROPHY FRACTION PREVIEW CARD (MATCHES USER PHOTO) -->
+                    <div class="dash-trophy-card" id="dashTrophyCard">
+                        <div class="dash-trophy-bg">
+                            <img src="images/trophy_cup.svg" alt="Trophy" onerror="this.src='images/func_2.png'">
+                        </div>
+                        <div class="dash-fraction-content">
+                            <div id="dashFractionScore" class="dash-fraction-num is-negative">-3</div>
+                            <div class="dash-fraction-bar"></div>
+                            <div id="dashFractionTarget" class="dash-fraction-den">5</div>
+                        </div>
+                    </div>
+
+                    <!-- Dual LOSE / WIN adjustment cards -->
                     <div class="win-widget-cards-row">
                         <!-- LOSE CARD -->
                         <div class="lose-card-box">
@@ -3240,24 +3448,9 @@
                         </div>
                     </div>
 
-                    <!-- Net Score Badge (Matches User Photo 2: Win -4 / 5) -->
-                    <div class="win-widget-score-pill-row">
-                        <div class="win-score-badge-preview" id="winBadgePreview">
-                            <span style="font-size: 20px;">🏆</span>
-                            <span style="font-weight: 800; font-size: 15px; color: #f0f6fc;">Win</span>
-                            <span class="score-num-box is-negative" id="winWidgetScoreDisplay">-4</span>
-                            <span style="font-size: 15px; font-weight: 800; color: #94a3b8;">/</span>
-                            <input type="number" id="winWidgetTargetInput" class="target-inline-input" value="5" onchange="updateWinTargetFromInput(this.value)" title="Goal / Target Wins">
-                        </div>
-                        <div style="display: flex; gap: 4px;">
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="adjustWinScore(-1)" style="color: #f43f5e; font-weight: 800; padding: 4px 8px;" title="Subtract 1 score">-1</button>
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="adjustWinScore(1)" style="color: #10b981; font-weight: 800; padding: 4px 8px;" title="Add 1 score">+1</button>
-                        </div>
-                    </div>
-
                     <!-- Hotkeys Caption -->
                     <div class="win-widget-hotkeys-caption">
-                        Hotkeys: <span class="hotkey-label">Alt + <strong style="color: #ef4444;">"-"</strong></span> &nbsp; <span class="hotkey-label">Alt + <strong style="color: #10b981;">"="</strong></span>
+                        Hotkeys: <span class="hotkey-label">Alt + <strong style="color: #ef4444;">"-"</strong></span> &nbsp; <span class="hotkey-label">Alt + <strong style="color: #10b981;">"="</strong></span> &nbsp; (or <strong>[</strong> and <strong>]</strong>)
                     </div>
 
                     <!-- Bottom Controls: Auto Win & Reset Counter -->
@@ -5277,16 +5470,28 @@
             const winsEl = document.getElementById('winWidgetWinsDisplay');
             if (winsEl) winsEl.innerText = winWidgetState.wins ?? 0;
 
-            const scoreEl = document.getElementById('winWidgetScoreDisplay');
-            if (scoreEl) {
-                const sc = winWidgetState.score ?? 0;
-                scoreEl.innerText = sc > 0 ? `+${sc}` : `${sc}`;
-                scoreEl.className = `score-num-box ${sc < 0 ? 'is-negative' : 'is-positive'}`;
+            const sc = winWidgetState.score ?? 0;
+            const tg = winWidgetState.target ?? 5;
+
+            // Update Trophy Fraction Preview
+            const dashFScore = document.getElementById('dashFractionScore');
+            const dashFTarget = document.getElementById('dashFractionTarget');
+            if (dashFScore) {
+                dashFScore.innerText = sc;
+                dashFScore.className = `dash-fraction-num ${sc < 0 ? 'is-negative' : (sc > 0 ? 'is-positive' : 'is-zero')}`;
+            }
+            if (dashFTarget) {
+                dashFTarget.innerText = tg;
             }
 
             const targetInput = document.getElementById('winWidgetTargetInput');
             if (targetInput && document.activeElement !== targetInput) {
-                targetInput.value = winWidgetState.target ?? 5;
+                targetInput.value = tg;
+            }
+
+            const styleSelect = document.getElementById('winWidgetStyleSelect');
+            if (styleSelect && winWidgetState.style) {
+                styleSelect.value = winWidgetState.style;
             }
 
             const chkEnabled = document.getElementById('chkWinWidgetEnabled');
@@ -5294,6 +5499,21 @@
 
             const chkAuto = document.getElementById('chkAutoWin');
             if (chkAuto) chkAuto.checked = winWidgetState.autoWin !== false;
+        }
+
+        async function updateWinStyleFromSelect(style) {
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ style })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Trophy overlay style set to ${style}!`, "OK");
+                }
+            } catch (err) {}
         }
 
         async function adjustWinWidget(action) {
@@ -5385,31 +5605,48 @@
         function copyWinOverlayUrl() {
             const url = `${window.location.origin}/overlay-win.html`;
             navigator.clipboard.writeText(url).then(() => {
-                showToast("Win Widget Overlay URL copied to clipboard!", "OK");
+                showToast("Win Fraction Overlay URL copied to clipboard!", "OK");
             }).catch(() => {
                 prompt("Copy this URL for OBS Browser Source:", url);
             });
         }
 
         function setupWinWidgetHotkeys() {
-            window.addEventListener('keydown', (e) => {
-                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+            function handleWinHotkey(e) {
+                // Avoid capturing when typing inside input / textarea
+                const activeTag = (document.activeElement && document.activeElement.tagName) || '';
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) return;
 
-                if (e.altKey) {
-                    // Alt + '-' => Minus / Lose
-                    if (e.key === '-' || e.key === '_') {
-                        e.preventDefault();
-                        adjustWinWidget('lose_plus');
-                        showToast("Hotkey: Alt + '-' -> Added 1 to LOSE!", "WARN");
-                    }
-                    // Alt + '=' or Alt + '+' => Win
-                    else if (e.key === '=' || e.key === '+') {
-                        e.preventDefault();
-                        adjustWinWidget('win_plus');
-                        showToast("Hotkey: Alt + '=' -> Added 1 to WIN!", "OK");
-                    }
+                const code = e.code || '';
+                const key = e.key || '';
+                const alt = e.altKey;
+
+                const isMinus = code === 'Minus' || code === 'NumpadSubtract' || key === '-' || key === '_';
+                const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+';
+                const isBracketLeft = code === 'BracketLeft' || key === '[';
+                const isBracketRight = code === 'BracketRight' || key === ']';
+
+                // Alt + '-' OR '[' => LOSE / Score -1
+                if ((alt && isMinus) || isBracketLeft) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    adjustWinWidget('lose_plus');
+                    showToast("LOSE count & Score -1 (Alt + -)", "WARN");
+                    return;
                 }
-            });
+
+                // Alt + '=' OR ']' => WIN / Score +1
+                if ((alt && isEqual) || isBracketRight) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    adjustWinWidget('win_plus');
+                    showToast("WIN count & Score +1 (Alt + =)", "OK");
+                    return;
+                }
+            }
+
+            window.addEventListener('keydown', handleWinHotkey, true);
+            document.addEventListener('keydown', handleWinHotkey, true);
         }
 
         // ==================== MULTI-SPINNER SYSTEM & DASHBOARD ====================

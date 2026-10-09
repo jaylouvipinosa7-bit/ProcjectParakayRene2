@@ -1224,15 +1224,19 @@ while ($true) {
                     }
                     "win_plus" {
                         $cur.wins = [int]$cur.wins + 1
+                        $cur.score = [int]$cur.score + 1
                     }
                     "win_minus" {
                         $cur.wins = [Math]::Max(0, [int]$cur.wins - 1)
+                        $cur.score = [int]$cur.score - 1
                     }
                     "lose_plus" {
                         $cur.losses = [int]$cur.losses + 1
+                        $cur.score = [int]$cur.score - 1
                     }
                     "lose_minus" {
                         $cur.losses = [Math]::Max(0, [int]$cur.losses - 1)
+                        $cur.score = [int]$cur.score + 1
                     }
                     "reset" {
                         $cur.score = 0
@@ -1329,14 +1333,18 @@ while ($true) {
                 }
             }
 
-            # If slice has positive/negative numerical value, auto-update Win Widget!
+            # If slice has positive/negative numerical value or unit win, auto-update Win Widget!
             $deltaVal = 0
             if ($pickedSlice.delta -ne $null) {
                 $deltaVal = [int]$pickedSlice.delta
             } elseif ($pickedSlice.value -ne $null) {
                 $deltaVal = [int]$pickedSlice.value
-            } elseif ($pickedSlice.label -match '^([+-]?\d+)$') {
+            } elseif ($pickedSlice.label -match '([+-]?\d+)') {
                 $deltaVal = [int]$matches[1]
+            } elseif ($pickedSlice.actionType -eq "zombie" -or ($targetSpinner -and $targetSpinner.name -match "zombie")) {
+                $deltaVal = -1
+            } else {
+                $deltaVal = 1
             }
 
             if ($deltaVal -ne 0) {
