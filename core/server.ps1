@@ -27,10 +27,28 @@ $activeSessions = [System.Collections.Hashtable]::Synchronized(@{})
 
 function Get-UserConfigPath($email) {
     if (-not $email -or [string]::IsNullOrWhiteSpace($email)) {
+        if (Test-Path $userConfigsFolder) {
+            $userFiles = Get-ChildItem -Path $userConfigsFolder -Filter "*_config.json" | Sort-Object LastWriteTime -Descending
+            if ($userFiles -and $userFiles.Count -gt 0) {
+                return $userFiles[0].FullName
+            }
+        }
         return $configFile
     }
-    $safe = ($email.Trim().ToLower() -replace '[^a-z0-9_.-]', '_')
-    return (Join-Path $userConfigsFolder "$safe`_config.json")
+    $clean = $email.Trim().TrimStart('@').ToLower()
+    $safe = ($clean -replace '[^a-z0-9_.-]', '_')
+    $exactPath = Join-Path $userConfigsFolder "$safe`_config.json"
+    if (Test-Path $exactPath) { return $exactPath }
+
+    # Try TikTok variant
+    $tiktokVariant = Join-Path $userConfigsFolder "tiktok_$safe`_tiktok.live_config.json"
+    if (Test-Path $tiktokVariant) { return $tiktokVariant }
+
+    # Try matching any file containing the username
+    $matched = Get-ChildItem -Path $userConfigsFolder -Filter "*$safe*_config.json" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($matched) { return $matched.FullName }
+
+    return $exactPath
 }
 
 # Proper MIME types for WebP, JSON, JS, CSS, SVG, etc.
@@ -105,6 +123,131 @@ $teamPlantsLikes = 0
 $teamZombiesLikes = 0
 $lastStreamTotalLikes = 0
 $lastTotalLikesTriggeredMilestone = 0
+
+# ==================== LEADERBOARD TRACKING ====================
+$leaderboardFile = Join-Path $folder "leaderboard_state.json"
+$leaderboardSettingsFile = Join-Path $folder "leaderboard_settings.json"
+
+function Load-Leaderboard {
+    if (Test-Path $leaderboardFile) {
+        try {
+            $raw = Get-Content $leaderboardFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        likes = @{}
+        coins = @{}
+        avatars = @{}
+    }
+}
+
+function Save-Leaderboard {
+    try {
+        $json = $script:leaderboard | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($leaderboardFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+function Load-LeaderboardSettings {
+    if (Test-Path $leaderboardSettingsFile) {
+        try {
+            $raw = Get-Content $leaderboardSettingsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        likesEnabled = $true
+        coinsEnabled = $true
+        donatorsEnabled = $true
+        likesStyle = "classic"
+        coinsStyle = "classic"
+        donatorsStyle = "cute"
+        likesPosition = "left"
+        coinsPosition = "left"
+        donatorsPosition = "right"
+        likesCount = 10
+        coinsCount = 10
+        donatorsCount = 5
+        likesTitle = "Top 10 Likes"
+        coinsTitle = "Top 10 Coins"
+        donatorsTitle = "Top Donators"
+        accentColor = "#f43f5e"
+        backgroundColor = "rgba(13,17,23,0.92)"
+        cardSpacing = 4
+        fontSize = 14
+        showAvatars = $true
+        avatarStyle = "circle"
+        animationSpeed = "normal"
+    }
+}
+
+function Save-LeaderboardSettings($settings) {
+    try {
+        $json = $settings | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($leaderboardSettingsFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:leaderboard = Load-Leaderboard
+$script:leaderboardSettings = Load-LeaderboardSettings
+
+function Update-LeaderboardLikes([string]$username, [int]$likeCount, [string]$avatar) {
+    if (-not $username -or $username -eq "Viewer") { return }
+    $cleanUser = $username.Trim()
+    if (-not $script:leaderboard.likes) { $script:leaderboard | Add-Member -NotePropertyName likes -NotePropertyValue @{} -Force }
+    $current = 0
+    if ($script:leaderboard.likes.PSObject -and $script:leaderboard.likes.PSObject.Properties[$cleanUser]) {
+        $current = [int]$script:leaderboard.likes.$cleanUser
+    }
+    $script:leaderboard.likes | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([int]($current + $likeCount)) -Force
+    if ($avatar -and $avatar.Trim()) {
+        if (-not $script:leaderboard.avatars) { $script:leaderboard | Add-Member -NotePropertyName avatars -NotePropertyValue @{} -Force }
+        $script:leaderboard.avatars | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([string]$avatar.Trim()) -Force
+    }
+    Save-Leaderboard
+}
+
+function Update-LeaderboardCoins([string]$username, [int]$coinValue, [string]$avatar) {
+    if (-not $username -or $username -eq "Viewer" -or $username -eq "StreamGoal") { return }
+    $cleanUser = $username.Trim()
+    if (-not $script:leaderboard.coins) { $script:leaderboard | Add-Member -NotePropertyName coins -NotePropertyValue @{} -Force }
+    $current = 0
+    if ($script:leaderboard.coins.PSObject -and $script:leaderboard.coins.PSObject.Properties[$cleanUser]) {
+        $current = [int]$script:leaderboard.coins.$cleanUser
+    }
+    $script:leaderboard.coins | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([int]($current + $coinValue)) -Force
+    if ($avatar -and $avatar.Trim()) {
+        if (-not $script:leaderboard.avatars) { $script:leaderboard | Add-Member -NotePropertyName avatars -NotePropertyValue @{} -Force }
+        $script:leaderboard.avatars | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([string]$avatar.Trim()) -Force
+    }
+    Save-Leaderboard
+}
+
+function Get-LeaderboardTop([string]$type, [int]$count = 10) {
+    $data = $null
+    if ($type -eq "likes" -and $script:leaderboard.likes) { $data = $script:leaderboard.likes }
+    elseif ($type -eq "coins" -and $script:leaderboard.coins) { $data = $script:leaderboard.coins }
+    else { return @() }
+
+    $sorted = @()
+    if ($data.PSObject -and $data.PSObject.Properties) {
+        foreach ($prop in $data.PSObject.Properties) {
+            $av = ""
+            if ($script:leaderboard.avatars -and $script:leaderboard.avatars.PSObject -and $script:leaderboard.avatars.PSObject.Properties[$prop.Name]) {
+                $av = [string]$script:leaderboard.avatars.$($prop.Name)
+            }
+            $sorted += [PSCustomObject]@{
+                username = $prop.Name
+                value = [int]$prop.Value
+                avatar = $av
+            }
+        }
+    }
+    $sorted = $sorted | Sort-Object -Property value -Descending | Select-Object -First $count
+    return @($sorted)
+}
+# ==================== END LEADERBOARD TRACKING ====================
 
 function SaveCounts {
     try {
@@ -443,17 +586,26 @@ function Test-GamePort([int]$p) {
     return $false
 }
 
+# Cache active game port to avoid duplicate calls across both ports (55001 & 5003)
+$script:activeGamePort = $null
+
 # Post direct action to the PvZ Fusion game mod
 function SendSinglePvZCommand($endpoint, $payloadObj) {
+    $dispatched = $false
     try {
         $json = $payloadObj | ConvertTo-Json -Compress
         $rawBytes = [System.Text.Encoding]::UTF8.GetBytes($json)
 
-        foreach ($p in $gamePorts) {
+        # Prioritize known active port or 55001 first
+        $primaryPort = if ($script:activeGamePort) { $script:activeGamePort } else { 55001 }
+        $candidatePorts = @($primaryPort) + ($gamePorts | Where-Object { $_ -ne $primaryPort })
+
+        foreach ($p in $candidatePorts) {
+            $bytesSent = $false
             try {
                 $req = [System.Net.HttpWebRequest]::Create("http://127.0.0.1:$p$endpoint")
-                $req.Timeout = 800
-                $req.ReadWriteTimeout = 800
+                $req.Timeout = 1500
+                $req.ReadWriteTimeout = 1500
                 $req.KeepAlive = $false
                 $req.Method = "POST"
                 $req.ContentType = "application/json"
@@ -462,15 +614,29 @@ function SendSinglePvZCommand($endpoint, $payloadObj) {
                 $stream = $req.GetRequestStream()
                 $stream.Write($rawBytes, 0, $rawBytes.Length)
                 $stream.Close()
+                $bytesSent = $true
+                $dispatched = $true
+                $script:activeGamePort = $p
 
-                $resp = $req.GetResponse()
-                $resp.Close()
+                try {
+                    $resp = $req.GetResponse()
+                    $resp.Close()
+                } catch {}
+
+                # CRITICAL FIX: Once request stream bytes are delivered to the game mod on this port,
+                # NEVER send to backup port 5003! Both ports map to the exact same game process,
+                # so sending to both produces 2x summons (e.g. 10 instead of 5).
                 break
-            } catch {}
+            } catch {
+                if ($bytesSent) {
+                    # Bytes were already written, do not double-dispatch
+                    break
+                }
+            }
         }
     } catch {}
 
-    return @{ success = $true; message = "Dispatched to game engine" }
+    return @{ success = $dispatched; message = "Dispatched to game engine" }
 }
 
 # Master router for all PvZ Fusion commands (supports sub-commands, repetition, delay, interval)
@@ -492,6 +658,21 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
     }
 
     $reps = [Math]::Max(1, [int]$repetition)
+    $rawAmt = [Math]::Max(1, [int]$amount)
+
+    # Distribute count per repetition so that the TOTAL summons across all waves
+    # matches the user's intended amount (avoiding amount * repetition multiplication explosion)
+    $countPerRep = 1
+    if ($reps -eq 1) {
+        $countPerRep = $rawAmt
+    } elseif ($rawAmt -ge $reps -and ($rawAmt % $reps -eq 0)) {
+        $countPerRep = [int]($rawAmt / $reps)
+    } elseif ($rawAmt -ge $reps) {
+        $countPerRep = [Math]::Max(1, [int][Math]::Round($rawAmt / $reps))
+    } else {
+        $countPerRep = 1
+    }
+
     $lastResult = @{ success = $true; message = "OK" }
 
     for ($r = 0; $r -lt $reps; $r++) {
@@ -510,8 +691,8 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
             $eff = $info.effect
             $payload = @{
                 effect     = [string]$eff
-                count      = [int]$amount
-                amount     = [int]$amount
+                count      = [int]$countPerRep
+                amount     = [int]$countPerRep
                 senderName = [string]$username
                 username   = [string]$username
             }
@@ -521,7 +702,7 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
 
         # 1. World Powers / Cheats
         $cheatEndpoint = ""
-        $cheatPayload = @{ effect = [string]$amount; amount = [int]$amount; count = [int]$amount; username = $username; avatarUrl = $avatarUrl }
+        $cheatPayload = @{ effect = [string]$countPerRep; amount = [int]$countPerRep; count = [int]$countPerRep; username = $username; avatarUrl = $avatarUrl }
 
         if ($clean -match '^(planteverywhere|planteverywahre)') {
             $cheatEndpoint = "/planteverywhere"
@@ -535,11 +716,11 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
             $cheatEndpoint = "/invulnerableplants"
         } elseif ($clean -match '^addsun') {
             $cheatEndpoint = "/addsun"
-            $sunAmt = if ($amount -gt 1) { $amount } else { 100 }
+            $sunAmt = if ($rawAmt -gt 1) { $rawAmt } else { 100 }
             $cheatPayload = @{ effect = [string]$sunAmt; amount = [int]$sunAmt; count = [int]$sunAmt }
         } elseif ($clean -match '^setsun') {
             $cheatEndpoint = "/setsun"
-            $cheatPayload = @{ effect = [string]$amount; amount = [int]$amount }
+            $cheatPayload = @{ effect = [string]$rawAmt; amount = [int]$rawAmt }
         } elseif ($clean -match '^unlimitedsun') {
             $cheatEndpoint = "/unlimitedsun"
         } elseif ($clean -match '^freecooldown') {
@@ -595,8 +776,8 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
             $plantId = Resolve-PlantId $rawCmd
             $payload = @{
                 effect     = [string]$plantId
-                count      = [int]$amount
-                amount     = [int]$amount
+                count      = [int]$countPerRep
+                amount     = [int]$countPerRep
                 senderName = [string]$username
                 username   = [string]$username
             }
@@ -608,8 +789,8 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "StreamVi
         $zombieId = Resolve-ZombieId $rawCmd
         $payload = @{
             effect     = [string]$zombieId
-            count      = [int]$amount
-            amount     = [int]$amount
+            count      = [int]$countPerRep
+            amount     = [int]$countPerRep
             senderName = [string]$username
             username   = [string]$username
         }
@@ -1086,6 +1267,11 @@ while ($true) {
                 $body = ReadRequestBody $request
                 [System.IO.File]::WriteAllText($targetPath, $body, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $body, [System.Text.Encoding]::UTF8)
+                if (-not $userParam -and (Test-Path $userConfigsFolder)) {
+                    Get-ChildItem -Path $userConfigsFolder -Filter "*_config.json" | ForEach-Object {
+                        try { [System.IO.File]::WriteAllText($_.FullName, $body, [System.Text.Encoding]::UTF8) } catch {}
+                    }
+                }
                 Sync-ConfigToCards
                 Send-JsonResponse $response @{ status = "ok"; message = "Config saved and cards synchronized" }
                 continue
@@ -1113,6 +1299,118 @@ while ($true) {
         if ($reqPath -eq '/api/catalog') {
             $content = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) } else { "{}" }
             Send-JsonResponse $response $content
+            continue
+        }
+
+        # 3b. Leaderboard API: Get rankings
+        if ($reqPath -eq '/api/leaderboard') {
+            $type = if ($request.QueryString['type']) { $request.QueryString['type'] } else { "all" }
+            $count = if ($request.QueryString['count']) { [int]$request.QueryString['count'] } else { 10 }
+
+            if ($type -eq "all") {
+                $resObj = @{
+                    likes = @(Get-LeaderboardTop "likes" $count)
+                    coins = @(Get-LeaderboardTop "coins" $count)
+                    donators = @(Get-LeaderboardTop "coins" $count)
+                    settings = $script:leaderboardSettings
+                }
+            } elseif ($type -eq "likes") {
+                $resObj = @{ data = @(Get-LeaderboardTop "likes" $count); settings = $script:leaderboardSettings }
+            } elseif ($type -eq "coins" -or $type -eq "donators") {
+                $resObj = @{ data = @(Get-LeaderboardTop "coins" $count); settings = $script:leaderboardSettings }
+            } else {
+                $resObj = @{ data = @(); settings = $script:leaderboardSettings }
+            }
+            Send-JsonResponse $response $resObj
+            continue
+        }
+
+        # 3c. Leaderboard Settings API
+        if ($reqPath -eq '/api/leaderboard/settings' -or $reqPath -eq '/api/leaderboard/config') {
+            if ($request.HttpMethod -eq 'GET') {
+                Send-JsonResponse $response $script:leaderboardSettings
+                continue
+            } elseif ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $newSettings = $body | ConvertFrom-Json
+                    $script:leaderboardSettings = $newSettings
+                    Save-LeaderboardSettings $newSettings
+                    AddEventLog @{ type = "leaderboard_settings_update"; settings = $newSettings }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Leaderboard settings saved" }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        # 3d. Leaderboard Reset
+        if ($reqPath -eq '/api/leaderboard/reset' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $resetType = if ($data.type) { $data.type } else { "all" }
+
+            if ($resetType -eq "likes" -or $resetType -eq "all") {
+                $script:leaderboard | Add-Member -NotePropertyName likes -NotePropertyValue ([PSCustomObject]@{}) -Force
+            }
+            if ($resetType -eq "coins" -or $resetType -eq "donators" -or $resetType -eq "all") {
+                $script:leaderboard | Add-Member -NotePropertyName coins -NotePropertyValue ([PSCustomObject]@{}) -Force
+            }
+            if ($resetType -eq "all") {
+                $script:leaderboard | Add-Member -NotePropertyName avatars -NotePropertyValue ([PSCustomObject]@{}) -Force
+            }
+            Save-Leaderboard
+            AddEventLog @{ type = "leaderboard_reset"; resetType = $resetType }
+            Send-JsonResponse $response @{ status = "ok"; message = "Leaderboard reset: $resetType" }
+            continue
+        }
+
+        # 3e. Leaderboard Test / Mock Generator
+        if ($reqPath -eq '/api/leaderboard/test' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = if ($body) { $body | ConvertFrom-Json } else { @{} }
+            $testType = if ($data.type) { $data.type } else { "all" }
+            $sampleNames = @("Wolfich", "Stasie", "ShadowNinja", "SakuraQueen", "GamerPro99", "LuckyStar", "LunaCat", "DragonSlayer", "PixelKing", "MysticRose")
+            $mockAvatars = @(
+                "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                "images/game-icons/pvz/ultimate_gold_gargantuar.webp",
+                "images/game-icons/pvz/spawn_gatlingpea.webp",
+                "images/game-icons/pvz/spawn_cherrybomb.webp",
+                "images/game-icons/pvz/spawn_repeater.webp",
+                "images/game-icons/pvz/spawn_peashooter.webp",
+                "images/game-icons/pvz/spawn_sunflower.webp",
+                "images/game-icons/pvz/spawn_wallnut.webp",
+                "images/game-icons/pvz/spawn_snowpea.webp",
+                "images/game-icons/pvz/spawn_chomper.webp"
+            )
+
+            if ($testType -eq "single") {
+                $u = if ($data.username) { $data.username } else { "TopSupporter" }
+                $v = if ($data.value) { [int]$data.value } else { 50 }
+                $av = if ($data.avatar) { $data.avatar } else { $mockAvatars[0] }
+                $t = if ($data.target) { $data.target } else { "coins" }
+                if ($t -eq "likes") {
+                    Update-LeaderboardLikes $u $v $av
+                } else {
+                    Update-LeaderboardCoins $u $v $av
+                }
+            } else {
+                $cValues = @(2540, 1820, 1250, 890, 640, 420, 310, 200, 150, 90)
+                $lValues = @(15420, 11200, 8900, 6400, 4800, 3200, 2100, 1500, 950, 500)
+                for ($idx = 0; $idx -lt 10; $idx++) {
+                    $nm = $sampleNames[$idx]
+                    $av = $mockAvatars[$idx % $mockAvatars.Count]
+                    if ($testType -eq "all" -or $testType -eq "coins" -or $testType -eq "donators") {
+                        Update-LeaderboardCoins $nm $cValues[$idx] $av
+                    }
+                    if ($testType -eq "all" -or $testType -eq "likes") {
+                        Update-LeaderboardLikes $nm $lValues[$idx] $av
+                    }
+                }
+            }
+            AddEventLog @{ type = "leaderboard_test"; testType = $testType }
+            Send-JsonResponse $response @{ status = "ok"; message = "Leaderboard test data populated" }
             continue
         }
 
@@ -1231,17 +1529,28 @@ while ($true) {
                 $targetSpId = if ($targetSpinner -and $targetSpinner.id) { [string]$targetSpinner.id } else { "1" }
                 $testAvatar = if ($data.avatar) { [string]$data.avatar } else { "images/default_avatar.svg" }
 
-                # Update score if number slice
+                # Update score ONLY if number slice (never for plants or zombies)
                 if ($pickedSlice) {
-                    $deltaVal = 0
-                    if ($pickedSlice.delta -ne $null) {
-                        $deltaVal = [int]$pickedSlice.delta
-                    } elseif ($pickedSlice.actionType -eq "score" -and $pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                        $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                        $deltaVal = $sign * [int]$matches[2]
+                    $isNumSlice = ($pickedSlice.isNumber -eq $true) -or 
+                                  ($pickedSlice.actionType -eq "score") -or 
+                                  ($pickedSlice.delta -ne $null -and $pickedSlice.delta -ne 0) -or 
+                                  ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                    if ($pickedSlice.actionType -eq "plant" -or $pickedSlice.actionType -eq "zombie" -or $pickedSlice.actionType -eq "power") {
+                        $isNumSlice = $false
                     }
-                    if ($deltaVal -ne 0) {
-                        Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
+
+                    if ($isNumSlice) {
+                        $deltaVal = 0
+                        if ($pickedSlice.delta -ne $null) {
+                            $deltaVal = [int]$pickedSlice.delta
+                        } elseif ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                            $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                            $deltaVal = $sign * [int]$matches[2]
+                        }
+                        if ($deltaVal -ne 0) {
+                            Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
+                        }
                     }
                 }
 
@@ -1318,10 +1627,14 @@ while ($true) {
                 try {
                     $data = $body | ConvertFrom-Json
                     $cur = Load-WinWidget
-                    if ($data.score -ne $null) { $cur.score = [int]$data.score }
-                    if ($data.target -ne $null) { $cur.target = [int]$data.target }
                     if ($data.wins -ne $null) { $cur.wins = [int]$data.wins }
                     if ($data.losses -ne $null) { $cur.losses = [int]$data.losses }
+                    if ($data.score -ne $null) {
+                        $cur.score = [int]$data.score
+                    } else {
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
+                    }
+                    if ($data.target -ne $null) { $cur.target = [int]$data.target }
                     if ($data.autoWin -ne $null) { $cur.autoWin = [bool]$data.autoWin }
                     if ($data.enabled -ne $null) { $cur.enabled = [bool]$data.enabled }
                     if ($data.label) { $cur.label = [string]$data.label }
@@ -1368,27 +1681,27 @@ while ($true) {
                 switch ($action) {
                     "win" {
                         $cur.wins = [int]$cur.wins + 1
-                        $cur.score = [int]$cur.score + 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "lose" {
                         $cur.losses = [int]$cur.losses + 1
-                        $cur.score = [int]$cur.score - 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "win_plus" {
                         $cur.wins = [int]$cur.wins + 1
-                        $cur.score = [int]$cur.score + 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "win_minus" {
                         $cur.wins = [Math]::Max(0, [int]$cur.wins - 1)
-                        $cur.score = [int]$cur.score - 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "lose_plus" {
                         $cur.losses = [int]$cur.losses + 1
-                        $cur.score = [int]$cur.score - 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "lose_minus" {
                         $cur.losses = [Math]::Max(0, [int]$cur.losses - 1)
-                        $cur.score = [int]$cur.score + 1
+                        $cur.score = [int]$cur.wins - [int]$cur.losses
                     }
                     "reset" {
                         $cur.score = 0
@@ -1524,26 +1837,30 @@ while ($true) {
                 }
             }
 
-            # If slice has positive/negative numerical value or unit win, auto-update Win Widget & Dual Cards!
+            # ONLY update Win Widget if number slice! DO NOT add points for plants or zombies!
             $deltaVal = 0
-            if ($pickedSlice.delta -ne $null) {
-                $deltaVal = [int]$pickedSlice.delta
-            } elseif ($pickedSlice.value -ne $null) {
-                $deltaVal = [int]$pickedSlice.value
-            } elseif ($pickedSlice.actionType -eq "score" -and $pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                $deltaVal = $sign * [int]$matches[2]
-            } elseif ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                $deltaVal = $sign * [int]$matches[2]
-            } elseif ($pickedSlice.actionType -eq "zombie" -or ($targetSpinner -and $targetSpinner.name -match "zombie")) {
-                $deltaVal = -1
-            } else {
-                $deltaVal = 1
+            $isNumSlice = ($pickedSlice.isNumber -eq $true) -or 
+                          ($pickedSlice.actionType -eq "score") -or 
+                          ($pickedSlice.delta -ne $null -and $pickedSlice.delta -ne 0) -or 
+                          ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+            # Plants, zombies, and powers MUST NEVER add points or change score!
+            if ($pickedSlice.actionType -eq "plant" -or $pickedSlice.actionType -eq "zombie" -or $pickedSlice.actionType -eq "power") {
+                $isNumSlice = $false
             }
 
-            if ($deltaVal -ne 0) {
-                Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
+            if ($isNumSlice) {
+                if ($pickedSlice.delta -ne $null) {
+                    $deltaVal = [int]$pickedSlice.delta
+                } elseif ($pickedSlice.value -ne $null) {
+                    $deltaVal = [int]$pickedSlice.value
+                } elseif ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                    $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                    $deltaVal = $sign * [int]$matches[2]
+                }
+                if ($deltaVal -ne 0) {
+                    Update-WinWidgetScore $deltaVal "spinner_number" $pickedSlice.label
+                }
             }
 
             $spName = if ($targetSpinner -and $targetSpinner.name) { $targetSpinner.name } else { "Spinner" }
@@ -1603,6 +1920,16 @@ while ($true) {
                     $avatar = if ($payload.profilePictureUrl) { $payload.profilePictureUrl } elseif ($payload.avatar) { $payload.avatar } elseif ($payload.avatarUrl) { $payload.avatarUrl } else { "images/default_avatar.svg" }
                     $icon = if ($payload.giftPictureUrl) { $payload.giftPictureUrl } else { "" }
 
+                    # LEADERBOARD: Track coins for this gift
+                    $giftCoinValue = $repeatCount
+                    if ($config -and $config.gifts) {
+                        $lcGift = $config.gifts | Where-Object { $_.giftId -and ([string]$_.giftId.Trim() -eq [string]$giftId.Trim()) } | Select-Object -First 1
+                        if ($lcGift -and $lcGift.coins) {
+                            $giftCoinValue = [int]$lcGift.coins * $repeatCount
+                        }
+                    }
+                    Update-LeaderboardCoins $user $giftCoinValue $avatar
+
                     # 1. Check if gift matches a multi-spinner trigger
                     $matchedSpinner = $null
                     if ($config -and $config.spinners) {
@@ -1654,18 +1981,30 @@ while ($true) {
                                 SendToPvZGame $picked.actionType $picked.command $totalSpawns $user | Out-Null
                             }
 
-                            # Auto-adjust Win Widget score if slice has delta or numerical value!
-                            $deltaVal = 0
-                            if ($picked.delta -ne $null) {
-                                $deltaVal = [int]$picked.delta
-                            } elseif ($picked.value -ne $null) {
-                                $deltaVal = [int]$picked.value
-                            } elseif ($picked.label -match '^([+-]?\d+)$') {
-                                $deltaVal = [int]$matches[1]
+                            # Auto-adjust Win Widget score ONLY if slice is a number (never for plants or zombies)!
+                            $isNumSlice = ($picked.isNumber -eq $true) -or 
+                                          ($picked.actionType -eq "score") -or 
+                                          ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
+                                          ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                            if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
+                                $isNumSlice = $false
                             }
 
-                            if ($deltaVal -ne 0) {
-                                Update-WinWidgetScore $deltaVal "tiktok_gift" $picked.label
+                            if ($isNumSlice) {
+                                $deltaVal = 0
+                                if ($picked.delta -ne $null) {
+                                    $deltaVal = [int]$picked.delta
+                                } elseif ($picked.value -ne $null) {
+                                    $deltaVal = [int]$picked.value
+                                } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                    $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                    $deltaVal = $sign * [int]$matches[2]
+                                }
+
+                                if ($deltaVal -ne 0) {
+                                    Update-WinWidgetScore $deltaVal "tiktok_gift" $picked.label
+                                }
                             }
                         }
 
@@ -1773,20 +2112,27 @@ while ($true) {
                                     SendToPvZGame $picked.actionType $picked.command $picked.amount $user "" $spReps $spDelay $spInterval | Out-Null
                                 }
 
-                                # Update Win Widget score and WIN/LOSE dual cards on TikTok gift spin!
-                                $tkDelta = 0
-                                if ($picked.delta -ne $null) {
-                                    $tkDelta = [int]$picked.delta
-                                } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                                    $tkSign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                                    $tkDelta = $tkSign * [int]$matches[2]
-                                } elseif ($picked.actionType -eq "zombie") {
-                                    $tkDelta = -1
-                                } else {
-                                    $tkDelta = 1
+                                # Update Win Widget score ONLY on number slices (never on plants/zombies)!
+                                $isNumSlice = ($picked.isNumber -eq $true) -or 
+                                              ($picked.actionType -eq "score") -or 
+                                              ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
+                                              ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                                if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
+                                    $isNumSlice = $false
                                 }
-                                if ($tkDelta -ne 0) {
-                                    Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
+
+                                if ($isNumSlice) {
+                                    $tkDelta = 0
+                                    if ($picked.delta -ne $null) {
+                                        $tkDelta = [int]$picked.delta
+                                    } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                        $tkSign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                        $tkDelta = $tkSign * [int]$matches[2]
+                                    }
+                                    if ($tkDelta -ne 0) {
+                                        Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
+                                    }
                                 }
 
                                 AddEventLog @{ type = "spin_result"; label = "Lucky Wheel: $($picked.label)"; username = $user; avatar = $avatar; slice = $picked; icon = $icon; hideInOverlay = $spHide }
@@ -1849,7 +2195,11 @@ while ($true) {
                 elseif ($payload.event -eq "like" -or $payload.type -eq "like") {
                     $likes = if ($payload.likeCount) { [int]$payload.likeCount } else { 1 }
                     $user = if ($payload.username) { $payload.username } else { "Viewer" }
+                    $avatar = if ($payload.profilePictureUrl) { $payload.profilePictureUrl } elseif ($payload.avatar) { $payload.avatar } elseif ($payload.avatarUrl) { $payload.avatarUrl } else { "" }
                     $totalLikes = if ($payload.totalLikeCount) { [int64]$payload.totalLikeCount } elseif ($payload.totalLikes) { [int64]$payload.totalLikes } else { 0 }
+
+                    # LEADERBOARD: Track likes
+                    Update-LeaderboardLikes $user $likes $avatar
 
                     $card1 = $config.gifts | Where-Object { $_.id -eq "1" }
                     $card2 = $config.gifts | Where-Object { $_.id -eq "2" }

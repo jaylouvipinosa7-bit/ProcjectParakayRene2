@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Stream Ranking & Top Donators Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=Titan+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-coin: #f59e0b;
+            --accent-coin-glow: rgba(245, 158, 11, 0.45);
+            --accent-like: #f43f5e;
+            --accent-like-glow: rgba(244, 63, 94, 0.45);
+            --accent-donator: #ec4899;
+            --accent-donator-glow: rgba(236, 72, 153, 0.5);
+
+            --bg-card: rgba(13, 17, 23, 0.94);
+            --bg-row: rgba(22, 27, 34, 0.85);
+            --bg-row-alt: rgba(30, 38, 48, 0.7);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+
+            --gold-grad: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
+            --silver-grad: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #64748b 100%);
+            --bronze-grad: linear-gradient(135deg, #fdba74 0%, #ea580c 50%, #9a3412 100%);
+            --blue-grad: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+
+            --scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            background: transparent !important;
+            overflow: visible;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Root Scaled Viewport Container - Snug fit for TikTok LIVE Studio Link Sources */
+        .overlay-viewport {
+            transform-origin: top left;
+            transform: scale(var(--scale));
+            padding: 8px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+            width: fit-content;
+            height: fit-content;
+            margin: 0;
+        }
+
+        .overlay-viewport.pos-center {
+            margin: 0 auto;
+            justify-content: center;
+        }
+        .overlay-viewport.pos-right {
+            margin: 0;
+            justify-content: flex-start;
+        }
+        .overlay-viewport.pos-left {
+            margin: 0;
+            justify-content: flex-start;
+        }
+
+        /* ==========================================================================
+           STYLE 1: CLASSIC RANKING CARD (Matching Screenshot 1 StreamToEarn)
+           ========================================================================== */
+        .ranking-card {
+            width: 320px;
+            background: rgba(13, 17, 24, 0.94);
+            border-radius: 16px;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .ranking-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ranking-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ranking-header-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+        }
+
+        .ranking-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .ranking-badge-type {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .badge-coins {
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+
+        .badge-likes {
+            background: rgba(244, 63, 94, 0.18);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: #fb7185;
+        }
+
+        /* List Rows */
+        .ranking-list {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .ranking-row {
+            height: 38px;
+            padding: 0 10px;
+            border-radius: 10px;
+            background: rgba(22, 27, 34, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            position: relative;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s;
+        }
+
+        .ranking-row.updated {
+            animation: rowFlash 0.6s ease-out;
+        }
+
+        @keyframes rowFlash {
+            0% { transform: scale(1.03); background: rgba(245, 158, 11, 0.35); border-color: #f59e0b; }
+            100% { transform: scale(1); }
+        }
+
+        /* Rank Badge */
+        .rank-num-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Podium highlights for Screenshot 1 */
+        .ranking-row.rank-1 {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(22, 27, 34, 0.85) 100%);
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+        }
+        .ranking-row.rank-1 .rank-num-badge {
+            background: var(--gold-grad);
+            color: #000000;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        .ranking-row.rank-2 {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(22, 27, 34, 0.85) 100%);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        .ranking-row.rank-2 .rank-num-badge {
+            background: var(--silver-grad);
+            color: #0f172a;
+        }
+
+        .ranking-row.rank-3 {
+            background: linear-gradient(90deg, rgba(234, 88, 12, 0.15) 0%, rgba(22, 27, 34, 0.85) 100%);
+            border-color: rgba(234, 88, 12, 0.4);
+        }
+        .ranking-row.rank-3 .rank-num-badge {
+            background: var(--bronze-grad);
+            color: #ffffff;
+        }
+
+        /* Avatar Container & Shapes */
+        .avatar-wrap {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #1e293b;
+            display: block;
+        }
+
+        /* Avatar Shapes */
+        .shape-circle .avatar-img { border-radius: 50%; }
+        .shape-squircle .avatar-img { border-radius: 7px; }
+        .shape-hexagon .avatar-img { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); border-radius: 0; }
+        .shape-diamond .avatar-img { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); border-radius: 0; }
+
+        /* Avatar Frames / Borders */
+        .frame-crown .avatar-wrap::before {
+            content: '👑';
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            z-index: 2;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+        }
+
+        .frame-glow .avatar-img {
+            box-shadow: 0 0 8px #f43f5e;
+            border-color: #f43f5e;
+        }
+        .ranking-row.rank-1 .frame-glow .avatar-img {
+            box-shadow: 0 0 10px #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #f1f5f9;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.1px;
+        }
+
+        .ranking-row.empty .user-name {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Metric Pill (Coins or Likes count) */
+        .metric-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+            padding: 2px 7px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .metric-pill.coin-metric {
+            color: #fde047;
+            background: rgba(245, 158, 11, 0.14);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .metric-pill.like-metric {
+            color: #fda4af;
+            background: rgba(244, 63, 94, 0.14);
+            border-color: rgba(244, 63, 94, 0.3);
+        }
+
+        .metric-icon {
+            width: 13px;
+            height: 13px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* ==========================================================================
+           STYLE 2: CUTE KAWAII TOP DONATORS CARD (Matching Screenshot 2)
+           ========================================================================== */
+        .cute-card {
+            width: 320px;
+            background: linear-gradient(180deg, #ff9acb 0%, #ff6dae 30%, #f43f85 70%, #d9246c 100%);
+            border-radius: 28px;
+            border: 3.5px solid #ffffff;
+            box-shadow: 0 20px 50px rgba(225, 29, 102, 0.45), inset 0 3px 0 rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px 14px 14px;
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Floating Cute Decorations */
+        .cute-ribbon-bow {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cute-ribbon-bow svg {
+            width: 64px;
+            height: 44px;
+        }
+
+        .cute-float-sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatTwinkle 3s ease-in-out infinite alternate;
+        }
+        .sparkle-1 { top: 10px; left: 16px; font-size: 16px; animation-delay: 0s; }
+        .sparkle-2 { top: 12px; right: 18px; font-size: 18px; animation-delay: 1.2s; }
+        .sparkle-3 { bottom: 20px; left: 12px; font-size: 14px; animation-delay: 0.6s; }
+        .sparkle-4 { bottom: 22px; right: 14px; font-size: 16px; animation-delay: 1.8s; }
+
+        @keyframes floatTwinkle {
+            0% { transform: translateY(0) scale(0.9); opacity: 0.7; }
+            100% { transform: translateY(-6px) scale(1.15); opacity: 1; filter: drop-shadow(0 0 6px #fff); }
+        }
+
+        /* 3D Bubbly Header Title */
+        .cute-header {
+            margin-top: 10px;
+            margin-bottom: 12px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .cute-title {
+            font-family: 'Fredoka', 'Titan One', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 
+                0 3px 0 #be185d,
+                0 5px 0 #831843,
+                0 8px 16px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Cute Podium Structure (Screenshot 2) */
+        .cute-podium {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            z-index: 5;
+        }
+
+        /* Rank 1 Giant Golden Showcase */
+        .cute-rank-1-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 235, 245, 0.95) 100%);
+            border-radius: 18px;
+            border: 2px solid #ffffff;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(157, 23, 77, 0.35), inset 0 2px 0 #ffffff;
+            position: relative;
+        }
+
+        .cute-crown-badge-1 {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--gold-grad);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .cute-crown-badge-1::before {
+            content: '👑';
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .cute-crown-badge-1 span {
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 900;
+            color: #78350f;
+            line-height: 1;
+        }
+
+        .cute-avatar-1 {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #f59e0b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+        .cute-avatar-1 img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cute-user-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .cute-user-name-1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: #1e1b4b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cute-metric-badge-1 {
+            align-self: flex-start;
+            margin-top: 3px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.4);
+        }
+
+        /* Ranks 2 & 3: Silver & Bronze Cards */
+        .cute-rank-row-card {
+            background: rgba(255, 255, 255, 0.88);
+            border-radius: 14px;
+            border: 1.5px solid #ffffff;
+            padding: 7px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(157, 23, 77, 0.2);
+        }
+
+        .cute-medal-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            flex-shrink: 0;
+        }
+
+        .medal-silver {
+            background: var(--silver-grad);
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(148, 163, 184, 0.6);
+        }
+        .medal-bronze {
+            background: var(--bronze-grad);
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.6);
+        }
+
+        .cute-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+        .cute-avatar-small img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cute-user-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #312e81;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cute-metric-pill {
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #ec4899;
+            background: rgba(253, 242, 248, 0.9);
+            padding: 3px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(244, 114, 182, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Ranks 4 & 5: Dark rounded pill cards (Exact to Screenshot 2 bottom rows) */
+        .cute-dark-pill-row {
+            background: rgba(18, 16, 38, 0.75);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .cute-pill-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fce7f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cute-dark-pill-row .cute-user-name {
+            color: #ffffff;
+        }
+
+        .cute-dark-pill-row .cute-metric-pill {
+            background: rgba(0, 0, 0, 0.35);
+            color: #fde047;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Puffy Cloud Bottom Decoration */
+        .cute-clouds-bottom {
+            width: calc(100% + 28px);
+            margin-left: -14px;
+            margin-right: -14px;
+            margin-bottom: -14px;
+            height: 26px;
+            margin-top: 10px;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            border-radius: 0 0 24px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.85;
+        }
+
+        /* ==========================================================================
+           STYLE 3: NEON CYBERPUNK THEME
+           ========================================================================== */
+        .neon-card {
+            width: 320px;
+            background: rgba(10, 10, 18, 0.95);
+            border-radius: 16px;
+            border: 2px solid #00f2fe;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.35), inset 0 0 15px rgba(0, 242, 254, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .neon-card .ranking-header {
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.05));
+            border-bottom: 1px solid #00f2fe;
+        }
+        .neon-card .ranking-title {
+            color: #00f2fe;
+            text-shadow: 0 0 10px #00f2fe;
+            font-family: 'Outfit', sans-serif;
+        }
+        .neon-card .ranking-row {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(0, 242, 254, 0.2);
+        }
+        .neon-card .ranking-row.rank-1 {
+            border-color: #ff007f;
+            box-shadow: 0 0 16px rgba(255, 0, 127, 0.4);
+        }
+        .neon-card .ranking-row.rank-1 .rank-num-badge {
+            background: #ff007f;
+            color: #fff;
+            box-shadow: 0 0 10px #ff007f;
+        }
+
+        /* ==========================================================================
+           STYLE 4: ROYAL LUXURY THEME
+           ========================================================================== */
+        .luxury-card {
+            width: 320px;
+            background: linear-gradient(180deg, rgba(17, 24, 39, 0.98) 0%, rgba(10, 12, 18, 0.98) 100%);
+            border-radius: 18px;
+            border: 2px solid #eab308;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 0 0 20px rgba(234, 179, 8, 0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .luxury-card .ranking-header {
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.25), transparent);
+            border-bottom: 1px solid rgba(234, 179, 8, 0.4);
+        }
+        .luxury-card .ranking-title {
+            color: #fef08a;
+            letter-spacing: 0.5px;
+        }
+
+        /* Transparent OBS Mode */
+        .obs-pure-transparent .ranking-card,
+        .obs-pure-transparent .cute-card,
+        .obs-pure-transparent .neon-card,
+        .obs-pure-transparent .luxury-card {
+            background: transparent !important;
+            box-shadow: none !important;
+            border-color: transparent !important;
+        }
+
+        /* Floating Alert Banner on New #1 / Big Donation */
+        #celebrationToast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 158, 11, 0.7);
+            border: 2px solid #ffffff;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #celebrationToast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Celebration Toast -->
+    <div id="celebrationToast">
+        <span style="font-size: 20px;">👑</span>
+        <span id="toastMsg">New #1 Top Supporter!</span>
+    </div>
+
+    <!-- Main Dynamic Overlay Viewport -->
+    <div id="overlayViewport" class="overlay-viewport pos-left">
+        <!-- Injected via JavaScript based on URL query or saved settings -->
+    </div>
+
+    <script>
+        // Default SVG Icons to prevent broken assets
+        const ICONS = {
+            coin: `<svg class="metric-icon" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="#f59e0b"/><circle cx="12" cy="12" r="8" fill="#fbbf24"/><text x="12" y="16" font-size="12" font-weight="900" font-family="Arial" text-anchor="middle" fill="#78350f">¢</text></svg>`,
+            heart: `<svg class="metric-icon" viewBox="0 0 24 24" fill="#f43f5e"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+            crown: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>`,
+            defaultAvatar: `images/default_avatar.svg`
+        };
+
+        // Query parameters
+        const params = new URLSearchParams(window.location.search);
+        let overlayType = params.get('type') || 'all'; // 'coins', 'likes', 'donators', 'all'
+        let overlayStyle = params.get('style') || ''; // 'classic', 'cute', 'neon', 'luxury'
+        let overlayPos = params.get('pos') || 'left';
+        let overlayCount = parseInt(params.get('count') || '10', 10);
+        let overlayScale = parseFloat(params.get('scale') || '1');
+        let isTransparent = params.get('transparent') === '1' || params.get('transparent') === 'true';
+
+        let settings = {
+            likesEnabled: true,
+            coinsEnabled: true,
+            donatorsEnabled: true,
+            likesStyle: "classic",
+            coinsStyle: "classic",
+            donatorsStyle: "cute",
+            likesPosition: "left",
+            coinsPosition: "left",
+            donatorsPosition: "right",
+            likesCount: 10,
+            coinsCount: 10,
+            donatorsCount: 5,
+            likesTitle: "Top 10 Likes",
+            coinsTitle: "Top 10 Coins",
+            donatorsTitle: "Top Donators",
+            showAvatars: true,
+            avatarStyle: "circle",
+            avatarPack: "tiktok",
+            customAvatars: {}
+        };
+
+        let lastLeaderboard = { likes: [], coins: [], donators: [] };
+        let topLeader1 = { coins: null, likes: null };
+
+        // Sound Effects (Web Audio API synthesizers so no MP3 dependency)
+        const audioCtx = (typeof window.AudioContext !== 'undefined' || typeof window.webkitAudioContext !== 'undefined') ? 
+            new (window.AudioContext || window.webkitAudioContext)() : null;
+
+        function playDingSound() {
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {}
+        }
+
+        // Apply Viewport positioning & scale
+        function applyLayoutStyles() {
+            const vp = document.getElementById('overlayViewport');
+            if (!vp) return;
+            vp.className = `overlay-viewport pos-${overlayPos}`;
+            vp.style.setProperty('--scale', overlayScale);
+            if (isTransparent) {
+                document.body.classList.add('obs-pure-transparent');
+            }
+        }
+
+        // Resolve Avatar URL based on user settings
+        function getAvatarUrl(username, userAvatar, rank) {
+            if (!settings.showAvatars) return '';
+
+            // 1. REAL LIVE TIKTOK PROFILE PICTURE (ALWAYS PRIORITY #1)
+            if (userAvatar && typeof userAvatar === 'string') {
+                const clean = userAvatar.trim();
+                if (clean.length > 5 && clean !== 'images/default_avatar.svg') {
+                    return clean;
+                }
+            }
+
+            // 2. Custom override for specific username or rank
+            if (settings.customAvatars && settings.customAvatars[username]) {
+                return settings.customAvatars[username];
+            }
+            if (settings.customAvatars && settings.customAvatars['rank_' + rank]) {
+                return settings.customAvatars['rank_' + rank];
+            }
+
+            // 3. PvZ Icon Pack if explicitly selected in settings
+            if (settings.avatarPack === 'pvz') {
+                const pvzAvatars = [
+                    'images/game-icons/pvz/spawn_ultimatecattail.webp',
+                    'images/game-icons/pvz/ultimate_gold_gargantuar.webp',
+                    'images/game-icons/pvz/spawn_gatlingpea.webp',
+                    'images/game-icons/pvz/spawn_cherrybomb.webp',
+                    'images/game-icons/pvz/spawn_repeater.webp',
+                    'images/game-icons/pvz/spawn_peashooter.webp',
+                    'images/game-icons/pvz/spawn_sunflower.webp',
+                    'images/game-icons/pvz/spawn_wallnut.webp',
+                    'images/game-icons/pvz/spawn_snowpea.webp',
+                    'images/game-icons/pvz/spawn_chomper.webp'
+                ];
+                return pvzAvatars[(rank - 1) % pvzAvatars.length];
+            }
+
+            // 4. Real viewer with username but no avatar from CDN yet -> Colorful initials avatar
+            if (username && !username.startsWith('Top ')) {
+                return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&bold=true&size=128`;
+            }
+
+            // 5. Placeholder rows (Top 1, Top 2, ...) -> Clean rank numbered badge
+            const rankBgColors = ['f59e0b', '94a3b8', 'ea580c', '3b82f6', '10b981', '8b5cf6', 'ec4899', '06b6d4', 'eab308', '6366f1'];
+            const bg = rankBgColors[(rank - 1) % rankBgColors.length];
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(rank)}&background=${bg}&color=fff&bold=true&size=128`;
+        }
+
+        // Render Classic Top 10 Card (Screenshot 1)
+        function renderClassicCard(type, data, customTitle, maxCount, cardStyle) {
+            const isCoins = type === 'coins';
+            const title = customTitle || (isCoins ? `Top ${maxCount} Coins` : `Top ${maxCount} Likes`);
+            const themeClass = cardStyle === 'neon' ? 'neon-card' : (cardStyle === 'luxury' ? 'luxury-card' : 'ranking-card');
+            const shapeClass = `shape-${settings.avatarStyle || 'circle'}`;
+
+            let rowsHtml = '';
+            for (let i = 1; i <= maxCount; i++) {
+                const item = data[i - 1];
+                const hasUser = item && item.username && item.value > 0;
+                const username = hasUser ? item.username : `Top ${i}`;
+                const valFormatted = hasUser ? item.value.toLocaleString() : '0';
+                const avatarUrl = getAvatarUrl(username, (item && item.avatar) || '', i);
+                const isRank1 = i === 1;
+                const isRank2 = i === 2;
+                const isRank3 = i === 3;
+                const rankClass = isRank1 ? 'rank-1' : (isRank2 ? 'rank-2' : (isRank3 ? 'rank-3' : ''));
+                const frameClass = isRank1 ? 'frame-crown' : 'frame-normal';
+
+                rowsHtml += `
+                    <li class="ranking-row ${rankClass} ${hasUser ? '' : 'empty'} ${shapeClass}">
+                        <div class="rank-num-badge">${i}</div>
+                        ${settings.showAvatars ? `
+                            <div class="avatar-wrap ${frameClass}">
+                                <img src="${avatarUrl}" class="avatar-img" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                            </div>
+                        ` : ''}
+                        <span class="user-name" title="${username}">${username}</span>
+                        <div class="metric-pill ${isCoins ? 'coin-metric' : 'like-metric'}">
+                            ${isCoins ? ICONS.coin : ICONS.heart}
+                            <span>${valFormatted}</span>
+                        </div>
+                    </li>
+                `;
+            }
+
+            return `
+                <div class="${themeClass}">
+                    <div class="ranking-header">
+                        <div class="ranking-title-wrap">
+                            <span class="ranking-header-icon">${isCoins ? ICONS.coin : ICONS.heart}</span>
+                            <span class="ranking-title">${title}</span>
+                        </div>
+                        <span class="ranking-badge-type ${isCoins ? 'badge-coins' : 'badge-likes'}">
+                            ${isCoins ? 'Coins' : 'Likes'}
+                        </span>
+                    </div>
+                    <ul class="ranking-list">
+                        ${rowsHtml}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Render Cute Top Donators Card (Screenshot 2)
+        function renderCuteDonatorCard(data, customTitle, maxCount) {
+            const title = customTitle || `TOP ${maxCount} DONATORS`;
+            const shapeClass = `shape-${settings.avatarStyle || 'circle'}`;
+
+            // Top 1 Big Showcase
+            const top1 = data[0] && data[0].value > 0 ? data[0] : { username: 'Top 1', value: 0, avatar: '' };
+            const top1Avatar = getAvatarUrl(top1.username, top1.avatar, 1);
+
+            let rowsHtml = '';
+            // Rank 2 & 3: Silver & Bronze Cards
+            for (let i = 2; i <= Math.min(3, maxCount); i++) {
+                const item = data[i - 1];
+                const hasUser = item && item.username && item.value > 0;
+                const username = hasUser ? item.username : `Top ${i}`;
+                const valFormatted = hasUser ? item.value.toLocaleString() : '0';
+                const avatar = getAvatarUrl(username, (item && item.avatar) || '', i);
+                const medalClass = i === 2 ? 'medal-silver' : 'medal-bronze';
+
+                rowsHtml += `
+                    <div class="cute-rank-row-card ${shapeClass}">
+                        <div class="cute-medal-badge ${medalClass}">${i}</div>
+                        ${settings.showAvatars ? `
+                            <div class="cute-avatar-small">
+                                <img src="${avatar}" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                            </div>
+                        ` : ''}
+                        <span class="cute-user-name" title="${username}">${username}</span>
+                        <div class="cute-metric-pill">
+                            ${ICONS.coin}
+                            <span>${valFormatted}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Ranks 4 to maxCount: Dark Rounded Pill Cards (Screenshot 2)
+            for (let i = 4; i <= maxCount; i++) {
+                const item = data[i - 1];
+                const hasUser = item && item.username && item.value > 0;
+                const username = hasUser ? item.username : `Top ${i}`;
+                const valFormatted = hasUser ? item.value.toLocaleString() : '0';
+                const avatar = getAvatarUrl(username, (item && item.avatar) || '', i);
+
+                rowsHtml += `
+                    <div class="cute-dark-pill-row ${shapeClass}">
+                        <div class="cute-pill-num">${i}</div>
+                        ${settings.showAvatars ? `
+                            <div class="cute-avatar-small" style="width:26px; height:26px;">
+                                <img src="${avatar}" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                            </div>
+                        ` : ''}
+                        <span class="cute-user-name" title="${username}">${username}</span>
+                        <div class="cute-metric-pill">
+                            ${ICONS.coin}
+                            <span>${valFormatted}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="cute-card">
+                    <!-- Top Ribbon Bow -->
+                    <div class="cute-ribbon-bow">
+                        <svg viewBox="0 0 100 70">
+                            <!-- Bow knot and ribbon loops -->
+                            <ellipse cx="50" cy="35" rx="14" ry="12" fill="#fff" />
+                            <ellipse cx="50" cy="35" rx="10" ry="8" fill="#f43f85" />
+                            <path d="M42 35 C15 15, 0 35, 30 55 C42 45, 45 38, 42 35 Z" fill="#ff70a6" stroke="#fff" stroke-width="3"/>
+                            <path d="M58 35 C85 15, 100 35, 70 55 C58 45, 55 38, 58 35 Z" fill="#ff70a6" stroke="#fff" stroke-width="3"/>
+                            <path d="M44 42 L25 68 L40 64 L48 46 Z" fill="#f43f85" />
+                            <path d="M56 42 L75 68 L60 64 L52 46 Z" fill="#f43f85" />
+                        </svg>
+                    </div>
+
+                    <!-- Sparkles -->
+                    <span class="cute-float-sparkle sparkle-1">✨</span>
+                    <span class="cute-float-sparkle sparkle-2">💖</span>
+                    <span class="cute-float-sparkle sparkle-3">⭐</span>
+                    <span class="cute-float-sparkle sparkle-4">✨</span>
+
+                    <!-- Title -->
+                    <div class="cute-header">
+                        <h2 class="cute-title">
+                            <span>🎀</span>
+                            ${title}
+                            <span>🎀</span>
+                        </h2>
+                    </div>
+
+                    <!-- Podium Content -->
+                    <div class="cute-podium">
+                        <!-- Rank 1 Giant Golden Card -->
+                        <div class="cute-rank-1-box ${shapeClass}">
+                            <div class="cute-crown-badge-1">
+                                <span>1</span>
+                            </div>
+                            ${settings.showAvatars ? `
+                                <div class="cute-avatar-1">
+                                    <img src="${top1Avatar}" alt="${top1.username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(top1.username || '1')}&background=f59e0b&color=fff&bold=true&size=128';">
+                                </div>
+                            ` : ''}
+                            <div class="cute-user-info">
+                                <span class="cute-user-name-1" title="${top1.username}">${top1.username}</span>
+                                <div class="cute-metric-badge-1">
+                                    ${ICONS.coin}
+                                    <span>${top1.value.toLocaleString()} coins</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rows 2 to N -->
+                        ${rowsHtml}
+                    </div>
+
+                    <!-- Bottom Clouds & Hearts -->
+                    <div class="cute-clouds-bottom">
+                        <span>☁️</span>
+                        <span>💖</span>
+                        <span>✨</span>
+                        <span>💖</span>
+                        <span>☁️</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render everything according to layout/type
+        function renderOverlay() {
+            const vp = document.getElementById('overlayViewport');
+            if (!vp) return;
+
+            let html = '';
+
+            const coinsCount = overlayCount || settings.coinsCount || 10;
+            const likesCount = overlayCount || settings.likesCount || 10;
+            const donatorsCount = overlayCount || settings.donatorsCount || 5;
+
+            const cStyle = overlayStyle || settings.coinsStyle || 'classic';
+            const lStyle = overlayStyle || settings.likesStyle || 'classic';
+            const dStyle = overlayStyle || settings.donatorsStyle || 'cute';
+
+            if (overlayType === 'coins') {
+                html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
+            } else if (overlayType === 'likes') {
+                html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle, likesCount, lStyle);
+            } else if (overlayType === 'donators') {
+                if (dStyle === 'cute') {
+                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount);
+                } else {
+                    html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount, dStyle);
+                }
+            } else {
+                // ALL / DUAL MODE (Screenshot 1: Coins on left, Likes on right, or Donators card)
+                if (settings.coinsEnabled) {
+                    html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
+                }
+                if (settings.likesEnabled) {
+                    html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle, likesCount, lStyle);
+                }
+                if (settings.donatorsEnabled && overlayType === 'all_with_donators') {
+                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount);
+                }
+            }
+
+            vp.innerHTML = html;
+        }
+
+        // Check for Rank #1 Changes to trigger celebration animation & audio
+        function checkMilestones(newCoins, newLikes) {
+            if (newCoins && newCoins.length > 0 && newCoins[0].username) {
+                const currentLeader = newCoins[0].username;
+                if (topLeader1.coins && topLeader1.coins !== currentLeader) {
+                    showToast(`👑 ${currentLeader} took #1 in Coins!`);
+                    playDingSound();
+                }
+                topLeader1.coins = currentLeader;
+            }
+            if (newLikes && newLikes.length > 0 && newLikes[0].username) {
+                const currentLeader = newLikes[0].username;
+                if (topLeader1.likes && topLeader1.likes !== currentLeader) {
+                    showToast(`💖 ${currentLeader} took #1 in Likes!`);
+                    playDingSound();
+                }
+                topLeader1.likes = currentLeader;
+            }
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('celebrationToast');
+            const msg = document.getElementById('toastMsg');
+            if (!toast || !msg) return;
+            msg.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // Fetch Leaderboard from server
+        async function fetchLeaderboard() {
+            try {
+                const res = await fetch('/api/leaderboard?type=all&count=20&t=' + Date.now());
+                if (!res.ok) return;
+                const json = await res.json();
+
+                if (json.settings) {
+                    settings = Object.assign(settings, json.settings);
+                    // Override with URL params if explicitly present
+                    if (params.has('pos')) overlayPos = params.get('pos');
+                    else overlayPos = settings.coinsPosition || 'left';
+                    applyLayoutStyles();
+                }
+
+                if (json.coins || json.likes) {
+                    checkMilestones(json.coins, json.likes);
+                    lastLeaderboard.coins = json.coins || [];
+                    lastLeaderboard.likes = json.likes || [];
+                    lastLeaderboard.donators = json.coins || [];
+                    renderOverlay();
+                }
+            } catch (err) {}
+        }
+
+        // Initialize polling
+        applyLayoutStyles();
+        fetchLeaderboard();
+        setInterval(fetchLeaderboard, 1000);
+    </script>
+</body>
+</html>

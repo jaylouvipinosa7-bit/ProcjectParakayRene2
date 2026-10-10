@@ -159,13 +159,63 @@ function startConnection() {
 
     function extractAvatarUrl(d) {
         if (!d) return '';
-        if (d.profilePictureUrl) return d.profilePictureUrl;
-        if (d.user && d.user.profilePicture && d.user.profilePicture.url && d.user.profilePicture.url[0]) {
-            return d.user.profilePicture.url[0];
+
+        // 1. Direct avatar properties
+        if (typeof d.profilePictureUrl === 'string' && d.profilePictureUrl.startsWith('http')) return d.profilePictureUrl;
+        if (typeof d.avatarUrl === 'string' && d.avatarUrl.startsWith('http')) return d.avatarUrl;
+
+        // 2. Nested user object (TikTok Protobuf)
+        if (d.user && typeof d.user === 'object') {
+            if (typeof d.user.profilePictureUrl === 'string' && d.user.profilePictureUrl.startsWith('http')) return d.user.profilePictureUrl;
+            if (typeof d.user.avatarUrl === 'string' && d.user.avatarUrl.startsWith('http')) return d.user.avatarUrl;
+
+            // Avatar thumbs / medium / large
+            if (d.user.avatarThumb && Array.isArray(d.user.avatarThumb.urlList) && d.user.avatarThumb.urlList[0]) {
+                return d.user.avatarThumb.urlList[0];
+            }
+            if (d.user.avatarMedium && Array.isArray(d.user.avatarMedium.urlList) && d.user.avatarMedium.urlList[0]) {
+                return d.user.avatarMedium.urlList[0];
+            }
+            if (d.user.avatarLarge && Array.isArray(d.user.avatarLarge.urlList) && d.user.avatarLarge.urlList[0]) {
+                return d.user.avatarLarge.urlList[0];
+            }
+
+            // ProfilePicture object
+            if (d.user.profilePicture) {
+                if (Array.isArray(d.user.profilePicture.urls) && d.user.profilePicture.urls[0]) return d.user.profilePicture.urls[0];
+                if (Array.isArray(d.user.profilePicture.urlList) && d.user.profilePicture.urlList[0]) return d.user.profilePicture.urlList[0];
+                if (Array.isArray(d.user.profilePicture.url) && d.user.profilePicture.url[0]) return d.user.profilePicture.url[0];
+                if (typeof d.user.profilePicture.url === 'string' && d.user.profilePicture.url.startsWith('http')) return d.user.profilePicture.url;
+            }
         }
-        if (d.userDetails && d.userDetails.profilePictureUrls && d.userDetails.profilePictureUrls[0]) {
-            return d.userDetails.profilePictureUrls[0];
+
+        // 3. Nested userDetails object
+        if (d.userDetails && typeof d.userDetails === 'object') {
+            if (Array.isArray(d.userDetails.profilePictureUrls) && d.userDetails.profilePictureUrls[0]) {
+                return d.userDetails.profilePictureUrls[0];
+            }
         }
+
+        // 4. Nested sender object
+        if (d.sender && typeof d.sender === 'object') {
+            if (typeof d.sender.profilePictureUrl === 'string' && d.sender.profilePictureUrl.startsWith('http')) return d.sender.profilePictureUrl;
+            if (typeof d.sender.avatarUrl === 'string' && d.sender.avatarUrl.startsWith('http')) return d.sender.avatarUrl;
+            if (d.sender.avatarThumb && Array.isArray(d.sender.avatarThumb.urlList) && d.sender.avatarThumb.urlList[0]) {
+                return d.sender.avatarThumb.urlList[0];
+            }
+        }
+
+        // 5. Protobuf displayText user piece
+        if (d.common && d.common.displayText && Array.isArray(d.common.displayText.pieces)) {
+            for (const piece of d.common.displayText.pieces) {
+                const u = (piece.userValue && piece.userValue.user) || piece.user;
+                if (u) {
+                    if (u.avatarThumb && Array.isArray(u.avatarThumb.urlList) && u.avatarThumb.urlList[0]) return u.avatarThumb.urlList[0];
+                    if (u.profilePicture && Array.isArray(u.profilePicture.urls) && u.profilePicture.urls[0]) return u.profilePicture.urls[0];
+                }
+            }
+        }
+
         return '';
     }
 
@@ -259,11 +309,13 @@ function startConnection() {
         }
 
         const user = extractUserName(data);
+        const userAvatar = extractAvatarUrl(data);
         const payload = {
             event: 'like',
             likeCount: data.likeCount || 1,
             totalLikeCount: data.totalLikeCount || liveState.totalLikes,
-            username: user
+            username: user,
+            avatarUrl: userAvatar
         };
 
         postWebhook(payload);

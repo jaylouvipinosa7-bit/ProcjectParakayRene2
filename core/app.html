@@ -3024,6 +3024,230 @@
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
+
+        /* ==================== RANKINGS & TOP DONATORS STUDIO (IN-APP) ==================== */
+        .ranking-banner {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.12), rgba(245, 158, 11, 0.12));
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .ranking-banner-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #f43f5e, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .ranking-banner-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            max-width: 650px;
+            line-height: 1.5;
+        }
+        .ranking-test-bar {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), rgba(244, 63, 94, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: var(--radius-md);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .ranking-nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .ranking-nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ranking-nav-btn:hover {
+            color: #fff;
+            background: var(--bg-card-hover);
+        }
+        .ranking-nav-btn.active {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(245, 158, 11, 0.2));
+            border-color: #f43f5e;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25);
+        }
+        .ranking-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 20px;
+        }
+        .ranking-widget-box {
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+        }
+        .ranking-widget-box:hover {
+            border-color: rgba(244, 63, 94, 0.35);
+        }
+        .ranking-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ranking-box-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ranking-url-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .ranking-url-input {
+            flex: 1;
+            background: var(--bg-deep);
+            border: 1px solid var(--border-color);
+            color: #38bdf8;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: var(--radius-sm);
+            outline: none;
+        }
+        .ranking-controls-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ranking-ctrl-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 110px;
+        }
+        .ranking-ctrl-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .ranking-select, .ranking-text-inp {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 7px 12px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            transition: var(--transition);
+        }
+        .ranking-select:focus, .ranking-text-inp:focus {
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.25);
+        }
+        .ranking-preview-pane {
+            background: rgba(7, 10, 15, 0.9);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 480px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ranking-preview-iframe {
+            width: 100%;
+            height: 480px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-md);
+        }
+        .ranking-pill-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .ranking-pill-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .ranking-pill-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .ranking-pill-btn.active {
+            background: rgba(244, 63, 94, 0.2);
+            border-color: #f43f5e;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.35);
+        }
+        .ranking-avatar-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .ranking-gallery-item {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: #111827;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        .ranking-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -3203,6 +3427,10 @@
                     Overlay URL
                 </a>
 
+                <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('leaderboard')" style="background: linear-gradient(135deg, rgba(244,63,94,0.2), rgba(245,158,11,0.2)); border-color: #f43f5e; color: #fde047; cursor: pointer;" title="Customize Top 10 Likes, Coins & Top Donators Overlays">
+                    🏆 Rankings Overlay
+                </button>
+
                 <button class="btn btn-danger btn-sm" onclick="panicKillZombies()" title="Emergency: Kill all active zombies in game">
                     Clear Zombies
                 </button>
@@ -3240,6 +3468,9 @@
             </button>
             <button class="tab-btn" onclick="switchTab('settings')">
                 Overlay Settings
+            </button>
+            <button class="tab-btn" onclick="switchTab('leaderboard')">
+                🏆 Rankings & Donators
             </button>
         </nav>
 
@@ -3830,6 +4061,267 @@
                     Width: 480 or 1920<br>
                     Height: 1080<br>
                     Transparency: Enabled automatically
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: RANKINGS & TOP DONATORS STUDIO (IN-APP) -->
+        <div id="tab-leaderboard" class="tab-pane">
+            <!-- Header Banner -->
+            <div class="ranking-banner">
+                <div>
+                    <h2 class="ranking-banner-title">🏆 Top Rankings & Donators Studio</h2>
+                    <p class="ranking-banner-desc">
+                        Full in-app control over Top 10 Coins, Top 10 Likes, Cute Kawaii Top Donator card, and Viewer Avatars. Directly manage styles, positions, and live preview without opening external browser sites!
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" onclick="saveAllLeaderboardSettings()">
+                        💾 Save Ranking Settings
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="populateLeaderboardSample()" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">
+                        ✨ Populate Sample Top 10
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetLeaderboard('all')" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);">
+                        🗑️ Reset Rankings
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Overlay Test Center -->
+            <div class="ranking-test-bar">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">⚡</span>
+                    <span style="font-size: 13.5px; font-weight: 800; color: #fff;">Live Overlay Test Center:</span>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Simulate live gift coins or likes to test real-time rank updates:</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="simulateLeaderboardTest('coins', 100, 'SuperGifter')" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.4); font-weight: 700;">
+                        🪙 +100 Coins (SuperGifter)
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="simulateLeaderboardTest('likes', 500, 'LikeHero')" style="color: #f43f5e; border-color: rgba(244, 63, 94, 0.4); font-weight: 700;">
+                        💖 +500 Likes (LikeHero)
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="simulateLeaderboardTest('coins', 1000, '👑 KingDonator')" style="color: #eab308; border-color: rgba(234, 179, 8, 0.4); font-weight: 700;">
+                        👑 New #1 Overtake Test
+                    </button>
+                </div>
+            </div>
+
+            <!-- Internal Sub-tabs: Top 10, Cute Donators, Avatar Studio -->
+            <div class="ranking-nav-tabs">
+                <button type="button" class="ranking-nav-btn active" id="btnSubTabRankings" onclick="switchStudioSubTab('ranking-widgets')">
+                    📊 Top 10 Coins & Top 10 Likes
+                </button>
+                <button type="button" class="ranking-nav-btn" id="btnSubTabDonators" onclick="switchStudioSubTab('top-donators')">
+                    🎀 Top Donators (Cute Card)
+                </button>
+                <button type="button" class="ranking-nav-btn" id="btnSubTabAvatars" onclick="switchStudioSubTab('avatar-studio')">
+                    🎨 Avatar & Visual Styling Studio
+                </button>
+            </div>
+
+            <!-- SUB-PANEL 1: TOP 10 COINS & TOP 10 LIKES -->
+            <div id="subpanel-ranking-widgets">
+                <div class="ranking-grid-2">
+                    <!-- 1. TOP 10 COINS -->
+                    <div class="ranking-widget-box">
+                        <div class="ranking-box-header">
+                            <div class="ranking-box-title">
+                                <span>🪙</span>
+                                <span>Top 10 Coins</span>
+                            </div>
+                            <button type="button" class="btn btn-sm" onclick="simulateLeaderboardTest('coins', 250, 'CoinFan')" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 11px; font-weight: 800;">test</button>
+                        </div>
+                        <div class="ranking-url-row">
+                            <input type="text" id="urlCoins" class="ranking-url-input" readonly>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="copyLeaderboardUrl('urlCoins')">Copy</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="refreshLeaderboardPreview('coins')">Refresh</button>
+                        </div>
+                        <div class="ranking-controls-row">
+                            <div class="ranking-ctrl-group">
+                                <label class="ranking-ctrl-label">Position</label>
+                                <select id="coinsPosition" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+                            <div class="ranking-ctrl-group">
+                                <label class="ranking-ctrl-label">Style</label>
+                                <select id="coinsStyle" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="classic">Classic</option>
+                                    <option value="cute">Cute</option>
+                                    <option value="neon">Neon</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            <div class="ranking-ctrl-group" style="max-width: 90px;">
+                                <label class="ranking-ctrl-label">Count</label>
+                                <select id="coinsCount" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ranking-preview-pane">
+                            <iframe id="previewCoins" class="ranking-preview-iframe" src="/overlay-leaderboard.html?type=coins"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- 2. TOP 10 LIKES -->
+                    <div class="ranking-widget-box">
+                        <div class="ranking-box-header">
+                            <div class="ranking-box-title">
+                                <span>💖</span>
+                                <span>Top 10 Likes</span>
+                            </div>
+                            <button type="button" class="btn btn-sm" onclick="simulateLeaderboardTest('likes', 300, 'TapperFan')" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); font-size: 11px; font-weight: 800;">test</button>
+                        </div>
+                        <div class="ranking-url-row">
+                            <input type="text" id="urlLikes" class="ranking-url-input" readonly>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="copyLeaderboardUrl('urlLikes')">Copy</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="refreshLeaderboardPreview('likes')">Refresh</button>
+                        </div>
+                        <div class="ranking-controls-row">
+                            <div class="ranking-ctrl-group">
+                                <label class="ranking-ctrl-label">Position</label>
+                                <select id="likesPosition" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+                            <div class="ranking-ctrl-group">
+                                <label class="ranking-ctrl-label">Style</label>
+                                <select id="likesStyle" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="classic">Classic</option>
+                                    <option value="cute">Cute</option>
+                                    <option value="neon">Neon</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            <div class="ranking-ctrl-group" style="max-width: 90px;">
+                                <label class="ranking-ctrl-label">Count</label>
+                                <select id="likesCount" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ranking-preview-pane">
+                            <iframe id="previewLikes" class="ranking-preview-iframe" src="/overlay-leaderboard.html?type=likes"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 2: TOP DONATORS (CUTE CARD) -->
+            <div id="subpanel-top-donators" style="display: none;">
+                <div class="ranking-widget-box">
+                    <div class="ranking-box-header">
+                        <div class="ranking-box-title">
+                            <span>🎀</span>
+                            <span>Top Donators Overlay (Cute Kawaii Card)</span>
+                        </div>
+                        <button type="button" class="btn btn-sm" onclick="simulateLeaderboardTest('coins', 500, 'CuteDonator')" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); font-size: 11px; font-weight: 800;">test</button>
+                    </div>
+                    <div class="ranking-url-row">
+                        <input type="text" id="urlDonators" class="ranking-url-input" readonly>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="copyLeaderboardUrl('urlDonators')">Copy</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="refreshLeaderboardPreview('donators')">Refresh</button>
+                    </div>
+                    <div class="ranking-controls-row">
+                        <div class="ranking-ctrl-group">
+                            <label class="ranking-ctrl-label">Style</label>
+                            <select id="donatorsStyle" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                <option value="cute" selected>Cute</option>
+                                <option value="classic">Classic</option>
+                                <option value="luxury">Luxury</option>
+                                <option value="neon">Neon</option>
+                            </select>
+                        </div>
+                        <div class="ranking-ctrl-group">
+                            <label class="ranking-ctrl-label">Count</label>
+                            <select id="donatorsCount" class="ranking-select" onchange="onLeaderboardSettingChanged()">
+                                <option value="3">3</option>
+                                <option value="5" selected>5</option>
+                                <option value="8">8</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="ranking-ctrl-group">
+                            <label class="ranking-ctrl-label">Title Text</label>
+                            <input type="text" id="donatorsTitle" class="ranking-text-inp" value="TOP 5 DONATORS" onchange="onLeaderboardSettingChanged()">
+                        </div>
+                    </div>
+                    <div class="ranking-preview-pane" style="min-height: 520px;">
+                        <iframe id="previewDonators" class="ranking-preview-iframe" style="height: 520px;" src="/overlay-leaderboard.html?type=donators&style=cute"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 3: AVATAR & VISUAL STYLING STUDIO -->
+            <div id="subpanel-avatar-studio" style="display: none;">
+                <div class="ranking-widget-box">
+                    <div class="ranking-box-header">
+                        <div class="ranking-box-title">
+                            <span>🎨</span>
+                            <span>Viewer Avatar & Appearance Customization</span>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="saveAllLeaderboardSettings()">Save Changes</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                        <!-- Avatar Shape -->
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                            <div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">⭕ Avatar Shape</div>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Choose geometric shape for viewer avatars in ranking rows:</p>
+                            <div class="ranking-pill-options" id="inAppAvatarShapeOptions">
+                                <button type="button" class="ranking-pill-btn active" data-shape="circle" onclick="setLeaderboardAvatarShape('circle')">Circle</button>
+                                <button type="button" class="ranking-pill-btn" data-shape="squircle" onclick="setLeaderboardAvatarShape('squircle')">Squircle</button>
+                                <button type="button" class="ranking-pill-btn" data-shape="hexagon" onclick="setLeaderboardAvatarShape('hexagon')">Hexagon</button>
+                                <button type="button" class="ranking-pill-btn" data-shape="diamond" onclick="setLeaderboardAvatarShape('diamond')">Diamond</button>
+                            </div>
+                        </div>
+
+                        <!-- Avatar Source Pack -->
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                            <div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">🎭 Avatar Source Pack</div>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">What avatars should be shown in overlays:</p>
+                            <div class="ranking-pill-options" id="inAppAvatarPackOptions">
+                                <button type="button" class="ranking-pill-btn active" data-pack="tiktok" onclick="setLeaderboardAvatarPack('tiktok')">Live TikTok Avatars</button>
+                                <button type="button" class="ranking-pill-btn" data-pack="pvz" onclick="setLeaderboardAvatarPack('pvz')">PvZ Fusion Legends</button>
+                                <button type="button" class="ranking-pill-btn" data-pack="dicebear" onclick="setLeaderboardAvatarPack('dicebear')">DiceBear Avatars</button>
+                            </div>
+                        </div>
+
+                        <!-- Frames and Audio -->
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;">
+                            <div style="font-weight: 800; font-size: 14px; margin-bottom: 6px;">👑 Badges & Audio Toggles</div>
+                            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" id="chkShowAvatarsInApp" checked onchange="onLeaderboardSettingChanged()">
+                                    <span>Display Avatars in Overlays</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" id="chkCrownTop1InApp" checked onchange="onLeaderboardSettingChanged()">
+                                    <span>Show Royal Crown over #1 Rank</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" id="chkSoundFxInApp" checked onchange="onLeaderboardSettingChanged()">
+                                    <span>Play Sound FX on #1 Overtake</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- PvZ Character Avatars Preview -->
+                        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; grid-column: 1 / -1;">
+                            <div style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">🌻 PvZ Character Avatar Pack Gallery</div>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">Preview of icons used for viewers when PvZ Fusion Legends pack is active:</p>
+                            <div class="ranking-avatar-gallery" id="inAppAvatarGalleryPreview"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -5392,7 +5884,11 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
             
-            const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.toLowerCase().includes(tabId));
+            const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+                const text = b.innerText.toLowerCase();
+                if (tabId === 'leaderboard') return text.includes('ranking') || text.includes('leaderboard') || text.includes('donator');
+                return text.includes(tabId);
+            });
             if (targetBtn) targetBtn.classList.add('active');
             
             const targetPane = document.getElementById(`tab-${tabId}`);
@@ -5403,6 +5899,10 @@
                     renderSpinnerStudio();
                     fetchWinWidget();
                     fetchSpinnerHistory();
+                }, 50);
+            } else if (tabId === 'leaderboard') {
+                setTimeout(() => {
+                    initLeaderboardStudio();
                 }, 50);
             }
         }
@@ -5421,7 +5921,8 @@
         async function loadConfig() {
             try {
                 const user = getCurrentUser();
-                const userParam = user && user.email ? `&user=${encodeURIComponent(user.email)}` : '';
+                const userKey = user ? (user.email || user.username || '') : '';
+                const userParam = userKey ? `&user=${encodeURIComponent(userKey)}` : '';
                 const res = await fetch('/api/config?t=' + Date.now() + userParam);
                 config = await res.json();
                 if (!config) config = {};
@@ -6048,11 +6549,13 @@
 
         async function updateWinLossesFromInput(val) {
             const num = Math.max(0, parseInt(val) || 0);
+            const curWins = winWidgetState.wins ?? 0;
+            const newScore = curWins - num;
             try {
                 const res = await fetch('/api/win-widget', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ losses: num })
+                    body: JSON.stringify({ losses: num, score: newScore })
                 });
                 if (res.ok) {
                     const updated = await res.json();
@@ -6066,11 +6569,13 @@
 
         async function updateWinWinsFromInput(val) {
             const num = Math.max(0, parseInt(val) || 0);
+            const curLosses = winWidgetState.losses ?? 0;
+            const newScore = num - curLosses;
             try {
                 const res = await fetch('/api/win-widget', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wins: num })
+                    body: JSON.stringify({ wins: num, score: newScore })
                 });
                 if (res.ok) {
                     const updated = await res.json();
@@ -6649,11 +7154,7 @@
             spinner.mode = mode;
             renderSpinnerStudio();
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 showToast(`Spinner mode set to: ${mode === 'reel' ? 'Horizontal Reel' : 'Classic Wheel'}`);
             } catch {}
         }
@@ -7115,11 +7616,7 @@
             renderSpinnerStudio();
 
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 showToast(`Saved spinner "${name}"!`, "OK");
             } catch (err) {
                 showToast("Failed to save spinner: " + err.message, "ERR");
@@ -7143,11 +7640,7 @@
 
             renderSpinnerStudio();
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 showToast(`Deleted spinner "${name}"`);
             } catch (err) {
                 showToast("Failed to delete: " + err.message, "ERR");
@@ -7172,11 +7665,7 @@
 
             renderSpinnerStudio();
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
             } catch {}
         }
 
@@ -7993,11 +8482,7 @@
             }
 
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 closeSliceModal();
                 renderSpinnerStudio();
                 showToast(`Saved prize card: "${functionName}" with ${currentSliceCommands.length} command(s)!`, "OK");
@@ -8020,11 +8505,7 @@
             }
             config.spinner.slices = config.spinner.slices.filter(s => s.id !== id);
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 renderSpinnerStudio();
                 showToast("Prize card removed from pool");
             } catch (err) {
@@ -8152,11 +8633,7 @@
             }
 
             try {
-                await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
+                await saveConfigToServer();
                 closeSpinnerAppearanceModal();
                 renderSpinnerStudio();
                 showToast("Spinner settings saved successfully!", "OK");
@@ -8840,7 +9317,8 @@
         async function saveConfigToServer() {
             try {
                 const user = getCurrentUser();
-                const userParam = user && user.email ? `?user=${encodeURIComponent(user.email)}` : '';
+                const userKey = user ? (user.email || user.username || '') : '';
+                const userParam = userKey ? `?user=${encodeURIComponent(userKey)}` : '';
                 const res = await fetch('/api/config' + userParam, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -8942,6 +9420,294 @@
             if (tIcon) tIcon.innerText = icon;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        // ==================== RANKINGS & TOP DONATORS STUDIO CONTROLS (IN-APP) ====================
+        let currentLeaderboardConfig = {
+            coins: { position: 'left', style: 'classic', count: 10 },
+            likes: { position: 'right', style: 'classic', count: 10 },
+            donators: { style: 'cute', count: 5, title: 'TOP 5 DONATORS' },
+            avatar: { shape: 'circle', pack: 'tiktok', showAvatars: true, crownTop1: true, soundFx: true }
+        };
+
+        async function initLeaderboardStudio() {
+            try {
+                const res = await fetch('/api/leaderboard/settings?t=' + Date.now());
+                if (res.ok) {
+                    const cfg = await res.json();
+                    if (cfg) {
+                        currentLeaderboardConfig = Object.assign(currentLeaderboardConfig, cfg);
+                    }
+                }
+            } catch (e) {}
+
+            // Populate Form Fields
+            const cPos = document.getElementById('coinsPosition');
+            const cSty = document.getElementById('coinsStyle');
+            const cCnt = document.getElementById('coinsCount');
+            if (cPos && currentLeaderboardConfig.coins) cPos.value = currentLeaderboardConfig.coins.position || 'left';
+            if (cSty && currentLeaderboardConfig.coins) cSty.value = currentLeaderboardConfig.coins.style || 'classic';
+            if (cCnt && currentLeaderboardConfig.coins) cCnt.value = String(currentLeaderboardConfig.coins.count || 10);
+
+            const lPos = document.getElementById('likesPosition');
+            const lSty = document.getElementById('likesStyle');
+            const lCnt = document.getElementById('likesCount');
+            if (lPos && currentLeaderboardConfig.likes) lPos.value = currentLeaderboardConfig.likes.position || 'right';
+            if (lSty && currentLeaderboardConfig.likes) lSty.value = currentLeaderboardConfig.likes.style || 'classic';
+            if (lCnt && currentLeaderboardConfig.likes) lCnt.value = String(currentLeaderboardConfig.likes.count || 10);
+
+            const dSty = document.getElementById('donatorsStyle');
+            const dCnt = document.getElementById('donatorsCount');
+            const dTit = document.getElementById('donatorsTitle');
+            if (dSty && currentLeaderboardConfig.donators) dSty.value = currentLeaderboardConfig.donators.style || 'cute';
+            if (dCnt && currentLeaderboardConfig.donators) dCnt.value = String(currentLeaderboardConfig.donators.count || 5);
+            if (dTit && currentLeaderboardConfig.donators) dTit.value = currentLeaderboardConfig.donators.title || 'TOP 5 DONATORS';
+
+            if (currentLeaderboardConfig.avatar) {
+                setLeaderboardAvatarShape(currentLeaderboardConfig.avatar.shape || 'circle', false);
+                setLeaderboardAvatarPack(currentLeaderboardConfig.avatar.pack || 'tiktok', false);
+                const chkAv = document.getElementById('chkShowAvatarsInApp');
+                const chkCr = document.getElementById('chkCrownTop1InApp');
+                const chkSnd = document.getElementById('chkSoundFxInApp');
+                if (chkAv) chkAv.checked = currentLeaderboardConfig.avatar.showAvatars !== false;
+                if (chkCr) chkCr.checked = currentLeaderboardConfig.avatar.crownTop1 !== false;
+                if (chkSnd) chkSnd.checked = currentLeaderboardConfig.avatar.soundFx !== false;
+            }
+
+            updateLeaderboardUrls();
+            loadInAppAvatarGallery();
+        }
+
+        function switchStudioSubTab(tab) {
+            const btnR = document.getElementById('btnSubTabRankings');
+            const btnD = document.getElementById('btnSubTabDonators');
+            const btnA = document.getElementById('btnSubTabAvatars');
+            const panR = document.getElementById('subpanel-ranking-widgets');
+            const panD = document.getElementById('subpanel-top-donators');
+            const panA = document.getElementById('subpanel-avatar-studio');
+
+            if (btnR) btnR.classList.toggle('active', tab === 'ranking-widgets');
+            if (btnD) btnD.classList.toggle('active', tab === 'top-donators');
+            if (btnA) btnA.classList.toggle('active', tab === 'avatar-studio');
+
+            if (panR) panR.style.display = (tab === 'ranking-widgets') ? 'block' : 'none';
+            if (panD) panD.style.display = (tab === 'top-donators') ? 'block' : 'none';
+            if (panA) panA.style.display = (tab === 'avatar-studio') ? 'block' : 'none';
+        }
+
+        function updateLeaderboardUrls() {
+            const host = window.location.origin;
+            const cPos = (document.getElementById('coinsPosition') || {}).value || 'left';
+            const cSty = (document.getElementById('coinsStyle') || {}).value || 'classic';
+            const cCnt = (document.getElementById('coinsCount') || {}).value || '10';
+
+            const lPos = (document.getElementById('likesPosition') || {}).value || 'right';
+            const lSty = (document.getElementById('likesStyle') || {}).value || 'classic';
+            const lCnt = (document.getElementById('likesCount') || {}).value || '10';
+
+            const dSty = (document.getElementById('donatorsStyle') || {}).value || 'cute';
+            const dCnt = (document.getElementById('donatorsCount') || {}).value || '5';
+            const dTit = encodeURIComponent((document.getElementById('donatorsTitle') || {}).value || 'TOP 5 DONATORS');
+
+            const urlCoins = `${host}/overlay-leaderboard.html?type=coins&style=${cSty}&count=${cCnt}`;
+            const urlLikes = `${host}/overlay-leaderboard.html?type=likes&style=${lSty}&count=${lCnt}`;
+            const urlDonators = `${host}/overlay-leaderboard.html?type=donators&style=${dSty}&count=${dCnt}&title=${dTit}`;
+
+            const inpC = document.getElementById('urlCoins');
+            const inpL = document.getElementById('urlLikes');
+            const inpD = document.getElementById('urlDonators');
+            if (inpC) inpC.value = urlCoins;
+            if (inpL) inpL.value = urlLikes;
+            if (inpD) inpD.value = urlDonators;
+
+            const ifC = document.getElementById('previewCoins');
+            const ifL = document.getElementById('previewLikes');
+            const ifD = document.getElementById('previewDonators');
+            if (ifC && (!ifC.src || ifC.src !== urlCoins)) ifC.src = urlCoins;
+            if (ifL && (!ifL.src || ifL.src !== urlLikes)) ifL.src = urlLikes;
+            if (ifD && (!ifD.src || ifD.src !== urlDonators)) ifD.src = urlDonators;
+        }
+
+        function onLeaderboardSettingChanged() {
+            updateLeaderboardUrls();
+        }
+
+        function copyLeaderboardUrl(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.focus();
+            el.select();
+            if (el.setSelectionRange) el.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(el.value).then(() => {
+                showToast("Copied Link! Paste into TikTok LIVE Studio -> Add Source -> Link", "OK");
+            }).catch(() => {
+                try { document.execCommand('copy'); } catch (e) {}
+                showToast("Copied Link to clipboard!", "OK");
+            });
+        }
+
+        function refreshLeaderboardPreview(type) {
+            const ts = '&_t=' + Date.now();
+            if (type === 'coins') {
+                const ifr = document.getElementById('previewCoins');
+                if (ifr) ifr.src = (document.getElementById('urlCoins').value) + ts;
+            } else if (type === 'likes') {
+                const ifr = document.getElementById('previewLikes');
+                if (ifr) ifr.src = (document.getElementById('urlLikes').value) + ts;
+            } else if (type === 'donators') {
+                const ifr = document.getElementById('previewDonators');
+                if (ifr) ifr.src = (document.getElementById('urlDonators').value) + ts;
+            }
+            showToast("Refreshed preview!");
+        }
+
+        function setLeaderboardAvatarShape(shape, triggerUpdate = true) {
+            if (!currentLeaderboardConfig.avatar) currentLeaderboardConfig.avatar = {};
+            currentLeaderboardConfig.avatar.shape = shape;
+            const container = document.getElementById('inAppAvatarShapeOptions');
+            if (container) {
+                container.querySelectorAll('.ranking-pill-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.shape === shape);
+                });
+            }
+            if (triggerUpdate) onLeaderboardSettingChanged();
+        }
+
+        function setLeaderboardAvatarPack(pack, triggerUpdate = true) {
+            if (!currentLeaderboardConfig.avatar) currentLeaderboardConfig.avatar = {};
+            currentLeaderboardConfig.avatar.pack = pack;
+            const container = document.getElementById('inAppAvatarPackOptions');
+            if (container) {
+                container.querySelectorAll('.ranking-pill-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.pack === pack);
+                });
+            }
+            if (triggerUpdate) onLeaderboardSettingChanged();
+        }
+
+        async function saveAllLeaderboardSettings() {
+            const cfg = {
+                coins: {
+                    position: (document.getElementById('coinsPosition') || {}).value || 'left',
+                    style: (document.getElementById('coinsStyle') || {}).value || 'classic',
+                    count: parseInt((document.getElementById('coinsCount') || {}).value || '10')
+                },
+                likes: {
+                    position: (document.getElementById('likesPosition') || {}).value || 'right',
+                    style: (document.getElementById('likesStyle') || {}).value || 'classic',
+                    count: parseInt((document.getElementById('likesCount') || {}).value || '10')
+                },
+                donators: {
+                    style: (document.getElementById('donatorsStyle') || {}).value || 'cute',
+                    count: parseInt((document.getElementById('donatorsCount') || {}).value || '5'),
+                    title: (document.getElementById('donatorsTitle') || {}).value || 'TOP 5 DONATORS'
+                },
+                avatar: {
+                    shape: (currentLeaderboardConfig.avatar && currentLeaderboardConfig.avatar.shape) || 'circle',
+                    pack: (currentLeaderboardConfig.avatar && currentLeaderboardConfig.avatar.pack) || 'tiktok',
+                    showAvatars: !!(document.getElementById('chkShowAvatarsInApp') || {}).checked,
+                    crownTop1: !!(document.getElementById('chkCrownTop1InApp') || {}).checked,
+                    soundFx: !!(document.getElementById('chkSoundFxInApp') || {}).checked
+                }
+            };
+            currentLeaderboardConfig = cfg;
+            try {
+                const res = await fetch('/api/leaderboard/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cfg)
+                });
+                if (res.ok) {
+                    showToast("Saved Rankings & Top Donators settings!", "OK");
+                    refreshLeaderboardPreview('coins');
+                    refreshLeaderboardPreview('likes');
+                    refreshLeaderboardPreview('donators');
+                } else {
+                    showToast("Failed to save settings", "ERR");
+                }
+            } catch (err) {
+                showToast("Error saving: " + err.message, "ERR");
+            }
+        }
+
+        async function simulateLeaderboardTest(type, amount, username) {
+            try {
+                const res = await fetch('/api/leaderboard/test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'single', target: type, value: amount, username: username })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast(`Simulated +${amount} ${type} for ${username}!`, "OK");
+                    setTimeout(() => {
+                        refreshLeaderboardPreview('coins');
+                        refreshLeaderboardPreview('likes');
+                        refreshLeaderboardPreview('donators');
+                    }, 400);
+                }
+            } catch (err) {
+                showToast("Test simulation failed", "ERR");
+            }
+        }
+
+        async function populateLeaderboardSample() {
+            try {
+                const res = await fetch('/api/leaderboard/test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'all' })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast("Populated Sample Top 10 Rankings!", "OK");
+                    setTimeout(() => {
+                        refreshLeaderboardPreview('coins');
+                        refreshLeaderboardPreview('likes');
+                        refreshLeaderboardPreview('donators');
+                    }, 400);
+                }
+            } catch (err) {
+                showToast("Failed to populate samples", "ERR");
+            }
+        }
+
+        async function resetLeaderboard(type) {
+            if (!confirm(`Are you sure you want to reset ${type.toUpperCase()} rankings?`)) return;
+            try {
+                const res = await fetch('/api/leaderboard/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast(`Reset ${type} rankings successfully!`, "WARN");
+                    setTimeout(() => {
+                        refreshLeaderboardPreview('coins');
+                        refreshLeaderboardPreview('likes');
+                        refreshLeaderboardPreview('donators');
+                    }, 300);
+                }
+            } catch (err) {
+                showToast("Failed to reset rankings", "ERR");
+            }
+        }
+
+        function loadInAppAvatarGallery() {
+            const gallery = document.getElementById('inAppAvatarGalleryPreview');
+            if (!gallery || gallery.children.length > 0) return;
+            const icons = [
+                'spawn_ultimatecattail.webp', 'gargantuar.webp', 'ultimate_gold_gargantuar.webp',
+                'gatling_pea.webp', 'super_cherry_bomb.webp', 'doom_shroom.webp',
+                'ice_shroom.webp', 'repeater.webp', 'torchwood.webp', 'squash.webp',
+                'chomper.webp', 'jalapeno.webp', 'hypno_shroom.webp', 'tall_nut.webp'
+            ];
+            gallery.innerHTML = icons.map(ic => `
+                <div class="ranking-gallery-item" title="${ic}">
+                    <img src="images/game-icons/pvz/${ic}" onerror="this.src='images/func_2.png'" alt="${ic}">
+                </div>
+            `).join('');
         }
     </script>
 </body>

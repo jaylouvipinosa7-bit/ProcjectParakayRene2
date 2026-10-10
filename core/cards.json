@@ -80,7 +80,7 @@
         "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_squalour_zombie.webp",
         "trigImg":  "images/tiktok-gifts/1228602_goten.webp",
         "triggerValue":  "",
-        "commands":  "ultimate_gold_gargantuar",
+        "commands":  "spawn_squalour_zombie",
         "repetition":  5
     },
     {
@@ -497,7 +497,7 @@
         "giftId":  "15232",
         "giftName":  "You\u0027re awesome",
         "funcName":  "Spawn DoomSniper",
-        "funcImg":  "images/game-icons/pvz/spawn_doomsniper.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_doomsniper.webp",
         "trigImg":  "images/tiktok-gifts/15232_you_re_awesome.webp",
         "triggerValue":  "",
         "commands":  "spawn_doomsniper",
@@ -701,22 +701,10 @@
         "giftId":  "",
         "giftName":  "Share Stream",
         "funcName":  "Plant everywahre",
-        "funcImg":  "images/game-icons/pvz/plant_everywahre.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/plant_everywahre.webp",
         "trigImg":  "images/trig_1.svg",
         "triggerValue":  "",
         "commands":  "plant_everywahre",
-        "repetition":  1
-    },
-    {
-        "id":  "60",
-        "action":  "SelectedGift",
-        "giftId":  "5879",
-        "giftName":  "Doughnut",
-        "funcName":  "Spawn Golden Zomboss",
-        "funcImg":  "images/game-icons/pvz/spawn_zombie_boss2.webp",
-        "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_zombie_boss2",
         "repetition":  1
     },
     {
