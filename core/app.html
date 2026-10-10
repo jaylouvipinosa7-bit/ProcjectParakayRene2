@@ -1978,6 +1978,56 @@
             cursor: pointer;
         }
 
+        .allow-import-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #34d399;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+        .allow-import-wrap input[type="checkbox"] {
+            accent-color: #10b981;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+        .allow-import-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            letter-spacing: 0.3px;
+        }
+        .btn-import-event {
+            background: #1c2128;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            color: #c4b5fd;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-import-event:hover {
+            background: #27223b;
+            border-color: #a78bfa;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+        }
+
         .cmd-seq-info-badge {
             display: inline-flex;
             align-items: center;
@@ -3493,7 +3543,13 @@
                     <h2 style="font-size: 20px; font-weight: 800;">TikTok Gift Commands</h2>
                     <p style="font-size: 13px; color: var(--text-secondary);">When viewers send these gifts or triggers, their mapped action executes directly in PvZ Fusion 4.0!</p>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <button class="btn btn-secondary btn-sm btn-import-event" id="btnMainImportEvent" onclick="openImportEventModal(null)" title="Import events or triggers from S2E, TikFinity, and other applications">
+                        <span>📥</span> Import Event
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btnMainExportEvents" onclick="exportEvents()" title="Export triggers to JSON for S2E or other applications" style="color: #60a5fa; border-color: rgba(96, 165, 250, 0.4); font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+                        <span>📤</span> Export Events
+                    </button>
                     <button class="btn btn-secondary btn-sm" onclick="openTriggerSelectorModal(null, 'gift')" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">
                         ⚡ Select Trigger
                     </button>
@@ -4573,12 +4629,17 @@
                             </div>
                         </div>
 
-                        <!-- MULTIPLIER CHECKBOX -->
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <!-- MULTIPLIER & ALLOW IMPORT CHECKBOXES -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 4px;">
                             <label class="cmd-seq-multiplier-wrap">
                                 <input type="checkbox" id="giftRepMultiplier" checked>
                                 Repetition multiplier
                                 <span class="cmd-seq-info-badge" title="Multiplies repetitions by gift combo/count">?</span>
+                            </label>
+                            <label class="allow-import-wrap" title="Allow this event/trigger to be imported or shared across applications like S2E">
+                                <input type="checkbox" id="giftAllowImport" checked>
+                                Allow Import
+                                <span class="cmd-seq-info-badge" title="Enable to allow this event to be imported into any application like S2E and other apps">?</span>
                             </label>
                         </div>
 
@@ -4592,9 +4653,14 @@
                             <!-- Dynamically generated command cards -->
                         </div>
 
-                        <!-- BOTTOM CONTROLS: ADD COMMAND +1 AND SAVE -->
-                        <div class="cmd-seq-bottom-row">
-                            <button type="button" class="btn-cmd-add" onclick="addGiftSubCommand()">Add command +1</button>
+                        <!-- BOTTOM CONTROLS: ADD COMMAND +1, IMPORT EVENT, AND SAVE -->
+                        <div class="cmd-seq-bottom-row" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button type="button" class="btn-cmd-add" onclick="addGiftSubCommand()">Add command +1</button>
+                                <button type="button" class="btn btn-secondary btn-sm btn-import-event" onclick="openImportEventModal(editingGiftId)" style="font-size: 11.5px; padding: 6px 12px;">
+                                    <span>📥</span> Import Event
+                                </button>
+                            </div>
                             <button type="button" class="btn-cmd-save-green" onclick="saveGiftModal()">Save</button>
                         </div>
                     </div>
@@ -4612,6 +4678,88 @@
                 <div style="display: flex; gap: 8px; margin-left: auto;">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="closeGiftModal()">Cancel</button>
                     <button type="button" class="btn-cmd-save-green" onclick="saveGiftModal()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: IMPORT EVENT FROM S2E AND OTHER APPLICATIONS -->
+    <div id="importEventModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 640px; background: #111827; border: 1.5px solid #374151; border-radius: 20px; padding: 24px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 14px; margin-bottom: 16px;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #f3f4f6;">
+                        <span style="font-size: 22px;">📥</span> Import Event
+                    </h3>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                        Import triggers and summon actions from <strong>S2E (StreamToEarn)</strong>, TikFinity, Runetify, or custom JSON.
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closeImportEventModal()" style="padding: 4px 10px; font-weight: 700;">✕</button>
+            </div>
+
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+                <!-- Target Destination Selector -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #9ca3af;">Import Destination:</div>
+                    <select id="importDestinationSelect" class="tiktok-input" style="font-size: 12px; padding: 5px 10px; width: auto; min-width: 220px;">
+                        <option value="new">➕ Add as New Trigger(s)</option>
+                        <option value="current" id="optImportCurrentModal" style="display: none;">📝 Apply to Currently Open Modal</option>
+                        <option value="merge">🔄 Merge & Update Matching Triggers</option>
+                        <option value="replace_all">⚠️ Replace Entire Triggers Configuration</option>
+                    </select>
+                </div>
+
+                <!-- Input Methods: Paste JSON / Load File / Presets -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                        <label for="importEventTextarea" style="font-size: 12px; font-weight: 700; color: #e5e7eb;">
+                            Event Code / JSON String:
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <label class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px; cursor: pointer; color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); display: inline-flex; align-items: center; gap: 4px;">
+                                📁 Choose File
+                                <input type="file" id="importEventFileInput" accept=".json,.txt" style="display: none;" onchange="handleImportFileChosen(event)">
+                            </label>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="pasteFromClipboardToImport()" style="font-size: 11px; padding: 3px 8px; color: #34d399; border-color: rgba(16, 185, 129, 0.3);">
+                                📋 Paste Clipboard
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="importEventTextarea" class="tiktok-input" style="width: 100%; height: 135px; font-family: monospace; font-size: 11.5px; padding: 10px; resize: vertical; line-height: 1.4;" placeholder='Paste S2E event JSON here, e.g.:&#10;{ "giftName": "Rose", "command": "spawn_ultimatehorse", "repetition": 20, "allowImport": true }&#10;or full S2E export array...' oninput="onImportInputChanged()"></textarea>
+                </div>
+
+                <!-- Quick Presets -->
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <span style="font-size: 11px; color: #9ca3af; font-weight: 700;">Quick Presets:</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_rose')" style="font-size: 10.5px; padding: 3px 8px;">🌹 S2E Rose (Horse)</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_icecream')" style="font-size: 10.5px; padding: 3px 8px;">🍦 S2E Ice Cream (Snow Monster)</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_all_likes')" style="font-size: 10.5px; padding: 3px 8px;">❤️ S2E 50K Likes Milestone</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_follow')" style="font-size: 10.5px; padding: 3px 8px;">➕ S2E Follower Summon</button>
+                </div>
+
+                <!-- Parsed Live Preview -->
+                <div id="importEventPreviewCard" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 14px;">
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #34d399; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>✅ Valid Event Detected</span>
+                        <span id="importPreviewCountBadge" style="font-size: 11px; background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px;">1 Event</span>
+                    </div>
+                    <div id="importPreviewDetails" style="font-size: 12px; color: #e5e7eb; line-height: 1.5;"></div>
+                </div>
+
+                <div id="importEventErrorCard" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #f87171;"></div>
+            </div>
+
+            <div class="modal-footer" style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <label class="allow-import-wrap" style="margin: 0;">
+                    <input type="checkbox" id="importSetAllowImportDefault" checked>
+                    Allow Import on Imported Events
+                </label>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="closeImportEventModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnExecuteImport" onclick="executeImportEvent()" style="padding: 8px 18px; font-weight: 700;">
+                        📥 Import Event
+                    </button>
                 </div>
             </div>
         </div>
@@ -6455,7 +6603,10 @@
                                 })()}
                             </div>
                         </div>
-                        <input type="checkbox" class="card-toggle-chk" ${gift.enabled !== false ? 'checked' : ''}>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            ${gift.allowImport !== false ? `<span class="allow-import-badge" title="Import Allowed: Any app like S2E can import or trigger this event">✓ Allow Import</span>` : ''}
+                            <input type="checkbox" class="card-toggle-chk" ${gift.enabled !== false ? 'checked' : ''}>
+                        </div>
                     </div>
                     <div class="action-preview" style="display: flex; align-items: center; gap: 10px;">
                         <div class="unit-thumb-wrap" style="width: 44px; height: 44px; border-radius: 8px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0;">
@@ -6476,6 +6627,9 @@
                         </button>
                         <button class="btn-edit" type="button" title="Edit Trigger" style="cursor: pointer;">
                             <span style="pointer-events: none; font-size: 13px; font-weight: 700;">Edit</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="exportSingleEvent('${gift.id}')" title="Export / Copy Event for S2E or other apps" style="padding: 7px 9px; font-size: 11px; color: #a78bfa; border-color: rgba(167, 139, 250, 0.4); display: inline-flex; align-items: center; justify-content: center;">
+                            📤
                         </button>
                         <button class="btn-delete" type="button" style="padding: 7px 11px; cursor: pointer;" title="Delete Trigger">
                             <span style="pointer-events: none; font-size: 13px; font-weight: 700; color: #ef4444;">Del</span>
@@ -9528,6 +9682,8 @@
                 document.getElementById('giftDelay').value = gift.delay || 0;
                 document.getElementById('giftInterval').value = (gift.interval !== undefined && gift.interval !== null) ? gift.interval : 100;
                 document.getElementById('giftRepMultiplier').checked = (gift.repetitionMultiplier !== false);
+                const allowImpEl = document.getElementById('giftAllowImport');
+                if (allowImpEl) allowImpEl.checked = (gift.allowImport !== false);
 
                 const mainImg = document.getElementById('giftMainIconImg');
                 if (mainImg) mainImg.src = gift.unitIcon || (currentGiftCommands[0] ? currentGiftCommands[0].icon : 'images/super_gargantuar.png');
@@ -9596,6 +9752,8 @@
                 document.getElementById('giftDelay').value = 0;
                 document.getElementById('giftInterval').value = 100;
                 document.getElementById('giftRepMultiplier').checked = true;
+                const allowImpEl = document.getElementById('giftAllowImport');
+                if (allowImpEl) allowImpEl.checked = true;
 
                 const mainImg = document.getElementById('giftMainIconImg');
                 if (mainImg) mainImg.src = 'images/super_gargantuar.png';
@@ -9671,6 +9829,7 @@
             const delay = parseInt(document.getElementById('giftDelay')?.value) || 0;
             const interval = parseInt(document.getElementById('giftInterval')?.value) || 100;
             const repetitionMultiplier = document.getElementById('giftRepMultiplier')?.checked || false;
+            const allowImport = document.getElementById('giftAllowImport') ? document.getElementById('giftAllowImport').checked : true;
             const unitIcon = document.getElementById('giftMainIconImg')?.src || currentGiftCommands[0]?.icon || 'images/super_gargantuar.png';
             const joinedCommand = currentGiftCommands.map(c => c.command).filter(Boolean).join(';');
             const primaryActionType = currentGiftCommands[0]?.actionType || 'zombie';
@@ -9698,6 +9857,7 @@
                     gift.delay = delay;
                     gift.interval = interval;
                     gift.repetitionMultiplier = repetitionMultiplier;
+                    gift.allowImport = allowImport;
                     gift.hideInOverlay = hideInOverlay;
                     gift.triggerType = currentEditingTriggerType;
                     gift.triggerValue = currentEditingTriggerValue;
@@ -9726,6 +9886,7 @@
                     delay: delay,
                     interval: interval,
                     repetitionMultiplier: repetitionMultiplier,
+                    allowImport: allowImport,
                     hideInOverlay: hideInOverlay,
                     triggerType: currentEditingTriggerType,
                     triggerValue: currentEditingTriggerValue,
@@ -9797,6 +9958,437 @@
                 console.error("Save config error:", err);
             }
             return false;
+        }
+
+        // ==================== IMPORT / EXPORT EVENT (S2E & EXTERNAL APPS) ====================
+        let currentImportTargetGiftId = null;
+
+        function openImportEventModal(targetGiftId = null) {
+            currentImportTargetGiftId = targetGiftId;
+            const modal = document.getElementById('importEventModal');
+            if (!modal) return;
+
+            const optCurrent = document.getElementById('optImportCurrentModal');
+            const destSelect = document.getElementById('importDestinationSelect');
+            const isGiftModalActive = document.getElementById('giftModal')?.classList.contains('active');
+
+            if (isGiftModalActive && optCurrent && destSelect) {
+                optCurrent.style.display = 'block';
+                destSelect.value = 'current';
+            } else if (optCurrent && destSelect) {
+                optCurrent.style.display = 'none';
+                destSelect.value = 'new';
+            }
+
+            document.getElementById('importEventTextarea').value = '';
+            document.getElementById('importEventPreviewCard').style.display = 'none';
+            document.getElementById('importEventErrorCard').style.display = 'none';
+            modal.classList.add('active');
+        }
+
+        function closeImportEventModal() {
+            const modal = document.getElementById('importEventModal');
+            if (modal) modal.classList.remove('active');
+            currentImportTargetGiftId = null;
+        }
+
+        function handleImportFileChosen(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                document.getElementById('importEventTextarea').value = text;
+                onImportInputChanged();
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
+
+        async function pasteFromClipboardToImport() {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        document.getElementById('importEventTextarea').value = text;
+                        onImportInputChanged();
+                        showToast("Pasted from clipboard!", "OK");
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("Clipboard read error:", err);
+            }
+            alert("Clipboard permission unavailable. Please press Ctrl+V inside the text area.");
+        }
+
+        function loadSampleImport(presetKey) {
+            let data = null;
+            if (presetKey === 's2e_rose') {
+                data = {
+                    "source": "S2E",
+                    "giftName": "Rose",
+                    "giftId": "5655",
+                    "platform": "tiktok",
+                    "triggerType": "gift",
+                    "coins": 1,
+                    "functionName": "Spawn UltimateHorse",
+                    "command": "spawn_ultimatehorse",
+                    "commands": [
+                        { "name": "Commands #1", "command": "spawn_ultimatehorse", "label": "Spawn UltimateHorse", "actionType": "zombie", "amount": 20 }
+                    ],
+                    "repetition": 20,
+                    "delay": 0,
+                    "interval": 100,
+                    "repetitionMultiplier": true,
+                    "allowImport": true,
+                    "enabled": true
+                };
+            } else if (presetKey === 's2e_icecream') {
+                data = {
+                    "source": "S2E",
+                    "giftName": "Ice Cream Cone",
+                    "giftId": "5827",
+                    "platform": "tiktok",
+                    "triggerType": "gift",
+                    "coins": 1,
+                    "functionName": "Spawn Lost Snow Monster",
+                    "command": "spawn_lost_snow_monster",
+                    "commands": [
+                        { "name": "Commands #1", "command": "spawn_lost_snow_monster", "label": "Spawn Lost Snow Monster", "actionType": "zombie", "amount": 1 }
+                    ],
+                    "repetition": 1,
+                    "delay": 0,
+                    "interval": 100,
+                    "repetitionMultiplier": true,
+                    "allowImport": true,
+                    "enabled": true
+                };
+            } else if (presetKey === 's2e_all_likes') {
+                data = {
+                    "source": "S2E",
+                    "giftName": "Total Likes",
+                    "platform": "tiktok",
+                    "triggerType": "likes_all",
+                    "likeThreshold": 50000,
+                    "functionName": "Stream 50K Likes Horse Stampede",
+                    "command": "spawn_ultimatehorse",
+                    "commands": [
+                        { "name": "Commands #1", "command": "spawn_ultimatehorse", "label": "Spawn UltimateHorse", "actionType": "zombie", "amount": 20 }
+                    ],
+                    "repetition": 20,
+                    "delay": 0,
+                    "interval": 100,
+                    "repetitionMultiplier": false,
+                    "allowImport": true,
+                    "enabled": true
+                };
+            } else if (presetKey === 's2e_follow') {
+                data = {
+                    "source": "S2E",
+                    "giftName": "Follower",
+                    "platform": "tiktok",
+                    "triggerType": "follow",
+                    "functionName": "Follower Summon",
+                    "command": "spawn_supergargantuar",
+                    "commands": [
+                        { "name": "Commands #1", "command": "spawn_supergargantuar", "label": "Spawn Super Gargantuar", "actionType": "zombie", "amount": 1 }
+                    ],
+                    "repetition": 1,
+                    "delay": 0,
+                    "interval": 100,
+                    "repetitionMultiplier": false,
+                    "allowImport": true,
+                    "enabled": true
+                };
+            }
+            if (data) {
+                document.getElementById('importEventTextarea').value = JSON.stringify(data, null, 2);
+                onImportInputChanged();
+            }
+        }
+
+        function parseImportPayload(raw) {
+            if (!raw || !raw.trim()) throw new Error("Input is empty");
+            let parsed = null;
+            try {
+                parsed = JSON.parse(raw.trim());
+            } catch (err) {
+                // Try relaxed parsing if user copied single quotes or JS object
+                try {
+                    const sanitized = raw.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
+                    parsed = JSON.parse(sanitized);
+                } catch (e2) {
+                    throw new Error("Invalid JSON format: " + err.message);
+                }
+            }
+
+            let events = [];
+            if (Array.isArray(parsed)) {
+                events = parsed;
+            } else if (parsed && typeof parsed === 'object') {
+                if (Array.isArray(parsed.events)) events = parsed.events;
+                else if (Array.isArray(parsed.gifts)) events = parsed.gifts;
+                else if (Array.isArray(parsed.commands)) events = parsed.commands;
+                else if (Array.isArray(parsed.data)) events = parsed.data;
+                else events = [parsed];
+            } else {
+                throw new Error("Unsupported event structure");
+            }
+
+            if (events.length === 0) throw new Error("No events found in payload");
+
+            const forceAllowImport = document.getElementById('importSetAllowImportDefault')?.checked !== false;
+
+            return events.map((ev, index) => {
+                const giftName = ev.giftName || ev.name || ev.title || ev.triggerName || (ev.triggerType === 'likes_all' ? 'Total Likes' : (ev.triggerType === 'follow' ? 'Follower' : 'Imported Event ' + (index + 1)));
+                const triggerType = ev.triggerType || ev.type || (giftName.toLowerCase().includes('total likes') ? 'likes_all' : (giftName.toLowerCase().includes('follow') ? 'follow' : 'gift'));
+                const coins = parseInt(ev.coins || ev.diamondCount || ev.cost) || (triggerType === 'gift' ? 1 : 0);
+                const likeThreshold = parseInt(ev.likeThreshold || ev.threshold || ev.likesCount || ev.triggerValue) || (triggerType === 'likes_all' ? 50000 : 50);
+                const repetition = parseInt(ev.repetition || ev.amount || ev.count || ev.multiplier) || 1;
+                const delay = parseInt(ev.delay) || 0;
+                const interval = (ev.interval !== undefined && ev.interval !== null) ? parseInt(ev.interval) : 100;
+                const repetitionMultiplier = (ev.repetitionMultiplier !== false && ev.multiplier !== false);
+                const allowImport = (ev.allowImport !== undefined) ? (ev.allowImport === true) : forceAllowImport;
+
+                // Resolve commands
+                let commandsList = [];
+                if (Array.isArray(ev.commands) && ev.commands.length > 0) {
+                    commandsList = ev.commands.map((c, i) => {
+                        const cmd = c.command || c.action || c.cmd || '';
+                        const info = resolveUnitInfo(cmd);
+                        return {
+                            name: c.name || `Commands #${i + 1}`,
+                            command: info.command,
+                            label: c.label || info.label,
+                            icon: c.icon || info.icon,
+                            actionType: c.actionType || info.actionType,
+                            amount: parseInt(c.amount) || repetition
+                        };
+                    });
+                } else {
+                    const rawCmd = ev.command || ev.cmd || ev.action || 'spawn_ultimatehorse';
+                    const parts = rawCmd.split(';').map(s => s.trim()).filter(Boolean);
+                    commandsList = parts.map((p, i) => {
+                        const info = resolveUnitInfo(p);
+                        return {
+                            name: `Commands #${i + 1}`,
+                            command: info.command,
+                            label: info.label,
+                            icon: info.icon,
+                            actionType: info.actionType,
+                            amount: repetition
+                        };
+                    });
+                }
+
+                const primaryCommand = commandsList.map(c => c.command).filter(Boolean).join(';') || 'spawn_ultimatehorse';
+                const firstUnit = commandsList[0] || resolveUnitInfo(primaryCommand);
+                const functionName = ev.functionName || ev.label || firstUnit.label || giftName;
+
+                return {
+                    id: ev.id ? String(ev.id) : ('imp_' + Date.now() + '_' + index),
+                    giftName: giftName,
+                    giftId: ev.giftId ? String(ev.giftId) : (ev.id ? String(ev.id) : ''),
+                    coins: coins,
+                    likeThreshold: likeThreshold,
+                    triggerType: triggerType,
+                    triggerValue: String(triggerType === 'likes_all' ? likeThreshold : (triggerType === 'gift' ? coins : likeThreshold)),
+                    platform: ev.platform || 'tiktok',
+                    availableFor: ev.availableFor || 'Anyone',
+                    functionName: functionName,
+                    label: functionName,
+                    actionType: ev.actionType || firstUnit.actionType || 'zombie',
+                    command: primaryCommand,
+                    commands: commandsList,
+                    unitIcon: ev.unitIcon || firstUnit.icon,
+                    icon: ev.icon || (triggerType === 'likes_all' ? 'images/trig_7.svg' : (triggerType === 'follow' ? 'images/trig_1.svg' : 'images/tiktok-gifts/5655_rose.webp')),
+                    repetition: repetition,
+                    amount: repetition,
+                    delay: delay,
+                    interval: interval,
+                    repetitionMultiplier: repetitionMultiplier,
+                    allowImport: allowImport,
+                    hideInOverlay: ev.hideInOverlay === true,
+                    enabled: ev.enabled !== false
+                };
+            });
+        }
+
+        function onImportInputChanged() {
+            const val = document.getElementById('importEventTextarea')?.value || '';
+            const previewCard = document.getElementById('importEventPreviewCard');
+            const errorCard = document.getElementById('importEventErrorCard');
+            const previewDetails = document.getElementById('importPreviewDetails');
+            const badge = document.getElementById('importPreviewCountBadge');
+
+            if (!val.trim()) {
+                if (previewCard) previewCard.style.display = 'none';
+                if (errorCard) errorCard.style.display = 'none';
+                return;
+            }
+
+            try {
+                const events = parseImportPayload(val);
+                if (errorCard) errorCard.style.display = 'none';
+                if (badge) badge.innerText = `${events.length} Event${events.length > 1 ? 's' : ''}`;
+                if (previewDetails) {
+                    previewDetails.innerHTML = events.slice(0, 3).map(ev => `
+                        <div style="margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <strong>${ev.giftName}</strong> (${ev.triggerType === 'likes_all' ? ev.likeThreshold + ' likes' : (ev.coins + ' coins')}): 
+                            <span style="color: #38bdf8;">${ev.functionName}</span> 
+                            <code>${ev.command}</code> x${ev.repetition} 
+                            <span style="color: ${ev.allowImport ? '#34d399' : '#9ca3af'}; font-size: 11px;">[Allow Import: ${ev.allowImport ? 'YES' : 'NO'}]</span>
+                        </div>
+                    `).join('') + (events.length > 3 ? `<div style="font-size: 11px; color: #9ca3af;">...and ${events.length - 3} more event(s)</div>` : '');
+                }
+                if (previewCard) previewCard.style.display = 'block';
+            } catch (err) {
+                if (previewCard) previewCard.style.display = 'none';
+                if (errorCard) {
+                    errorCard.innerText = '❌ ' + err.message;
+                    errorCard.style.display = 'block';
+                }
+            }
+        }
+
+        async function executeImportEvent() {
+            if (!checkEditorPermission("import events")) return;
+            const val = document.getElementById('importEventTextarea')?.value || '';
+            if (!val.trim()) {
+                alert("Please paste or load an event JSON payload to import");
+                return;
+            }
+
+            let events = [];
+            try {
+                events = parseImportPayload(val);
+            } catch (err) {
+                alert("Import validation failed:\n" + err.message);
+                return;
+            }
+
+            const dest = document.getElementById('importDestinationSelect')?.value || 'new';
+
+            if (dest === 'current') {
+                const ev = events[0];
+                if (!ev) return;
+
+                // Apply to currently open Gift Modal
+                document.getElementById('modalGiftName').value = ev.giftName || '';
+                document.getElementById('modalGiftCoins').value = ev.coins || 1;
+                document.getElementById('modalGiftId').value = ev.giftId || '';
+                document.getElementById('giftFunctionName').value = ev.functionName || ev.giftName;
+                document.getElementById('giftRepetition').value = ev.repetition || 1;
+                document.getElementById('giftDelay').value = ev.delay || 0;
+                document.getElementById('giftInterval').value = ev.interval || 100;
+                document.getElementById('giftRepMultiplier').checked = (ev.repetitionMultiplier !== false);
+                document.getElementById('giftAllowImport').checked = (ev.allowImport !== false);
+                document.getElementById('giftHideOverlay').checked = (ev.hideInOverlay === true);
+
+                if (document.getElementById('modalLikeThreshold')) {
+                    document.getElementById('modalLikeThreshold').value = ev.likeThreshold || 50000;
+                }
+
+                currentGiftCommands = JSON.parse(JSON.stringify(ev.commands));
+                renderGiftCommands();
+
+                const mainImg = document.getElementById('giftMainIconImg');
+                if (mainImg) mainImg.src = ev.unitIcon || (currentGiftCommands[0] ? currentGiftCommands[0].icon : 'images/super_gargantuar.png');
+
+                closeImportEventModal();
+                showToast(`Applied "${ev.giftName}" to the current trigger modal! Remember to click Save.`, "OK");
+                return;
+            }
+
+            if (!config || !Array.isArray(config.gifts)) {
+                config = config || {};
+                config.gifts = [];
+            }
+
+            if (dest === 'replace_all') {
+                if (!confirm(`Warning: This will replace all existing ${config.gifts.length} triggers with the ${events.length} imported event(s). Continue?`)) {
+                    return;
+                }
+                config.gifts = events;
+            } else if (dest === 'merge') {
+                events.forEach(ev => {
+                    const matchIdx = config.gifts.findIndex(g => 
+                        (ev.giftId && g.giftId && String(g.giftId) === String(ev.giftId)) ||
+                        (ev.id && g.id && String(g.id) === String(ev.id)) ||
+                        (ev.giftName && g.giftName && g.giftName.toLowerCase() === ev.giftName.toLowerCase() && ev.triggerType === g.triggerType)
+                    );
+                    if (matchIdx !== -1) {
+                        config.gifts[matchIdx] = { ...config.gifts[matchIdx], ...ev };
+                    } else {
+                        config.gifts.push(ev);
+                    }
+                });
+            } else {
+                // Add as new triggers
+                events.forEach(ev => {
+                    // Ensure unique ID
+                    ev.id = 'imp_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                    config.gifts.push(ev);
+                });
+            }
+
+            const ok = await saveConfigToServer();
+            if (ok !== false) {
+                renderGifts();
+                closeImportEventModal();
+                showToast(`Successfully imported ${events.length} event(s)!`, "OK");
+            }
+        }
+
+        function exportSingleEvent(giftId) {
+            const gift = config && config.gifts && config.gifts.find(g => String(g.id) === String(giftId));
+            if (!gift) {
+                showToast("Event not found", "ERR");
+                return;
+            }
+            const exportData = {
+                app: "s2e",
+                exportDate: new Date().toISOString(),
+                ...gift,
+                allowImport: gift.allowImport !== false
+            };
+            const jsonStr = JSON.stringify(exportData, null, 2);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(jsonStr).then(() => {
+                    showToast(`Copied "${gift.giftName}" event JSON to clipboard! Ready to paste into S2E or other apps.`, "OK");
+                }).catch(() => {
+                    prompt("Copy event JSON for S2E or external apps:", jsonStr);
+                });
+            } else {
+                prompt("Copy event JSON for S2E or external apps:", jsonStr);
+            }
+        }
+
+        function exportAllEvents() {
+            if (!config || !Array.isArray(config.gifts)) {
+                showToast("No triggers to export", "ERR");
+                return;
+            }
+            const allowList = config.gifts.filter(g => g.allowImport !== false);
+            const exportPayload = {
+                app: "s2e",
+                format: "pvz_fusion_s2e_v1",
+                exportDate: new Date().toISOString(),
+                totalEvents: allowList.length,
+                events: allowList
+            };
+            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `s2e_pvz_events_${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Exported ${allowList.length} events (Allow Import enabled) to JSON file!`, "OK");
         }
 
         async function toggleTikTokConnect() {

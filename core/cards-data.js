@@ -24,13 +24,13 @@
         "repetition":  1
     },
     {
-        "id":  "3",
+        "id":  "imp_1791633969321_118",
         "action":  "LikeAmount",
         "giftId":  "",
         "giftName":  "Total Likes",
-        "funcName":  "Spawn UltimateHorse",
+        "funcName":  "Total Likes",
         "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/trig_7.svg",
+        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
         "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
         "repetition":  20
