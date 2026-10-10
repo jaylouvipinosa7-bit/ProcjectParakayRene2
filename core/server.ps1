@@ -3139,19 +3139,38 @@ while ($true) {
                             SaveCounts
                         }
 
-                        if ($matchedGift.command -eq "spin_wheel") {
-                            $slices = if ($config.spinner -and $config.spinner.slices) { $config.spinner.slices } else { @() }
+                        if ($matchedGift.command -eq "spin_wheel" -or $matchedGift.actionType -eq "spinner" -or $matchedGift.command -match '^spinner_') {
+                            $targetCardSp = $null
+                            if ($config -and $config.spinners) {
+                                if ($matchedGift.command -match '^spinner_') {
+                                    $targetCardSp = $config.spinners | Where-Object { $_.id -eq $matchedGift.command } | Select-Object -First 1
+                                }
+                                if (-not $targetCardSp -and $matchedGift.spinnerId) {
+                                    $targetCardSp = $config.spinners | Where-Object { $_.id -eq [string]$matchedGift.spinnerId } | Select-Object -First 1
+                                }
+                                if (-not $targetCardSp) {
+                                    $targetCardSp = $config.spinners | Where-Object {
+                                        ($_.giftId -and $matchedGift.giftId -and [string]$_.giftId.Trim() -eq [string]$matchedGift.giftId.Trim()) -or
+                                        ($_.giftName -and $matchedGift.giftName -and ($_.giftName.Trim().ToLower() -eq $matchedGift.giftName.Trim().ToLower()))
+                                    } | Select-Object -First 1
+                                }
+                                if (-not $targetCardSp -and $config.spinners.Count -gt 0) {
+                                    $targetCardSp = $config.spinners[0]
+                                }
+                            }
+
+                            $spCardSlices = if ($targetCardSp -and $targetCardSp.slices) { $targetCardSp.slices } elseif ($config.spinner -and $config.spinner.slices) { $config.spinner.slices } else { @() }
                             $picked = $null
-                            if ($slices.Count -gt 0) {
+                            if ($spCardSlices.Count -gt 0) {
                                 $totalWeight = 0.0
-                                foreach ($s in $slices) {
+                                foreach ($s in $spCardSlices) {
                                     $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
                                     $totalWeight += $w
                                 }
                                 if ($totalWeight -le 0) { $totalWeight = 100.0 }
                                 $rnd = (Get-Random -Minimum 0.0 -Maximum $totalWeight)
                                 $cur = 0.0
-                                foreach ($s in $slices) {
+                                foreach ($s in $spCardSlices) {
                                     $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
                                     $cur += $w
                                     if ($rnd -le $cur) {
@@ -3159,7 +3178,7 @@ while ($true) {
                                         break
                                     }
                                 }
-                                if (-not $picked) { $picked = $slices[0] }
+                                if (-not $picked) { $picked = $spCardSlices[0] }
                             }
                             if ($picked) {
                                 $spReps = if ($picked.repetition) { [int]$picked.repetition } else { 1 }
@@ -3193,8 +3212,32 @@ while ($true) {
                                     }
                                 }
 
-                                AddEventLog @{ type = "spin_result"; label = "Lucky Wheel: $($picked.label)"; username = $user; avatar = $avatar; slice = $picked; icon = $icon; hideInOverlay = $spHide }
-                                Add-SpinnerHistoryRecord $user $avatar $picked "Lucky Wheel" "wheel"
+                                $cardSpName = if ($targetCardSp -and $targetCardSp.name) { $targetCardSp.name } else { "Lucky Wheel" }
+                                $cardSpId = if ($targetCardSp -and $targetCardSp.id) { [string]$targetCardSp.id } else { "wheel" }
+                                $cardSpDuration = if ($targetCardSp -and $targetCardSp.duration) { [int]$targetCardSp.duration } else { 2500 }
+                                $cardSpTicks = if ($targetCardSp -and $targetCardSp.ticks) { [int]$targetCardSp.ticks } else { 100 }
+                                $cardSpPointer = if ($targetCardSp) { $targetCardSp.pointerIcon } else { "" }
+                                $cardSpGroup = if ($targetCardSp) { [string]$targetCardSp.groupId } else { "" }
+
+                                AddEventLog @{
+                                    type = "spin_result"
+                                    label = "$($cardSpName): $($picked.label)"
+                                    username = $user
+                                    avatar = $avatar
+                                    giftName = if ($giftName) { $giftName } elseif ($matchedGift.giftName) { $matchedGift.giftName } else { "Gift" }
+                                    slice = $picked
+                                    spinnerId = $cardSpId
+                                    spinnerName = $cardSpName
+                                    groupId = $cardSpGroup
+                                    duration = $cardSpDuration
+                                    ticks = $cardSpTicks
+                                    pointerIcon = $cardSpPointer
+                                    slices = $spCardSlices
+                                    icon = if ($icon) { $icon } elseif ($matchedGift.icon) { $matchedGift.icon } else { "images/func_2.png" }
+                                    hideInOverlay = $spHide
+                                    success = $true
+                                }
+                                Add-SpinnerHistoryRecord $user $avatar $picked $cardSpName $cardSpId
                             }
                         } else {
                             $totalAmt = [int]$matchedGift.amount
