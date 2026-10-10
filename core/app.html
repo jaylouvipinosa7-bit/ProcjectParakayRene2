@@ -5497,15 +5497,36 @@
                 if (socialPanel) socialPanel.style.display = 'flex';
                 if (giftPickerGrid) giftPickerGrid.style.display = 'none';
                 if (pickerFilterBar) pickerFilterBar.style.display = 'none';
-                if (threshInp) threshInp.value = parseInt(currentEditingTriggerValue) || 100;
+                const defaultThresh = (currentEditingTriggerType === 'likes_all') ? 50000 : 100;
+                const parsedVal = parseInt(currentEditingTriggerValue) || defaultThresh;
+                if (threshInp) threshInp.value = parsedVal;
+                
+                const pTitle = document.getElementById('socialPanelTitle');
+                const pDesc = document.getElementById('socialPanelDesc');
+                const likeRow = document.getElementById('likeThresholdRow');
+                const pillsCont = document.getElementById('socialQuickPills');
+                if (likeRow) likeRow.style.display = 'flex';
+
+                if (currentEditingTriggerType === 'likes_all') {
+                    if (pTitle) pTitle.innerText = "Stream Total Likes Goal";
+                    if (pDesc) pDesc.innerHTML = "Tracks the overall stream likes from TikTok LIVE (e.g. 50K, 57K likes). When the stream reaches this milestone, this reward triggers!";
+                    if (pillsCont) pillsCont.innerHTML = `
+                        <button type="button" class="pill" onclick="setLikePreset(1000)">1K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(5000)">5K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(10000)">10K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(25000)">25K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(50000)">50K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(57000)">57K</button>
+                        <button type="button" class="pill" onclick="setLikePreset(100000)">100K</button>
+                    `;
+                }
                 
                 const previewCoins = document.getElementById('previewGiftCoins');
                 if (previewCoins) {
                     if (currentEditingTriggerType === 'likes_person') {
-                        previewCoins.innerText = `Likes By Person (${currentEditingTriggerValue})`;
+                        previewCoins.innerText = `Likes By Person (${parsedVal})`;
                     } else {
-                        const num = parseInt(currentEditingTriggerValue) || 50000;
-                        const kStr = (num >= 1000) ? (num / 1000) + 'K' : num;
+                        const kStr = (parsedVal >= 1000) ? (parsedVal / 1000) + 'K' : parsedVal;
                         previewCoins.innerText = `Total Likes Goal: ${kStr}`;
                     }
                 }
@@ -5928,6 +5949,41 @@
                 if (!config) config = {};
                 if (!Array.isArray(config.gifts)) config.gifts = [];
                 if (!Array.isArray(config.spinners)) config.spinners = [];
+
+                if (!config.gifts.some(g => String(g.id) === '3')) {
+                    config.gifts.splice(2, 0, {
+                        id: "3",
+                        giftName: "Total Likes",
+                        giftId: "",
+                        coins: 0,
+                        icon: "images/trig_7.svg",
+                        unitIcon: "images/game-icons/pvz/spawn_ultimatehorse.webp",
+                        actionType: "zombie",
+                        command: "spawn_ultimatehorse",
+                        label: "Spawn UltimateHorse",
+                        amount: 20,
+                        enabled: true,
+                        likeThreshold: 50000,
+                        commands: [{
+                            name: "Commands #1",
+                            command: "spawn_ultimatehorse",
+                            label: "Spawn UltimateHorse",
+                            icon: "images/game-icons/pvz/spawn_ultimatehorse.webp",
+                            actionType: "zombie",
+                            amount: 1
+                        }],
+                        functionName: "spawn summon horse",
+                        repetition: 20,
+                        delay: 0,
+                        interval: 100,
+                        repetitionMultiplier: true,
+                        hideInOverlay: false,
+                        triggerType: "likes_all",
+                        triggerValue: "50000",
+                        platform: "tiktok",
+                        availableFor: "Anyone"
+                    });
+                }
                 renderGifts();
                 renderSocial();
                 renderSpinnerStudio();
@@ -8945,7 +9001,7 @@
                 previewCoins.innerText = `Every ${val} Likes (Team Plants)`;
             } else if (editingGiftId === '2') {
                 previewCoins.innerText = `Every ${val} Likes (Team Zombies)`;
-            } else if (editingGiftId === '3') {
+            } else if (editingGiftId === '3' || currentEditingTriggerType === 'likes_all') {
                 const kStr = (val >= 1000) ? (val / 1000) + 'K' : val;
                 previewCoins.innerText = `Stream Goal: Every ${kStr} Likes`;
             }
@@ -8991,7 +9047,7 @@
                 setVal('modalGiftId', gift.giftId || '');
                 setVal('modalGiftIconUrl', gift.icon || '');
 
-                const isSocial = (String(gift.id) === '1' || String(gift.id) === '2' || String(gift.id) === '3' || String(gift.id) === '4' || gift.eventType);
+                const isSocial = (String(gift.id) === '1' || String(gift.id) === '2' || String(gift.id) === '3' || String(gift.id) === '4' || gift.eventType || gift.triggerType === 'likes_person' || gift.triggerType === 'likes_all' || gift.triggerType === 'follow' || gift.triggerType === 'share');
                 const socialPanel = document.getElementById('socialCustomizationPanel');
                 const customFields = document.getElementById('customGiftFieldsContainer');
                 const giftPickerGrid = document.getElementById('tiktokGiftsGrid');
@@ -9035,7 +9091,7 @@
                             <button type="button" class="pill" onclick="setLikePreset(500)">500</button>
                         `;
                         setText('previewGiftCoins', `Every ${gift.likeThreshold || 50} Likes (Team Zombies)`);
-                    } else if (String(gift.id) === '3') {
+                    } else if (String(gift.id) === '3' || gift.triggerType === 'likes_all' || gift.eventType === 'total_likes' || (gift.giftName && gift.giftName.toLowerCase().includes('total likes'))) {
                         if (pTitle) pTitle.innerText = "Stream Total Likes Goal";
                         if (pDesc) pDesc.innerHTML = "Tracks the overall stream likes from TikTok LIVE (e.g. 50K, 57K likes). When the stream reaches this milestone, this reward triggers!";
                         if (likeRow) likeRow.style.display = 'flex';
@@ -9204,17 +9260,46 @@
         }
 
         async function saveGiftModal() {
-            const name = document.getElementById('modalGiftName')?.value.trim() || '';
-            const isSocialCard = (editingGiftId === '1' || editingGiftId === '2' || editingGiftId === '3' || editingGiftId === '4');
+            let name = document.getElementById('modalGiftName')?.value.trim() || '';
+            const isSocialCard = (
+                editingGiftId === '1' || editingGiftId === '2' || editingGiftId === '3' || editingGiftId === '4' ||
+                currentEditingTriggerType === 'likes_person' || currentEditingTriggerType === 'likes_all' ||
+                currentEditingTriggerType === 'follow' || currentEditingTriggerType === 'share'
+            );
+
+            // Auto-populate trigger name for social triggers if not manually typed
+            if (!name) {
+                if (currentEditingTriggerType === 'likes_all' || editingGiftId === '3') {
+                    name = 'Total Likes';
+                } else if (currentEditingTriggerType === 'likes_person') {
+                    name = (editingGiftId === '1') ? 'Team plants likes' : ((editingGiftId === '2') ? 'Team zombies likes' : 'Likes By Person');
+                } else if (currentEditingTriggerType === 'follow' || editingGiftId === '4') {
+                    name = 'Follower';
+                } else if (currentEditingTriggerType === 'share') {
+                    name = 'Share Stream';
+                } else {
+                    name = document.getElementById('giftFunctionName')?.value.trim() || '';
+                }
+            }
+
             let coins = isSocialCard ? 0 : (parseInt(document.getElementById('modalGiftCoins')?.value) || 1);
             const giftId = document.getElementById('modalGiftId')?.value.trim() || '';
-            const icon = document.getElementById('modalGiftIconUrl')?.value.trim() || (activeSelectedGift ? activeSelectedGift.icon : 'images/tiktok-gifts/5655_rose.webp');
-            const likeThreshold = parseInt(document.getElementById('modalLikeThreshold')?.value) || 50;
+            let icon = document.getElementById('modalGiftIconUrl')?.value.trim() || (activeSelectedGift ? activeSelectedGift.icon : '');
+            if (!icon || (isSocialCard && icon.includes('5655_rose'))) {
+                if (currentEditingTriggerType === 'likes_all' || editingGiftId === '3') icon = 'images/trig_7.svg';
+                else if (currentEditingTriggerType === 'likes_person') icon = 'images/trig_7.svg';
+                else if (currentEditingTriggerType === 'follow' || editingGiftId === '4') icon = 'images/trig_1.svg';
+                else icon = 'images/tiktok-gifts/5655_rose.webp';
+            }
 
-            if (!name) {
+            const defaultThresh = (currentEditingTriggerType === 'likes_all' || editingGiftId === '3') ? 50000 : 50;
+            const likeThreshold = parseInt(document.getElementById('modalLikeThreshold')?.value) || parseInt(currentEditingTriggerValue) || defaultThresh;
+
+            if (!name && currentEditingTriggerType === 'gift') {
                 alert("Please select or enter a TikTok gift name");
                 return;
             }
+            if (!name) name = 'Custom Trigger';
 
             if (currentGiftCommands.length === 0) {
                 alert("Please add at least 1 command");
@@ -9230,6 +9315,10 @@
             const unitIcon = document.getElementById('giftMainIconImg')?.src || currentGiftCommands[0]?.icon || 'images/super_gargantuar.png';
             const joinedCommand = currentGiftCommands.map(c => c.command).filter(Boolean).join(';');
             const primaryActionType = currentGiftCommands[0]?.actionType || 'zombie';
+
+            if (currentEditingTriggerType === 'likes_all' || editingGiftId === '3') {
+                currentEditingTriggerValue = String(likeThreshold);
+            }
 
             if (editingGiftId !== null && editingGiftId !== undefined) {
                 const gift = config.gifts.find(g => String(g.id) === String(editingGiftId));
@@ -9257,7 +9346,10 @@
                     gift.availableFor = currentEditingAudience;
                 }
             } else {
-                const newId = String(Date.now());
+                let newId = String(Date.now());
+                if ((currentEditingTriggerType === 'likes_all' || name === 'Total Likes') && !config.gifts.some(g => String(g.id) === '3')) {
+                    newId = '3';
+                }
                 config.gifts.push({
                     id: newId,
                     giftName: name,

@@ -123,6 +123,7 @@ $teamPlantsLikes = 0
 $teamZombiesLikes = 0
 $script:lastStreamTotalLikes = 0
 $script:lastTotalLikesTriggeredMilestone = 0
+$script:cardMilestones = [System.Collections.Hashtable]::Synchronized(@{})
 $script:sessionFollowers = [System.Collections.Hashtable]::Synchronized(@{})
 
 $verifiedGiftsFile = Join-Path $folder "tiktok_gifts_verified.json"
@@ -396,12 +397,50 @@ function Add-SpinnerHistoryRecord($user, $avatar, $slice, $spName, $spId) {
 }
 
 function LoadConfig {
+    $cfg = $null
     if (Test-Path $configFile) {
         try {
-            return Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $cfg = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
         } catch {}
     }
-    return $null
+    if ($cfg -and $cfg.gifts -and -not ($cfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
+        $c3 = [PSCustomObject]@{
+            id = "3"
+            giftName = "Total Likes"
+            giftId = ""
+            coins = 0
+            icon = "images/trig_7.svg"
+            unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+            actionType = "zombie"
+            command = "spawn_ultimatehorse"
+            label = "Spawn UltimateHorse"
+            amount = 20
+            enabled = $true
+            likeThreshold = 50000
+            commands = @([PSCustomObject]@{
+                name = "Commands #1"
+                command = "spawn_ultimatehorse"
+                label = "Spawn UltimateHorse"
+                icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                actionType = "zombie"
+                amount = 1
+            })
+            functionName = "spawn summon horse"
+            repetition = 20
+            delay = 0
+            interval = 100
+            repetitionMultiplier = $true
+            hideInOverlay = $false
+            triggerType = "likes_all"
+            triggerValue = "50000"
+            platform = "tiktok"
+            availableFor = "Anyone"
+        }
+        $gList = [System.Collections.ArrayList]@($cfg.gifts)
+        $gList.Insert([Math]::Min(2, $gList.Count), $c3)
+        $cfg.gifts = $gList
+    }
+    return $cfg
 }
 
 function LoadCards {
@@ -430,9 +469,9 @@ function Sync-ConfigToCards {
             } elseif ($g.id -eq "2" -or ($g.eventType -eq "team_zombies_likes") -or ($g.giftName -match "team\s*zombies\s*likes")) {
                 $overlayAction = "LikeForEach"
                 $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } else { "50" }
-            } elseif ($g.id -eq "3" -or ($g.eventType -eq "total_likes") -or ($g.giftName -match "^total\s*likes")) {
+            } elseif ($g.id -eq "3" -or ($g.eventType -eq "total_likes") -or ($g.triggerType -eq "likes_all") -or ($g.giftName -match "total\s*likes|all\s*likes")) {
                 $overlayAction = "LikeAmount"
-                $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } elseif ($g.triggerValue) { [string]$g.triggerValue } else { "500" }
+                $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } elseif ($g.triggerValue) { [string]$g.triggerValue } else { "50000" }
             } elseif ($g.id -eq "4" -or ($g.eventType -eq "follow") -or ($g.giftName -match "^follow(er)?$")) {
                 $overlayAction = "Follow"
                 $trigVal = ""
@@ -1271,6 +1310,47 @@ while ($true) {
                     continue
                 }
                 $content = [System.IO.File]::ReadAllText($targetPath, [System.Text.Encoding]::UTF8)
+                try {
+                    $parsedCfg = $content | ConvertFrom-Json
+                    if ($parsedCfg -and $parsedCfg.gifts -and -not ($parsedCfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
+                        $card3Obj = [PSCustomObject]@{
+                            id = "3"
+                            giftName = "Total Likes"
+                            giftId = ""
+                            coins = 0
+                            icon = "images/trig_7.svg"
+                            unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                            actionType = "zombie"
+                            command = "spawn_ultimatehorse"
+                            label = "Spawn UltimateHorse"
+                            amount = 20
+                            enabled = $true
+                            likeThreshold = 50000
+                            commands = @([PSCustomObject]@{
+                                name = "Commands #1"
+                                command = "spawn_ultimatehorse"
+                                label = "Spawn UltimateHorse"
+                                icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                                actionType = "zombie"
+                                amount = 1
+                            })
+                            functionName = "spawn summon horse"
+                            repetition = 20
+                            delay = 0
+                            interval = 100
+                            repetitionMultiplier = $true
+                            hideInOverlay = $false
+                            triggerType = "likes_all"
+                            triggerValue = "50000"
+                            platform = "tiktok"
+                            availableFor = "Anyone"
+                        }
+                        $gList = [System.Collections.ArrayList]@($parsedCfg.gifts)
+                        $gList.Insert([Math]::Min(2, $gList.Count), $card3Obj)
+                        $parsedCfg.gifts = $gList
+                        $content = $parsedCfg | ConvertTo-Json -Depth 10
+                    }
+                } catch {}
                 Send-JsonResponse $response $content
                 continue
             } elseif ($request.HttpMethod -eq 'POST') {
@@ -2438,24 +2518,72 @@ while ($true) {
                         }
                     }
 
-                    # 4. Total Stream Likes Milestone check (e.g. 500 or custom milestone)
-                    if ($totalLikes -gt 0 -and $thresh3 -gt 0) {
+                    # 4. Total Stream Likes Milestone check (supports Card 3 and any custom "All Likes" / total likes card)
+                    if ($totalLikes -gt 0 -and $config -and $config.gifts) {
                         $script:lastStreamTotalLikes = $totalLikes
-                        if ($totalLikes -ge ($script:lastTotalLikesTriggeredMilestone + $thresh3)) {
-                            $milestonesCrossed = [Math]::Floor(($totalLikes - $script:lastTotalLikesTriggeredMilestone) / $thresh3)
-                            if ($milestonesCrossed -gt 0) {
-                                $script:lastTotalLikesTriggeredMilestone += ($milestonesCrossed * $thresh3)
-                                if ($card3 -and $card3.enabled) {
-                                    $amtToSpawn = [int]($card3.amount * [Math]::Min($milestonesCrossed, 5))
-                                    SendToPvZGame $card3.actionType $card3.command $amtToSpawn "StreamGoal" | Out-Null
-                                    if ($counts.Contains("3")) { $counts["3"] = [int]$counts["3"] + $milestonesCrossed; SaveCounts }
+                        $allLikesCards = @($config.gifts | Where-Object { 
+                            $_.enabled -ne $false -and (
+                                [string]$_.id -eq "3" -or 
+                                $_.triggerType -eq "likes_all" -or 
+                                $_.triggerType -eq "total_likes" -or 
+                                $_.eventType -eq "total_likes" -or 
+                                ($_.giftName -and $_.giftName -match "total\s*likes|all\s*likes")
+                            )
+                        })
+
+                        foreach ($alc in $allLikesCards) {
+                            $alcId = [string]$alc.id
+                            $alcThresh = 50000
+                            if ($alc.likeThreshold -and [int64]$alc.likeThreshold -gt 0) {
+                                $alcThresh = [int64]$alc.likeThreshold
+                            } elseif ($alc.triggerValue -and [int64]$alc.triggerValue -gt 0) {
+                                $alcThresh = [int64]$alc.triggerValue
+                            }
+
+                            if ($alcThresh -le 0) { continue }
+
+                            if (-not $script:cardMilestones.ContainsKey($alcId)) {
+                                if ($totalLikes -ge $alcThresh) {
+                                    $prevMilestone = [Math]::Floor($totalLikes / $alcThresh) * $alcThresh
+                                    $script:cardMilestones[$alcId] = [int64]($prevMilestone - $alcThresh)
+                                } else {
+                                    $script:cardMilestones[$alcId] = [int64]0
+                                }
+                            }
+
+                            $lastMilestone = [int64]$script:cardMilestones[$alcId]
+                            if ($totalLikes -ge ($lastMilestone + $alcThresh)) {
+                                $milestonesCrossed = [Math]::Floor(($totalLikes - $lastMilestone) / $alcThresh)
+                                if ($milestonesCrossed -gt 0) {
+                                    $script:cardMilestones[$alcId] = $lastMilestone + ($milestonesCrossed * $alcThresh)
+
+                                    $alcCmd = if ($alc.command) { [string]$alc.command } else { "spawn_ultimatehorse" }
+                                    $alcAction = if ($alc.actionType) { [string]$alc.actionType } else { "zombie" }
+                                    $alcReps = if ($alc.repetition -and [int]$alc.repetition -gt 0) { [int]$alc.repetition } elseif ($alc.amount -and [int]$alc.amount -gt 0) { [int]$alc.amount } else { 1 }
+                                    $alcAmt = if ($alc.amount -and [int]$alc.amount -gt 0) { [int]$alc.amount } else { $alcReps }
+                                    $alcDelay = if ($alc.delay) { [int]$alc.delay } else { 0 }
+                                    $alcInterval = if ($alc.interval) { [int]$alc.interval } else { 100 }
+                                    $alcHide = ($alc.hideInOverlay -eq $true -or $alc.hideInOverlay -eq "true")
+                                    $alcLabel = if ($alc.functionName) { [string]$alc.functionName } elseif ($alc.label) { [string]$alc.label } else { $alcCmd }
+                                    $alcIcon = if ($alc.unitIcon) { [string]$alc.unitIcon } elseif ($alc.icon) { [string]$alc.icon } else { "images/game-icons/pvz/spawn_ultimatehorse.webp" }
+
+                                    # Trigger the summon sequence in PvZ Fusion mod!
+                                    SendToPvZGame $alcAction $alcCmd $alcAmt "StreamGoal" "" $alcReps $alcDelay $alcInterval | Out-Null
+
+                                    if ($counts.ContainsKey($alcId)) {
+                                        $counts[$alcId] = [int]$counts[$alcId] + $milestonesCrossed
+                                        SaveCounts
+                                    }
+
                                     AddEventLog @{
                                         type = "total_likes_milestone"
-                                        label = "Stream Goal reached: $($totalLikes) Likes! Summoned $($card3.label)"
-                                        command = $card3.command
-                                        amount = $amtToSpawn
+                                        label = "Stream Goal reached: $($totalLikes) Likes! Summoned $alcLabel ($alcReps x)"
+                                        command = $alcCmd
+                                        actionType = $alcAction
+                                        amount = $alcReps
                                         username = "StreamGoal"
-                                        icon = $card3.unitIcon
+                                        icon = $alcIcon
+                                        hideInOverlay = $alcHide
                                         success = $true
                                     }
                                 }

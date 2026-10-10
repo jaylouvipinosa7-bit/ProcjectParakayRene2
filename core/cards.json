@@ -5,10 +5,10 @@
         "giftId":  "",
         "giftName":  "Team plants likes",
         "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatecattail.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_garlicsniper.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_ultimatecattail",
+        "commands":  "spawn_garlic_sniper",
         "repetition":  1
     },
     {
@@ -17,23 +17,11 @@
         "giftId":  "",
         "giftName":  "Team zombies likes",
         "funcName":  "Spawn Trident Jugger-nut Gargantuar (240)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_hydrofowl_zombie.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_hydrofowl_zombie",
-        "repetition":  5
-    },
-    {
-        "id":  "3",
-        "action":  "LikeAmount",
-        "giftId":  "",
-        "giftName":  "Total Likes",
-        "funcName":  "Spawn UltimateHorse",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/trig_7.svg",
-        "triggerValue":  "500",
-        "commands":  "spawn_ultimatehorse",
-        "repetition":  20
+        "commands":  "ultimate_gold_gargantuar",
+        "repetition":  1
     },
     {
         "id":  "4",
@@ -729,18 +717,6 @@
         "trigImg":  "images/tiktok-gifts/16757_bibingka.webp",
         "triggerValue":  "",
         "commands":  "spawn_horsezombie",
-        "repetition":  1
-    },
-    {
-        "id":  "65",
-        "action":  "SelectedGift",
-        "giftId":  "5827",
-        "giftName":  "Ice Cream Cone",
-        "funcName":  "Spawn Lost Snow Monster",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_lost_snow_monster.webp",
-        "trigImg":  "images/tiktok-gifts/5827_ice_cream_cone.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_lost_snow_monster",
         "repetition":  1
     }
 ]
