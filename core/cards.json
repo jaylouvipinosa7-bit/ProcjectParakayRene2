@@ -5,10 +5,10 @@
         "giftId":  "",
         "giftName":  "Team plants likes",
         "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "images/game-icons/pvz/spawn_fire_sniper.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatecattail.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_fire_sniper",
+        "commands":  "spawn_ultimatecattail",
         "repetition":  1
     },
     {
@@ -53,7 +53,7 @@
         "giftId":  "5655",
         "giftName":  "Rose",
         "funcName":  "Spawn Ultimate Football Zombie",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
         "trigImg":  "images/tiktok-gifts/5655_rose.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_football_zombie",
@@ -113,10 +113,10 @@
         "giftId":  "6064",
         "giftName":  "GG",
         "funcName":  "Spawn Squalour Zombie",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_super_kirov.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_kirov_b.webp",
         "trigImg":  "images/tiktok-gifts/6064_gg.webp",
         "triggerValue":  "",
-        "commands":  "spawn_squalour_zombie",
+        "commands":  "spawn_kirov_b",
         "repetition":  1
     },
     {

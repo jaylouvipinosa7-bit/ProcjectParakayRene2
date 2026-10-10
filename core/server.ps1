@@ -312,6 +312,7 @@ function Update-WinWidgetScore([int]$delta, [string]$reason = "spinner", [string
 
 $script:lastWinAdjustTime = 0
 $script:lastWinAdjustAction = ""
+$script:recentSpins = [System.Collections.Hashtable]::Synchronized(@{})
 
 $historyFile = Join-Path $PSScriptRoot "spinner_history.json"
 
@@ -1907,6 +1908,19 @@ while ($true) {
             }
 
             $username = if ($request.QueryString['username']) { $request.QueryString['username'] } elseif ($request.QueryString['user']) { $request.QueryString['user'] } else { "User" }
+            $cleanUserKey = ($username.ToLower() -replace '[^a-z0-9]', '')
+            $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+
+            # Prevent duplicate spin triggers for the same viewer within 8 seconds
+            if ($cleanUserKey -and $script:recentSpins.ContainsKey($cleanUserKey)) {
+                $lastSpinTime = [int64]$script:recentSpins[$cleanUserKey]
+                if (($nowMs - $lastSpinTime) -lt 8000) {
+                    Send-JsonResponse $response @{ status = "ok"; message = "Already spun for this donation" }
+                    continue
+                }
+            }
+            $script:recentSpins[$cleanUserKey] = $nowMs
+
             $avatar = if ($request.QueryString['avatar']) { $request.QueryString['avatar'] } else { "images/default_avatar.svg" }
             $noGame = ($request.QueryString['noGameTrigger'] -eq 'true')
             
@@ -1919,36 +1933,6 @@ while ($true) {
                     $spInterval = if ($pickedSlice.interval) { [int]$pickedSlice.interval } else { 100 }
                     $spHide = ($pickedSlice.hideInOverlay -eq $true -or $pickedSlice.hideInOverlay -eq "true")
                     $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $pickedSlice.amount $username "" $spReps $spDelay $spInterval
-                }
-            }
-
-            # Also execute and count any matching gift card action in config.gifts (e.g. Heart Me -> Spawn Big Sun Nut x50)
-            if (-not $noGame -and $targetSpinner -and $config -and $config.gifts) {
-                $spGiftId = [string]$targetSpinner.giftId
-                $spGiftName = [string]$targetSpinner.giftName
-                foreach ($g in $config.gifts) {
-                    $cMatch = $false
-                    if ($g.enabled -and $g.giftId -and $spGiftId -and ([string]$g.giftId.Trim() -eq $spGiftId.Trim())) {
-                        $cMatch = $true
-                    } elseif ($g.enabled -and $g.giftName -and $spGiftName) {
-                        $cg = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                        $sg = ($spGiftName -replace '[^a-zA-Z0-9]','').ToLower()
-                        if ($cg -and $cg -eq $sg) { $cMatch = $true }
-                    }
-                    if ($cMatch) {
-                        $cIdStr = [string]$g.id
-                        if ($cIdStr -and $counts.ContainsKey($cIdStr)) {
-                            $counts[$cIdStr] = [int]$counts[$cIdStr] + 1
-                            SaveCounts
-                        }
-                        if ($g.command -and $g.command -ne "spin_wheel") {
-                            $gReps = if ($g.repetition) { [int]$g.repetition } else { 1 }
-                            $gDelay = if ($g.delay) { [int]$g.delay } else { 0 }
-                            $gIntv = if ($g.interval) { [int]$g.interval } else { 100 }
-                            SendToPvZGame $g.actionType $g.command ([int]$g.amount) $username "" $gReps $gDelay $gIntv | Out-Null
-                        }
-                        break
-                    }
                 }
             }
 
@@ -2066,6 +2050,18 @@ while ($true) {
                     }
 
                     if ($matchedSpinner) {
+                        # Debounce check: ignore duplicate webhook spins for this user within 3000ms
+                        $cleanUserKey = ($user.ToLower() -replace '[^a-z0-9]', '')
+                        $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                        if ($cleanUserKey -and $script:recentSpins.ContainsKey($cleanUserKey)) {
+                            $lastTime = [int64]$script:recentSpins[$cleanUserKey]
+                            if (($nowMs - $lastTime) -lt 3000) {
+                                Send-JsonResponse $response @{ status = "ok"; message = "Debounced duplicate spin" }
+                                continue
+                            }
+                        }
+                        $script:recentSpins[$cleanUserKey] = $nowMs
+
                         # Trigger that specific spinner!
                         $spSlices = if ($matchedSpinner.slices) { $matchedSpinner.slices } else { @() }
                         $picked = $null
@@ -2161,7 +2157,7 @@ while ($true) {
                                         SendToPvZGame $g.actionType $g.command $totalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
                                         AddEventLog @{
                                             type = "gift"
-                                            label = "$($g.label) ($($g.giftName))"
+                                            label = [string]$g.label
                                             command = $g.command
                                             actionType = $g.actionType
                                             amount = $totalAmt
@@ -2553,6 +2549,11 @@ while ($true) {
             $bytes = [System.IO.File]::ReadAllBytes($filePath)
             $response.ContentType = $contentType
             $response.ContentLength64 = $bytes.Length
+            try {
+                $response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate")
+                $response.Headers.Add("Pragma", "no-cache")
+                $response.Headers.Add("Expires", "0")
+            } catch {}
             if ($request.HttpMethod -ne "HEAD") {
                 $response.OutputStream.Write($bytes, 0, $bytes.Length)
             }
