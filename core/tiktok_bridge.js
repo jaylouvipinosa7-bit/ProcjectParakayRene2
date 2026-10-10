@@ -252,11 +252,11 @@ function startConnection() {
             if (totalCount > prev) {
                 deltaCount = totalCount - prev;
                 activeStreaks.set(streakKey, totalCount);
-            } else if (data.repeatEnd) {
-                activeStreaks.delete(streakKey);
-                return; // Streak confirmation packet, count already processed
             } else {
-                deltaCount = 1;
+                if (data.repeatEnd) {
+                    activeStreaks.delete(streakKey);
+                }
+                return; // Duplicate streak packet or repeatEnd echo, already counted!
             }
 
             if (data.repeatEnd) {

@@ -2163,10 +2163,12 @@ while ($true) {
                                             type = "gift"
                                             label = "$($g.label) ($($g.giftName))"
                                             command = $g.command
+                                            actionType = $g.actionType
                                             amount = $totalAmt
                                             username = $user
                                             icon = if ($g.unitIcon) { $g.unitIcon } else { $icon }
                                             hideInOverlay = $giftHide
+                                            noSpinnerTrigger = $true
                                             success = $true
                                         }
                                     }

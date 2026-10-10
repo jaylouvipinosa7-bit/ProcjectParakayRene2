@@ -950,35 +950,6 @@
                                     giftIcon: ev.icon || sp.giftIcon
                                 });
                             }
-                            // 2. Incoming Gift Event: Match against assigned spinners
-                            else if (ev.type === 'gift') {
-                                const matched = findSpinnerForGift(ev.giftName || ev.label, ev.cardId || ev.giftId);
-                                if (matched) {
-                                    // Trigger spin via backend so PvZ Fusion receives the spawn command
-                                    try {
-                                        const spinRes = await fetch(`/api/spin?spinnerId=${matched.id}&username=${encodeURIComponent(ev.username || 'Gifter')}&avatar=${encodeURIComponent(ev.avatar || '')}`, { method: 'POST' });
-                                        if (spinRes.ok) {
-                                            const spinData = await spinRes.json();
-                                            showAndSpin({
-                                                spinner: matched,
-                                                winner: spinData.winner,
-                                                username: ev.username || 'Gifter',
-                                                avatar: ev.avatar || spinData.avatar,
-                                                giftName: ev.giftName || matched.giftName || 'Gift',
-                                                giftIcon: ev.icon || matched.giftIcon
-                                            });
-                                        }
-                                    } catch (e) {
-                                        showAndSpin({
-                                            spinner: matched,
-                                            username: ev.username || 'Gifter',
-                                            avatar: ev.avatar,
-                                            giftName: ev.giftName || matched.giftName || 'Gift',
-                                            giftIcon: ev.icon || matched.giftIcon
-                                        });
-                                    }
-                                }
-                            }
                         }
                     }
                 } catch (err) {}
