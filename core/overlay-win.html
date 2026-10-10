@@ -270,6 +270,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .win-card-box.pop-anim {
+            animation: cardBoxPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardBoxPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.12); }
+            100% { transform: scale(1); }
         }
 
         .card-lose {
@@ -450,11 +461,22 @@
             if (targetEl) targetEl.textContent = currentTarget;
             if (labelEl && data.label) labelEl.textContent = data.label;
 
-            // Update dual cards
+            // Update dual cards with pop animations
+            const prevL = currentLosses;
+            const prevW = currentWins;
             const loseEl = document.getElementById('cardLoseCount');
             const winEl = document.getElementById('cardWinCount');
             if (loseEl) loseEl.textContent = currentLosses;
             if (winEl) winEl.textContent = currentWins;
+
+            if (currentLosses > prevL) {
+                const b = loseEl?.closest('.win-card-box');
+                if (b) { b.classList.remove('pop-anim'); void b.offsetWidth; b.classList.add('pop-anim'); }
+            }
+            if (currentWins > prevW) {
+                const b = winEl?.closest('.win-card-box');
+                if (b) { b.classList.remove('pop-anim'); void b.offsetWidth; b.classList.add('pop-anim'); }
+            }
 
             // Update mode if remote style is provided and URL didn't lock it
             if (data.style && !urlParams.get('mode')) {
@@ -521,23 +543,46 @@
         }
 
         // Hotkeys directly supported in overlay as well
-        window.addEventListener('keydown', (e) => {
-            const isMinus = e.code === 'Minus' || e.code === 'NumpadSubtract' || e.key === '-' || e.key === '_';
-            const isEqualOrPlus = e.code === 'Equal' || e.code === 'NumpadAdd' || e.key === '=' || e.key === '+';
+        let lastOverlayHotkeyTime = 0;
+        let lastOverlayHotkeyAction = '';
 
-            if ((e.altKey && isMinus) || e.key === '[') {
+        window.addEventListener('keydown', (e) => {
+            const isMinus = e.code === 'Minus' || e.code === 'NumpadSubtract' || e.key === '-' || e.key === '_' || e.keyCode === 189 || e.keyCode === 109;
+            const isEqualOrPlus = e.code === 'Equal' || e.code === 'NumpadAdd' || e.key === '=' || e.key === '+' || e.keyCode === 187 || e.keyCode === 107;
+            const isBracketLeft = e.code === 'BracketLeft' || e.key === '[' || e.keyCode === 219;
+            const isBracketRight = e.code === 'BracketRight' || e.key === ']' || e.keyCode === 221;
+
+            const now = Date.now();
+
+            if ((e.altKey && isMinus) || isBracketLeft) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (lastOverlayHotkeyAction === 'lose_plus' && (now - lastOverlayHotkeyTime) < 350) return;
+                lastOverlayHotkeyTime = now;
+                lastOverlayHotkeyAction = 'lose_plus';
+
                 fetch('/api/win-widget/adjust', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'lose_plus' })
                 });
-            } else if ((e.altKey && isEqualOrPlus) || e.key === ']') {
+            } else if ((e.altKey && isEqualOrPlus) || isBracketRight) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (lastOverlayHotkeyAction === 'win_plus' && (now - lastOverlayHotkeyTime) < 350) return;
+                lastOverlayHotkeyTime = now;
+                lastOverlayHotkeyAction = 'win_plus';
+
                 fetch('/api/win-widget/adjust', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'win_plus' })
                 });
             }
+        }, true);
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Alt') e.preventDefault();
         }, true);
 
         window.addEventListener('DOMContentLoaded', () => {

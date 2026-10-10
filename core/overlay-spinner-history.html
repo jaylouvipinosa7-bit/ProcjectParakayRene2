@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion - Spinner History Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* OBS TRANSPARENT BACKGROUND */
+        html, body {
+            background: transparent !important;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .spinner-history-widget {
+            width: 320px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .spinner-history-widget.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-10px);
+        }
+
+        /* HEADER: MATCHES USER'S SCREENSHOT */
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 4px;
+        }
+
+        .header-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-wheel-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+            animation: slowRotate 20s linear infinite;
+        }
+
+        @keyframes slowRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header-title-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 14px rgba(56, 189, 248, 0.4);
+        }
+
+        .header-checkbox {
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+            cursor: pointer;
+        }
+
+        /* HISTORY CARDS LIST */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* SINGLE HISTORY CARD: EXACT MATCH TO USER'S SCREENSHOT */
+        .history-card {
+            background: rgba(18, 22, 34, 0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+            animation: cardSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s ease;
+        }
+
+        @keyframes cardSlideIn {
+            0% { opacity: 0; transform: translateY(-16px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* GOLDEN / AMBER CURVED LEFT ACCENT BAR */
+        .card-left-accent {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%);
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+        }
+
+        .card-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding-left: 4px;
+        }
+
+        .card-avatar-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            background: #0d1117;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-username {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+        }
+
+        /* RIGHT SIDE WON PRIZE BADGE */
+        .card-prize-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 9px;
+            background: rgba(13, 17, 23, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            padding: 2px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .prize-text-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .prize-unit-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .empty-history-notice {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            background: rgba(18, 22, 34, 0.6);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="spinner-history-widget" id="spinnerHistoryWidget">
+        <!-- HEADER (MATCHES USER PHOTO) -->
+        <div class="history-header" id="historyHeader">
+            <div class="header-title-wrap">
+                <img src="images/spinner_wheel_icon.svg" class="header-wheel-icon" alt="Wheel" onerror="this.src='favicon.ico'">
+                <span class="header-title-text">Spinner History</span>
+            </div>
+            <div class="header-checkbox" id="headerCheckbox" onclick="toggleVisibility()" title="Toggle Spinner History Overlay">✓</div>
+        </div>
+
+        <!-- CARDS CONTAINER -->
+        <div class="history-list" id="historyList">
+            <div class="empty-history-notice">Waiting for spins...</div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const maxLimit = parseInt(urlParams.get('limit')) || 6;
+        if (urlParams.get('header') === 'false') {
+            const h = document.getElementById('historyHeader');
+            if (h) h.style.display = 'none';
+        }
+
+        let isWidgetEnabled = true;
+        let lastServerTime = 0;
+        let currentHistory = [];
+
+        function toggleVisibility() {
+            isWidgetEnabled = !isWidgetEnabled;
+            updateVisibilityUI();
+            fetch('/api/spinner-history/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enabled: isWidgetEnabled })
+            }).catch(() => {});
+        }
+
+        function updateVisibilityUI() {
+            const widget = document.getElementById('spinnerHistoryWidget');
+            const chk = document.getElementById('headerCheckbox');
+            if (widget) {
+                if (isWidgetEnabled) widget.classList.remove('is-hidden');
+                else widget.classList.add('is-hidden');
+            }
+            if (chk) {
+                chk.innerText = isWidgetEnabled ? '✓' : '';
+                chk.style.background = isWidgetEnabled ? '#2563eb' : '#1e293b';
+            }
+        }
+
+        function renderHistory(list) {
+            const container = document.getElementById('historyList');
+            if (!container) return;
+
+            if (!Array.isArray(list) || list.length === 0) {
+                container.innerHTML = '<div class="empty-history-notice">Waiting for spins...</div>';
+                return;
+            }
+
+            const visibleItems = list.slice(0, maxLimit);
+            let html = '';
+
+            visibleItems.forEach((item) => {
+                const username = escapeHtml(item.username || 'User');
+                const avatar = item.avatar || 'images/default_avatar.svg';
+                const isNumber = (item.isNumber === true || item.actionType === 'score' || item.delta !== null || /^[+-]?\s*\d+$/.test(item.label || ''));
+                
+                let prizeHtml = '';
+                if (isNumber) {
+                    const rawLabel = (item.label || '10').trim();
+                    const color = item.color || '#ff007f';
+                    prizeHtml = `<div class="prize-text-num" style="color: ${color}; text-shadow: 0 0 12px ${color};">${rawLabel}</div>`;
+                } else {
+                    const icon = item.icon || 'images/func_2.png';
+                    prizeHtml = `<img src="${icon}" class="prize-unit-img" alt="${item.label}" onerror="this.src='images/func_2.png'">`;
+                }
+
+                html += `
+                    <div class="history-card">
+                        <div class="card-left-accent"></div>
+                        <div class="card-user-info">
+                            <div class="card-avatar-wrap">
+                                <img src="${avatar}" class="card-avatar-img" alt="${username}" onerror="this.src='images/default_avatar.svg'">
+                            </div>
+                            <div class="card-username" title="${username}">${username}</div>
+                        </div>
+                        <div class="card-prize-badge">
+                            ${prizeHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, (m) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+        }
+
+        async function fetchInitialHistory() {
+            try {
+                const res = await fetch('/api/spinner-history?t=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.enabled !== undefined) {
+                        isWidgetEnabled = (data.enabled !== false);
+                        updateVisibilityUI();
+                    }
+                    if (Array.isArray(data.history)) {
+                        currentHistory = data.history;
+                        renderHistory(currentHistory);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        // Live Event polling for real-time spin history entries
+        function startEventStream() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/events?since=${lastServerTime}`);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.serverTime) lastServerTime = data.serverTime;
+
+                    if (Array.isArray(data.events)) {
+                        for (const ev of data.events) {
+                            if (ev.type === 'spinner_history_update') {
+                                if (ev.enabled !== undefined) {
+                                    isWidgetEnabled = (ev.enabled !== false);
+                                    updateVisibilityUI();
+                                }
+                                if (Array.isArray(ev.history)) {
+                                    currentHistory = ev.history;
+                                    renderHistory(currentHistory);
+                                } else if (ev.item) {
+                                    currentHistory = [ev.item, ...currentHistory].slice(0, 40);
+                                    renderHistory(currentHistory);
+                                }
+                            } else if (ev.type === 'spin_result') {
+                                // Refresh history on spin completion
+                                fetchInitialHistory();
+                            }
+                        }
+                    }
+                } catch (err) {}
+            }, 300);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchInitialHistory();
+            startEventStream();
+        });
+    </script>
+</body>
+</html>

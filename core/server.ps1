@@ -167,6 +167,81 @@ function Update-WinWidgetScore([int]$delta, [string]$reason = "spinner", [string
     return $script:winWidget
 }
 
+$script:lastWinAdjustTime = 0
+$script:lastWinAdjustAction = ""
+
+$historyFile = Join-Path $PSScriptRoot "spinner_history.json"
+
+function Load-SpinnerHistory {
+    if (Test-Path $historyFile) {
+        try {
+            $raw = Get-Content $historyFile -Raw -Encoding UTF8
+            $obj = $raw | ConvertFrom-Json
+            if ($obj) { return $obj }
+        } catch {}
+    }
+    return @{
+        enabled = $true
+        history = @()
+    }
+}
+
+function Save-SpinnerHistory($state) {
+    try {
+        $json = $state | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($historyFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:spinnerHistory = Load-SpinnerHistory
+
+function Add-SpinnerHistoryRecord($user, $avatar, $slice, $spName, $spId) {
+    if (-not $script:spinnerHistory) { $script:spinnerHistory = Load-SpinnerHistory }
+    
+    $cleanUser = if ($user) { [string]$user } else { "User" }
+    $cleanAvatar = if ($avatar -and $avatar.Trim()) { [string]$avatar } else { "images/default_avatar.svg" }
+    $cleanSpName = if ($spName) { [string]$spName } else { "Spinner" }
+    $cleanSpId = if ($spId) { [string]$spId } else { "1" }
+    
+    $lbl = if ($slice -and $slice.label) { [string]$slice.label } else { "Prize" }
+    $isNum = ($slice -and ($slice.actionType -eq "score" -or $slice.delta -ne $null -or ($lbl -match '^[+-]?\s*\d+$')))
+    $deltaVal = if ($slice -and $slice.delta -ne $null) { [int]$slice.delta } else { $null }
+    
+    $item = @{
+        id = "sh_" + ([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) + "_" + (Get-Random -Minimum 100 -Maximum 999)
+        timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+        timeStr = (Get-Date -Format "HH:mm:ss")
+        username = $cleanUser
+        avatar = $cleanAvatar
+        spinnerName = $cleanSpName
+        spinnerId = $cleanSpId
+        sliceId = if ($slice -and $slice.id) { [string]$slice.id } else { "" }
+        label = $lbl
+        delta = $deltaVal
+        actionType = if ($slice -and $slice.actionType) { [string]$slice.actionType } else { "plant" }
+        rarity = if ($slice -and $slice.rarity) { [string]$slice.rarity } else { "Normal" }
+        color = if ($slice -and $slice.color) { [string]$slice.color } else { "#10b981" }
+        icon = if ($slice -and ($slice.unitIcon -or $slice.icon)) { [string]($slice.unitIcon -or $slice.icon) } else { "" }
+        isNumber = [bool]$isNum
+    }
+    
+    $existing = if ($script:spinnerHistory.history) { @($script:spinnerHistory.history) } else { @() }
+    $combined = @($item) + $existing
+    if ($combined.Count -gt 40) {
+        $combined = $combined[0..39]
+    }
+    $script:spinnerHistory.history = $combined
+    Save-SpinnerHistory $script:spinnerHistory
+    
+    AddEventLog @{
+        type = "spinner_history_update"
+        item = $item
+        history = $combined
+        enabled = [bool]$script:spinnerHistory.enabled
+    }
+    return $item
+}
+
 function LoadConfig {
     if (Test-Path $configFile) {
         try {
@@ -1213,6 +1288,15 @@ while ($true) {
                 $action = if ($data.action) { [string]$data.action } else { "" }
                 $delta = if ($data.delta -ne $null) { [int]$data.delta } else { 0 }
 
+                # Server-side 350ms debounce: prevent double point increments from duplicate listeners/shortcuts
+                $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                if ($action -and $script:lastWinAdjustAction -eq $action -and ($nowMs - $script:lastWinAdjustTime) -lt 350) {
+                    Send-JsonResponse $response (Load-WinWidget)
+                    continue
+                }
+                $script:lastWinAdjustTime = $nowMs
+                $script:lastWinAdjustAction = $action
+
                 switch ($action) {
                     "win" {
                         $cur.wins = [int]$cur.wins + 1
@@ -1276,8 +1360,46 @@ while ($true) {
             continue
         }
 
+        # 6b. Spinner History Endpoints (GET, toggle, clear)
+        if ($reqPath -eq '/api/spinner-history') {
+            if ($request.HttpMethod -eq 'GET') {
+                if (-not $script:spinnerHistory) { $script:spinnerHistory = Load-SpinnerHistory }
+                Send-JsonResponse $response $script:spinnerHistory
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/spinner-history/toggle' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            if (-not $script:spinnerHistory) { $script:spinnerHistory = Load-SpinnerHistory }
+            try {
+                $data = $body | ConvertFrom-Json
+                if ($data.enabled -ne $null) {
+                    $script:spinnerHistory.enabled = [bool]$data.enabled
+                } else {
+                    $script:spinnerHistory.enabled = -not [bool]$script:spinnerHistory.enabled
+                }
+                Save-SpinnerHistory $script:spinnerHistory
+                AddEventLog @{ type = "spinner_history_update"; enabled = [bool]$script:spinnerHistory.enabled; history = $script:spinnerHistory.history }
+                Send-JsonResponse $response $script:spinnerHistory
+            } catch {
+                Send-JsonResponse $response $script:spinnerHistory
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/spinner-history/clear' -and $request.HttpMethod -eq 'POST') {
+            if (-not $script:spinnerHistory) { $script:spinnerHistory = Load-SpinnerHistory }
+            $script:spinnerHistory.history = @()
+            Save-SpinnerHistory $script:spinnerHistory
+            AddEventLog @{ type = "spinner_history_update"; history = @(); enabled = [bool]$script:spinnerHistory.enabled }
+            Send-JsonResponse $response $script:spinnerHistory
+            continue
+        }
+
         # 7. Spin Lucky Wheel / Reel (Multi-Spinner Support)
         if ($reqPath -eq '/api/spin') {
+            if ($request.HttpMethod -eq 'POST') { [void](ReadRequestBody $request) }
             $config = LoadConfig
             $spinnerId = $request.QueryString['spinnerId']
             $groupId = $request.QueryString['groupId']
@@ -1318,7 +1440,8 @@ while ($true) {
                 if (-not $pickedSlice) { $pickedSlice = $slices[0] }
             }
 
-            $username = if ($request.QueryString['username']) { $request.QueryString['username'] } else { "LuckyWinner" }
+            $username = if ($request.QueryString['username']) { $request.QueryString['username'] } elseif ($request.QueryString['user']) { $request.QueryString['user'] } else { "User" }
+            $avatar = if ($request.QueryString['avatar']) { $request.QueryString['avatar'] } else { "images/default_avatar.svg" }
             $noGame = ($request.QueryString['noGameTrigger'] -eq 'true')
             
             $exec = @{ success = $true }
@@ -1333,14 +1456,18 @@ while ($true) {
                 }
             }
 
-            # If slice has positive/negative numerical value or unit win, auto-update Win Widget!
+            # If slice has positive/negative numerical value or unit win, auto-update Win Widget & Dual Cards!
             $deltaVal = 0
             if ($pickedSlice.delta -ne $null) {
                 $deltaVal = [int]$pickedSlice.delta
             } elseif ($pickedSlice.value -ne $null) {
                 $deltaVal = [int]$pickedSlice.value
-            } elseif ($pickedSlice.label -match '([+-]?\d+)') {
-                $deltaVal = [int]$matches[1]
+            } elseif ($pickedSlice.actionType -eq "score" -and $pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                $deltaVal = $sign * [int]$matches[2]
+            } elseif ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                $deltaVal = $sign * [int]$matches[2]
             } elseif ($pickedSlice.actionType -eq "zombie" -or ($targetSpinner -and $targetSpinner.name -match "zombie")) {
                 $deltaVal = -1
             } else {
@@ -1373,6 +1500,10 @@ while ($true) {
             }
             AddEventLog $logEntry
 
+            # Record in Spinner History system
+            $targetSpinnerId = if ($targetSpinner -and $targetSpinner.id) { [string]$targetSpinner.id } else { "1" }
+            Add-SpinnerHistoryRecord $username $avatar $pickedSlice $spName $targetSpinnerId
+
             $resObj = @{
                 status = "ok"
                 winner = $pickedSlice
@@ -1380,10 +1511,7 @@ while ($true) {
                 gameExecuted = $exec.success
                 winWidgetScore = $script:winWidget.score
             }
-            $bytes = [System.Text.Encoding]::UTF8.GetBytes(($resObj | ConvertTo-Json -Depth 6))
-            $response.ContentType = 'application/json; charset=utf-8'
-            $response.OutputStream.Write($bytes, 0, $bytes.Length)
-            $response.Close()
+            Send-JsonResponse $response $resObj
             continue
         }
 
@@ -1400,7 +1528,8 @@ while ($true) {
                     $giftName = $payload.giftName
                     $giftId = $payload.giftId
                     $repeatCount = if ($payload.repeatCount) { [int]$payload.repeatCount } else { 1 }
-                    $user = if ($payload.username) { $payload.username } else { "Gifter" }
+                    $user = if ($payload.username) { $payload.username } elseif ($payload.nickname) { $payload.nickname } else { "User" }
+                    $avatar = if ($payload.profilePictureUrl) { $payload.profilePictureUrl } elseif ($payload.avatar) { $payload.avatar } elseif ($payload.avatarUrl) { $payload.avatarUrl } else { "images/default_avatar.svg" }
                     $icon = if ($payload.giftPictureUrl) { $payload.giftPictureUrl } else { "" }
 
                     # 1. Check if gift matches a multi-spinner trigger
@@ -1502,6 +1631,7 @@ while ($true) {
                             icon = if ($matchedSpinner.giftIcon) { $matchedSpinner.giftIcon } else { $icon }
                             success = $true
                         }
+                        Add-SpinnerHistoryRecord $user $avatar $picked $spName $matchedSpinner.id
                         Send-JsonResponse $response @{ status = "ok"; type = "spin_result"; spinner = $spName }
                         continue
                     }
@@ -1568,8 +1698,28 @@ while ($true) {
                                 $spDelay = if ($picked.delay) { [int]$picked.delay } else { 0 }
                                 $spInterval = if ($picked.interval) { [int]$picked.interval } else { 100 }
                                 $spHide = ($picked.hideInOverlay -eq $true -or $picked.hideInOverlay -eq "true")
-                                SendToPvZGame $picked.actionType $picked.command $picked.amount $user "" $spReps $spDelay $spInterval | Out-Null
+                                if ($picked.actionType -and $picked.actionType -ne "score" -and $picked.command) {
+                                    SendToPvZGame $picked.actionType $picked.command $picked.amount $user "" $spReps $spDelay $spInterval | Out-Null
+                                }
+
+                                # Update Win Widget score and WIN/LOSE dual cards on TikTok gift spin!
+                                $tkDelta = 0
+                                if ($picked.delta -ne $null) {
+                                    $tkDelta = [int]$picked.delta
+                                } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                    $tkSign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                    $tkDelta = $tkSign * [int]$matches[2]
+                                } elseif ($picked.actionType -eq "zombie") {
+                                    $tkDelta = -1
+                                } else {
+                                    $tkDelta = 1
+                                }
+                                if ($tkDelta -ne 0) {
+                                    Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
+                                }
+
                                 AddEventLog @{ type = "spin_result"; label = "Lucky Wheel: $($picked.label)"; username = $user; slice = $picked; icon = $icon; hideInOverlay = $spHide }
+                                Add-SpinnerHistoryRecord $user $avatar $picked "Lucky Wheel" "wheel"
                             }
                         } else {
                             $totalAmt = [int]$matchedGift.amount

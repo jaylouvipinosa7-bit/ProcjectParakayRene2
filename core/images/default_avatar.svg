@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="coatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#bgGrad)" stroke="#38bdf8" stroke-width="2"/>
+  
+  <!-- Coat / Shoulders -->
+  <path d="M22 88 Q50 68 78 88 L85 96 L15 96 Z" fill="url(#coatGrad)"/>
+  <path d="M36 78 Q50 68 64 78 L58 96 L42 96 Z" fill="#991b1b"/>
+  <path d="M46 76 L54 76 L50 90 Z" fill="#f59e0b"/>
+
+  <!-- Neck & Face -->
+  <circle cx="50" cy="52" r="18" fill="#fbcfe8"/>
+  <path d="M44 56 Q50 62 56 56" stroke="#9d174d" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Goggles / Cyber Eye -->
+  <circle cx="43" cy="49" r="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <circle cx="43" cy="49" r="3" fill="#38bdf8"/>
+  <circle cx="57" cy="49" r="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+  <circle cx="57" cy="49" r="3" fill="#f59e0b"/>
+  <line x1="49" y1="49" x2="51" y2="49" stroke="#cbd5e1" stroke-width="2"/>
+
+  <!-- Hair / Scarf tufts -->
+  <path d="M30 52 Q26 62 34 68 Q40 58 35 52 Z" fill="#e2e8f0"/>
+  <path d="M70 52 Q74 62 66 68 Q60 58 65 52 Z" fill="#e2e8f0"/>
+
+  <!-- Fedora / Adventurer Hat -->
+  <!-- Brim -->
+  <ellipse cx="50" cy="40" rx="36" ry="10" fill="url(#hatGrad)" stroke="#64748b" stroke-width="1.5"/>
+  <!-- Crown -->
+  <path d="M26 38 Q30 18 50 16 Q70 18 74 38 Z" fill="url(#hatGrad)"/>
+  <path d="M38 18 Q50 24 62 18" stroke="#0f172a" stroke-width="2.5" fill="none"/>
+  <!-- Hat Band -->
+  <path d="M26 36 Q50 42 74 36 L74 39 Q50 45 26 39 Z" fill="#f59e0b"/>
+  <!-- Hat Feather / Badge -->
+  <path d="M64 36 Q74 24 72 20 Q66 26 64 36 Z" fill="#38bdf8"/>
+</svg>

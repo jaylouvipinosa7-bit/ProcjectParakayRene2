@@ -2455,10 +2455,103 @@
             gap: 5px;
             transition: all 0.15s ease;
         }
-        .btn-change-trigger:hover {
-            background: #30363d;
+        /* ==================== DUAL CARDS POP & FLASH ANIMATIONS ==================== */
+        @keyframes flashLoseAnim {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+            35% { transform: scale(1.06); box-shadow: 0 0 26px rgba(239, 68, 68, 0.85), inset 0 0 15px rgba(239, 68, 68, 0.4); border-color: #ef4444 !important; }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        @keyframes flashWinAnim {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+            35% { transform: scale(1.06); box-shadow: 0 0 26px rgba(16, 185, 129, 0.85), inset 0 0 15px rgba(16, 185, 129, 0.4); border-color: #10b981 !important; }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .card-flash-lose {
+            animation: flashLoseAnim 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .card-flash-win {
+            animation: flashWinAnim 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* ==================== NUMBER CARD MODAL STYLES ==================== */
+        .num-sign-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .num-sign-btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(22, 27, 34, 0.8);
+            color: #8b949e;
+        }
+        .num-sign-btn.active-pos {
+            background: rgba(16, 185, 129, 0.18);
+            border-color: #10b981;
+            color: #34d399;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+        }
+        .num-sign-btn.active-neg {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: #ef4444;
+            color: #f87171;
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+        }
+        .num-preset-chip {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 800;
+            background: rgba(13, 17, 23, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #c9d1d9;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .num-preset-chip:hover {
+            transform: translateY(-2px);
+            border-color: #38bdf8;
             color: #ffffff;
-            border-color: #58a6ff;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+        .num-preset-chip.chip-pos {
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+        .num-preset-chip.chip-pos:hover {
+            border-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+        .num-preset-chip.chip-neg {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+        .num-preset-chip.chip-neg:hover {
+            border-color: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+        .color-preset-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-preset-dot:hover, .color-preset-dot.active {
+            transform: scale(1.22);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px currentColor;
         }
 
         /* ==================== OVERLAY BARS ==================== */
@@ -3533,8 +3626,11 @@
                     <span style="font-size: 15px; font-weight: 800; color: #ffffff;">Currently Selected Pool:</span>
                     <span class="pill" id="activeSpinnerPill" style="font-size: 12px; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">Spinner (Plants - GroupId: 5)</span>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="openAddSliceModal()">+ Add Prize Card to Active Pool</button>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-sm" onclick="openAddNumberSliceModal()" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(239, 68, 68, 0.25) 100%); color: #ffffff; border: 1.5px solid rgba(56, 189, 248, 0.5); font-weight: 800; border-radius: 6px; padding: 6px 14px; cursor: pointer; box-shadow: 0 0 12px rgba(56,189,248,0.25);">
+                        🔢 + Add Number Card (+ / −)
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openAddSliceModal()">+ Add Game Command Card</button>
                 </div>
             </div>
 
@@ -3582,17 +3678,51 @@
                         <h3 style="font-size: 16px; font-weight: 800;">Prize Cards & Rarity Pool</h3>
                         <div id="spinnerPoolSummary" style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">8 Cards Configured | Total Weight: 100</div>
                     </div>
-                    <div style="display: flex; gap: 6px; font-size: 11px; font-weight: 700;">
-                        <span class="pill" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">Mythic</span>
-                        <span class="pill" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">Legendary</span>
-                        <span class="pill" style="background: rgba(168, 85, 247, 0.2); color: #a855f7; border-color: rgba(168, 85, 247, 0.4);">Epic</span>
-                        <span class="pill" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border-color: rgba(59, 130, 246, 0.4);">Rare</span>
-                        <span class="pill" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8; border-color: rgba(148, 163, 184, 0.4);">Normal</span>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-sm" onclick="openAddNumberSliceModal()" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%); color: #ffffff; border: 1.5px solid rgba(56, 189, 248, 0.5); font-weight: 800; border-radius: 6px; padding: 4px 12px; cursor: pointer;">
+                            🔢 + Add Number (+ / −)
+                        </button>
+                        <div style="display: flex; gap: 6px; font-size: 11px; font-weight: 700;">
+                            <span class="pill" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">Mythic</span>
+                            <span class="pill" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">Legendary</span>
+                            <span class="pill" style="background: rgba(168, 85, 247, 0.2); color: #a855f7; border-color: rgba(168, 85, 247, 0.4);">Epic</span>
+                            <span class="pill" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border-color: rgba(59, 130, 246, 0.4);">Rare</span>
+                            <span class="pill" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8; border-color: rgba(148, 163, 184, 0.4);">Normal</span>
+                        </div>
                     </div>
                 </div>
 
                 <div id="spinnerSlicesGrid" class="spinner-slices-grid">
                     <!-- Slices rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- SPINNER HISTORY SECTION (MATCHES USER PHOTO) -->
+            <div style="background: var(--bg-surface); border: 1.5px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; margin-top: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="images/spinner_wheel_icon.svg" style="width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));" alt="Wheel" onerror="this.src='favicon.ico'">
+                        <div>
+                            <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; margin: 0;">Spinner History</h3>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Real-time record of users and their won prizes (both point and plant/zombies spinners)</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="copySpinnerHistoryOverlayUrl()" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); font-weight: 700;">
+                            🔗 Copy OBS Overlay URL
+                        </button>
+                        <button type="button" class="btn btn-sm" onclick="clearSpinnerHistory()" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);">
+                            Clear History
+                        </button>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 5px 10px; border-radius: 8px;">
+                            <input type="checkbox" id="chkSpinnerHistoryEnabled" checked onchange="toggleSpinnerHistoryEnabled(this.checked)" style="width: 16px; height: 16px; accent-color: #2563eb; cursor: pointer;">
+                            <span>Active in Overlay</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="dashSpinnerHistoryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+                    <div style="color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1/-1;">Waiting for spins...</div>
                 </div>
             </div>
         </div>
@@ -3842,6 +3972,143 @@
                 <div style="display: flex; gap: 8px; margin-left: auto;">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="closeGiftModal()">Cancel</button>
                     <button type="button" class="btn-cmd-save-green" onclick="saveGiftModal()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUMBER PRIZE CARD EDIT / ADD (+ / - SYSTEM) -->
+    <div id="numberSliceModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 580px; background: #161b22; border: 1.5px solid #30363d; border-radius: 16px; padding: 22px;">
+            <div class="modal-header" style="padding: 0 0 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: transparent;">
+                <div>
+                    <h3 id="numberModalTitle" style="font-size: 17px; font-weight: 800; color: #ffffff;">Add / Edit Number Card (+ / −)</h3>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Customize score addition (+) or subtraction (−) for spins, with glowing badges</div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closeNumberSliceModal()" style="padding: 4px 8px;">✕</button>
+            </div>
+
+            <div class="modal-body" style="padding: 16px 0;">
+                <!-- LIVE CARD PREVIEW -->
+                <div style="background: rgba(13, 17, 23, 0.85); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-around; gap: 14px; margin-bottom: 16px;">
+                    <div style="font-size: 12px; color: var(--text-secondary); font-weight: 700;">
+                        Live Card Preview:
+                        <div id="numberLiveChance" style="font-size: 11px; color: #38bdf8; margin-top: 4px; font-weight: 800;">Chance: 10.0% (Weight: 10)</div>
+                    </div>
+                    <!-- The Reel Card Preview -->
+                    <div id="numberPreviewReelCard" class="s2e-reel-card rarity-normal" style="pointer-events: none; transform: scale(1.05); min-width: 110px; width: 110px; height: 135px; border-radius: 10px; border: 2px solid #10b981; box-shadow: 0 0 16px rgba(16,185,129,0.35);">
+                        <div class="card-glow-bg" id="numberPreviewGlowBg" style="background: radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%);"></div>
+                        <span id="numberPreviewRarityTag" class="rarity-tag" style="border-color: #10b981; color: #10b981;">Normal</span>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;">
+                            <div id="numberPreviewDisplayBig" style="font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 900; color: #10b981; text-shadow: 0 0 14px #10b981; line-height: 1;">+15</div>
+                            <div id="numberPreviewTypeTag" style="font-size: 11px; font-weight: 800; color: #34d399; margin-top: 6px; letter-spacing: 0.5px;">🌿 WIN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1. SIGN TOGGLE: + WIN vs - LOSE -->
+                <div style="margin-bottom: 14px;">
+                    <label class="form-label">Number Type</label>
+                    <div class="num-sign-toggle">
+                        <button type="button" id="btnSignPos" class="num-sign-btn active-pos" onclick="setNumberSign(true)">
+                            <span style="font-size: 18px;">+</span>
+                            <span>Positive / WIN (+)</span>
+                        </button>
+                        <button type="button" id="btnSignNeg" class="num-sign-btn" onclick="setNumberSign(false)">
+                            <span style="font-size: 18px;">−</span>
+                            <span>Negative / LOSE (−)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. VALUE INPUT & QUICK PRESET CHIPS -->
+                <div style="margin-bottom: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label class="form-label" style="margin-bottom: 0;">Number Value</label>
+                        <span style="font-size: 11px; color: var(--text-muted);">Type any number or click a quick preset below</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                        <span id="numberSignPrefix" style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900; color: #10b981;">+</span>
+                        <input type="number" id="numberValInput" class="form-input" value="15" min="1" max="99999" oninput="updateNumberSlicePreview()" style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; color: #ffffff; padding: 6px 12px;">
+                    </div>
+
+                    <!-- Quick Preset Chips for Positive Numbers -->
+                    <div id="quickPresetsPos" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
+                        <span style="font-size: 10.5px; color: #8b949e; width: 100%; font-weight: 700; margin-bottom: 2px;">Popular Positive Presets:</span>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(1, true, 'Normal', '#10b981')">+1</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(2, true, 'Normal', '#f59e0b')">+2</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(3, true, 'Normal', '#10b981')">+3</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(5, true, 'Rare', '#a855f7')">+5</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(10, true, 'Epic', '#f43f5e')">+10</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(15, true, 'Epic', '#10b981')">+15</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(20, true, 'Epic', '#eab308')">+20</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(25, true, 'Epic', '#10b981')">+25</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(30, true, 'Epic', '#06b6d4')">+30</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(50, true, 'Legendary', '#22c55e')">+50</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(100, true, 'Mythic', '#ef4444')">+100</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(200, true, 'Mythic', '#ef4444')">+200</button>
+                        <button type="button" class="num-preset-chip chip-pos" onclick="setNumberQuickPreset(500, true, 'Mythic', '#ef4444')">+500</button>
+                    </div>
+
+                    <!-- Quick Preset Chips for Negative Numbers -->
+                    <div id="quickPresetsNeg" style="display: none; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;">
+                        <span style="font-size: 10.5px; color: #8b949e; width: 100%; font-weight: 700; margin-bottom: 2px;">Popular Negative Presets:</span>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(1, false, 'Normal', '#f97316')">−1</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(2, false, 'Normal', '#f97316')">−2</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(3, false, 'Normal', '#f97316')">−3</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(5, false, 'Rare', '#d946ef')">−5</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(10, false, 'Epic', '#ef4444')">−10</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(15, false, 'Epic', '#ef4444')">−15</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(20, false, 'Epic', '#f59e0b')">−20</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(25, false, 'Epic', '#f59e0b')">−25</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(30, false, 'Epic', '#ec4899')">−30</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(50, false, 'Legendary', '#06b6d4')">−50</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(100, false, 'Mythic', '#ec4899')">−100</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(200, false, 'Mythic', '#ec4899')">−200</button>
+                        <button type="button" class="num-preset-chip chip-neg" onclick="setNumberQuickPreset(500, false, 'Mythic', '#ec4899')">−500</button>
+                    </div>
+                </div>
+
+                <!-- 3. RARITY & PROBABILITY WEIGHT -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                    <div>
+                        <label class="form-label">Rarity Tier</label>
+                        <select id="numberRaritySelect" class="form-select" onchange="updateNumberSlicePreview()">
+                            <option value="Normal">Normal</option>
+                            <option value="Rare">Rare</option>
+                            <option value="Epic">Epic</option>
+                            <option value="Legendary">Legendary</option>
+                            <option value="Mythic">Mythic</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Probability Weight</label>
+                        <input type="number" id="numberWeightInput" class="form-input" value="10" min="1" max="1000" oninput="updateNumberSlicePreview()">
+                    </div>
+                </div>
+
+                <!-- 4. NEON COLOR SELECTOR -->
+                <div style="margin-bottom: 14px;">
+                    <label class="form-label">Neon Glow Color</label>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div class="color-preset-dot" style="background: #10b981;" onclick="setNumberColor('#10b981')" title="Emerald Green"></div>
+                        <div class="color-preset-dot" style="background: #ef4444;" onclick="setNumberColor('#ef4444')" title="Crimson Red"></div>
+                        <div class="color-preset-dot" style="background: #f43f5e;" onclick="setNumberColor('#f43f5e')" title="Rose"></div>
+                        <div class="color-preset-dot" style="background: #f59e0b;" onclick="setNumberColor('#f59e0b')" title="Gold / Amber"></div>
+                        <div class="color-preset-dot" style="background: #a855f7;" onclick="setNumberColor('#a855f7')" title="Purple"></div>
+                        <div class="color-preset-dot" style="background: #06b6d4;" onclick="setNumberColor('#06b6d4')" title="Cyan / Ice"></div>
+                        <div class="color-preset-dot" style="background: #ec4899;" onclick="setNumberColor('#ec4899')" title="Neon Pink"></div>
+                        <div class="color-preset-dot" style="background: #84cc16;" onclick="setNumberColor('#84cc16')" title="Lime"></div>
+                        <input type="color" id="numberCustomColorPicker" value="#10b981" onchange="setNumberColor(this.value)" style="width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; cursor: pointer;" title="Custom Color">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 14px 0 0 0; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; background: transparent;">
+                <button type="button" id="btnDeleteNumberSlice" class="btn btn-danger btn-sm" onclick="deleteNumberSliceModal()" style="display: none;">Delete Card</button>
+                <div style="display: flex; gap: 8px; margin-left: auto;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="closeNumberSliceModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveNumberSliceModal()" style="font-weight: 800; background: #238636; border-color: #2ea043;">Save Number Card</button>
                 </div>
             </div>
         </div>
@@ -5049,6 +5316,7 @@
             await initWinWidget();
             startPollingStatus();
             startPollingEvents();
+            fetchSpinnerHistory();
         });
 
         // Tab Switching
@@ -5066,6 +5334,7 @@
                 setTimeout(() => {
                     renderSpinnerStudio();
                     fetchWinWidget();
+                    fetchSpinnerHistory();
                 }, 50);
             }
         }
@@ -5371,6 +5640,9 @@
                             if (ev.type === 'win_widget_update') {
                                 renderWinWidgetData(ev);
                             }
+                            if (ev.type === 'spinner_history_update' || ev.type === 'spin_result') {
+                                fetchSpinnerHistory();
+                            }
                             const item = document.createElement('span');
                             item.className = 'log-item';
                             item.innerText = `${ev.username || 'System'}: ${ev.label || ev.reason || 'Update'} (x${ev.amount || 1})`;
@@ -5383,6 +5655,106 @@
                 } catch {}
             }
             setInterval(checkEvents, 1000);
+        }
+
+        // ==================== SPINNER HISTORY DASHBOARD SYSTEM ====================
+        let spinnerHistoryList = [];
+
+        async function fetchSpinnerHistory() {
+            try {
+                const res = await fetch('/api/spinner-history?t=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.enabled !== undefined) {
+                        const chk = document.getElementById('chkSpinnerHistoryEnabled');
+                        if (chk) chk.checked = data.enabled !== false;
+                    }
+                    if (Array.isArray(data.history)) {
+                        spinnerHistoryList = data.history;
+                        renderDashboardSpinnerHistory(spinnerHistoryList);
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function renderDashboardSpinnerHistory(list) {
+            const grid = document.getElementById('dashSpinnerHistoryGrid');
+            if (!grid) return;
+
+            if (!Array.isArray(list) || list.length === 0) {
+                grid.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1/-1;">Waiting for spins... (TikTok gifts or test spins will appear here!)</div>';
+                return;
+            }
+
+            let html = '';
+            list.slice(0, 12).forEach((item) => {
+                const username = escapeHtml(item.username || 'User');
+                const avatar = item.avatar || 'images/default_avatar.svg';
+                const isNumber = (item.isNumber === true || item.actionType === 'score' || item.delta !== null || /^[+-]?\s*\d+$/.test(item.label || ''));
+                
+                let prizeHtml = '';
+                if (isNumber) {
+                    const rawLabel = (item.label || '10').trim();
+                    const color = item.color || '#ff007f';
+                    prizeHtml = `<div style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; color: ${color}; text-shadow: 0 0 12px ${color}; line-height: 1;">${rawLabel}</div>`;
+                } else {
+                    const icon = item.icon || 'images/func_2.png';
+                    prizeHtml = `<img src="${icon}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${item.label}" onerror="this.src='images/func_2.png'">`;
+                }
+
+                html += `
+                    <div style="background: rgba(18, 22, 34, 0.94); border: 1.5px solid #30363d; border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.6);">
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%); border-top-left-radius: 12px; border-bottom-left-radius: 12px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);"></div>
+                        <div style="display: flex; align-items: center; gap: 10px; min-width: 0; padding-left: 4px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25); background: #0d1117; overflow: hidden; flex-shrink: 0;">
+                                <img src="${avatar}" style="width: 100%; height: 100%; object-fit: cover;" alt="${username}" onerror="this.src='images/default_avatar.svg'">
+                            </div>
+                            <div style="min-width: 0;">
+                                <div style="font-size: 14px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${username}</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">${item.spinnerName || 'Spinner'} • ${item.timeStr || 'Just now'}</div>
+                            </div>
+                        </div>
+                        <div style="width: 44px; height: 44px; border-radius: 9px; background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; padding: 2px;">
+                            ${prizeHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        async function toggleSpinnerHistoryEnabled(checked) {
+            try {
+                const res = await fetch('/api/spinner-history/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: !!checked })
+                });
+                if (res.ok) {
+                    showToast(`Spinner History overlay ${checked ? 'enabled' : 'hidden'}!`);
+                }
+            } catch (err) {}
+        }
+
+        async function clearSpinnerHistory() {
+            if (!confirm("Are you sure you want to clear the spinner history log?")) return;
+            try {
+                const res = await fetch('/api/spinner-history/clear', { method: 'POST' });
+                if (res.ok) {
+                    spinnerHistoryList = [];
+                    renderDashboardSpinnerHistory([]);
+                    showToast("Spinner history cleared!", "OK");
+                }
+            } catch (err) {}
+        }
+
+        function copySpinnerHistoryOverlayUrl() {
+            const url = `${window.location.origin}/overlay-spinner-history.html`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast("Spinner History Overlay URL copied to clipboard!", "OK");
+            }).catch(() => {
+                prompt("Copy this URL for OBS Browser Source:", url);
+            });
         }
 
         // ==================== LUCKY WHEEL & REEL STUDIO ====================
@@ -5459,19 +5831,79 @@
             }
         }
 
+        let prevWinLosses = null;
+        let prevWinWins = null;
+
+        function flashLoseCard() {
+            const el1 = document.getElementById('dashLoseCounter')?.parentElement;
+            const el2 = document.getElementById('winWidgetLossesDisplay')?.parentElement;
+            [el1, el2].forEach(el => {
+                if (!el) return;
+                el.classList.remove('card-flash-lose');
+                void el.offsetWidth;
+                el.classList.add('card-flash-lose');
+            });
+        }
+
+        function flashWinCard() {
+            const el1 = document.getElementById('dashWinCounter')?.parentElement;
+            const el2 = document.getElementById('winWidgetWinsDisplay')?.parentElement;
+            [el1, el2].forEach(el => {
+                if (!el) return;
+                el.classList.remove('card-flash-win');
+                void el.offsetWidth;
+                el.classList.add('card-flash-win');
+            });
+        }
+
+        async function updateWinScoreFromInput() {
+            const input = document.getElementById('dashScoreInput');
+            const val = parseInt(input ? input.value : 0) || 0;
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score: val })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Score updated to ${val}!`);
+                }
+            } catch (err) {
+                console.error('updateWinScore error:', err);
+            }
+        }
+
         function renderWinWidgetData(data) {
             if (!data) return;
             winWidgetState = { ...winWidgetState, ...data };
 
-            // Update displays
-            const lossesEl = document.getElementById('winWidgetLossesDisplay');
-            if (lossesEl) lossesEl.innerText = winWidgetState.losses ?? 0;
-
-            const winsEl = document.getElementById('winWidgetWinsDisplay');
-            if (winsEl) winsEl.innerText = winWidgetState.wins ?? 0;
-
+            const losses = winWidgetState.losses ?? 0;
+            const wins = winWidgetState.wins ?? 0;
             const sc = winWidgetState.score ?? 0;
             const tg = winWidgetState.target ?? 5;
+
+            // Update displays on dual cards & panels
+            const lossesEl = document.getElementById('winWidgetLossesDisplay');
+            if (lossesEl) lossesEl.innerText = losses;
+            const dashLoseEl = document.getElementById('dashLoseCounter');
+            if (dashLoseEl) dashLoseEl.innerText = losses;
+
+            const winsEl = document.getElementById('winWidgetWinsDisplay');
+            if (winsEl) winsEl.innerText = wins;
+            const dashWinEl = document.getElementById('dashWinCounter');
+            if (dashWinEl) dashWinEl.innerText = wins;
+
+            // Flash card animations when count increases
+            if (prevWinLosses !== null && losses > prevWinLosses) {
+                flashLoseCard();
+            }
+            if (prevWinWins !== null && wins > prevWinWins) {
+                flashWinCard();
+            }
+            prevWinLosses = losses;
+            prevWinWins = wins;
 
             // Update Trophy Fraction Preview
             const dashFScore = document.getElementById('dashFractionScore');
@@ -5482,6 +5914,16 @@
             }
             if (dashFTarget) {
                 dashFTarget.innerText = tg;
+            }
+
+            const dashScoreInput = document.getElementById('dashScoreInput');
+            if (dashScoreInput && document.activeElement !== dashScoreInput) {
+                dashScoreInput.value = sc;
+            }
+
+            const dashTargetInput = document.getElementById('dashTargetInput');
+            if (dashTargetInput && document.activeElement !== dashTargetInput) {
+                dashTargetInput.value = tg;
             }
 
             const targetInput = document.getElementById('winWidgetTargetInput');
@@ -5611,6 +6053,9 @@
             });
         }
 
+        let lastHotkeyTime = 0;
+        let lastHotkeyAction = '';
+
         function setupWinWidgetHotkeys() {
             function handleWinHotkey(e) {
                 // Avoid capturing when typing inside input / textarea
@@ -5619,18 +6064,33 @@
 
                 const code = e.code || '';
                 const key = e.key || '';
+                const keyCode = e.keyCode || e.which || 0;
                 const alt = e.altKey;
 
-                const isMinus = code === 'Minus' || code === 'NumpadSubtract' || key === '-' || key === '_';
-                const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+';
-                const isBracketLeft = code === 'BracketLeft' || key === '[';
-                const isBracketRight = code === 'BracketRight' || key === ']';
+                // Minus indicators: Alt + '-' / Alt + '_' / NumpadSubtract / keyCodes 189 / 109, or '[' (keyCode 219)
+                const isMinus = code === 'Minus' || code === 'NumpadSubtract' || key === '-' || key === '_' || keyCode === 189 || keyCode === 109;
+                const isBracketLeft = code === 'BracketLeft' || key === '[' || keyCode === 219;
+
+                // Plus indicators: Alt + '=' / Alt + '+' / NumpadAdd / keyCodes 187 / 107, or ']' (keyCode 221)
+                const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+' || keyCode === 187 || keyCode === 107;
+                const isBracketRight = code === 'BracketRight' || key === ']' || keyCode === 221;
+
+                const now = Date.now();
+                const isElectron = window.navigator && window.navigator.userAgent && window.navigator.userAgent.includes('Electron');
 
                 // Alt + '-' OR '[' => LOSE / Score -1
                 if ((alt && isMinus) || isBracketLeft) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (alt && isElectron) {
+                        flashLoseCard();
+                        return; // Handled by Electron globalShortcut to prevent double points
+                    }
+                    if (lastHotkeyAction === 'lose_plus' && (now - lastHotkeyTime) < 350) return;
+                    lastHotkeyTime = now;
+                    lastHotkeyAction = 'lose_plus';
                     adjustWinWidget('lose_plus');
+                    flashLoseCard();
                     showToast("LOSE count & Score -1 (Alt + -)", "WARN");
                     return;
                 }
@@ -5639,15 +6099,32 @@
                 if ((alt && isEqual) || isBracketRight) {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (alt && isElectron) {
+                        flashWinCard();
+                        return; // Handled by Electron globalShortcut to prevent double points
+                    }
+                    if (lastHotkeyAction === 'win_plus' && (now - lastHotkeyTime) < 350) return;
+                    lastHotkeyTime = now;
+                    lastHotkeyAction = 'win_plus';
                     adjustWinWidget('win_plus');
+                    flashWinCard();
                     showToast("WIN count & Score +1 (Alt + =)", "OK");
                     return;
                 }
             }
 
-            window.addEventListener('keydown', handleWinHotkey, true);
-            document.addEventListener('keydown', handleWinHotkey, true);
+            // Suppress browser alt menu focus on Windows Chromium
+            window.addEventListener('keyup', (e) => {
+                if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
+                    e.preventDefault();
+                }
+            }, { capture: true, passive: false });
+
+            // Only attach once on window to prevent duplicate event dispatch
+            window.removeEventListener('keydown', handleWinHotkey, true);
+            window.addEventListener('keydown', handleWinHotkey, { capture: true, passive: false });
         }
+        setupWinWidgetHotkeys();
 
         // ==================== MULTI-SPINNER SYSTEM & DASHBOARD ====================
         let activeSpinnerId = 'spinner_1';
@@ -5868,7 +6345,27 @@
             for (let r = 0; r < repeatCount; r++) {
                 slices.forEach((slice) => {
                     const rarityClass = `rarity-${(slice.rarity || 'Normal').toLowerCase()}`;
-                    const imgUrl = slice.unitIcon || slice.icon || 'images/func_2.png';
+                    const isNumberCard = slice.actionType === 'score' || slice.delta !== undefined || /^([+-]?)\s*(\d+)$/.test(slice.label || '');
+                    let signedDelta = 1;
+                    if (slice.delta !== undefined) {
+                        signedDelta = Number(slice.delta);
+                    } else {
+                        const m = (slice.label || '').match(/^([+-]?)\s*(\d+)$/);
+                        if (m) {
+                            signedDelta = (m[1] === '-' ? -1 : 1) * parseInt(m[2]);
+                        }
+                    }
+
+                    let imgUrl = slice.unitIcon || slice.icon;
+                    if (!imgUrl || isNumberCard) {
+                        imgUrl = getNumberIconPath(signedDelta, slice.color);
+                    }
+                    if (!imgUrl) imgUrl = 'images/func_2.png';
+
+                    const amountText = isNumberCard
+                        ? (signedDelta >= 0 ? '🌿 WIN' : '💀 LOSE')
+                        : `x${slice.amount || 1}`;
+
                     html += `
                         <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}">
                             <div class="card-glow-bg"></div>
@@ -5877,7 +6374,7 @@
                                 <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
                             </div>
                             <div class="card-title">${slice.label}</div>
-                            <div class="card-amount">x${slice.amount || 1}</div>
+                            <div class="card-amount">${amountText}</div>
                         </div>
                     `;
                 });
@@ -5904,7 +6401,28 @@
                 const chancePercent = totalWeight > 0 ? ((weight / totalWeight) * 100).toFixed(1) : 0;
                 const rarity = slice.rarity || 'Normal';
                 const rarityClass = `rarity-${rarity.toLowerCase()}`;
-                const imgUrl = slice.unitIcon || slice.icon || 'images/func_2.png';
+
+                const isNumberCard = slice.actionType === 'score' || slice.delta !== undefined || /^([+-]?)\s*(\d+)$/.test(slice.label || '');
+                let signedDelta = 1;
+                if (slice.delta !== undefined) {
+                    signedDelta = Number(slice.delta);
+                } else {
+                    const m = (slice.label || '').match(/^([+-]?)\s*(\d+)$/);
+                    if (m) {
+                        signedDelta = (m[1] === '-' ? -1 : 1) * parseInt(m[2]);
+                    }
+                }
+
+                let imgUrl = slice.unitIcon || slice.icon;
+                if (!imgUrl || isNumberCard) {
+                    imgUrl = getNumberIconPath(signedDelta, slice.color);
+                }
+                if (!imgUrl) imgUrl = 'images/func_2.png';
+
+                const editFn = isNumberCard ? `openEditNumberSliceModal('${slice.id}')` : `openEditSliceModal('${slice.id}')`;
+                const typeTag = isNumberCard
+                    ? (signedDelta >= 0 ? '<span style="color:#34d399;font-weight:800;font-size:10px;">🌿 WIN (+)</span>' : '<span style="color:#f87171;font-weight:800;font-size:10px;">💀 LOSE (−)</span>')
+                    : `<span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">x${slice.amount || 1}</span>`;
 
                 const card = document.createElement('div');
                 card.className = `spinner-slice-item ${rarityClass}`;
@@ -5917,7 +6435,7 @@
                         <div style="min-width: 0;">
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                                 <span class="rarity-tag" style="font-size: 9px; padding: 1px 6px; border-radius: 4px;">${rarity}</span>
-                                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">x${slice.amount || 1}</span>
+                                ${typeTag}
                             </div>
                             <div style="font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ffffff;">${slice.label}</div>
                             <div style="font-size: 10px; color: var(--pvz-gold); font-weight: 700; margin-top: 2px;">
@@ -5927,7 +6445,7 @@
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                        <button class="btn btn-secondary btn-sm" onclick="openEditSliceModal('${slice.id}')" style="padding: 4px 8px; font-size: 11px;">Edit</button>
+                        <button class="btn btn-secondary btn-sm" onclick="${editFn}" style="padding: 4px 8px; font-size: 11px;">Edit</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteSlice('${slice.id}')" style="padding: 4px 8px; font-size: 11px;">Del</button>
                     </div>
                 `;
@@ -6812,6 +7330,249 @@
             }
             closeAllCommandsPickerModal();
             showToast(`Selected: ${u.name}`);
+        }
+
+        // ==================== NUMBER PRIZE CARD MODAL (+ / − SYSTEM) ====================
+        let editingNumberSliceId = null;
+        let currentNumberIsPositive = true;
+        let currentNumberColor = '#10b981';
+
+        function getNumberIconPath(signedVal, color) {
+            const isPos = signedVal >= 0;
+            const absVal = Math.abs(signedVal);
+            const supportedList = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 200, 500, 1000];
+            if (supportedList.includes(absVal)) {
+                return isPos ? `images/numbers/num_pos_${absVal}.svg` : `images/numbers/num_neg_${absVal}.svg`;
+            }
+            const strokeColor = color || (isPos ? '#10b981' : '#ef4444');
+            const displayText = (isPos ? '+' : '−') + absVal;
+            const fontSize = displayText.length > 4 ? 26 : (displayText.length > 3 ? 32 : 40);
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><defs><filter id="g" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect x="6" y="6" width="88" height="88" rx="14" ry="14" fill="#0d1117" stroke="${strokeColor}" stroke-width="4" filter="url(#g)"/><rect x="10" y="10" width="80" height="80" rx="10" ry="10" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-opacity="0.5"/><text x="50" y="58" dominant-baseline="middle" text-anchor="middle" font-family="'Outfit',sans-serif" font-weight="900" font-size="${fontSize}" fill="${strokeColor}" filter="url(#g)">${displayText}</text></svg>`;
+            return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+        }
+
+        function openAddNumberSliceModal() {
+            editingNumberSliceId = null;
+            const titleEl = document.getElementById('numberModalTitle');
+            if (titleEl) titleEl.innerText = 'Add Number Card (+ / −)';
+            const delBtn = document.getElementById('btnDeleteNumberSlice');
+            if (delBtn) delBtn.style.display = 'none';
+
+            setNumberSign(true);
+            const valInput = document.getElementById('numberValInput');
+            if (valInput) valInput.value = 15;
+            const raritySelect = document.getElementById('numberRaritySelect');
+            if (raritySelect) raritySelect.value = 'Epic';
+            const weightInput = document.getElementById('numberWeightInput');
+            if (weightInput) weightInput.value = 10;
+            setNumberColor('#10b981');
+
+            updateNumberSlicePreview();
+            const modal = document.getElementById('numberSliceModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function openEditNumberSliceModal(id) {
+            const sp = getActiveSpinner();
+            if (!sp || !sp.slices) return;
+            const slice = sp.slices.find(s => s.id === id);
+            if (!slice) return;
+
+            editingNumberSliceId = id;
+            const titleEl = document.getElementById('numberModalTitle');
+            if (titleEl) titleEl.innerText = `Edit Number Card: ${slice.label}`;
+            const delBtn = document.getElementById('btnDeleteNumberSlice');
+            if (delBtn) delBtn.style.display = 'inline-block';
+
+            let delta = slice.delta !== undefined ? Number(slice.delta) : parseInt(slice.label);
+            if (isNaN(delta)) delta = 1;
+
+            const isPos = delta >= 0;
+            setNumberSign(isPos);
+            const valInput = document.getElementById('numberValInput');
+            if (valInput) valInput.value = Math.abs(delta);
+            const raritySelect = document.getElementById('numberRaritySelect');
+            if (raritySelect) raritySelect.value = slice.rarity || 'Normal';
+            const weightInput = document.getElementById('numberWeightInput');
+            if (weightInput) weightInput.value = slice.weight || 10;
+            setNumberColor(slice.color || (isPos ? '#10b981' : '#ef4444'));
+
+            updateNumberSlicePreview();
+            const modal = document.getElementById('numberSliceModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeNumberSliceModal() {
+            const modal = document.getElementById('numberSliceModal');
+            if (modal) modal.classList.remove('active');
+            editingNumberSliceId = null;
+        }
+
+        function setNumberSign(isPos) {
+            currentNumberIsPositive = isPos;
+            const btnPos = document.getElementById('btnSignPos');
+            const btnNeg = document.getElementById('btnSignNeg');
+            const pPos = document.getElementById('quickPresetsPos');
+            const pNeg = document.getElementById('quickPresetsNeg');
+            const prefix = document.getElementById('numberSignPrefix');
+
+            if (isPos) {
+                if (btnPos) btnPos.className = 'num-sign-btn active-pos';
+                if (btnNeg) btnNeg.className = 'num-sign-btn';
+                if (pPos) pPos.style.display = 'flex';
+                if (pNeg) pNeg.style.display = 'none';
+                if (prefix) {
+                    prefix.innerText = '+';
+                    prefix.style.color = '#10b981';
+                }
+                if (currentNumberColor === '#ef4444' || currentNumberColor === '#f97316') {
+                    setNumberColor('#10b981');
+                }
+            } else {
+                if (btnPos) btnPos.className = 'num-sign-btn';
+                if (btnNeg) btnNeg.className = 'num-sign-btn active-neg';
+                if (pPos) pPos.style.display = 'none';
+                if (pNeg) pNeg.style.display = 'flex';
+                if (prefix) {
+                    prefix.innerText = '−';
+                    prefix.style.color = '#ef4444';
+                }
+                if (currentNumberColor === '#10b981' || currentNumberColor === '#22c55e') {
+                    setNumberColor('#ef4444');
+                }
+            }
+            updateNumberSlicePreview();
+        }
+
+        function setNumberQuickPreset(num, isPos, rarity, color) {
+            setNumberSign(isPos);
+            const valInput = document.getElementById('numberValInput');
+            if (valInput) valInput.value = num;
+            if (rarity) {
+                const rSelect = document.getElementById('numberRaritySelect');
+                if (rSelect) rSelect.value = rarity;
+            }
+            if (color) setNumberColor(color);
+            updateNumberSlicePreview();
+        }
+
+        function setNumberColor(color) {
+            currentNumberColor = color;
+            const picker = document.getElementById('numberCustomColorPicker');
+            if (picker) picker.value = color;
+            updateNumberSlicePreview();
+        }
+
+        function updateNumberSlicePreview() {
+            const rawVal = parseInt(document.getElementById('numberValInput')?.value) || 1;
+            const absVal = Math.abs(rawVal);
+            const displayText = (currentNumberIsPositive ? '+' : '−') + absVal;
+            const rarity = document.getElementById('numberRaritySelect')?.value || 'Normal';
+            const weight = Math.max(1, parseInt(document.getElementById('numberWeightInput')?.value) || 10);
+            const color = currentNumberColor || (currentNumberIsPositive ? '#10b981' : '#ef4444');
+
+            const card = document.getElementById('numberPreviewReelCard');
+            const rarityTag = document.getElementById('numberPreviewRarityTag');
+            const displayBig = document.getElementById('numberPreviewDisplayBig');
+            const typeTag = document.getElementById('numberPreviewTypeTag');
+            const glowBg = document.getElementById('numberPreviewGlowBg');
+
+            if (card) {
+                card.className = `s2e-reel-card rarity-${rarity.toLowerCase()}`;
+                card.style.borderColor = color;
+                card.style.boxShadow = `0 0 18px ${color}55`;
+            }
+            if (glowBg) {
+                glowBg.style.background = `radial-gradient(circle, ${color}40 0%, transparent 70%)`;
+            }
+            if (rarityTag) {
+                rarityTag.innerText = rarity;
+                rarityTag.style.borderColor = color;
+                rarityTag.style.color = color;
+            }
+            if (displayBig) {
+                displayBig.innerText = displayText;
+                displayBig.style.color = color;
+                displayBig.style.textShadow = `0 0 16px ${color}`;
+                displayBig.style.fontSize = displayText.length > 4 ? '26px' : (displayText.length > 3 ? '32px' : '42px');
+            }
+            if (typeTag) {
+                typeTag.innerHTML = currentNumberIsPositive ? '🌿 WIN' : '💀 LOSE';
+                typeTag.style.color = currentNumberIsPositive ? '#34d399' : '#f87171';
+            }
+
+            const sp = getActiveSpinner();
+            const slices = sp ? sp.slices || [] : [];
+            let totalWeight = slices.filter(s => s.id !== editingNumberSliceId).reduce((sum, s) => sum + (Math.max(1, Number(s.weight) || 1)), 0) + weight;
+            const chance = totalWeight > 0 ? ((weight / totalWeight) * 100).toFixed(1) : '100.0';
+            const chanceEl = document.getElementById('numberLiveChance');
+            if (chanceEl) chanceEl.innerText = `Chance: ${chance}% (Weight: ${weight})`;
+        }
+
+        async function saveNumberSliceModal() {
+            const sp = getActiveSpinner();
+            if (!sp) {
+                showToast("No active spinner pool selected", "WARN");
+                return;
+            }
+            if (!sp.slices) sp.slices = [];
+
+            const rawVal = parseInt(document.getElementById('numberValInput')?.value) || 1;
+            const absVal = Math.abs(rawVal);
+            const signedDelta = currentNumberIsPositive ? absVal : -absVal;
+            const label = (currentNumberIsPositive ? '+' : '−') + absVal;
+            const rarity = document.getElementById('numberRaritySelect')?.value || 'Normal';
+            const weight = Math.max(1, parseInt(document.getElementById('numberWeightInput')?.value) || 10);
+            const color = currentNumberColor || (currentNumberIsPositive ? '#10b981' : '#ef4444');
+            const unitIcon = getNumberIconPath(signedDelta, color);
+
+            const sliceData = {
+                actionType: 'score',
+                delta: signedDelta,
+                label: label,
+                functionName: label,
+                amount: absVal,
+                rarity: rarity,
+                weight: weight,
+                color: color,
+                unitIcon: unitIcon,
+                icon: unitIcon,
+                command: signedDelta >= 0 ? `score_add_${absVal}` : `score_sub_${absVal}`,
+                hideInOverlay: false,
+                repetition: 1,
+                delay: 0,
+                interval: 100,
+                repetitionMultiplier: false
+            };
+
+            if (editingNumberSliceId) {
+                const idx = sp.slices.findIndex(s => s.id === editingNumberSliceId);
+                if (idx !== -1) {
+                    sp.slices[idx] = { ...sp.slices[idx], ...sliceData, id: editingNumberSliceId };
+                } else {
+                    sp.slices.push({ ...sliceData, id: editingNumberSliceId });
+                }
+            } else {
+                const newId = 'pm_' + Date.now();
+                sp.slices.push({ ...sliceData, id: newId });
+            }
+
+            closeNumberSliceModal();
+            renderSpinnerStudio();
+            await saveConfigToServer();
+            showToast(`Number Card ${label} saved successfully!`, "OK");
+        }
+
+        async function deleteNumberSliceModal() {
+            if (!editingNumberSliceId) return;
+            if (!confirm("Are you sure you want to delete this number card?")) return;
+            const sp = getActiveSpinner();
+            if (!sp || !sp.slices) return;
+            sp.slices = sp.slices.filter(s => s.id !== editingNumberSliceId);
+            closeNumberSliceModal();
+            renderSpinnerStudio();
+            await saveConfigToServer();
+            showToast("Number card deleted!", "WARN");
         }
 
         // ==================== SLICE MODAL DIALOGS ====================

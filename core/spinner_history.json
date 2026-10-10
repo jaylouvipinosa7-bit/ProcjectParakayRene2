@@ -1,0 +1,39 @@
+﻿{
+    "history":  [
+                    {
+                        "spinnerId":  "spinner_1",
+                        "id":  "sh_1791606924182_839",
+                        "username":  "ZombossHunter",
+                        "timestamp":  1791606924183,
+                        "avatar":  "images/default_avatar.svg",
+                        "rarity":  "Epic",
+                        "sliceId":  "s1_6",
+                        "timeStr":  "12:35:24",
+                        "isNumber":  false,
+                        "label":  "Charm All Zombies",
+                        "icon":  "True",
+                        "spinnerName":  "Spinner",
+                        "actionType":  "power",
+                        "color":  "#a855f7",
+                        "delta":  null
+                    },
+                    {
+                        "spinnerId":  "spinner_plusminus",
+                        "id":  "sh_1791606924126_993",
+                        "username":  "GohanViewer",
+                        "timestamp":  1791606924131,
+                        "avatar":  "images/default_avatar.svg",
+                        "rarity":  "Normal",
+                        "sliceId":  "pm_13",
+                        "timeStr":  "12:35:24",
+                        "isNumber":  true,
+                        "label":  "2",
+                        "icon":  "True",
+                        "spinnerName":  "Spinner",
+                        "actionType":  "score",
+                        "color":  "#f59e0b",
+                        "delta":  2
+                    }
+                ],
+    "enabled":  true
+}
