@@ -1563,6 +1563,7 @@ while ($true) {
                 pointerIcon = $spPointer
                 slices = $slices
                 username = $username
+                avatar = $avatar
                 hideInOverlay = $spHide
                 success = $exec.success
             }
@@ -1576,6 +1577,8 @@ while ($true) {
                 status = "ok"
                 winner = $pickedSlice
                 spinner = $targetSpinner
+                username = $username
+                avatar = $avatar
                 gameExecuted = $exec.success
                 winWidgetScore = $script:winWidget.score
             }
@@ -1786,7 +1789,7 @@ while ($true) {
                                     Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
                                 }
 
-                                AddEventLog @{ type = "spin_result"; label = "Lucky Wheel: $($picked.label)"; username = $user; slice = $picked; icon = $icon; hideInOverlay = $spHide }
+                                AddEventLog @{ type = "spin_result"; label = "Lucky Wheel: $($picked.label)"; username = $user; avatar = $avatar; slice = $picked; icon = $icon; hideInOverlay = $spHide }
                                 Add-SpinnerHistoryRecord $user $avatar $picked "Lucky Wheel" "wheel"
                             }
                         } else {

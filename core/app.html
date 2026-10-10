@@ -950,46 +950,90 @@
         }
         .rarity-normal .rarity-tag { color: #e2e8f0; background: rgba(148, 163, 184, 0.2); border: 1px solid rgba(148, 163, 184, 0.4); }
 
-        /* Center Marker Pointer */
+        /* Manual Editable Input for Dual LOSE / WIN Cards (Exact Match to Photo 1) */
+        .card-editable-input {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            color: #ffffff;
+            background: transparent;
+            border: none;
+            text-align: center;
+            width: 100%;
+            outline: none;
+            cursor: pointer;
+            -moz-appearance: textfield;
+            transition: all 0.15s ease;
+        }
+        .card-editable-input::-webkit-outer-spin-button,
+        .card-editable-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .card-editable-input:hover {
+            color: #38bdf8;
+        }
+        .card-editable-input:focus {
+            cursor: text;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+        }
+
+        /* Center Marker Pointer: Downward Yellow Triangle with Avatar (Exact Match to Photo 2) */
         .reel-pointer, .s2e-reel-pointer {
             position: absolute;
-            top: 0;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 25;
+            z-index: 35;
             display: flex;
             flex-direction: column;
             align-items: center;
             pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.95));
         }
 
-        .reel-pointer, .s2e-reel-pointer .pointer-badge {
-            width: 36px;
-            height: 36px;
+        .pointer-user-tag {
+            display: none;
+            background: rgba(13, 17, 23, 0.94);
+            color: #fbbf24;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.85);
+        }
+
+        .pointer-triangle-wrapper {
+            position: relative;
+            width: 48px;
+            height: 54px;
+        }
+
+        .pointer-avatar-circle {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 16px rgba(245, 158, 11, 0.85);
+            overflow: hidden;
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            background: #1e293b;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
-        .reel-pointer, .s2e-reel-pointer .pointer-badge img {
+        .pointer-avatar-circle img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .reel-pointer, .s2e-reel-pointer .pointer-triangle {
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 14px solid #f59e0b;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.85));
-            margin-top: -3px;
         }
 
         .reel-fade-left {
@@ -3245,10 +3289,12 @@
                             <span>LOSE</span>
                             <span>🌿</span>
                         </div>
-                        <div id="dashLoseCounter" style="font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 900; color: #ffffff; line-height: 1.1; margin-bottom: 12px;">6724</div>
-                        <div style="display: flex; width: 100%; gap: 10px;">
-                            <button type="button" onclick="adjustWinWidget('lose_minus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Decrement Losses (−)">−</button>
-                            <button type="button" onclick="adjustWinWidget('lose_plus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Increment Losses (+)">+</button>
+                        <div style="background: rgba(13, 17, 23, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: 10px; width: 100%; padding: 4px 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+                            <input type="number" id="dashLoseCounter" class="card-editable-input" value="6724" min="0" onchange="updateWinLossesFromInput(this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="Click to manually edit losses" style="font-size: 44px; line-height: 1.1;">
+                        </div>
+                        <div class="card-btn-duo">
+                            <button type="button" onclick="adjustWinWidget('lose_minus')" class="duo-btn" title="Decrement Losses (−)">−</button>
+                            <button type="button" onclick="adjustWinWidget('lose_plus')" class="duo-btn" title="Increment Losses (+)">+</button>
                         </div>
                     </div>
 
@@ -3259,10 +3305,12 @@
                             <span>WIN</span>
                             <span>🌿</span>
                         </div>
-                        <div id="dashWinCounter" style="font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 900; color: #ffffff; line-height: 1.1; margin-bottom: 12px;">472</div>
-                        <div style="display: flex; width: 100%; gap: 10px;">
-                            <button type="button" onclick="adjustWinWidget('win_minus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Decrement Wins (−)">−</button>
-                            <button type="button" onclick="adjustWinWidget('win_plus')" class="btn" style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 20px; font-weight: 900; padding: 6px; border-radius: 8px; transition: all 0.15s ease;" title="Increment Wins (+)">+</button>
+                        <div style="background: rgba(13, 17, 23, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: 10px; width: 100%; padding: 4px 10px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+                            <input type="number" id="dashWinCounter" class="card-editable-input" value="472" min="0" onchange="updateWinWinsFromInput(this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="Click to manually edit wins" style="font-size: 44px; line-height: 1.1;">
+                        </div>
+                        <div class="card-btn-duo">
+                            <button type="button" onclick="adjustWinWidget('win_minus')" class="duo-btn" title="Decrement Wins (−)">−</button>
+                            <button type="button" onclick="adjustWinWidget('win_plus')" class="duo-btn" title="Increment Wins (+)">+</button>
                         </div>
                     </div>
 
@@ -3519,7 +3567,9 @@
                                 <span class="card-tag lose-tag">LOSE</span>
                                 <span class="laurel-leaf flip">🌿</span>
                             </div>
-                            <div class="card-big-num" id="winWidgetLossesDisplay">6724</div>
+                            <div style="background: rgba(13, 17, 23, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: 10px; width: 100%; padding: 4px 8px; margin: 4px 0 10px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+                                <input type="number" id="winWidgetLossesDisplay" class="card-editable-input" value="6724" min="0" onchange="updateWinLossesFromInput(this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="Click to manually edit losses" style="font-size: 38px; line-height: 1;">
+                            </div>
                             <div class="card-btn-duo">
                                 <button type="button" class="duo-btn lose-btn-minus" onclick="adjustWinWidget('lose_minus')" title="Minus 1 Loss">−</button>
                                 <button type="button" class="duo-btn lose-btn-plus" onclick="adjustWinWidget('lose_plus')" title="Add 1 Loss (Alt + -)">+</button>
@@ -3533,7 +3583,9 @@
                                 <span class="card-tag win-tag">WIN</span>
                                 <span class="laurel-leaf flip">🌿</span>
                             </div>
-                            <div class="card-big-num" id="winWidgetWinsDisplay">472</div>
+                            <div style="background: rgba(13, 17, 23, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: 10px; width: 100%; padding: 4px 8px; margin: 4px 0 10px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+                                <input type="number" id="winWidgetWinsDisplay" class="card-editable-input" value="472" min="0" onchange="updateWinWinsFromInput(this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="Click to manually edit wins" style="font-size: 38px; line-height: 1;">
+                            </div>
                             <div class="card-btn-duo">
                                 <button type="button" class="duo-btn win-btn-minus" onclick="adjustWinWidget('win_minus')" title="Minus 1 Win">−</button>
                                 <button type="button" class="duo-btn win-btn-plus" onclick="adjustWinWidget('win_plus')" title="Add 1 Win (Alt + =)">+</button>
@@ -3644,14 +3696,30 @@
                     <div id="reelWinnerBanner" style="font-size: 14px; font-weight: 800; color: #f59e0b; min-height: 20px;"></div>
                 </div>
 
+                <!-- Queue status bar & Stop Spinner button (Matches Photo 2) -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="font-size: 15px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 6px;">
+                        Queue: <span id="dashQueueCountNum" style="color: #60a5fa;">0</span>
+                    </div>
+                    <button type="button" onclick="stopDashboardSpinnerQueue()" style="background: #ef4444; color: #ffffff; border: none; border-radius: 6px; padding: 4px 14px; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); transition: all 0.15s ease;">
+                        Stop Spinner
+                    </button>
+                </div>
+
                 <div class="s2e-reel-outer" id="dashboardReelOuter">
                     <div class="reel-fade-left"></div>
                     <div class="reel-fade-right"></div>
+                    <!-- CENTER YELLOW POINTER WITH SPINNER AVATAR BADGE (EXACT MATCH TO PHOTO 2) -->
                     <div class="s2e-reel-pointer" id="dashboardReelPointer">
-                        <div class="pointer-badge" id="dashboardPointerBadge">
-                            <img id="dashboardPointerImg" src="images/game-icons/pvz/spawn_ultimatecattail.webp" alt="Pointer" onerror="this.src='images/func_2.png'">
+                        <div class="pointer-user-tag" id="dashPointerUserTag">@Tester</div>
+                        <div class="pointer-triangle-wrapper">
+                            <svg width="48" height="54" viewBox="0 0 48 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <polygon points="2,2 46,2 24,52" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" stroke-linejoin="round" />
+                            </svg>
+                            <div class="pointer-avatar-circle">
+                                <img id="dashboardPointerImg" src="images/default_avatar.svg" alt="Pointer" onerror="this.src='images/func_2.png'">
+                            </div>
                         </div>
-                        <div class="pointer-triangle"></div>
                     </div>
                     <div class="s2e-reel-track" id="dashboardReelTrack"></div>
                 </div>
@@ -5909,14 +5977,26 @@
 
             // Update displays on dual cards & panels
             const lossesEl = document.getElementById('winWidgetLossesDisplay');
-            if (lossesEl) lossesEl.innerText = losses;
+            if (lossesEl && document.activeElement !== lossesEl) {
+                if ('value' in lossesEl) lossesEl.value = losses;
+                else lossesEl.innerText = losses;
+            }
             const dashLoseEl = document.getElementById('dashLoseCounter');
-            if (dashLoseEl) dashLoseEl.innerText = losses;
+            if (dashLoseEl && document.activeElement !== dashLoseEl) {
+                if ('value' in dashLoseEl) dashLoseEl.value = losses;
+                else dashLoseEl.innerText = losses;
+            }
 
             const winsEl = document.getElementById('winWidgetWinsDisplay');
-            if (winsEl) winsEl.innerText = wins;
+            if (winsEl && document.activeElement !== winsEl) {
+                if ('value' in winsEl) winsEl.value = wins;
+                else winsEl.innerText = wins;
+            }
             const dashWinEl = document.getElementById('dashWinCounter');
-            if (dashWinEl) dashWinEl.innerText = wins;
+            if (dashWinEl && document.activeElement !== dashWinEl) {
+                if ('value' in dashWinEl) dashWinEl.value = wins;
+                else dashWinEl.innerText = wins;
+            }
 
             // Flash card animations when count increases
             if (prevWinLosses !== null && losses > prevWinLosses) {
@@ -5964,6 +6044,42 @@
 
             const chkAuto = document.getElementById('chkAutoWin');
             if (chkAuto) chkAuto.checked = winWidgetState.autoWin !== false;
+        }
+
+        async function updateWinLossesFromInput(val) {
+            const num = Math.max(0, parseInt(val) || 0);
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ losses: num })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Losses set to ${num}!`);
+                }
+            } catch (err) {
+                console.error('updateWinLosses error:', err);
+            }
+        }
+
+        async function updateWinWinsFromInput(val) {
+            const num = Math.max(0, parseInt(val) || 0);
+            try {
+                const res = await fetch('/api/win-widget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wins: num })
+                });
+                if (res.ok) {
+                    const updated = await res.json();
+                    renderWinWidgetData(updated);
+                    showToast(`Wins set to ${num}!`);
+                }
+            } catch (err) {
+                console.error('updateWinWins error:', err);
+            }
         }
 
         async function updateWinStyleFromSelect(style) {
@@ -6547,21 +6663,52 @@
             await spinWheel(id);
         }
 
+        let appSpinQueue = [];
+
+        function updateDashQueueDisplay() {
+            const countEl = document.getElementById('dashQueueCountNum');
+            if (countEl) countEl.innerText = appSpinQueue.length;
+        }
+
+        function stopDashboardSpinnerQueue() {
+            appSpinQueue = [];
+            updateDashQueueDisplay();
+            isSpinning = false;
+            const track = document.getElementById('dashboardReelTrack');
+            if (track) {
+                track.style.transition = 'none';
+            }
+            const banner = document.getElementById('reelWinnerBanner');
+            if (banner) banner.innerText = 'Spinner stopped';
+            showToast('Spinner queue stopped');
+        }
+
         async function spinWheel(spinnerId = null) {
-            if (isSpinning) return;
             const list = getSpinners();
             const targetSp = spinnerId ? list.find(s => s.id === spinnerId) : getActiveSpinner();
             const mode = (targetSp && targetSp.mode) || 'reel';
             if (mode === 'reel') {
                 await spinReel(false, targetSp);
             } else {
+                if (isSpinning) {
+                    appSpinQueue.push({ noGameEvent: false, targetSp, mode: 'wheel' });
+                    updateDashQueueDisplay();
+                    showToast(`Added to queue (${appSpinQueue.length})`);
+                    return;
+                }
                 await spinClassicWheel(targetSp);
             }
         }
 
         async function spinClassicWheel(targetSp = null) {
-            if (isSpinning) return;
+            if (isSpinning) {
+                appSpinQueue.push({ noGameEvent: false, targetSp, mode: 'wheel' });
+                updateDashQueueDisplay();
+                showToast(`Added to queue (${appSpinQueue.length})`);
+                return;
+            }
             isSpinning = true;
+            updateDashQueueDisplay();
 
             const sp = targetSp || getActiveSpinner();
             const prof = getTesterProfile();
@@ -6603,6 +6750,21 @@
                     playReelVictory();
                     showToast(`Landed on: ${winner.label}!`);
                     fetchSpinnerHistory();
+
+                    // Process next queued spin!
+                    if (appSpinQueue.length > 0) {
+                        setTimeout(() => {
+                            if (appSpinQueue.length > 0) {
+                                const next = appSpinQueue.shift();
+                                updateDashQueueDisplay();
+                                if (next.mode === 'wheel') {
+                                    spinClassicWheel(next.targetSp);
+                                } else {
+                                    spinReel(next.noGameEvent, next.targetSp);
+                                }
+                            }
+                        }, 1000);
+                    }
                 }, (sp ? sp.duration : 2500) || 2500);
             } catch (err) {
                 isSpinning = false;
@@ -6615,8 +6777,14 @@
         }
 
         async function spinReel(noGameEvent = false, targetSp = null) {
-            if (isSpinning) return;
+            if (isSpinning) {
+                appSpinQueue.push({ noGameEvent, targetSp, mode: 'reel' });
+                updateDashQueueDisplay();
+                showToast(`Added to queue (${appSpinQueue.length})`);
+                return;
+            }
             isSpinning = true;
+            updateDashQueueDisplay();
 
             const sp = targetSp || getActiveSpinner();
             const prof = getTesterProfile();
@@ -6624,6 +6792,15 @@
             const track = document.getElementById('dashboardReelTrack');
             const banner = document.getElementById('reelWinnerBanner');
             if (banner) banner.innerText = `Spinning ${sp ? sp.name : 'Spinner'}...`;
+
+            // Update Yellow Triangle Avatar Pointer (Matches Photo 2)
+            const pointerImg = document.getElementById('dashboardPointerImg');
+            if (pointerImg) pointerImg.src = prof.avatar || (sp && sp.pointerIcon) || 'images/default_avatar.svg';
+            const pointerTag = document.getElementById('dashPointerUserTag');
+            if (pointerTag) {
+                pointerTag.innerText = `@${prof.name || 'Tester'}`;
+                pointerTag.style.display = 'block';
+            }
 
             try {
                 const spParam = sp ? `&spinnerId=${encodeURIComponent(sp.id)}` : '';
@@ -6739,6 +6916,21 @@
                     }
                     showToast(`Won: ${winner.label}!`);
                     fetchSpinnerHistory();
+
+                    // Process next queued spin!
+                    if (appSpinQueue.length > 0) {
+                        setTimeout(() => {
+                            if (appSpinQueue.length > 0) {
+                                const next = appSpinQueue.shift();
+                                updateDashQueueDisplay();
+                                if (next.mode === 'wheel') {
+                                    spinClassicWheel(next.targetSp);
+                                } else {
+                                    spinReel(next.noGameEvent, next.targetSp);
+                                }
+                            }
+                        }, 1000);
+                    }
                 }, durationMs + 100);
 
             } catch (err) {
