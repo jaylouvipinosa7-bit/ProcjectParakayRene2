@@ -5505,6 +5505,13 @@
             }
         }
 
+        function getTesterProfile() {
+            const u = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const name = (u && (u.name || u.username)) ? (u.name || u.username) : 'Tester';
+            const avatar = (u && (u.picture || u.avatar)) ? (u.picture || u.avatar) : 'images/default_avatar.svg';
+            return { name, avatar };
+        }
+
         // Test Single Gift
         async function testGift(giftId) {
             const gift = config.gifts.find(g => String(g.id) === String(giftId));
@@ -5513,9 +5520,14 @@
             const repCount = (gift.repetition !== undefined && gift.repetition !== null && gift.repetition > 0) ? gift.repetition : (gift.amount || 1);
             showToast(`Fired (${repCount}x): ${gift.giftName} -> ${gift.label}`);
 
+            const prof = getTesterProfile();
+            const isSpinner = gift.actionType === 'spinner' || gift.command === 'spin_wheel' || (gift.command && gift.command.includes('spin'));
+
             try {
-                if (gift.actionType === 'spinner') {
-                    await fetch('/api/spin?username=TestViewer', { method: 'POST' });
+                if (isSpinner) {
+                    const spId = gift.spinnerId || (gift.command && gift.command.startsWith('spinner_') ? gift.command : '');
+                    const spParam = spId ? `&spinnerId=${encodeURIComponent(spId)}` : '';
+                    await fetch(`/api/spin?username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}${spParam}`, { method: 'POST' });
                 } else {
                     await fetch('/api/test', {
                         method: 'POST',
@@ -5533,7 +5545,8 @@
                             interval: (gift.interval !== undefined && gift.interval !== null) ? gift.interval : 100,
                             repetitionMultiplier: gift.repetitionMultiplier !== false,
                             hideInOverlay: gift.hideInOverlay === true,
-                            username: 'TestViewer',
+                            username: prof.name,
+                            avatar: prof.avatar,
                             icon: gift.icon,
                             coins: gift.coins
                         })
@@ -6541,9 +6554,11 @@
             isSpinning = true;
 
             const sp = targetSp || getActiveSpinner();
+            const prof = getTesterProfile();
             try {
                 const spParam = sp ? `&spinnerId=${encodeURIComponent(sp.id)}` : '';
-                const res = await fetch(`/api/spin?username=StreamerTest${spParam}`, { method: 'POST' });
+                const userParam = `&username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}`;
+                const res = await fetch(`/api/spin?${spParam.replace(/^&/, '')}${userParam}`, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;
 
@@ -6592,6 +6607,7 @@
             isSpinning = true;
 
             const sp = targetSp || getActiveSpinner();
+            const prof = getTesterProfile();
             const outer = document.getElementById('dashboardReelOuter');
             const track = document.getElementById('dashboardReelTrack');
             const banner = document.getElementById('reelWinnerBanner');
@@ -6599,7 +6615,8 @@
 
             try {
                 const spParam = sp ? `&spinnerId=${encodeURIComponent(sp.id)}` : '';
-                const endpoint = noGameEvent ? `/api/spin?username=StreamerTest&noGameTrigger=true${spParam}` : `/api/spin?username=StreamerTest${spParam}`;
+                const userParam = `&username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}`;
+                const endpoint = noGameEvent ? `/api/spin?noGameTrigger=true${spParam}${userParam}` : `/api/spin?${spParam.replace(/^&/, '')}${userParam}`;
                 const res = await fetch(endpoint, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;

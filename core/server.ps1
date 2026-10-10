@@ -1191,7 +1191,75 @@ while ($true) {
             $hideInOverlay = ($data.hideInOverlay -eq $true -or $data.hideInOverlay -eq "true")
 
             $exec = @{ success = $true }
-            if ($command -and $command -ne "spin_wheel") {
+            $isSpinnerTest = ($actionType -eq "spinner" -or $command -eq "spin_wheel" -or ($command -and $command -match "spinner_") -or $data.spinnerId)
+
+            if ($isSpinnerTest) {
+                $cfg = LoadConfig
+                $targetSpinner = $null
+                $spId = if ($data.spinnerId) { [string]$data.spinnerId } elseif ($command -match 'spinner_.*') { [string]$command } else { "" }
+                if ($cfg -and $cfg.spinners) {
+                    if ($spId) {
+                        $targetSpinner = $cfg.spinners | Where-Object { [string]$_.id -eq $spId } | Select-Object -First 1
+                    }
+                    if (-not $targetSpinner) {
+                        $targetSpinner = $cfg.spinners[0]
+                    }
+                } elseif ($cfg -and $cfg.spinner) {
+                    $targetSpinner = $cfg.spinner
+                }
+
+                $slices = if ($targetSpinner -and $targetSpinner.slices) { $targetSpinner.slices } else { @() }
+                $pickedSlice = $null
+                if ($slices.Count -gt 0) {
+                    $totalW = 0.0
+                    foreach ($s in $slices) {
+                        $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                        $totalW += $w
+                    }
+                    if ($totalW -le 0) { $totalW = 100.0 }
+                    $rnd = (Get-Random -Minimum 0.0 -Maximum $totalW)
+                    $curW = 0.0
+                    foreach ($s in $slices) {
+                        $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                        $curW += $w
+                        if ($rnd -le $curW) { $pickedSlice = $s; break }
+                    }
+                    if (-not $pickedSlice) { $pickedSlice = $slices[0] }
+                }
+
+                $spName = if ($targetSpinner -and $targetSpinner.name) { $targetSpinner.name } else { "Spinner" }
+                $targetSpId = if ($targetSpinner -and $targetSpinner.id) { [string]$targetSpinner.id } else { "1" }
+                $testAvatar = if ($data.avatar) { [string]$data.avatar } else { "images/default_avatar.svg" }
+
+                # Update score if number slice
+                if ($pickedSlice) {
+                    $deltaVal = 0
+                    if ($pickedSlice.delta -ne $null) {
+                        $deltaVal = [int]$pickedSlice.delta
+                    } elseif ($pickedSlice.actionType -eq "score" -and $pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                        $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                        $deltaVal = $sign * [int]$matches[2]
+                    }
+                    if ($deltaVal -ne 0) {
+                        Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
+                    }
+                }
+
+                Add-SpinnerHistoryRecord $username $testAvatar $pickedSlice $spName $targetSpId
+
+                AddEventLog @{
+                    type = "spin_result"
+                    label = if ($pickedSlice) { "$($spName) - $($pickedSlice.label)" } else { "$($spName) Spin" }
+                    username = $username
+                    slice = $pickedSlice
+                    spinnerId = $targetSpId
+                    spinnerName = $spName
+                    slices = $slices
+                    icon = $icon
+                    hideInOverlay = $hideInOverlay
+                    success = $true
+                }
+            } elseif ($command -and $command -ne "spin_wheel") {
                 $exec = SendToPvZGame $actionType $command $amount $username "" $repetition $delay $interval
             }
 

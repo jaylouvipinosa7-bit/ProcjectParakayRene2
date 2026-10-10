@@ -390,7 +390,8 @@
         <span style="font-weight: 800; color: #fff;">Overlay Testing:</span>
         <button type="button" class="btn-debug" onclick="triggerTestSpin(1)">Test Plants (Perfume)</button>
         <button type="button" class="btn-debug" onclick="triggerTestSpin(2)">Test Zombies (Doughnut)</button>
-        <span style="margin-left: 8px;">Keys: [T] Random • [1] Plants • [2] Zombies</span>
+        <button type="button" class="btn-debug" onclick="triggerTestSpin(3)">Test Points (+/-)</button>
+        <span style="margin-left: 8px;">Keys: [T] Random • [1] Plants • [2] Zombies • [3] Points</span>
     </div>
 
     <!-- DYNAMIC SPINNER STAGE: 100% INVISIBLE UNTIL AN ASSIGNED GIFT ARRIVES! -->
@@ -765,24 +766,21 @@
         // Test Spin Trigger
         function triggerTestSpin(spinnerNum = 1) {
             getAudioContext();
-            if (!config || !config.spinners || config.spinners.length === 0) {
-                showAndSpin({
-                    spinner: { name: 'Plants Spinner', giftName: 'Perfume', giftIcon: 'images/tiktok-gifts/perfume_gift.webp' },
-                    username: 'TestViewer',
-                    giftName: 'Perfume',
-                    giftIcon: 'images/tiktok-gifts/perfume_gift.webp'
-                });
-                return;
+            const spinners = (config && config.spinners) || [];
+            let targetId = '';
+
+            if (spinnerNum === 3) {
+                targetId = 'spinner_plusminus';
+            } else if (spinnerNum === 2) {
+                const zSp = spinners.find(s => s.id === 'spinner_2' || (s.name && s.name.toLowerCase().includes('zombie'))) || spinners[1] || spinners[0];
+                targetId = zSp ? zSp.id : 'spinner_2';
+            } else {
+                const pSp = spinners.find(s => s.id === 'spinner_1' || (s.name && s.name.toLowerCase().includes('plant'))) || spinners[0];
+                targetId = pSp ? pSp.id : 'spinner_1';
             }
 
-            const idx = (spinnerNum === 2 && config.spinners.length > 1) ? 1 : 0;
-            const chosen = config.spinners[idx];
-            showAndSpin({
-                spinner: chosen,
-                username: 'Gifter_' + Math.floor(Math.random() * 900 + 100),
-                giftName: chosen.giftName || (idx === 1 ? 'Doughnut' : 'Perfume'),
-                giftIcon: chosen.giftIcon || (idx === 1 ? 'images/tiktok-gifts/5879_doughnut.webp' : 'images/tiktok-gifts/perfume_gift.webp')
-            });
+            const testerName = 'Tester';
+            fetch(`/api/spin?spinnerId=${encodeURIComponent(targetId)}&username=${encodeURIComponent(testerName)}&noGameTrigger=true`, { method: 'POST' }).catch(() => {});
         }
 
         // Real-time Event Polling from backend (/api/events)
@@ -851,11 +849,14 @@
         // Keyboard hotkeys for testing while overlay is loaded
         window.addEventListener('keydown', (e) => {
             if (e.key === 't' || e.key === 'T') {
-                triggerTestSpin(Math.random() > 0.5 ? 2 : 1);
+                const choices = [1, 2, 3];
+                triggerTestSpin(choices[Math.floor(Math.random() * choices.length)]);
             } else if (e.key === '1') {
                 triggerTestSpin(1);
             } else if (e.key === '2') {
                 triggerTestSpin(2);
+            } else if (e.key === '3') {
+                triggerTestSpin(3);
             } else if (e.key === 'c' || e.key === 'C') {
                 document.body.classList.toggle('show-controls');
             }
