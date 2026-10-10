@@ -10,7 +10,8 @@ foreach ($p in $procs) {
 }
 
 Start-Sleep -Seconds 1
-$srv = Start-Process powershell.exe -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'server.ps1' -WorkingDirectory (Get-Location).Path -PassThru -WindowStyle Hidden
+$coreDir = "c:\Users\pc\Downloads\ano na\core"
+$srv = Start-Process powershell.exe -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $coreDir 'server.ps1') -WorkingDirectory $coreDir -PassThru -WindowStyle Hidden
 Write-Output "Started server with PID $($srv.Id)"
 Start-Sleep -Seconds 2
 $port = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue

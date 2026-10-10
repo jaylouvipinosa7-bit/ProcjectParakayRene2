@@ -594,6 +594,20 @@ function LoadConfig($optionalUser = "") {
             } catch {}
         }
     }
+
+    # Ensure Heart Me spinner (spinner_plusminus) is mapped to Heart Me (7934) and not obsolete Rose (5655)
+    if ($cfg -and $cfg.spinners) {
+        foreach ($sp in $cfg.spinners) {
+            if ($sp.id -eq "spinner_plusminus") {
+                if ($sp.giftId -eq "5655" -or $sp.giftName -eq "Rose" -or [string]::IsNullOrWhiteSpace($sp.giftId)) {
+                    $sp.giftId = "7934"
+                    $sp.giftName = "Heart Me"
+                    $sp.coins = 1
+                    $sp.giftIcon = "images/tiktok-gifts/7934_heart_me.webp"
+                }
+            }
+        }
+    }
     return $cfg
 }
 
@@ -2879,8 +2893,12 @@ while ($true) {
                             if ($cleanSpGId -and $cleanReqGId -and ($cleanSpGId -eq $cleanReqGId)) {
                                 $matchedSpinner = $sp; break
                             }
-                            # Check Heart Me aliases
-                            if (($cleanSpGId -eq '7934' -or $cleanSpGId -eq 'heartme') -and ($cleanReqGId -eq '7934' -or $cleanReqGId -eq 'heartme')) {
+                            # Check Heart Me aliases (Heart Me 7934, Heart 6247, Community Heart 17712)
+                            $heartGIds = @('7934', '6247', '17712', 'heartme', 'heart', 'communityheart')
+                            if (($heartGIds -contains $cleanSpGId) -and ($heartGIds -contains $cleanReqGId)) {
+                                $matchedSpinner = $sp; break
+                            }
+                            if ($sp.id -eq 'spinner_plusminus' -and ($heartGIds -contains $cleanReqGId -or $cleanReqGId -match 'heart')) {
                                 $matchedSpinner = $sp; break
                             }
                             # Check Perfume aliases

@@ -6839,8 +6839,22 @@
                             avatar: prof.avatar,
                             icon: gift.icon,
                             coins: gift.coins
-                        })
                     });
+
+                    // Also trigger matching spinner if card triggers a spinner (e.g. Heart Me Card 32 -> spinner_plusminus)
+                    const cleanGName = (gift.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const cleanGId = (gift.giftId || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const matchedSp = (config.spinners || []).find(s => {
+                        if (!s.enabled) return false;
+                        const sGId = (s.giftId || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const sGName = (s.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (cleanGId && sGId && (cleanGId === sGId || ((cleanGId === '7934' || cleanGId === 'heartme') && (sGId === '7934' || sGId === 'heartme')))) return true;
+                        if (cleanGName && sGName && (cleanGName === sGName || (cleanGName.includes('heart') && sGName.includes('heart')))) return true;
+                        return false;
+                    });
+                    if (matchedSp) {
+                        fetch(`/api/spin?username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}&spinnerId=${encodeURIComponent(matchedSp.id)}`, { method: 'POST' }).catch(()=>{});
+                    }
                 }
             } catch (err) {
                 showToast("Test failed: " + err.message, "ERR");
