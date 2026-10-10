@@ -1057,30 +1057,102 @@ function Send-JsonResponse($resp, $obj, [int]$status = 200) {
     } catch {}
 }
 
-$nodePath = "C:\Users\pc\AppData\Local\app.runetify.desktop\runtimes\node\24.18.0\node.exe"
-if (-not (Test-Path $nodePath)) {
-    $nodePath = "C:\Users\pc\AppData\Local\AsureLive\node-runtime\node-22.23.2-win-x64-0d0f5e39f9f3\node.exe"
+function Find-NodeExecutable {
+    # 1. Check local bundled bin folder inside project
+    $binNode = Join-Path $folder "bin\node.exe"
+    if (Test-Path $binNode) { return $binNode }
+    $parentBinNode = Join-Path (Split-Path $folder -Parent) "bin\node.exe"
+    if (Test-Path $parentBinNode) { return $parentBinNode }
+
+    # 2. Check system PATH
+    try {
+        $cmdNode = (Get-Command node -ErrorAction SilentlyContinue).Source
+        if ($cmdNode -and (Test-Path $cmdNode)) { return $cmdNode }
+    } catch {}
+
+    # 3. Dynamic search across common locations for any user on Windows
+    $candidates = @(
+        "$env:LOCALAPPDATA\app.runetify.desktop\runtimes\node\*\node.exe",
+        "$env:LOCALAPPDATA\AsureLive\node-runtime\*\node.exe",
+        "$env:ProgramFiles\nodejs\node.exe",
+        "${env:ProgramFiles(x86)}\nodejs\node.exe",
+        "$env:LOCALAPPDATA\Programs\node\node.exe",
+        "$env:LOCALAPPDATA\Programs\nodejs\node.exe",
+        "$env:APPDATA\npm\node.exe",
+        "C:\Users\*\AppData\Local\app.runetify.desktop\runtimes\node\*\node.exe",
+        "C:\Users\*\AppData\Local\AsureLive\node-runtime\*\node.exe",
+        "C:\Users\*\AppData\Local\Programs\nodejs\node.exe"
+    )
+
+    foreach ($pat in $candidates) {
+        $found = Get-Item $pat -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($found -and (Test-Path $found.FullName)) {
+            return $found.FullName
+        }
+    }
+
+    # 4. Auto-download portable Node.js if missing (one-time setup for friends/other users)
+    try {
+        $binDir = Join-Path $folder "bin"
+        if (-not (Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
+        $dlTarget = Join-Path $binDir "node.exe"
+        Write-Host "  [SETUP] Downloading lightweight Node.js runtime for TikTok Live..." -ForegroundColor Yellow
+        $nodeUrl = "https://nodejs.org/dist/v20.18.0/win-x64/node.exe"
+        $wc = New-Object System.Net.WebClient
+        $wc.Headers.Add("User-Agent", "Mozilla/5.0")
+        $wc.DownloadFile($nodeUrl, $dlTarget)
+        if (Test-Path $dlTarget) {
+            Write-Host "  [SETUP] Downloaded Node.js successfully to $dlTarget" -ForegroundColor Green
+            return $dlTarget
+        }
+    } catch {
+        Write-Host "  [WARNING] Unable to auto-download Node.js: $_" -ForegroundColor Red
+    }
+
+    return $null
 }
+
+$script:nodePath = Find-NodeExecutable
 $script:tiktokBridgeProc = $null
 
 function Start-TikTokBridge([string]$targetUser) {
     Stop-TikTokBridge
     $cleanUser = $targetUser.Trim().TrimStart('@')
+    if ($cleanUser -match 'tiktok\.com\/@([a-zA-Z0-9_.-]+)') {
+        $cleanUser = $matches[1]
+    } else {
+        $cleanUser = $cleanUser.Split('/')[0].Trim()
+    }
     if (-not $cleanUser) { return }
+
+    if (-not $script:nodePath -or -not (Test-Path $script:nodePath)) {
+        $script:nodePath = Find-NodeExecutable
+    }
+
     $bridgeScript = Join-Path $folder "tiktok_bridge.js"
-    if ((Test-Path $nodePath) -and (Test-Path $bridgeScript)) {
+    if ($script:nodePath -and (Test-Path $script:nodePath) -and (Test-Path $bridgeScript)) {
         try {
             $pinfo = New-Object System.Diagnostics.ProcessStartInfo
-            $pinfo.FileName = $nodePath
+            $pinfo.FileName = $script:nodePath
             $pinfo.Arguments = "`"$bridgeScript`" `"$cleanUser`""
             $pinfo.WorkingDirectory = $folder
             $pinfo.UseShellExecute = $false
             $pinfo.CreateNoWindow = $true
             $script:tiktokBridgeProc = [System.Diagnostics.Process]::Start($pinfo)
-            Write-Host "  -> TikTok Live Bridge launched for @$cleanUser (PID $($script:tiktokBridgeProc.Id))" -ForegroundColor Green
+            Write-Host "  -> TikTok Live Bridge launched for @$cleanUser (PID $($script:tiktokBridgeProc.Id)) using $script:nodePath" -ForegroundColor Green
         } catch {
             Write-Host "  Failed to launch TikTok bridge: $_" -ForegroundColor Red
         }
+    } else {
+        Write-Host "  [ERROR] Cannot start TikTok Live bridge: Node runtime not found." -ForegroundColor Red
+        $stateFile = Join-Path $folder "tiktok_live_state.json"
+        $st = @{
+            connected = $false
+            processRunning = $false
+            username = $cleanUser
+            statusText = "Node runtime not found. Please install Node.js from nodejs.org or restart app with internet for auto-setup."
+        }
+        [System.IO.File]::WriteAllText($stateFile, ($st | ConvertTo-Json), [System.Text.Encoding]::UTF8)
     }
 }
 
@@ -1167,7 +1239,12 @@ while ($true) {
         if ($reqPath -eq '/api/tiktok/connect') {
             $body = ReadRequestBody $request
             $data = $body | ConvertFrom-Json
-            $user = if ($data.username) { [string]$data.username.Trim().TrimStart('@') } else { "" }
+            $user = if ($data.username) { [string]$data.username.Trim() } else { "" }
+            if ($user -match 'tiktok\.com\/@([a-zA-Z0-9_.-]+)') {
+                $user = $matches[1]
+            } else {
+                $user = $user.TrimStart('@').Split('/')[0].Trim()
+            }
             if (-not $user) {
                 Send-JsonResponse $response @{ status = "error"; message = "TikTok username is required" }
                 continue
@@ -1198,14 +1275,18 @@ while ($true) {
                 try { Get-Content $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { $null }
             } else { $null }
             $isProcRunning = if ($script:tiktokBridgeProc -and -not $script:tiktokBridgeProc.HasExited) { $true } else { [bool]($stObj -and $stObj.connected) }
+            $nodeAvailable = [bool]($script:nodePath -and (Test-Path $script:nodePath))
+            $cfg = LoadConfig
+            $fallbackUser = if ($cfg -and $cfg.streamer) { [string]$cfg.streamer.tiktokUsername } else { "" }
             $res = @{
                 connected = if ($stObj) { [bool]$stObj.connected } else { $false }
                 processRunning = $isProcRunning
-                username = if ($stObj) { [string]$stObj.username } else { "" }
+                nodeAvailable = $nodeAvailable
+                username = if ($stObj -and $stObj.username) { [string]$stObj.username } else { $fallbackUser }
                 roomId = if ($stObj) { [string]$stObj.roomId } else { "" }
                 viewerCount = if ($stObj -and $stObj.viewerCount) { [int]$stObj.viewerCount } else { 0 }
                 totalLikes = if ($stObj -and $stObj.totalLikes) { [int64]$stObj.totalLikes } else { 0 }
-                statusText = if ($stObj) { [string]$stObj.statusText } else { "Offline" }
+                statusText = if (-not $nodeAvailable) { "Node.js runtime missing" } elseif ($stObj) { [string]$stObj.statusText } else { "Ready to connect" }
             }
             Send-JsonResponse $response $res
             continue

@@ -24,13 +24,13 @@
         "repetition":  1
     },
     {
-        "id":  "imp_1791633969321_118",
+        "id":  "3",
         "action":  "LikeAmount",
         "giftId":  "",
         "giftName":  "Total Likes",
-        "funcName":  "Total Likes",
+        "funcName":  "Spawn UltimateHorse",
         "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
+        "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
         "repetition":  20
@@ -744,15 +744,27 @@
         "repetition":  20
     },
     {
-        "id":  "e_likes_50k_horse",
-        "action":  "SelectedGift",
+        "id":  "imp_1791635865195_244",
+        "action":  "LikeAmount",
         "giftId":  "",
-        "giftName":  "Imported Trigger",
-        "funcName":  "Imported Trigger",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn UltimateHorse",
         "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
-        "triggerValue":  "",
+        "trigImg":  "images/trig_7.svg",
+        "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
-        "repetition":  1
+        "repetition":  20
+    },
+    {
+        "id":  "imp_1791635907788_9823",
+        "action":  "LikeAmount",
+        "giftId":  "",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn UltimateHorse",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
+        "trigImg":  "images/trig_7.svg",
+        "triggerValue":  "50000",
+        "commands":  "spawn_ultimatehorse",
+        "repetition":  20
     }
 ];

@@ -15,8 +15,21 @@ echo  [2/3] Checking Plants vs Zombies Fusion game status...
 tasklist /FI "IMAGENAME eq PlantsVsZombiesRH.exe" 2>NUL | find /I /N "PlantsVsZombiesRH.exe">NUL
 if "%ERRORLEVEL%"=="1" (
     echo       PvZ Fusion is not running. Attempting to start game...
-    if exist "C:\Users\pc\Desktop\games ko to ya\Game Files\PlantsVsZombiesRH.exe" (
+    set "GAME_FOUND=0"
+    if exist "%USERPROFILE%\Desktop\games ko to ya\Game Files\PlantsVsZombiesRH.exe" (
+        start "" "%USERPROFILE%\Desktop\games ko to ya\Game Files\PlantsVsZombiesRH.exe"
+        set "GAME_FOUND=1"
+    ) else if exist "C:\Users\pc\Desktop\games ko to ya\Game Files\PlantsVsZombiesRH.exe" (
         start "" "C:\Users\pc\Desktop\games ko to ya\Game Files\PlantsVsZombiesRH.exe"
+        set "GAME_FOUND=1"
+    ) else if exist "%~dp0..\PlantsVsZombiesRH.exe" (
+        start "" "%~dp0..\PlantsVsZombiesRH.exe"
+        set "GAME_FOUND=1"
+    ) else if exist "%~dp0PlantsVsZombiesRH.exe" (
+        start "" "%~dp0PlantsVsZombiesRH.exe"
+        set "GAME_FOUND=1"
+    )
+    if "!GAME_FOUND!"=="1" (
         echo       Game launched!
     ) else (
         echo       (Note: Please ensure Plants vs Zombies Fusion is running on your PC)

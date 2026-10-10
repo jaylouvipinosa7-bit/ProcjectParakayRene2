@@ -3,7 +3,14 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const targetUser = (process.argv[2] || '').trim().replace(/^@/, '');
+let rawUserArg = (process.argv[2] || '').trim();
+let targetUser = rawUserArg;
+const urlMatch = rawUserArg.match(/tiktok\.com\/@([a-zA-Z0-9_.-]+)/i);
+if (urlMatch) {
+    targetUser = urlMatch[1];
+} else {
+    targetUser = rawUserArg.replace(/^@+/, '').split('/')[0].trim();
+}
 if (!targetUser) {
     console.log('No TikTok username provided. Standing by...');
     process.exit(0);
@@ -17,7 +24,7 @@ let liveState = {
     roomId: null,
     viewerCount: 0,
     totalLikes: 0,
-    statusText: 'Connecting...',
+    statusText: 'Connecting to TikTok...',
     lastEventTime: Date.now()
 };
 
@@ -94,10 +101,18 @@ function startConnection() {
         console.log(`[READY] Listening for Gifts, Likes, Follows, and Team Chat (!plants/!zombies)...`);
     }).catch(err => {
         liveState.connected = false;
-        liveState.statusText = 'Connection failed: ' + (err.message || 'Offline');
+        const msg = (err && err.message) ? err.message : String(err || '');
+        let cleanStatus = 'Connection failed';
+        if (msg.includes('LIVE has ended') || msg.includes('offline') || msg.includes('Failed to retrieve room_id') || msg.includes('User is offline')) {
+            cleanStatus = 'Waiting for TikTok LIVE stream to start (Account is offline or not live yet)...';
+            console.log(`[STANDBY] @${targetUser} is offline or not live yet. Waiting for you to Go LIVE in TikTok LIVE Studio... (Auto-retrying in 5s)`);
+        } else {
+            cleanStatus = 'Connection error: ' + msg;
+            console.error(`[ERROR] Connection failed: ${msg}`);
+        }
+        liveState.statusText = cleanStatus;
         saveState();
-        console.error(`[ERROR] Connection failed: ${err.message || err}`);
-        scheduleReconnect(6000);
+        scheduleReconnect(5000);
     });
 
     function extractUserName(d) {

@@ -3470,6 +3470,10 @@
                     Overlay URL
                 </a>
 
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openTikTokGuideModal()" style="border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.1);" title="How to connect TikTok LIVE Studio or OBS">
+                    📡 TikTok Studio Guide
+                </button>
+
                 <button type="button" class="btn btn-secondary btn-sm" onclick="switchTab('leaderboard')" style="background: linear-gradient(135deg, rgba(244,63,94,0.2), rgba(245,158,11,0.2)); border-color: #f43f5e; color: #fde047; cursor: pointer;" title="Customize Top 10 Likes, Coins & Top Donators Overlays">
                     🏆 Rankings Overlay
                 </button>
@@ -4817,6 +4821,61 @@
 
             <div class="modal-footer" style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeExportEventModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TIKTOK LIVE STUDIO & OBS CONNECTION GUIDE -->
+    <div id="tiktokLiveStudioGuideModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 640px; background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 16px; padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
+            <div class="modal-header" style="padding: 0 0 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); background: transparent;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 26px;">📡</span>
+                    <div>
+                        <h3 style="font-size: 18px; font-weight: 800; color: #f8fafc; margin: 0;">How to Connect TikTok LIVE Studio</h3>
+                        <div style="font-size: 11.5px; color: #94a3b8; margin-top: 2px;">Works for you and any friend or other streamer</div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closeTikTokGuideModal()" style="padding: 4px 8px; font-weight: 700;">✕</button>
+            </div>
+
+            <div class="modal-body" style="padding: 16px 0; display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+                <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 12px;">
+                    <strong style="color: #38bdf8; font-size: 13.5px;">Step 1: Enter your TikTok Username</strong>
+                    <p style="margin: 4px 0 0 0; color: #94a3b8;">
+                        Type your TikTok handle (e.g. <code style="color: #38bdf8;">@yourname</code> or your profile handle) in the top input box and click <strong style="color: #38bdf8;">Connect</strong>.
+                        <br><span style="color: #facc15;">💡 Note:</span> If you are not live yet, the button will show <strong>Waiting for Stream</strong>. That is normal! It will stand by and connect as soon as you start your live stream.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 12px;">
+                    <strong style="color: #38bdf8; font-size: 13.5px;">Step 2: Add Overlay Link in TikTok LIVE Studio</strong>
+                    <p style="margin: 4px 0 0 0; color: #94a3b8;">
+                        In <strong>TikTok LIVE Studio</strong> (or OBS Studio):
+                        <br>1. Click <strong>+ Add Source</strong> &rarr; Select <strong>Link</strong> (Browser source).
+                        <br>2. Copy & paste this URL:
+                    </p>
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <input type="text" readonly value="http://localhost:8080/stream-overlay.html" style="flex: 1; background: #020617; border: 1px solid #334155; color: #38bdf8; border-radius: 6px; padding: 6px 10px; font-family: monospace; font-size: 12px;" onclick="this.select()">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText('http://localhost:8080/stream-overlay.html'); showToast('Copied Stream Overlay URL!');">Copy URL</button>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 11px; color: #64748b;">Recommended Size: 1920x1080 (Landscape) or 1080x1920 (Portrait).</div>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 12px;">
+                    <strong style="color: #38bdf8; font-size: 13.5px;">Step 3: Click "Go LIVE" in TikTok LIVE Studio</strong>
+                    <p style="margin: 4px 0 0 0; color: #94a3b8;">
+                        Start your broadcast! The studio will turn <span style="color: #4ade80; font-weight: 700;">Connected</span> automatically, and all gifts, 50k overall likes, and followers will trigger in Plants vs Zombies Fusion in real time!
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="testSimulateTikTokEvent('rose')">🌹 Test Rose</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="testSimulateTikTokEvent('likes_50k')">🐎 Test 50K Likes</button>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="closeTikTokGuideModal()">Done</button>
             </div>
         </div>
     </div>
@@ -10760,16 +10819,23 @@
         async function toggleTikTokConnect() {
             const rawUser = document.getElementById('tiktokUsernameInput').value.trim();
             const btn = document.getElementById('btnConnectTikTok');
-            const cleanUser = rawUser.replace(/^@/, '');
+            
+            let cleanUser = rawUser;
+            const urlMatch = rawUser.match(/tiktok\.com\/@([a-zA-Z0-9_.-]+)/i);
+            if (urlMatch) {
+                cleanUser = urlMatch[1];
+            } else {
+                cleanUser = rawUser.replace(/^@+/, '').split('/')[0].trim();
+            }
 
-            if (btn.innerText === 'Connect') {
+            if (btn.innerText.includes('Connect') || btn.innerText.includes('Waiting')) {
                 if (!cleanUser) {
-                    alert("Please enter your TikTok username");
+                    alert("Please enter your TikTok username (e.g. @your_channel)");
                     return;
                 }
                 btn.innerText = 'Connecting...';
                 btn.className = 'btn btn-secondary btn-sm';
-                showToast(`Connecting to @${cleanUser}...`);
+                showToast(`Connecting to TikTok @${cleanUser}...`);
                 try {
                     const res = await fetch('/api/tiktok/connect', {
                         method: 'POST',
@@ -10778,12 +10844,14 @@
                     });
                     const data = await res.json();
                     if (data.status === 'ok') {
-                        setTimeout(checkTikTokLiveStatus, 1500);
+                        setTimeout(checkTikTokLiveStatus, 1200);
+                    } else {
+                        showToast(data.message || 'Connection failed', 'ERR');
                     }
                 } catch (e) {
                     btn.innerText = 'Connect';
                     btn.className = 'btn btn-primary btn-sm';
-                    showToast('Failed to start connector', 'ERR');
+                    showToast('Failed to start connector: ' + e.message, 'ERR');
                 }
             } else {
                 btn.innerText = 'Disconnecting...';
@@ -10811,22 +10879,75 @@
                 }
 
                 if (st.connected) {
-                    btn.innerText = 'Connected';
+                    btn.innerText = `Connected (@${st.username})`;
                     btn.className = 'btn btn-danger btn-sm';
-                    btn.title = `Live Room ID: ${st.roomId || ''} | Viewers: ${st.viewerCount || 0}`;
+                    btn.title = `Live Room ID: ${st.roomId || ''} | Viewers: ${st.viewerCount || 0} | Total Likes: ${st.totalLikes || 0}. Click to disconnect.`;
                 } else if (st.processRunning) {
-                    btn.innerText = 'Connecting...';
-                    btn.className = 'btn btn-secondary btn-sm';
-                    btn.title = st.statusText || 'Connecting...';
+                    if (st.statusText && (st.statusText.includes('offline') || st.statusText.includes('Waiting for TikTok LIVE'))) {
+                        btn.innerText = 'Waiting for Stream...';
+                        btn.className = 'btn btn-secondary btn-sm';
+                        btn.style.borderColor = '#facc15';
+                        btn.style.color = '#fde047';
+                        btn.title = `Standing by for @${st.username}. Start your stream in TikTok LIVE Studio to link automatically!`;
+                    } else {
+                        btn.innerText = 'Connecting...';
+                        btn.className = 'btn btn-secondary btn-sm';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                        btn.title = st.statusText || 'Connecting...';
+                    }
                 } else {
                     btn.innerText = 'Connect';
                     btn.className = 'btn btn-primary btn-sm';
-                    btn.title = 'Click to connect to TikTok LIVE';
+                    btn.style.borderColor = '';
+                    btn.style.color = '';
+                    btn.title = (st.statusText && st.statusText !== 'Ready to connect') ? st.statusText : 'Click to connect to TikTok LIVE';
                 }
             } catch (e) {}
         }
         setInterval(checkTikTokLiveStatus, 4000);
         setTimeout(checkTikTokLiveStatus, 500);
+
+        function openTikTokGuideModal() {
+            const m = document.getElementById('tiktokLiveStudioGuideModal');
+            if (m) m.classList.add('active');
+        }
+
+        function closeTikTokGuideModal() {
+            const m = document.getElementById('tiktokLiveStudioGuideModal');
+            if (m) m.classList.remove('active');
+        }
+
+        async function testSimulateTikTokEvent(type) {
+            try {
+                let payload = {};
+                if (type === 'rose') {
+                    payload = {
+                        event: 'gift',
+                        giftId: 5655,
+                        giftName: 'Rose',
+                        diamondCount: 1,
+                        repeatCount: 1,
+                        username: 'TestViewer'
+                    };
+                } else if (type === 'likes_50k') {
+                    payload = {
+                        event: 'like',
+                        totalLikeCount: 50000,
+                        username: 'TestLiker'
+                    };
+                }
+                const resp = await fetch('/api/webhook/tiktok', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const res = await resp.json();
+                showToast(`Simulation sent for ${type}! Check PvZ game.`);
+            } catch (e) {
+                showToast('Simulation error: ' + e.message, 'ERR');
+            }
+        }
 
         function copyOverlayUrl() {
             const urlBox = document.getElementById('overlayUrlBox');
