@@ -27,12 +27,6 @@ $activeSessions = [System.Collections.Hashtable]::Synchronized(@{})
 
 function Get-UserConfigPath($email) {
     if (-not $email -or [string]::IsNullOrWhiteSpace($email)) {
-        if (Test-Path $userConfigsFolder) {
-            $userFiles = Get-ChildItem -Path $userConfigsFolder -Filter "*_config.json" | Sort-Object LastWriteTime -Descending
-            if ($userFiles -and $userFiles.Count -gt 0) {
-                return $userFiles[0].FullName
-            }
-        }
         return $configFile
     }
     $clean = $email.Trim().TrimStart('@').ToLower()
