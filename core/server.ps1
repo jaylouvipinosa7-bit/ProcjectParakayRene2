@@ -1274,7 +1274,7 @@ while ($true) {
             $stObj = if (Test-Path $stateFile) {
                 try { Get-Content $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { $null }
             } else { $null }
-            $isProcRunning = if ($script:tiktokBridgeProc -and -not $script:tiktokBridgeProc.HasExited) { $true } else { [bool]($stObj -and $stObj.connected) }
+            $isProcRunning = if ($script:tiktokBridgeProc -and -not $script:tiktokBridgeProc.HasExited) { $true } elseif ($stObj -and $stObj.processRunning) { $true } else { $false }
             $nodeAvailable = [bool]($script:nodePath -and (Test-Path $script:nodePath))
             $cfg = LoadConfig
             $fallbackUser = if ($cfg -and $cfg.streamer) { [string]$cfg.streamer.tiktokUsername } else { "" }
