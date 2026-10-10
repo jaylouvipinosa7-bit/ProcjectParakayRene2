@@ -1,10 +1,10 @@
-﻿{
-    "enabled":  true,
-    "score":  -6482,
-    "target":  5,
-    "wins":  472,
-    "losses":  6954,
-    "autoWin":  true,
-    "hotkeysEnabled":  true,
-    "label":  "Win"
+{
+  "enabled": true,
+  "score": 0,
+  "target": 5,
+  "wins": 0,
+  "losses": 0,
+  "autoWin": true,
+  "hotkeysEnabled": true,
+  "label": "Win"
 }

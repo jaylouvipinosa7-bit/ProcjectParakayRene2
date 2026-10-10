@@ -1,14 +1,5 @@
-﻿{
-    "likes":  {
-                  "Hannah bliss":  15,
-                  "Qin":  289
-              },
-    "coins":  {
-                  "Tester":  99
-              },
-    "avatars":  {
-                    "Hannah bliss":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/223e5b72b543a7d6adc2f5ddea3a51d3~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=92e10b92\u0026x-expires=1791799200\u0026x-signature=Q2DTt0fkMHn6E35RipPO%2Bu1GCeA%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
-                    "Qin":  "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/89076b8eaeca46628b0059b29da9bacc~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=ed86704f\u0026x-expires=1791799200\u0026x-signature=wfMutAcIi1Vk7XAmxjE%2F2c0wRcg%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
-                    "Tester":  "images/default_avatar.svg"
-                }
+{
+  "likes": {},
+  "coins": {},
+  "avatars": {}
 }

@@ -46,8 +46,7 @@ $winWidgetCfg = @{
 
 $configFiles = @(
     (Join-Path $root "pvz_fusion_config.json"),
-    (Join-Path $root "pvz_fusion_template.json"),
-    (Join-Path $root "user_configs\tiktok_gohanmalunggay_tiktok.live_config.json")
+    (Join-Path $root "pvz_fusion_template.json")
 )
 
 foreach ($f in $configFiles) {

@@ -1,6 +1,6 @@
-﻿{
+{
     "streamer":  {
-                     "tiktokUsername":  "gohanmalunggay",
+                     "tiktokUsername":  "",
                      "soundEnabled":  true,
                      "volume":  0.6,
                      "autoConnect":  true
@@ -1476,13 +1476,13 @@
                      }
                  ],
     "winWidget":  {
-                      "losses":  6724,
-                      "wins":  472,
+                      "losses":  0,
+                      "wins":  0,
                       "autoWin":  true,
                       "hotkeysEnabled":  true,
                       "target":  5,
                       "label":  "Win",
                       "enabled":  true,
-                      "score":  -4
+                      "score":  0
                   }
 }

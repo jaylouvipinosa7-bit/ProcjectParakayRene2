@@ -958,7 +958,7 @@ $script:tiktokBridgeProc = $null
 function Start-TikTokBridge([string]$targetUser) {
     Stop-TikTokBridge
     $cleanUser = $targetUser.Trim().TrimStart('@')
-    if (-not $cleanUser) { $cleanUser = "gohanmalunggay" }
+    if (-not $cleanUser) { return }
     $bridgeScript = Join-Path $folder "tiktok_bridge.js"
     if ((Test-Path $nodePath) -and (Test-Path $bridgeScript)) {
         try {
@@ -994,8 +994,6 @@ function Stop-TikTokBridge {
 $initialCfg = LoadConfig
 if ($initialCfg -and $initialCfg.streamer -and $initialCfg.streamer.tiktokUsername) {
     Start-TikTokBridge $initialCfg.streamer.tiktokUsername
-} else {
-    Start-TikTokBridge "gohanmalunggay"
 }
 
 while ($true) {
@@ -1061,7 +1059,11 @@ while ($true) {
         if ($reqPath -eq '/api/tiktok/connect') {
             $body = ReadRequestBody $request
             $data = $body | ConvertFrom-Json
-            $user = if ($data.username) { [string]$data.username.Trim().TrimStart('@') } else { "gohanmalunggay" }
+            $user = if ($data.username) { [string]$data.username.Trim().TrimStart('@') } else { "" }
+            if (-not $user) {
+                Send-JsonResponse $response @{ status = "error"; message = "TikTok username is required" }
+                continue
+            }
             $cfg = LoadConfig
             if (-not $cfg.streamer) { $cfg | Add-Member -MemberType NoteProperty -Name streamer -Value @{} -Force }
             $cfg.streamer.tiktokUsername = $user

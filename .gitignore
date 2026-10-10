@@ -10,6 +10,8 @@ core/s2e_unpacked/
 core/user_configs/
 core/tiktok_live_state.json
 tiktok_live_state.json
+core/session_followers.json
+session_followers.json
 
 # Temporary logs & task files
 *.log

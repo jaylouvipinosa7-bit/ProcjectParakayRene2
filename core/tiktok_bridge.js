@@ -3,7 +3,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const targetUser = process.argv[2] || 'gohanmalunggay';
+const targetUser = (process.argv[2] || '').trim().replace(/^@/, '');
+if (!targetUser) {
+    console.log('No TikTok username provided. Standing by...');
+    process.exit(0);
+}
 const webhookUrl = 'http://127.0.0.1:8080/api/webhook/tiktok';
 const stateFilePath = path.join(__dirname, 'tiktok_live_state.json');
 

@@ -55,7 +55,7 @@ To make it downloadable by others:
 ### 4. TikTok Login & Google Account Authentication
 
 - **Dual Streamer Login System**:
-  - **TikTok Login**: Streamers can connect directly using their TikTok username (e.g., `@gohanmalunggay` or their own channel). Clicking **"Connect TikTok & Start Stream"** automatically logs them in and links the live chat bridge!
+  - **TikTok Login**: Streamers can connect directly using their TikTok username (e.g., `@your_username` or their own channel). Clicking **"Connect TikTok & Start Stream"** automatically logs them in and links the live chat bridge!
   - **Google Login**: Streamers can also sign in securely with their Google account (`@gmail.com`).
 - **Clean Workspace For New Users**: Each new streamer starts with a completely clean, empty customization canvas (`gifts: []`). No unwanted pre-filled plants or zombies will appear on their dashboard — they build their own setup!
 - **Starter Template Option**: If a streamer wants the 64 standard Plants vs Zombies presets, they can click **`Load Starter Template (64 Gifts)`** at any time.

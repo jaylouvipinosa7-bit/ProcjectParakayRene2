@@ -61,7 +61,8 @@ async function main() {
     // 1. Fetch official gifts from TikTok Live Connector
     let rawGifts = [];
     try {
-        const conn = new TikTokLiveConnection('gohanmalunggay');
+        const targetUser = process.argv[2] || 'tiktok';
+        const conn = new TikTokLiveConnection(targetUser);
         rawGifts = await conn.fetchAvailableGifts();
         console.log(`Successfully fetched ${rawGifts.length} gifts from TikTok LIVE Connector.`);
     } catch (err) {

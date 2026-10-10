@@ -24,6 +24,18 @@
         "repetition":  1
     },
     {
+        "id":  "3",
+        "action":  "LikeAmount",
+        "giftId":  "",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn UltimateHorse",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
+        "trigImg":  "images/trig_7.svg",
+        "triggerValue":  "50000",
+        "commands":  "spawn_ultimatehorse",
+        "repetition":  20
+    },
+    {
         "id":  "4",
         "action":  "Follow",
         "giftId":  "",
@@ -280,11 +292,11 @@
         "action":  "SelectedGift",
         "giftId":  "6427",
         "giftName":  "Hat and Mustache",
-        "funcName":  "Spinner 4",
-        "funcImg":  "images/spinner_wheel_icon.svg",
+        "funcName":  "Spawn Ultimate Machine Nut Zombie",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
         "trigImg":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791624002508",
+        "commands":  "spawn_ultimate_machine_nut_zombie",
         "repetition":  50
     },
     {
@@ -721,13 +733,13 @@
     },
     {
         "id":  "1791627008321",
-        "action":  "SelectedGift",
+        "action":  "LikeAmount",
         "giftId":  "",
         "giftName":  "hatdog",
         "funcName":  "baliw",
         "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
         "trigImg":  "images/tiktok-gifts/5655_rose.webp",
-        "triggerValue":  "",
+        "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
         "repetition":  20
     }

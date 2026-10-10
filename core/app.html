@@ -3294,22 +3294,6 @@
                     </div>
                 </div>
 
-                <!-- Quick TikTok Account Selector -->
-                <div class="quick-accounts-list">
-                    <div class="quick-account-item" onclick="quickSelectTikTokAccount('gohanmalunggay', 'Gohan Malunggay')">
-                        <div class="quick-account-avatar" style="background: linear-gradient(135deg, #000000, #1f2937); border: 1px solid #25f4ee; color: #25f4ee;">🎵</div>
-                        <div style="flex: 1;">
-                            <div class="quick-account-name">@gohanmalunggay</div>
-                            <div class="quick-account-email">Streamer Channel</div>
-                        </div>
-                        <span style="font-size: 11px; color: #25f4ee; font-weight: 700;">Continue →</span>
-                    </div>
-                </div>
-
-                <div class="auth-divider">
-                    <span>or enter any TikTok username</span>
-                </div>
-
                 <!-- TikTok Form -->
                 <form id="tiktokAuthForm" onsubmit="handleTikTokAuthSubmit(event)" style="width: 100%;">
                     <div class="auth-input-group">
@@ -3352,22 +3336,6 @@
                         <strong>Clean Workspace for New Users</strong><br>
                         New accounts begin with an empty customization list (no plants or zombies pre-filled) so you can freely build your own live triggers.
                     </div>
-                </div>
-
-                <!-- Quick Account Selector -->
-                <div id="quickAccountsWrap" class="quick-accounts-list">
-                    <div class="quick-account-item" onclick="quickSelectGoogleAccount('streamer@gmail.com', 'Master Streamer')">
-                        <div class="quick-account-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">S</div>
-                        <div style="flex: 1;">
-                            <div class="quick-account-name">Master Streamer</div>
-                            <div class="quick-account-email">streamer@gmail.com</div>
-                        </div>
-                        <span style="font-size: 11px; color: #10b981; font-weight: 700;">Continue →</span>
-                    </div>
-                </div>
-
-                <div class="auth-divider">
-                    <span>or enter any Google Account</span>
                 </div>
 
                 <!-- Google Account Input Form -->
@@ -9483,7 +9451,7 @@
 
             if (btn.innerText === 'Connect') {
                 if (!cleanUser) {
-                    alert("Please enter your TikTok username (e.g. gohanmalunggay)");
+                    alert("Please enter your TikTok username");
                     return;
                 }
                 btn.innerText = 'Connecting...';
