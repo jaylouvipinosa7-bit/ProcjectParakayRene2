@@ -1057,7 +1057,47 @@ function Send-JsonResponse($resp, $obj, [int]$status = 200) {
     } catch {}
 }
 
+function Ensure-Dependencies {
+    # 1. Unpack portable node.exe if bin\node.exe does not exist
+    $binDir = Join-Path $folder "bin"
+    $binNode = Join-Path $binDir "node.exe"
+    $nodeArchive = Join-Path $folder "node_runtime.tar.gz"
+    if (-not (Test-Path $binNode)) {
+        if (-not (Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
+        if (Test-Path $nodeArchive) {
+            Write-Host "  [SETUP] Unpacking portable Node.js runtime for this PC..." -ForegroundColor Yellow
+            try {
+                & tar -xzf $nodeArchive -C $binDir
+                if (Test-Path $binNode) {
+                    Write-Host "  [SETUP] Portable Node.js unpacked successfully!" -ForegroundColor Green
+                }
+            } catch {
+                Write-Host "  [WARNING] tar extraction of node runtime failed: $_" -ForegroundColor Red
+            }
+        }
+    }
+
+    # 2. Unpack node_modules if missing
+    $nmDir = Join-Path $folder "node_modules"
+    $connectorDir = Join-Path $nmDir "tiktok-live-connector"
+    $modulesArchive = Join-Path $folder "runtime_modules.tar.gz"
+    if ((-not (Test-Path $nmDir) -or -not (Test-Path $connectorDir)) -and (Test-Path $modulesArchive)) {
+        Write-Host "  [SETUP] Unpacking TikTok Live Connector modules..." -ForegroundColor Yellow
+        try {
+            & tar -xzf $modulesArchive -C $folder
+            if (Test-Path $connectorDir) {
+                Write-Host "  [SETUP] TikTok Live Connector unpacked successfully!" -ForegroundColor Green
+            }
+        } catch {
+            Write-Host "  [WARNING] tar extraction of modules failed: $_" -ForegroundColor Red
+        }
+    }
+}
+
 function Find-NodeExecutable {
+    # 0. Ensure bundled archives are extracted first
+    Ensure-Dependencies
+
     # 1. Check local bundled bin folder inside project
     $binNode = Join-Path $folder "bin\node.exe"
     if (Test-Path $binNode) { return $binNode }
@@ -1091,7 +1131,7 @@ function Find-NodeExecutable {
         }
     }
 
-    # 4. Auto-download portable Node.js if missing (one-time setup for friends/other users)
+    # 4. Auto-download portable Node.js if missing (fallback for friends/other users without archives)
     try {
         $binDir = Join-Path $folder "bin"
         if (-not (Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
@@ -1121,10 +1161,14 @@ function Start-TikTokBridge([string]$targetUser) {
     if ($cleanUser -match 'tiktok\.com\/@([a-zA-Z0-9_.-]+)') {
         $cleanUser = $matches[1]
     } else {
-        $cleanUser = $cleanUser.Split('/')[0].Trim()
+        $cleanUser = $cleanUser.Split('/')[0].Split('?')[0].Split('&')[0].Trim()
     }
     if (-not $cleanUser) { return }
 
+    $script:tiktokConnectedUser = $cleanUser
+
+    # Ensure dependencies are available before launching
+    Ensure-Dependencies
     if (-not $script:nodePath -or -not (Test-Path $script:nodePath)) {
         $script:nodePath = Find-NodeExecutable
     }
@@ -1243,15 +1287,18 @@ while ($true) {
             if ($user -match 'tiktok\.com\/@([a-zA-Z0-9_.-]+)') {
                 $user = $matches[1]
             } else {
-                $user = $user.TrimStart('@').Split('/')[0].Trim()
+                $user = $user.TrimStart('@').Split('/')[0].Split('?')[0].Split('&')[0].Trim()
             }
             if (-not $user) {
                 Send-JsonResponse $response @{ status = "error"; message = "TikTok username is required" }
                 continue
             }
-            $cfg = LoadConfig
+            $script:tiktokConnectedUser = $user
+            $cfg = LoadConfig $user
             if (-not $cfg.streamer) { $cfg | Add-Member -MemberType NoteProperty -Name streamer -Value @{} -Force }
             $cfg.streamer.tiktokUsername = $user
+            $userCfgFile = Get-UserConfigPath $user
+            [System.IO.File]::WriteAllText($userCfgFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
             [System.IO.File]::WriteAllText($configFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
             Start-TikTokBridge $user
             Send-JsonResponse $response @{ status = "ok"; message = "Connecting to @$user"; username = $user }
@@ -1260,9 +1307,10 @@ while ($true) {
 
         if ($reqPath -eq '/api/tiktok/disconnect') {
             Stop-TikTokBridge
+            $script:tiktokConnectedUser = $null
             $stateFile = Join-Path $folder "tiktok_live_state.json"
             if (Test-Path $stateFile) {
-                $st = @{ connected = $false; statusText = "Disconnected"; username = "" }
+                $st = @{ connected = $false; processRunning = $false; statusText = "Disconnected"; username = "" }
                 [System.IO.File]::WriteAllText($stateFile, ($st | ConvertTo-Json), [System.Text.Encoding]::UTF8)
             }
             Send-JsonResponse $response @{ status = "ok"; message = "Disconnected" }

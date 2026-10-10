@@ -22,6 +22,11 @@ scratch/
 core/bin/
 *.zip
 
+# Portable standalone runtime bundles for friends and zero-install setup
+!core/node_runtime.tar.gz
+!core/runtime_modules.tar.gz
+
+
 # OS files
 Thumbs.db
 Desktop.ini

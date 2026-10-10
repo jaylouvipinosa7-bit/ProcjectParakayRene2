@@ -9,7 +9,7 @@ const urlMatch = rawUserArg.match(/tiktok\.com\/@([a-zA-Z0-9_.-]+)/i);
 if (urlMatch) {
     targetUser = urlMatch[1];
 } else {
-    targetUser = rawUserArg.replace(/^@+/, '').split('/')[0].trim();
+    targetUser = rawUserArg.replace(/^@+/, '').split('/')[0].split('?')[0].split('&')[0].trim();
 }
 if (!targetUser) {
     console.log('No TikTok username provided. Standing by...');

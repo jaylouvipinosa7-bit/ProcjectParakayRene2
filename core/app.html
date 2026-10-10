@@ -10845,7 +10845,7 @@
             if (urlMatch) {
                 cleanUser = urlMatch[1];
             } else {
-                cleanUser = rawUser.replace(/^@+/, '').split('/')[0].trim();
+                cleanUser = rawUser.replace(/^@+/, '').split('/')[0].split('?')[0].split('&')[0].trim();
             }
 
             if (btn.innerText.includes('Connect') || btn.innerText.includes('Waiting')) {
