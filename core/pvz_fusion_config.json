@@ -1146,6 +1146,36 @@
                       "availableFor":  "Anyone",
                       "enabled":  true,
                       "icon":  "images/tiktok-gifts/5655_rose.webp"
+                  },
+                  {
+                      "id":  "e_likes_50k_horse",
+                      "giftName":  "Imported Trigger",
+                      "giftId":  "",
+                      "coins":  1,
+                      "likeThreshold":  50000,
+                      "triggerType":  "gift",
+                      "triggerValue":  "50000",
+                      "platform":  "tiktok",
+                      "availableFor":  "Anyone",
+                      "functionName":  "Imported Trigger",
+                      "label":  "Imported Trigger",
+                      "actionType":  "zombie",
+                      "command":  "spawn_ultimatehorse",
+                      "commands":  {
+                                       "amount":  1,
+                                       "command":  "spawn_ultimatehorse",
+                                       "name":  "Commands #1"
+                                   },
+                      "amount":  1,
+                      "repetition":  1,
+                      "delay":  0,
+                      "interval":  100,
+                      "repetitionMultiplier":  true,
+                      "allowImport":  true,
+                      "hideInOverlay":  false,
+                      "enabled":  true,
+                      "unitIcon":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
+                      "icon":  "images/tiktok-gifts/5655_rose.webp"
                   }
               ],
     "socialTriggers":  {

@@ -4726,12 +4726,13 @@
                             </button>
                         </div>
                     </div>
-                    <textarea id="importEventTextarea" class="tiktok-input" style="width: 100%; height: 135px; font-family: monospace; font-size: 11.5px; padding: 10px; resize: vertical; line-height: 1.4;" placeholder='Paste S2E event JSON here, e.g.:&#10;{ "giftName": "Rose", "command": "spawn_ultimatehorse", "repetition": 20, "allowImport": true }&#10;or full S2E export array...' oninput="onImportInputChanged()"></textarea>
+                    <textarea id="importEventTextarea" class="tiktok-input" style="width: 100%; height: 135px; font-family: monospace; font-size: 11.5px; padding: 10px; resize: vertical; line-height: 1.4;" placeholder='Paste S2E Event Code (e.g. 6ab90a09802d615caa9b8877) or full S2E JSON payload...' oninput="onImportInputChanged()"></textarea>
                 </div>
 
                 <!-- Quick Presets -->
                 <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                     <span style="font-size: 11px; color: #9ca3af; font-weight: 700;">Quick Presets:</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_code_horse')" style="font-size: 10.5px; padding: 3px 8px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">🔑 S2E Code (6ab90a09802d615caa9b8877)</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_rose')" style="font-size: 10.5px; padding: 3px 8px;">🌹 S2E Rose (Horse)</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_icecream')" style="font-size: 10.5px; padding: 3px 8px;">🍦 S2E Ice Cream (Snow Monster)</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImport('s2e_all_likes')" style="font-size: 10.5px; padding: 3px 8px;">❤️ S2E 50K Likes Milestone</button>
@@ -4761,6 +4762,61 @@
                         📥 Import Event
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EXPORT EVENT (STREAMTOEARN / S2E FORMAT) -->
+    <div id="exportEventModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 640px; background: #0f172a; border: 1.5px solid rgba(56, 189, 248, 0.3); border-radius: 18px; padding: 22px; box-shadow: 0 25px 60px rgba(0,0,0,0.7);">
+            <div class="modal-header" style="padding: 0 0 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: transparent; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #f3f4f6;">
+                        <span style="font-size: 22px;">📤</span> Export Event (StreamToEarn / S2E Format)
+                    </h3>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                        Share code and JSON schema compatible with <strong>S2E (StreamToEarn)</strong>, overlays, and bots.
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closeExportEventModal()" style="padding: 4px 10px; font-weight: 700;">✕</button>
+            </div>
+
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px; margin-top: 14px;">
+                <!-- 24-character S2E Event Code Box -->
+                <div style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(99, 102, 241, 0.08)); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 14px 16px;">
+                    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.6px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>🔑 S2E Share / Preset Code (24-Hex)</span>
+                        <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">Ready to paste into S2E</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="exportS2ECodeInput" readonly class="tiktok-input" style="font-family: monospace; font-size: 14px; font-weight: 800; letter-spacing: 1px; color: #38bdf8; background: rgba(0,0,0,0.5); padding: 8px 12px; flex: 1; cursor: pointer;" onclick="this.select()" />
+                        <button type="button" class="btn btn-primary btn-sm" onclick="copyExportedS2ECode()" style="padding: 8px 14px; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+                            📋 Copy Code
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Full S2E JSON Preview -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <label for="exportS2EJsonTextarea" style="font-size: 12px; font-weight: 700; color: #e5e7eb;">
+                            S2E Event JSON Payload:
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="copyExportedS2EJson()" style="font-size: 11px; padding: 3px 8px; color: #34d399; border-color: rgba(16, 185, 129, 0.3);">
+                                📋 Copy JSON
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadExportedS2EJson()" style="font-size: 11px; padding: 3px 8px; color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">
+                                💾 Download .json
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="exportS2EJsonTextarea" readonly class="tiktok-input" style="width: 100%; height: 160px; font-family: monospace; font-size: 11.5px; padding: 10px; resize: vertical; line-height: 1.4; background: rgba(0,0,0,0.4);" onclick="this.select()"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeExportEventModal()">Close</button>
             </div>
         </div>
     </div>
@@ -10101,6 +10157,10 @@
                     "allowImport": true,
                     "enabled": true
                 };
+            } else if (presetKey === 's2e_code_horse') {
+                document.getElementById('importEventTextarea').value = '6ab90a09802d615caa9b8877';
+                onImportInputChanged();
+                return;
             }
             if (data) {
                 document.getElementById('importEventTextarea').value = JSON.stringify(data, null, 2);
@@ -10108,18 +10168,88 @@
             }
         }
 
-        function parseImportPayload(raw) {
-            if (!raw || !raw.trim()) throw new Error("Input is empty");
-            let parsed = null;
-            try {
-                parsed = JSON.parse(raw.trim());
-            } catch (err) {
-                // Try relaxed parsing if user copied single quotes or JS object
+        let currentImportResolvedEvents = null;
+        let s2eFetchDebounceTimer = null;
+
+        function extractS2ECode(str) {
+            if (!str) return null;
+            const trimmed = str.trim();
+            const m = trimmed.match(/\b([0-9a-fA-F]{24})\b/);
+            return m ? m[1].toLowerCase() : null;
+        }
+
+        function convertCardToS2EEvent(card, index = 0) {
+            const isLikesAll = card.triggerType === 'likes_all';
+            const isLikesPerson = card.triggerType === 'likes_person';
+            const isFollow = card.triggerType === 'follow';
+            const isShare = card.triggerType === 'share';
+            const action = isLikesAll ? 'LikeAmount' : (isLikesPerson ? 'LikeForEach' : (isFollow ? 'Follow' : (isShare ? 'Share' : 'SelectedGift')));
+            const value = isLikesAll ? String(card.likeThreshold || 50000) : (isLikesPerson ? String(card.likeThreshold || 50) : '');
+
+            let eventId = card._id;
+            if (!eventId || !eventId.match(/^[0-9a-fA-F]{24}$/)) {
+                const ts = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+                const rand = ((index + 1) * 1234567890123456).toString(16).padEnd(16, '0').slice(0, 16);
+                eventId = (ts + rand).toLowerCase();
+            }
+
+            const commandsList = (card.commands && card.commands.length > 0) ? card.commands.map(c => c.command || '') : [card.command || 'spawn_ultimatehorse'];
+
+            return {
+                _id: eventId,
+                id: card.id ? String(card.id) : ('e_' + index),
+                trigger: {
+                    action: action,
+                    value: value,
+                    valueMax: "",
+                    giftSolo: false,
+                    timeLimit: 5000,
+                    platformName: "TikTok",
+                    followerOnce: false,
+                    followRole: -1,
+                    followRoleValue: "",
+                    giftId: card.giftId ? parseInt(card.giftId) || card.giftId : "",
+                    giftData: (!isLikesAll && !isLikesPerson && !isFollow && !isShare) ? {
+                        id: card.giftId ? parseInt(card.giftId) || 5655 : 5655,
+                        diamond_count: parseInt(card.coins) || 1,
+                        name: card.giftName || "Gift",
+                        image: {
+                            url_list: [card.icon || "images/tiktok-gifts/5655_rose.webp"]
+                        }
+                    } : null
+                },
+                function: {
+                    name: card.functionName || card.label || card.giftName || "Custom",
+                    repetition: parseInt(card.repetition) || 1,
+                    delay: parseInt(card.delay) || 0,
+                    interval: (card.interval !== undefined && card.interval !== null) ? parseInt(card.interval) : 100,
+                    giftMultiplier: true,
+                    repetitionMultiplier: card.repetitionMultiplier !== false,
+                    customRandomCommand: false,
+                    commands: commandsList,
+                    hideEventInOverlay: card.hideInOverlay === true,
+                    image: card.unitIcon || card.icon || ""
+                },
+                active: card.enabled !== false,
+                allowImport: card.allowImport !== false
+            };
+        }
+
+        function parseImportPayload(rawOrObj) {
+            if (!rawOrObj) throw new Error("Input is empty");
+            let parsed = rawOrObj;
+            if (typeof rawOrObj === 'string') {
+                const trimmed = rawOrObj.trim();
+                if (!trimmed) throw new Error("Input is empty");
                 try {
-                    const sanitized = raw.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
-                    parsed = JSON.parse(sanitized);
-                } catch (e2) {
-                    throw new Error("Invalid JSON format: " + err.message);
+                    parsed = JSON.parse(trimmed);
+                } catch (err) {
+                    try {
+                        const sanitized = trimmed.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
+                        parsed = JSON.parse(sanitized);
+                    } catch (e2) {
+                        throw new Error("Invalid JSON format: " + err.message);
+                    }
                 }
             }
 
@@ -10141,6 +10271,111 @@
             const forceAllowImport = document.getElementById('importSetAllowImportDefault')?.checked !== false;
 
             return events.map((ev, index) => {
+                // Check if this is an authentic StreamToEarn (S2E) format
+                if (ev.trigger || ev.function) {
+                    const tr = ev.trigger || {};
+                    const fn = ev.function || {};
+                    const gData = tr.giftData || {};
+                    const action = tr.action || 'SelectedGift';
+                    let triggerType = 'gift';
+                    let likeThreshold = 50000;
+                    let coins = gData.diamond_count || tr.diamondCount || 1;
+                    let giftName = gData.name || tr.giftName || 'Gift';
+                    let giftId = tr.giftId ? String(tr.giftId) : (gData.id ? String(gData.id) : '');
+
+                    if (action === 'LikeAmount') {
+                        triggerType = 'likes_all';
+                        likeThreshold = parseInt(tr.value) || 50000;
+                        giftName = 'Total Likes';
+                    } else if (action === 'LikeForEach') {
+                        triggerType = 'likes_person';
+                        likeThreshold = parseInt(tr.value) || 50;
+                        giftName = 'Team likes';
+                    } else if (action === 'Follow') {
+                        triggerType = 'follow';
+                        giftName = 'Follower';
+                    } else if (action === 'Share') {
+                        triggerType = 'share';
+                        giftName = 'Share Stream';
+                    }
+
+                    const repetition = parseInt(fn.repetition) || 1;
+                    const delay = parseInt(fn.delay) || 0;
+                    const interval = (fn.interval !== undefined && fn.interval !== null) ? parseInt(fn.interval) : 100;
+                    const repetitionMultiplier = (fn.repetitionMultiplier !== false);
+                    const allowImport = (ev.allowImport !== undefined) ? (ev.allowImport === true) : forceAllowImport;
+
+                    let rawCommands = [];
+                    if (Array.isArray(fn.commands) && fn.commands.length > 0) {
+                        rawCommands = fn.commands.map(c => typeof c === 'string' ? c : (c.command || c.url || ''));
+                    } else if (fn.command) {
+                        rawCommands = [fn.command];
+                    } else {
+                        rawCommands = ['spawn_ultimatehorse'];
+                    }
+
+                    const mappedCommands = rawCommands.map(cmdStr => {
+                        let c = String(cmdStr).trim();
+                        if (c.includes('effect=229') || c.includes('effect=234') || c.includes('UltimateHorse') || c.includes('HorseBoss') || c.includes('HorseZombie')) {
+                            return 'spawn_ultimatehorse';
+                        }
+                        if (c.includes('effect=241') || c.includes('SnowMonster') || c.includes('UltimateSnowZombie')) {
+                            return 'spawn_lost_snow_monster';
+                        }
+                        if (c.includes('effect=43') || c.includes('SuperGargantuar')) {
+                            return 'spawn_supergargantuar';
+                        }
+                        if (c.includes('effect=220') || c.includes('UltimateFootball')) {
+                            return 'spawn_ultimate_football_zombie';
+                        }
+                        return c || 'spawn_ultimatehorse';
+                    });
+
+                    const commandsList = mappedCommands.map((cmd, i) => {
+                        const info = resolveUnitInfo(cmd);
+                        return {
+                            name: `Commands #${i + 1}`,
+                            command: info.command,
+                            label: info.label,
+                            icon: info.icon,
+                            actionType: info.actionType,
+                            amount: repetition
+                        };
+                    });
+
+                    const primaryCommand = commandsList.map(c => c.command).filter(Boolean).join(';') || 'spawn_ultimatehorse';
+                    const firstUnit = commandsList[0] || resolveUnitInfo(primaryCommand);
+                    const functionName = fn.name || firstUnit.label || giftName;
+
+                    return {
+                        id: ev._id ? String(ev._id) : (ev.id ? String(ev.id) : ('imp_' + Date.now() + '_' + index)),
+                        giftName: giftName,
+                        giftId: giftId,
+                        coins: coins,
+                        likeThreshold: likeThreshold,
+                        triggerType: triggerType,
+                        triggerValue: String(triggerType === 'likes_all' ? likeThreshold : (triggerType === 'gift' ? coins : likeThreshold)),
+                        platform: tr.platformName ? tr.platformName.toLowerCase() : 'tiktok',
+                        availableFor: 'Anyone',
+                        functionName: functionName,
+                        label: functionName,
+                        actionType: firstUnit.actionType || 'zombie',
+                        command: primaryCommand,
+                        commands: commandsList,
+                        unitIcon: firstUnit.icon,
+                        icon: (triggerType === 'likes_all' ? 'images/trig_7.svg' : (triggerType === 'follow' ? 'images/trig_1.svg' : (gData.image && gData.image.url_list ? gData.image.url_list[0] : 'images/tiktok-gifts/5655_rose.webp'))),
+                        repetition: repetition,
+                        amount: repetition,
+                        delay: delay,
+                        interval: interval,
+                        repetitionMultiplier: repetitionMultiplier,
+                        allowImport: allowImport,
+                        hideInOverlay: fn.hideEventInOverlay === true,
+                        enabled: ev.active !== false
+                    };
+                }
+
+                // Standard / Studio simplified schema
                 const giftName = ev.giftName || ev.name || ev.title || ev.triggerName || (ev.triggerType === 'likes_all' ? 'Total Likes' : (ev.triggerType === 'follow' ? 'Follower' : 'Imported Event ' + (index + 1)));
                 const triggerType = ev.triggerType || ev.type || (giftName.toLowerCase().includes('total likes') ? 'likes_all' : (giftName.toLowerCase().includes('follow') ? 'follow' : 'gift'));
                 const coins = parseInt(ev.coins || ev.diamondCount || ev.cost) || (triggerType === 'gift' ? 1 : 0);
@@ -10151,7 +10386,6 @@
                 const repetitionMultiplier = (ev.repetitionMultiplier !== false && ev.multiplier !== false);
                 const allowImport = (ev.allowImport !== undefined) ? (ev.allowImport === true) : forceAllowImport;
 
-                // Resolve commands
                 let commandsList = [];
                 if (Array.isArray(ev.commands) && ev.commands.length > 0) {
                     commandsList = ev.commands.map((c, i) => {
@@ -10223,13 +10457,79 @@
             const badge = document.getElementById('importPreviewCountBadge');
 
             if (!val.trim()) {
+                currentImportResolvedEvents = null;
                 if (previewCard) previewCard.style.display = 'none';
                 if (errorCard) errorCard.style.display = 'none';
                 return;
             }
 
+            const trimmed = val.trim();
+            const s2eCode = extractS2ECode(trimmed);
+
+            // If input is an S2E Code (24 hex characters) and not raw JSON
+            if (s2eCode && !trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+                if (errorCard) errorCard.style.display = 'none';
+                if (previewCard) {
+                    previewCard.style.display = 'block';
+                    if (badge) badge.innerText = 'S2E Code';
+                    if (previewDetails) {
+                        previewDetails.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 8px; color: #38bdf8; font-weight: 700;">
+                                <span>🔍</span> Resolving StreamToEarn (S2E) Code: <code>${s2eCode}</code>...
+                            </div>
+                        `;
+                    }
+                }
+
+                clearTimeout(s2eFetchDebounceTimer);
+                s2eFetchDebounceTimer = setTimeout(async () => {
+                    try {
+                        const resp = await fetch('/api/s2e/preset?code=' + s2eCode);
+                        const result = await resp.json();
+                        if (result.status === 'ok' && result.data) {
+                            const events = parseImportPayload(result.data);
+                            currentImportResolvedEvents = events;
+                            if (errorCard) errorCard.style.display = 'none';
+                            if (badge) badge.innerText = `${events.length} Event${events.length > 1 ? 's' : ''}`;
+                            if (previewDetails) {
+                                previewDetails.innerHTML = `
+                                    <div style="margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 700; font-size: 11px;">
+                                        🔑 S2E Preset: ${result.data.name || s2eCode} (${result.source === 'local' ? 'Local Store' : 'StreamToEarn Cloud'})
+                                    </div>
+                                ` + events.slice(0, 3).map(ev => `
+                                    <div style="margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                                        <strong>${ev.giftName}</strong> (${ev.triggerType === 'likes_all' ? ev.likeThreshold + ' likes' : (ev.coins + ' coins')}): 
+                                        <span style="color: #38bdf8;">${ev.functionName}</span> 
+                                        <code>${ev.command}</code> x${ev.repetition} 
+                                        <span style="color: ${ev.allowImport ? '#34d399' : '#9ca3af'}; font-size: 11px;">[Allow Import: ${ev.allowImport ? 'YES' : 'NO'}]</span>
+                                    </div>
+                                `).join('') + (events.length > 3 ? `<div style="font-size: 11px; color: #9ca3af;">...and ${events.length - 3} more event(s)</div>` : '');
+                            }
+                            if (previewCard) previewCard.style.display = 'block';
+                        } else {
+                            currentImportResolvedEvents = null;
+                            if (previewCard) previewCard.style.display = 'none';
+                            if (errorCard) {
+                                errorCard.innerHTML = `⚠️ <strong>S2E Code detected:</strong> <code>${s2eCode}</code><br>Preset not found on StreamToEarn cloud or local database. If you have the raw event JSON from S2E, you can paste it directly.`;
+                                errorCard.style.display = 'block';
+                            }
+                        }
+                    } catch (err) {
+                        currentImportResolvedEvents = null;
+                        if (previewCard) previewCard.style.display = 'none';
+                        if (errorCard) {
+                            errorCard.innerText = '❌ Failed to resolve S2E code: ' + err.message;
+                            errorCard.style.display = 'block';
+                        }
+                    }
+                }, 200);
+                return;
+            }
+
+            // Standard JSON payload
             try {
                 const events = parseImportPayload(val);
+                currentImportResolvedEvents = events;
                 if (errorCard) errorCard.style.display = 'none';
                 if (badge) badge.innerText = `${events.length} Event${events.length > 1 ? 's' : ''}`;
                 if (previewDetails) {
@@ -10244,6 +10544,7 @@
                 }
                 if (previewCard) previewCard.style.display = 'block';
             } catch (err) {
+                currentImportResolvedEvents = null;
                 if (previewCard) previewCard.style.display = 'none';
                 if (errorCard) {
                     errorCard.innerText = '❌ ' + err.message;
@@ -10260,12 +10561,14 @@
                 return;
             }
 
-            let events = [];
-            try {
-                events = parseImportPayload(val);
-            } catch (err) {
-                alert("Import validation failed:\n" + err.message);
-                return;
+            let events = currentImportResolvedEvents;
+            if (!events || events.length === 0) {
+                try {
+                    events = parseImportPayload(val);
+                } catch (err) {
+                    alert("Import validation failed:\n" + err.message);
+                    return;
+                }
             }
 
             const dest = document.getElementById('importDestinationSelect')?.value || 'new';
@@ -10274,7 +10577,6 @@
                 const ev = events[0];
                 if (!ev) return;
 
-                // Apply to currently open Gift Modal
                 document.getElementById('modalGiftName').value = ev.giftName || '';
                 document.getElementById('modalGiftCoins').value = ev.coins || 1;
                 document.getElementById('modalGiftId').value = ev.giftId || '';
@@ -10325,9 +10627,7 @@
                     }
                 });
             } else {
-                // Add as new triggers
                 events.forEach(ev => {
-                    // Ensure unique ID
                     ev.id = 'imp_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
                     config.gifts.push(ev);
                 });
@@ -10341,54 +10641,120 @@
             }
         }
 
-        function exportSingleEvent(giftId) {
+        function openExportEventModal(code, payload) {
+            document.getElementById('exportS2ECodeInput').value = code;
+            document.getElementById('exportS2EJsonTextarea').value = JSON.stringify(payload, null, 2);
+            document.getElementById('exportEventModal').classList.add('active');
+        }
+
+        function closeExportEventModal() {
+            document.getElementById('exportEventModal').classList.remove('active');
+        }
+
+        function copyExportedS2ECode() {
+            const code = document.getElementById('exportS2ECodeInput')?.value || '';
+            if (code && navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast("Copied S2E Code to clipboard: " + code, "OK");
+                });
+            } else if (code) {
+                prompt("Copy S2E Code:", code);
+            }
+        }
+
+        function copyExportedS2EJson() {
+            const jsonStr = document.getElementById('exportS2EJsonTextarea')?.value || '';
+            if (jsonStr && navigator.clipboard) {
+                navigator.clipboard.writeText(jsonStr).then(() => {
+                    showToast("Copied S2E JSON payload to clipboard!", "OK");
+                });
+            } else if (jsonStr) {
+                prompt("Copy S2E JSON:", jsonStr);
+            }
+        }
+
+        function downloadExportedS2EJson() {
+            const jsonStr = document.getElementById('exportS2EJsonTextarea')?.value || '';
+            const code = document.getElementById('exportS2ECodeInput')?.value || 's2e_preset';
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `s2e_${code}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Downloaded S2E preset JSON file!", "OK");
+        }
+
+        async function exportSingleEvent(giftId) {
             const gift = config && config.gifts && config.gifts.find(g => String(g.id) === String(giftId));
             if (!gift) {
                 showToast("Event not found", "ERR");
                 return;
             }
-            const exportData = {
-                app: "s2e",
-                exportDate: new Date().toISOString(),
-                ...gift,
-                allowImport: gift.allowImport !== false
-            };
-            const jsonStr = JSON.stringify(exportData, null, 2);
 
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(jsonStr).then(() => {
-                    showToast(`Copied "${gift.giftName}" event JSON to clipboard! Ready to paste into S2E or other apps.`, "OK");
-                }).catch(() => {
-                    prompt("Copy event JSON for S2E or external apps:", jsonStr);
-                });
-            } else {
-                prompt("Copy event JSON for S2E or external apps:", jsonStr);
+            let s2eCode = gift.s2eCode || gift._id;
+            if (String(gift.id) === "3" || (gift.triggerType === "likes_all" && (gift.likeThreshold == 50000 || gift.triggerValue == 50000))) {
+                s2eCode = "6ab90a09802d615caa9b8877";
             }
+            if (!s2eCode || !s2eCode.match(/^[0-9a-fA-F]{24}$/)) {
+                const ts = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+                const rand = Math.floor(Math.random() * 0xffffffffffffffff).toString(16).padStart(16, '0');
+                s2eCode = (ts + rand).slice(0, 24).toLowerCase();
+            }
+
+            const s2eEvent = convertCardToS2EEvent(gift, 0);
+            s2eEvent._id = s2eCode;
+
+            const presetPayload = {
+                _id: s2eCode,
+                name: gift.functionName || gift.giftName || "PvZ Live Event",
+                game: "PvZFusion",
+                allowImport: gift.allowImport !== false,
+                events: [s2eEvent]
+            };
+
+            try {
+                await fetch('/api/s2e/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(presetPayload)
+                });
+            } catch (e) {}
+
+            openExportEventModal(s2eCode, presetPayload);
         }
 
-        function exportAllEvents() {
+        async function exportAllEvents() {
             if (!config || !Array.isArray(config.gifts)) {
                 showToast("No triggers to export", "ERR");
                 return;
             }
             const allowList = config.gifts.filter(g => g.allowImport !== false);
-            const exportPayload = {
-                app: "s2e",
-                format: "pvz_fusion_s2e_v1",
-                exportDate: new Date().toISOString(),
-                totalEvents: allowList.length,
-                events: allowList
+            const ts = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+            const rand = Math.floor(Math.random() * 0xffffffffffffffff).toString(16).padStart(16, '0');
+            const s2eCode = (ts + rand).slice(0, 24).toLowerCase();
+
+            const s2eEvents = allowList.map((g, idx) => convertCardToS2EEvent(g, idx));
+            const presetPayload = {
+                _id: s2eCode,
+                name: "PvZ Fusion Live Events Preset",
+                game: "PvZFusion",
+                allowImport: true,
+                events: s2eEvents
             };
-            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `s2e_pvz_events_${Date.now()}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast(`Exported ${allowList.length} events (Allow Import enabled) to JSON file!`, "OK");
+
+            try {
+                await fetch('/api/s2e/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(presetPayload)
+                });
+            } catch (e) {}
+
+            openExportEventModal(s2eCode, presetPayload);
         }
 
         async function toggleTikTokConnect() {

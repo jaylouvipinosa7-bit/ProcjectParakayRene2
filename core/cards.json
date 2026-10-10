@@ -742,5 +742,17 @@
         "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
         "repetition":  20
+    },
+    {
+        "id":  "e_likes_50k_horse",
+        "action":  "SelectedGift",
+        "giftId":  "",
+        "giftName":  "Imported Trigger",
+        "funcName":  "Imported Trigger",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
+        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimatehorse",
+        "repetition":  1
     }
 ]

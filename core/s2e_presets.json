@@ -1,0 +1,99 @@
+{
+  "6ab90a09802d615caa9b8877": {
+    "_id": "6ab90a09802d615caa9b8877",
+    "id": "s2e_horse_50k",
+    "name": "Stream 50K Likes Horse Stampede",
+    "game": "PvZFusion",
+    "allowImport": true,
+    "events": [
+      {
+        "_id": "6ab90a09802d615caa9b8877",
+        "id": "e_likes_50k_horse",
+        "trigger": {
+          "action": "LikeAmount",
+          "value": "50000",
+          "valueMax": "",
+          "giftSolo": false,
+          "timeLimit": 5000,
+          "platformName": "TikTok",
+          "followerOnce": false,
+          "giftId": "",
+          "giftData": null
+        },
+        "function": {
+          "name": "Spawn UltimateHorse",
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "giftMultiplier": false,
+          "repetitionMultiplier": false,
+          "customRandomCommand": false,
+          "commands": [
+            "spawn_ultimatehorse"
+          ],
+          "image": "/images/game-icons/pvz/spawn_ultimatehorse.webp"
+        },
+        "active": true
+      }
+    ]
+  },
+  "6a7037f3324251772e699846": {
+    "_id": "6a7037f3324251772e699846",
+    "id": "s2e_pvz_full_pack",
+    "name": "PvZ Fusion Stream Pack",
+    "game": "PvZFusion",
+    "allowImport": true,
+    "events": [
+      {
+        "_id": "6a9f7513a3f80f466fbb0646",
+        "trigger": {
+          "action": "LikeAmount",
+          "value": "50000",
+          "platformName": "TikTok"
+        },
+        "function": {
+          "name": "Spawn UltimateHorse",
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "commands": ["spawn_ultimatehorse"]
+        },
+        "active": true
+      },
+      {
+        "_id": "6aa3edea77820391b09c57c2",
+        "trigger": {
+          "action": "SelectedGift",
+          "giftId": 5655,
+          "platformName": "TikTok",
+          "giftData": { "name": "Rose", "diamond_count": 1 }
+        },
+        "function": {
+          "name": "Spawn UltimateHorse",
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "commands": ["spawn_ultimatehorse"]
+        },
+        "active": true
+      },
+      {
+        "_id": "6aa60a3777820391b0b1efdc",
+        "trigger": {
+          "action": "SelectedGift",
+          "giftId": 5827,
+          "platformName": "TikTok",
+          "giftData": { "name": "Ice Cream Cone", "diamond_count": 1 }
+        },
+        "function": {
+          "name": "Spawn Lost Snow Monster",
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "commands": ["spawn_lost_snow_monster"]
+        },
+        "active": true
+      }
+    ]
+  }
+}

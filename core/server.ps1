@@ -1813,6 +1813,99 @@ while ($true) {
             continue
         }
 
+        # 2e. S2E Preset / Event Code Resolver (Fetches by 24-char hex code e.g. 6ab90a09802d615caa9b8877)
+        if ($reqPath -eq '/api/s2e/preset') {
+            $code = if ($request.QueryString['code']) { $request.QueryString['code'].Trim() } elseif ($request.QueryString['id']) { $request.QueryString['id'].Trim() } else { "" }
+            if ($code -match '([0-9a-fA-F]{24})') {
+                $code = $matches[1].ToLower()
+            }
+
+            if (-not $code) {
+                Send-JsonResponse $response @{ status = "error"; message = "S2E code required" } 400
+                continue
+            }
+
+            $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+            $localPresets = @{}
+            if (Test-Path $s2ePresetsFile) {
+                try {
+                    $jsonText = Get-Content $s2ePresetsFile -Raw -Encoding UTF8
+                    $parsedObj = $jsonText | ConvertFrom-Json
+                    if ($parsedObj) {
+                        foreach ($prop in $parsedObj.PSObject.Properties) {
+                            $localPresets[$prop.Name] = $prop.Value
+                        }
+                    }
+                } catch {}
+            }
+
+            if ($localPresets.ContainsKey($code)) {
+                Send-JsonResponse $response @{ status = "ok"; source = "local"; code = $code; data = $localPresets[$code] }
+                continue
+            }
+
+            # Fallback to StreamToEarn Cloud API
+            try {
+                $s2eUrl = "https://api.streamtoearn.io/apiserver/overlay/getpreset/$code"
+                $wc = New-Object System.Net.WebClient
+                $wc.Headers.Add("User-Agent", "Mozilla/5.0")
+                $raw = $wc.DownloadString($s2eUrl)
+                if ($raw -and $raw.Trim() -ne '"error"' -and $raw.Trim() -ne 'null') {
+                    $parsed = $raw | ConvertFrom-Json
+                    if ($parsed -and ($parsed.events -or $parsed._id)) {
+                        # Cache locally
+                        $localPresets[$code] = $parsed
+                        [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+                        Send-JsonResponse $response @{ status = "ok"; source = "streamtoearn_cloud"; code = $code; data = $parsed }
+                        continue
+                    }
+                }
+            } catch {}
+
+            Send-JsonResponse $response @{
+                status = "not_found"
+                code = $code
+                message = "S2E code $code was not found on StreamToEarn cloud or local presets."
+            }
+            continue
+        }
+
+        # 2f. S2E Preset Save (Register 24-character code)
+        if ($reqPath -eq '/api/s2e/save' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $payload = $body | ConvertFrom-Json
+                $code = if ($payload._id) { [string]$payload._id } elseif ($payload.id -and $payload.id -match '^[0-9a-fA-F]{24}$') { [string]$payload.id } else {
+                    $ts = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString("x8")
+                    $rand = -join ((1..16) | ForEach-Object { '{0:x}' -f (Get-Random -Minimum 0 -Maximum 16) })
+                    ($ts + $rand).ToLower()
+                }
+
+                $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+                $localPresets = @{}
+                if (Test-Path $s2ePresetsFile) {
+                    try {
+                        $jsonText = Get-Content $s2ePresetsFile -Raw -Encoding UTF8
+                        $parsedObj = $jsonText | ConvertFrom-Json
+                        if ($parsedObj) {
+                            foreach ($prop in $parsedObj.PSObject.Properties) {
+                                $localPresets[$prop.Name] = $prop.Value
+                            }
+                        }
+                    } catch {}
+                }
+
+                $payload | Add-Member -MemberType NoteProperty -Name "_id" -Value $code -Force
+                $localPresets[$code] = $payload
+                [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+
+                Send-JsonResponse $response @{ status = "ok"; code = $code; message = "Saved S2E preset" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
+            }
+            continue
+        }
+
         # 3. Units Catalog
         if ($reqPath -eq '/api/catalog') {
             $content = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) } else { "{}" }
