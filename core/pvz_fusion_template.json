@@ -1,4 +1,4 @@
-{
+﻿{
     "streamer":  {
                      "tiktokUsername":  "",
                      "soundEnabled":  true,
@@ -1086,8 +1086,8 @@
                          "duration":  2500,
                          "ticks":  100,
                          "giftName":  "Perfume",
-                         "giftId":  "perfume",
-                         "giftIcon":  "images/tiktok-gifts/perfume_gift.webp",
+                         "giftId":  "5658",
+                         "giftIcon":  "images/tiktok-gifts/5658_perfume.webp",
                          "coins":  20,
                          "audience":  "Anyone",
                          "enabled":  true,
@@ -1315,8 +1315,8 @@
                      },
                      {
                          "id":  "spinner_plusminus",
-                         "giftIcon":  "images/tiktok-gifts/5655_rose.webp",
-                         "giftId":  "5655",
+                         "giftIcon":  "images/tiktok-gifts/7934_heart_me.webp",
+                         "giftId":  "7934",
                          "audience":  "Anyone",
                          "slices":  [
                                         {
@@ -1471,7 +1471,7 @@
                          "enabled":  true,
                          "ticks":  100,
                          "coins":  1,
-                         "giftName":  "Rose",
+                         "giftName":  "Heart Me",
                          "pointerIcon":  "images/numbers/num_pos_1.svg"
                      }
                  ],

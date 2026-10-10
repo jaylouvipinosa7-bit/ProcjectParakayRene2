@@ -582,6 +582,18 @@ function LoadConfig($optionalUser = "") {
         $gList.Insert([Math]::Min(2, $gList.Count), $c3)
         $cfg.gifts = $gList
     }
+
+    # Ensure spinners are NEVER empty so Reel & Number Card system work for all users
+    if ($cfg -and (-not $cfg.spinners -or $cfg.spinners.Count -eq 0)) {
+        if (Test-Path $templateConfigFile) {
+            try {
+                $tmpl = Get-Content $templateConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                if ($tmpl -and $tmpl.spinners -and $tmpl.spinners.Count -gt 0) {
+                    $cfg | Add-Member -MemberType NoteProperty -Name spinners -Value $tmpl.spinners -Force
+                }
+            } catch {}
+        }
+    }
     return $cfg
 }
 
@@ -1214,9 +1226,9 @@ function Stop-TikTokBridge {
     } catch {}
 }
 
-# Auto-start TikTok bridge if username is configured
+# Auto-start TikTok bridge only if streamer username is configured AND autoConnect is enabled
 $initialCfg = LoadConfig
-if ($initialCfg -and $initialCfg.streamer -and $initialCfg.streamer.tiktokUsername) {
+if ($initialCfg -and $initialCfg.streamer -and $initialCfg.streamer.tiktokUsername -and ($initialCfg.streamer.autoConnect -eq $true)) {
     Start-TikTokBridge $initialCfg.streamer.tiktokUsername
 }
 
@@ -1410,10 +1422,22 @@ while ($true) {
 
                 # Check if this user already has custom triggers configured
                 $userCfgPath = Get-UserConfigPath $email
-                $isNewUser = (-not (Test-Path $userCfgPath))
+                $tmplSpinners = @()
+                if (Test-Path $templateConfigFile) {
+                    try {
+                        $tmpl = Get-Content $templateConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($tmpl -and $tmpl.spinners) { $tmplSpinners = $tmpl.spinners }
+                    } catch {}
+                }
+                if ($tmplSpinners.Count -eq 0 -and (Test-Path $configFile)) {
+                    try {
+                        $baseCfg = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($baseCfg -and $baseCfg.spinners) { $tmplSpinners = $baseCfg.spinners }
+                    } catch {}
+                }
+
                 if ($isNewUser) {
-                    # Brand new user or first open: Start with COMPLETELY EMPTY customizations!
-                    # No zombies and no plants putting there so they customize from scratch!
+                    # Brand new user: empty gifts for clean trigger setup, but INCLUDE full spinners pool
                     $emptyConfig = @{
                         streamer = @{
                             tiktokUsername = ""
@@ -1426,15 +1450,23 @@ while ($true) {
                             role = $role
                         }
                         gifts = @()
-                        spinners = @()
+                        spinners = $tmplSpinners
                     }
                     $emptyJson = $emptyConfig | ConvertTo-Json -Depth 6
                     [System.IO.File]::WriteAllText($userCfgPath, $emptyJson, [System.Text.Encoding]::UTF8)
                     [System.IO.File]::WriteAllText($configFile, $emptyJson, [System.Text.Encoding]::UTF8)
                     Sync-ConfigToCards
                 } else {
-                    # User returning: activate their existing saved configuration
+                    # User returning: activate their existing saved configuration, repair spinners if missing
                     $userJson = [System.IO.File]::ReadAllText($userCfgPath, [System.Text.Encoding]::UTF8)
+                    try {
+                        $uObj = $userJson | ConvertFrom-Json
+                        if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
+                            $uObj.spinners = $tmplSpinners
+                            $userJson = $uObj | ConvertTo-Json -Depth 6
+                            [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
+                        }
+                    } catch {}
                     [System.IO.File]::WriteAllText($configFile, $userJson, [System.Text.Encoding]::UTF8)
                     Sync-ConfigToCards
                 }
@@ -1489,9 +1521,22 @@ while ($true) {
                 # Check if this TikTok streamer already has a config
                 $userCfgPath = Get-UserConfigPath $email
                 $isNewUser = (-not (Test-Path $userCfgPath))
+                $tmplSpinners = @()
+                if (Test-Path $templateConfigFile) {
+                    try {
+                        $tmpl = Get-Content $templateConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($tmpl -and $tmpl.spinners) { $tmplSpinners = $tmpl.spinners }
+                    } catch {}
+                }
+                if ($tmplSpinners.Count -eq 0 -and (Test-Path $configFile)) {
+                    try {
+                        $baseCfg = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($baseCfg -and $baseCfg.spinners) { $tmplSpinners = $baseCfg.spinners }
+                    } catch {}
+                }
 
                 if ($isNewUser) {
-                    # Clean empty workspace for new TikTok streamer
+                    # Clean empty workspace for new TikTok streamer, but INCLUDE full spinners pool
                     $emptyConfig = @{
                         streamer = @{
                             tiktokUsername = $username
@@ -1505,7 +1550,7 @@ while ($true) {
                             platform = "tiktok"
                         }
                         gifts = @()
-                        spinners = @()
+                        spinners = $tmplSpinners
                     }
                     $emptyJson = $emptyConfig | ConvertTo-Json -Depth 6
                     [System.IO.File]::WriteAllText($userCfgPath, $emptyJson, [System.Text.Encoding]::UTF8)
@@ -1513,6 +1558,14 @@ while ($true) {
                     Sync-ConfigToCards
                 } else {
                     $userJson = [System.IO.File]::ReadAllText($userCfgPath, [System.Text.Encoding]::UTF8)
+                    try {
+                        $uObj = $userJson | ConvertFrom-Json
+                        if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
+                            $uObj.spinners = $tmplSpinners
+                            $userJson = $uObj | ConvertTo-Json -Depth 6
+                            [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
+                        }
+                    } catch {}
                     [System.IO.File]::WriteAllText($configFile, $userJson, [System.Text.Encoding]::UTF8)
                     Sync-ConfigToCards
                 }
@@ -1695,8 +1748,22 @@ while ($true) {
             $targetPath = Get-UserConfigPath $userParam
 
             if ($request.HttpMethod -eq 'GET') {
+                $tmplSpinners = @()
+                if (Test-Path $templateConfigFile) {
+                    try {
+                        $tmpl = Get-Content $templateConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($tmpl -and $tmpl.spinners) { $tmplSpinners = $tmpl.spinners }
+                    } catch {}
+                }
+                if ($tmplSpinners.Count -eq 0 -and (Test-Path $configFile)) {
+                    try {
+                        $baseCfg = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        if ($baseCfg -and $baseCfg.spinners) { $tmplSpinners = $baseCfg.spinners }
+                    } catch {}
+                }
+
                 if (-not (Test-Path $targetPath)) {
-                    # Auto-initialize empty configuration for new user
+                    # Auto-initialize configuration with full spinners pool for new user
                     $emptyConfig = @{
                         streamer = @{
                             tiktokUsername = ""
@@ -1706,7 +1773,7 @@ while ($true) {
                             userEmail = if ($userParam) { $userParam } else { "" }
                         }
                         gifts = @()
-                        spinners = @()
+                        spinners = $tmplSpinners
                     }
                     $emptyJson = $emptyConfig | ConvertTo-Json -Depth 6
                     [System.IO.File]::WriteAllText($targetPath, $emptyJson, [System.Text.Encoding]::UTF8)
@@ -1716,6 +1783,11 @@ while ($true) {
                 $content = [System.IO.File]::ReadAllText($targetPath, [System.Text.Encoding]::UTF8)
                 try {
                     $parsedCfg = $content | ConvertFrom-Json
+                    $cfgModified = $false
+                    if ($parsedCfg -and (-not $parsedCfg.spinners -or $parsedCfg.spinners.Count -eq 0)) {
+                        $parsedCfg | Add-Member -MemberType NoteProperty -Name spinners -Value $tmplSpinners -Force
+                        $cfgModified = $true
+                    }
                     if ($parsedCfg -and $parsedCfg.gifts -and -not ($parsedCfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
                         $card3Obj = [PSCustomObject]@{
                             id = "3"
@@ -1752,7 +1824,11 @@ while ($true) {
                         $gList = [System.Collections.ArrayList]@($parsedCfg.gifts)
                         $gList.Insert([Math]::Min(2, $gList.Count), $card3Obj)
                         $parsedCfg.gifts = $gList
+                        $cfgModified = $true
+                    }
+                    if ($cfgModified) {
                         $content = $parsedCfg | ConvertTo-Json -Depth 10
+                        try { [System.IO.File]::WriteAllText($targetPath, $content, [System.Text.Encoding]::UTF8) } catch {}
                     }
                 } catch {}
                 Send-JsonResponse $response $content
@@ -2606,7 +2682,9 @@ while ($true) {
         # 7. Spin Lucky Wheel / Reel (Multi-Spinner Support)
         if ($reqPath -eq '/api/spin') {
             if ($request.HttpMethod -eq 'POST') { [void](ReadRequestBody $request) }
-            $config = LoadConfig
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } elseif ($request.QueryString['user']) { $request.QueryString['user'] } else { "" }
+            $config = LoadConfig $callerEmail
             $spinnerId = $request.QueryString['spinnerId']
             $groupId = $request.QueryString['groupId']
             
@@ -2625,6 +2703,15 @@ while ($true) {
             }
 
             $slices = if ($targetSpinner -and $targetSpinner.slices) { $targetSpinner.slices } else { @() }
+            if ($slices.Count -eq 0 -and (Test-Path $templateConfigFile)) {
+                try {
+                    $tmpl = Get-Content $templateConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    if ($tmpl -and $tmpl.spinners -and $tmpl.spinners.Count -gt 0) {
+                        $targetSpinner = $tmpl.spinners[0]
+                        $slices = $targetSpinner.slices
+                    }
+                } catch {}
+            }
             $pickedSlice = $null
             if ($slices.Count -gt 0) {
                 $totalWeight = 0.0
@@ -2781,28 +2868,66 @@ while ($true) {
                     if ($config -and $config.spinners) {
                         foreach ($sp in $config.spinners) {
                             if (-not $sp.enabled) { continue }
-                            if ($giftId -and $sp.giftId -and ([string]$sp.giftId.Trim() -eq [string]$giftId.Trim())) {
-                                $matchedSpinner = $sp
-                                break
+                            $spGId = if ($sp.giftId) { [string]$sp.giftId.Trim() } else { "" }
+                            $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
+                            if ($reqGId -and $spGId -and ($spGId -eq $reqGId)) {
+                                $matchedSpinner = $sp; break
                             }
+                            # Check clean alphanumeric ID match
+                            $cleanSpGId = ($spGId -replace '[^a-zA-Z0-9]','').ToLower()
+                            $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
+                            if ($cleanSpGId -and $cleanReqGId -and ($cleanSpGId -eq $cleanReqGId)) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Heart Me aliases
+                            if (($cleanSpGId -eq '7934' -or $cleanSpGId -eq 'heartme') -and ($cleanReqGId -eq '7934' -or $cleanReqGId -eq 'heartme')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Perfume aliases
+                            if (($cleanSpGId -eq '5658' -or $cleanSpGId -eq '5585' -or $cleanSpGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Doughnut aliases
+                            if (($cleanSpGId -eq '5879' -or $cleanSpGId -eq 'doughnut' -or $cleanSpGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Rose aliases
+                            if (($cleanSpGId -eq '5655' -or $cleanSpGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Ice Cream Cone aliases
+                            if (($cleanSpGId -eq '5827' -or $cleanSpGId -eq 'icecream' -or $cleanSpGId -eq 'icecreamcone') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream' -or $cleanReqGId -eq 'icecreamcone')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check giftName matching
                             if ($giftName -and $sp.giftName) {
                                 $cleanReq = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
                                 $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                if ($cleanReq -eq $cleanSp -or $sp.giftName.Trim().ToLower() -eq $giftName.Trim().ToLower()) {
-                                    $matchedSpinner = $sp
-                                    break
+                                if ($cleanReq -and $cleanSp -and ($cleanReq -eq $cleanSp -or $cleanReq.Contains($cleanSp) -or $cleanSp.Contains($cleanReq))) {
+                                    $matchedSpinner = $sp; break
+                                }
+                            }
+                            # Check verified catalog name
+                            if ($script:verifiedGiftsCatalog -and $reqGId) {
+                                $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $reqGId } | Select-Object -First 1
+                                if ($vg -and $vg.name -and $sp.giftName) {
+                                    $cleanVg = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                    $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                    if ($cleanVg -and $cleanSp -and ($cleanVg -eq $cleanSp -or $cleanVg.Contains($cleanSp) -or $cleanSp.Contains($cleanVg))) {
+                                        $matchedSpinner = $sp; break
+                                    }
                                 }
                             }
                         }
                     }
 
                     if ($matchedSpinner) {
-                        # Debounce check: ignore duplicate webhook spins for this user within 3000ms
+                        # Debounce check: ignore duplicate webhook spins for this user within 350ms
                         $cleanUserKey = ($user.ToLower() -replace '[^a-z0-9]', '')
                         $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
                         if ($cleanUserKey -and $script:recentSpins.ContainsKey($cleanUserKey)) {
                             $lastTime = [int64]$script:recentSpins[$cleanUserKey]
-                            if (($nowMs - $lastTime) -lt 3000) {
+                            if (($nowMs - $lastTime) -lt 350) {
                                 Send-JsonResponse $response @{ status = "ok"; message = "Debounced duplicate spin" }
                                 continue
                             }
@@ -2924,6 +3049,8 @@ while ($true) {
                             type = "spin_result"
                             label = "$($spName) - $($picked.label)"
                             username = $user
+                            avatar = $avatar
+                            giftName = if ($giftName) { $giftName } else { $matchedSpinner.giftName }
                             slice = $picked
                             spinnerId = [string]$matchedSpinner.id
                             spinnerName = $spName
@@ -2942,13 +3069,36 @@ while ($true) {
 
                     $matchedGift = $null
                     if ($config -and $config.gifts) {
-                        # 1. Match by giftId (exact string comparison)
+                        # 1. Match by giftId (exact string comparison or alias)
                         if ($giftId) {
                             $strGId = [string]$giftId
                             foreach ($g in $config.gifts) {
-                                if ($g.enabled -and $g.giftId -and ([string]$g.giftId.Trim() -eq $strGId.Trim())) {
-                                    $matchedGift = $g
-                                    break
+                                if (-not $g.enabled) { continue }
+                                $gGId = if ($g.giftId) { [string]$g.giftId.Trim() } else { "" }
+                                if ($gGId -and ($gGId -eq $strGId.Trim())) {
+                                    $matchedGift = $g; break
+                                }
+                                # Check clean alphanumeric
+                                $cleanGGId = ($gGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                $cleanReqGId = ($strGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                if ($cleanGGId -and $cleanReqGId -and ($cleanGGId -eq $cleanReqGId)) {
+                                    $matchedGift = $g; break
+                                }
+                                # Alias checks
+                                if (($cleanGGId -eq '5655' -or $cleanGGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
+                                    $matchedGift = $g; break
+                                }
+                                if (($cleanGGId -eq '5827' -or $cleanGGId -eq 'icecream') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream')) {
+                                    $matchedGift = $g; break
+                                }
+                                if (($cleanGGId -eq '7934' -or $cleanGGId -eq 'heartme') -and ($cleanReqGId -eq '7934' -or $cleanReqGId -eq 'heartme')) {
+                                    $matchedGift = $g; break
+                                }
+                                if (($cleanGGId -eq '5658' -or $cleanGGId -eq '5585' -or $cleanGGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
+                                    $matchedGift = $g; break
+                                }
+                                if (($cleanGGId -eq '5879' -or $cleanGGId -eq 'doughnut' -or $cleanGGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
+                                    $matchedGift = $g; break
                                 }
                             }
                         }
@@ -2958,9 +3108,23 @@ while ($true) {
                             foreach ($g in $config.gifts) {
                                 if ($g.enabled -and $g.giftName) {
                                     $cleanCfgName = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                    if ($cleanCfgName -and ($cleanCfgName -eq $cleanReqName -or $g.giftName.Trim().ToLower() -eq $giftName.Trim().ToLower())) {
-                                        $matchedGift = $g
-                                        break
+                                    if ($cleanCfgName -and ($cleanCfgName -eq $cleanReqName -or $cleanReqName.Contains($cleanCfgName) -or $cleanCfgName.Contains($cleanReqName))) {
+                                        $matchedGift = $g; break
+                                    }
+                                }
+                            }
+                        }
+                        # 3. Match via verified catalog name
+                        if (-not $matchedGift -and $giftId -and $script:verifiedGiftsCatalog) {
+                            $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq [string]$giftId } | Select-Object -First 1
+                            if ($vg -and $vg.name) {
+                                $cleanCatName = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                foreach ($g in $config.gifts) {
+                                    if ($g.enabled -and $g.giftName) {
+                                        $cleanCfgName = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                        if ($cleanCfgName -and ($cleanCfgName -eq $cleanCatName -or $cleanCatName.Contains($cleanCfgName) -or $cleanCfgName.Contains($cleanCatName))) {
+                                            $matchedGift = $g; break
+                                        }
                                     }
                                 }
                             }

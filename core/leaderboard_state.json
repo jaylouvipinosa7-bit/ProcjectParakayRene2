@@ -4,9 +4,11 @@
                   "SuperFan":  100
               },
     "coins":  {
-
+                  "Yuki":  1,
+                  "TestGifter":  159
               },
     "avatars":  {
-
+                    "Yuki":  "images/default_avatar.svg",
+                    "TestGifter":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp"
                 }
 }

@@ -290,13 +290,10 @@ function startConnection() {
             }
         } else {
             // Non-streak gift:
-            // If repeatEnd is true and this exact donation (user + giftId + count) was already processed < 5 seconds ago, ignore echo!
+            // Absorb duplicate socket echo (< 350ms) without blocking subsequent legitimate gifts
             const nonStreakKey = `${user}_${giftId}_${totalCount}`;
             const lastProcessedTime = recentGiftPackets.get(nonStreakKey);
-            if (lastProcessedTime && (now - lastProcessedTime < 5000)) {
-                if (data.repeatEnd) {
-                    recentGiftPackets.delete(nonStreakKey);
-                }
+            if (lastProcessedTime && (now - lastProcessedTime < 350)) {
                 return; // Skip duplicate echo!
             }
             recentGiftPackets.set(nonStreakKey, now);
