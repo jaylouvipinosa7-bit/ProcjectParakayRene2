@@ -31,7 +31,7 @@
         "funcName":  "Spawn UltimateHorse",
         "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
         "trigImg":  "images/trig_7.svg",
-        "triggerValue":  "50000",
+        "triggerValue":  "500",
         "commands":  "spawn_ultimatehorse",
         "repetition":  20
     },
@@ -113,10 +113,10 @@
         "giftId":  "6064",
         "giftName":  "GG",
         "funcName":  "Spawn Squalour Zombie",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_kirov_b.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_kirov_c.webp",
         "trigImg":  "images/tiktok-gifts/6064_gg.webp",
         "triggerValue":  "",
-        "commands":  "spawn_kirov_b",
+        "commands":  "spawn_kirov_c",
         "repetition":  1
     },
     {
@@ -485,11 +485,11 @@
         "giftId":  "13651",
         "giftName":  "Go Popular",
         "funcName":  "Spawn Ultimate Chomper",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_chomper.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_chomper.webp",
         "trigImg":  "images/tiktok-gifts/13651_go_popular.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_chomper",
-        "repetition":  1
+        "repetition":  6
     },
     {
         "id":  "42",
@@ -581,11 +581,11 @@
         "giftId":  "9947",
         "giftName":  "Friendship Necklace",
         "funcName":  "Spawn NuclearDoomCherry",
-        "funcImg":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
         "trigImg":  "images/tiktok-gifts/9947_friendship_necklace.webp",
         "triggerValue":  "",
-        "commands":  "spawn_nucleardoomcherry",
-        "repetition":  3
+        "commands":  "spawn_nucleardoomcherry;spawn_nuclearsquash",
+        "repetition":  5
     },
     {
         "id":  "50",
@@ -729,6 +729,18 @@
         "trigImg":  "images/tiktok-gifts/16757_bibingka.webp",
         "triggerValue":  "",
         "commands":  "spawn_horsezombie",
+        "repetition":  1
+    },
+    {
+        "id":  "65",
+        "action":  "SelectedGift",
+        "giftId":  "5827",
+        "giftName":  "Ice Cream Cone",
+        "funcName":  "Spawn Lost Snow Monster",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_lost_snow_monster.webp",
+        "trigImg":  "images/tiktok-gifts/5827_ice_cream_cone.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_lost_snow_monster",
         "repetition":  1
     }
 ];

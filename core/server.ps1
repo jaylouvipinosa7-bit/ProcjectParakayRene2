@@ -121,8 +121,17 @@ for ($i = 1; $i -le 100; $i++) {
 $userTeams = @{}
 $teamPlantsLikes = 0
 $teamZombiesLikes = 0
-$lastStreamTotalLikes = 0
-$lastTotalLikesTriggeredMilestone = 0
+$script:lastStreamTotalLikes = 0
+$script:lastTotalLikesTriggeredMilestone = 0
+$script:sessionFollowers = [System.Collections.Hashtable]::Synchronized(@{})
+
+$verifiedGiftsFile = Join-Path $folder "tiktok_gifts_verified.json"
+$script:verifiedGiftsCatalog = $null
+if (Test-Path $verifiedGiftsFile) {
+    try {
+        $script:verifiedGiftsCatalog = Get-Content $verifiedGiftsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    } catch {}
+}
 
 # ==================== LEADERBOARD TRACKING ====================
 $leaderboardFile = Join-Path $folder "leaderboard_state.json"
@@ -423,7 +432,7 @@ function Sync-ConfigToCards {
                 $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } else { "50" }
             } elseif ($g.id -eq "3" -or ($g.eventType -eq "total_likes") -or ($g.giftName -match "^total\s*likes")) {
                 $overlayAction = "LikeAmount"
-                $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } else { "50000" }
+                $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } elseif ($g.triggerValue) { [string]$g.triggerValue } else { "500" }
             } elseif ($g.id -eq "4" -or ($g.eventType -eq "follow") -or ($g.giftName -match "^follow(er)?$")) {
                 $overlayAction = "Follow"
                 $trigVal = ""
@@ -2019,13 +2028,28 @@ while ($true) {
                     $avatar = if ($payload.profilePictureUrl) { $payload.profilePictureUrl } elseif ($payload.avatar) { $payload.avatar } elseif ($payload.avatarUrl) { $payload.avatarUrl } else { "images/default_avatar.svg" }
                     $icon = if ($payload.giftPictureUrl) { $payload.giftPictureUrl } else { "" }
 
-                    # LEADERBOARD: Track coins for this gift
-                    $giftCoinValue = $repeatCount
-                    if ($config -and $config.gifts) {
+                    # LEADERBOARD: Track coins accurately for this gift
+                    $giftCoinValue = 0
+                    if ($payload.coins -ne $null -and [int]$payload.coins -gt 0) {
+                        $giftCoinValue = [int]$payload.coins
+                    } elseif ($payload.diamondCount -ne $null -and [int]$payload.diamondCount -gt 0) {
+                        $giftCoinValue = [int]$payload.diamondCount * $repeatCount
+                    } elseif ($config -and $config.gifts) {
                         $lcGift = $config.gifts | Where-Object { $_.giftId -and ([string]$_.giftId.Trim() -eq [string]$giftId.Trim()) } | Select-Object -First 1
-                        if ($lcGift -and $lcGift.coins) {
+                        if ($lcGift -and $lcGift.coins -and [int]$lcGift.coins -gt 0) {
                             $giftCoinValue = [int]$lcGift.coins * $repeatCount
                         }
+                    }
+
+                    if ($giftCoinValue -le 0 -and $script:verifiedGiftsCatalog -and $giftId) {
+                        $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq [string]$giftId } | Select-Object -First 1
+                        if ($vg -and $vg.coins) {
+                            $giftCoinValue = [int]$vg.coins * $repeatCount
+                        }
+                    }
+
+                    if ($giftCoinValue -le 0) {
+                        $giftCoinValue = $repeatCount
                     }
                     Update-LeaderboardCoins $user $giftCoinValue $avatar
 
@@ -2300,15 +2324,16 @@ while ($true) {
                             AddEventLog @{ type = "gift"; label = $matchedGift.label; command = $matchedGift.command; amount = $totalAmt; username = $user; icon = $icon; hideInOverlay = $giftHide }
                         }
                     } else {
-                        # FALLBACK: Universal gift trigger (No gift is EVER dropped!)
+                        # FALLBACK: Universal unconfigured gift trigger
+                        # MUST NEVER spawn Rose's unit (spawn_ultimate_football_zombie)!
                         $fallbackCount = if ($repeatCount -gt 0) { $repeatCount } else { 1 }
                         if ($fallbackCount -ge 10) {
                             $spawnAmt = [Math]::Min($fallbackCount, 5)
                             SendToPvZGame "zombie" "ultimate_gold_gargantuar" $spawnAmt $user | Out-Null
                             AddEventLog @{ type = "gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Gold Gargantuar)" } else { "Gift (Gold Gargantuar)" }; command = "ultimate_gold_gargantuar"; amount = $spawnAmt; username = $user; icon = $icon }
                         } else {
-                            SendToPvZGame "zombie" "spawn_ultimate_football_zombie" $fallbackCount $user | Out-Null
-                            AddEventLog @{ type = "gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Football Zombie)" } else { "Gift (Football Zombie)" }; command = "spawn_ultimate_football_zombie"; amount = $fallbackCount; username = $user; icon = $icon }
+                            SendToPvZGame "zombie" "spawn_bucketzombie" $fallbackCount $user | Out-Null
+                            AddEventLog @{ type = "gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Buckethead Zombie)" } else { "Gift (Buckethead Zombie)" }; command = "spawn_bucketzombie"; amount = $fallbackCount; username = $user; icon = $icon }
                         }
                     }
                 }
@@ -2348,13 +2373,20 @@ while ($true) {
                     # LEADERBOARD: Track likes
                     Update-LeaderboardLikes $user $likes $avatar
 
-                    $card1 = $config.gifts | Where-Object { $_.id -eq "1" }
-                    $card2 = $config.gifts | Where-Object { $_.id -eq "2" }
-                    $card3 = $config.gifts | Where-Object { $_.id -eq "3" }
+                    $card1 = $config.gifts | Where-Object { [string]$_.id -eq "1" }
+                    $card2 = $config.gifts | Where-Object { [string]$_.id -eq "2" }
+                    $card3 = $config.gifts | Where-Object { [string]$_.id -eq "3" }
 
                     $thresh1 = if ($card1 -and $card1.likeThreshold) { [int]$card1.likeThreshold } else { 50 }
                     $thresh2 = if ($card2 -and $card2.likeThreshold) { [int]$card2.likeThreshold } else { 50 }
-                    $thresh3 = if ($card3 -and $card3.likeThreshold) { [int64]$card3.likeThreshold } else { 50000 }
+                    $thresh3 = 500
+                    if ($card3) {
+                        if ($card3.likeThreshold -and [int64]$card3.likeThreshold -gt 0) {
+                            $thresh3 = [int64]$card3.likeThreshold
+                        } elseif ($card3.triggerValue -and [int64]$card3.triggerValue -gt 0) {
+                            $thresh3 = [int64]$card3.triggerValue
+                        }
+                    }
 
                     # If viewer has no team, automatically put them on Team Plants and do NOT summon zombies
                     if (-not $userTeams.ContainsKey($user) -or [string]::IsNullOrWhiteSpace($userTeams[$user])) {
@@ -2406,17 +2438,15 @@ while ($true) {
                         }
                     }
 
-                    # 4. Total Stream Likes Milestone check (e.g. 57K likes)
-                    if ($totalLikes -gt 0) {
-                        $lastStreamTotalLikes = $totalLikes
-                        if ($thresh3 -gt 0) {
-                            if ($lastTotalLikesTriggeredMilestone -eq 0) {
-                                $lastTotalLikesTriggeredMilestone = [Math]::Floor($totalLikes / $thresh3) * $thresh3
-                            } elseif ($totalLikes -ge ($lastTotalLikesTriggeredMilestone + $thresh3)) {
-                                $milestonesCrossed = [Math]::Floor(($totalLikes - $lastTotalLikesTriggeredMilestone) / $thresh3)
-                                $lastTotalLikesTriggeredMilestone += ($milestonesCrossed * $thresh3)
+                    # 4. Total Stream Likes Milestone check (e.g. 500 or custom milestone)
+                    if ($totalLikes -gt 0 -and $thresh3 -gt 0) {
+                        $script:lastStreamTotalLikes = $totalLikes
+                        if ($totalLikes -ge ($script:lastTotalLikesTriggeredMilestone + $thresh3)) {
+                            $milestonesCrossed = [Math]::Floor(($totalLikes - $script:lastTotalLikesTriggeredMilestone) / $thresh3)
+                            if ($milestonesCrossed -gt 0) {
+                                $script:lastTotalLikesTriggeredMilestone += ($milestonesCrossed * $thresh3)
                                 if ($card3 -and $card3.enabled) {
-                                    $amtToSpawn = [int]($card3.amount * $milestonesCrossed)
+                                    $amtToSpawn = [int]($card3.amount * [Math]::Min($milestonesCrossed, 5))
                                     SendToPvZGame $card3.actionType $card3.command $amtToSpawn "StreamGoal" | Out-Null
                                     if ($counts.Contains("3")) { $counts["3"] = [int]$counts["3"] + $milestonesCrossed; SaveCounts }
                                     AddEventLog @{
@@ -2433,10 +2463,19 @@ while ($true) {
                         }
                     }
                 }
-                # Follow event: Card 4
+                # Follow event: Card 4 (Anti-Spam: Strictly 1 follow per viewer per stream)
                 elseif ($payload.event -eq "follow" -or $payload.type -eq "follow") {
                     $user = if ($payload.username) { $payload.username } else { "New Follower" }
-                    $card4 = $config.gifts | Where-Object { $_.id -eq "4" }
+                    $cleanFollowerKey = ($user.ToLower() -replace '[^a-z0-9]', '')
+                    if ($cleanFollowerKey) {
+                        if ($script:sessionFollowers.ContainsKey($cleanFollowerKey)) {
+                            Send-JsonResponse $response @{ status = "ok"; message = "Follow already processed for this user in this stream session" }
+                            continue
+                        }
+                        $script:sessionFollowers[$cleanFollowerKey] = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                    }
+
+                    $card4 = $config.gifts | Where-Object { [string]$_.id -eq "4" }
                     if ($card4 -and $card4.enabled) {
                         SendToPvZGame $card4.actionType $card4.command $card4.amount $user | Out-Null
                         if ($counts.Contains("4")) { $counts["4"] = [int]$counts["4"] + 1; SaveCounts }
@@ -2450,6 +2489,8 @@ while ($true) {
                             success = $true
                         }
                     }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Follow processed" }
+                    continue
                 }
                 # Share event
                 elseif ($payload.event -eq "share" -or $payload.type -eq "share") {

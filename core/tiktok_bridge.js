@@ -277,6 +277,10 @@ function startConnection() {
             deltaCount = totalCount;
         }
 
+        const unitDiamonds = parseInt(data.diamondCount || (data.giftDetails && data.giftDetails.diamondCount) || (data.extendedGiftInfo && data.extendedGiftInfo.diamondCount) || 0, 10);
+        const unitCoins = unitDiamonds > 0 ? unitDiamonds : ((verified && verified.coins) ? parseInt(verified.coins, 10) : 1);
+        const deltaCoins = unitCoins * deltaCount;
+
         const giftPic = (data.giftPictureUrl || 
                         (data.giftDetails && data.giftDetails.giftImage && data.giftDetails.giftImage.urlList && data.giftDetails.giftImage.urlList[0]) || 
                         (verified && verified.icon) || 
@@ -288,12 +292,14 @@ function startConnection() {
             giftName: giftName,
             repeatCount: deltaCount,
             totalRepeatCount: totalCount,
+            coins: deltaCoins,
+            diamondCount: unitCoins,
             username: user,
             avatarUrl: userAvatar,
             giftPictureUrl: giftPic
         };
 
-        const logMsg = `[${new Date().toLocaleTimeString()}] GIFT: ${user} sent ${deltaCount}x ${giftName} (ID: ${giftId}, streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd})\n`;
+        const logMsg = `[${new Date().toLocaleTimeString()}] GIFT: ${user} sent ${deltaCount}x ${giftName} (ID: ${giftId}, ${unitCoins} coins each = ${deltaCoins} coins, streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd})\n`;
         console.log(logMsg.trim());
         try { fs.appendFileSync(path.join(__dirname, 'tiktok_gifts_debug.log'), logMsg, 'utf8'); } catch (e) {}
 
@@ -322,16 +328,29 @@ function startConnection() {
         saveState();
     });
 
-    // 3. Follow Event
+    // Anti-spam: Only 1 follow per viewer per live stream session
+    const sessionFollowers = new Set();
+
+    // 3. Follow Event (Strictly 1 follow per viewer per live session)
     tiktokConnection.on('follow', data => {
         liveState.lastEventTime = Date.now();
         const user = extractUserName(data);
+        const cleanUser = user.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        if (cleanUser && sessionFollowers.has(cleanUser)) {
+            console.log(`>>> [FOLLOW IGNORED] @${user} already followed in this stream session.`);
+            return;
+        }
+        if (cleanUser) {
+            sessionFollowers.add(cleanUser);
+        }
+
         const payload = {
             event: 'follow',
             username: user
         };
 
-        console.log(`>>> [FOLLOW] ${user} followed!`);
+        console.log(`>>> [FOLLOW] ${user} followed! (1st time this session)`);
         postWebhook(payload);
         saveState();
     });

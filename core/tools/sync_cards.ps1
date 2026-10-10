@@ -11,7 +11,7 @@ foreach ($g in $cfg.gifts) {
         $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } else { "50" }
     } elseif ($g.id -eq "3" -or ($g.eventType -eq "total_likes") -or ($g.giftName -match "^total\s*likes")) {
         $overlayAction = "LikeAmount"
-        $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } else { "50000" }
+        $trigVal = if ($g.likeThreshold) { [string]$g.likeThreshold } elseif ($g.triggerValue) { [string]$g.triggerValue } else { "500" }
     } elseif ($g.id -eq "4" -or ($g.eventType -eq "follow") -or ($g.giftName -match "^follow(er)?$")) {
         $overlayAction = "Follow"
         $trigVal = ""
