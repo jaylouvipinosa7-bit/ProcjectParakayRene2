@@ -221,7 +221,7 @@ function Add-SpinnerHistoryRecord($user, $avatar, $slice, $spName, $spId) {
         actionType = if ($slice -and $slice.actionType) { [string]$slice.actionType } else { "plant" }
         rarity = if ($slice -and $slice.rarity) { [string]$slice.rarity } else { "Normal" }
         color = if ($slice -and $slice.color) { [string]$slice.color } else { "#10b981" }
-        icon = if ($slice -and ($slice.unitIcon -or $slice.icon)) { [string]($slice.unitIcon -or $slice.icon) } else { "" }
+        icon = if ($slice) { if ($slice.unitIcon) { [string]$slice.unitIcon } elseif ($slice.icon) { [string]$slice.icon } else { "" } } else { "" }
         isNumber = [bool]$isNum
     }
     

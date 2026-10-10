@@ -5668,10 +5668,17 @@
                 } catch {}
             }
             setInterval(checkEvents, 1000);
+            setInterval(fetchSpinnerHistory, 2500);
         }
 
         // ==================== SPINNER HISTORY DASHBOARD SYSTEM ====================
         let spinnerHistoryList = [];
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, (m) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+        }
 
         async function fetchSpinnerHistory() {
             try {
@@ -5687,7 +5694,9 @@
                         renderDashboardSpinnerHistory(spinnerHistoryList);
                     }
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error("fetchSpinnerHistory error:", err);
+            }
         }
 
         function renderDashboardSpinnerHistory(list) {
@@ -5700,8 +5709,8 @@
             }
 
             let html = '';
-            list.slice(0, 12).forEach((item) => {
-                const username = escapeHtml(item.username || 'User');
+            list.slice(0, 16).forEach((item) => {
+                const username = escapeHtml(item.username || 'Tester');
                 const avatar = item.avatar || 'images/default_avatar.svg';
                 const isNumber = (item.isNumber === true || item.actionType === 'score' || item.delta !== null || /^[+-]?\s*\d+$/.test(item.label || ''));
                 
@@ -5711,8 +5720,9 @@
                     const color = item.color || '#ff007f';
                     prizeHtml = `<div style="font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; color: ${color}; text-shadow: 0 0 12px ${color}; line-height: 1;">${rawLabel}</div>`;
                 } else {
-                    const icon = item.icon || 'images/func_2.png';
-                    prizeHtml = `<img src="${icon}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${item.label}" onerror="this.src='images/func_2.png'">`;
+                    let icon = (item.icon && item.icon !== 'True' && item.icon !== 'true') ? item.icon : '';
+                    if (!icon) icon = 'images/func_2.png';
+                    prizeHtml = `<img src="${icon}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${escapeHtml(item.label)}" onerror="this.src='images/func_2.png'">`;
                 }
 
                 html += `
@@ -6561,6 +6571,7 @@
                 const res = await fetch(`/api/spin?${spParam.replace(/^&/, '')}${userParam}`, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;
+                fetchSpinnerHistory();
 
                 const slices = sp ? (sp.slices || []) : [];
                 let winIdx = slices.findIndex(s => s.id === winner.id);
@@ -6591,6 +6602,7 @@
                     isSpinning = false;
                     playReelVictory();
                     showToast(`Landed on: ${winner.label}!`);
+                    fetchSpinnerHistory();
                 }, (sp ? sp.duration : 2500) || 2500);
             } catch (err) {
                 isSpinning = false;
@@ -6620,6 +6632,7 @@
                 const res = await fetch(endpoint, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;
+                fetchSpinnerHistory();
 
                 const slices = sp ? (sp.slices || []) : [];
                 if (!slices || slices.length === 0) {
@@ -6725,6 +6738,7 @@
                         banner.innerHTML = `<span style="color:#ffffff;">Won:</span> <span style="color:${winner.color || '#f59e0b'};">${winner.label}</span> <span style="font-size:12px; color:var(--text-muted);">(x${winner.amount || 1})</span>`;
                     }
                     showToast(`Won: ${winner.label}!`);
+                    fetchSpinnerHistory();
                 }, durationMs + 100);
 
             } catch (err) {
