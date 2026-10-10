@@ -288,12 +288,12 @@ $script:winWidget = Load-WinWidget
 
 function Update-WinWidgetScore([int]$delta, [string]$reason = "spinner", [string]$label = "") {
     if (-not $script:winWidget) { $script:winWidget = Load-WinWidget }
-    $script:winWidget.score = [int]$script:winWidget.score + $delta
     if ($delta -gt 0) {
-        $script:winWidget.wins = [int]$script:winWidget.wins + 1
+        $script:winWidget.wins = [int]$script:winWidget.wins + $delta
     } elseif ($delta -lt 0) {
-        $script:winWidget.losses = [int]$script:winWidget.losses + 1
+        $script:winWidget.losses = [int]$script:winWidget.losses + [Math]::Abs($delta)
     }
+    $script:winWidget.score = [int]$script:winWidget.wins - [int]$script:winWidget.losses
     Save-WinWidget $script:winWidget
 
     AddEventLog @{
@@ -1570,6 +1570,91 @@ while ($true) {
                 }
             } elseif ($command -and $command -ne "spin_wheel") {
                 $exec = SendToPvZGame $actionType $command $amount $username "" $repetition $delay $interval
+
+                # If this gift card also has a bound spinner (e.g. Heart Me -> Plus/Minus Spinner), trigger the spinner too!
+                $cfg = LoadConfig
+                $tGiftName = if ($data.giftName) { [string]$data.giftName } else { [string]$label }
+                $tGiftId = if ($data.giftId) { [string]$data.giftId } else { "" }
+                $matchedCardSpinner = $null
+                if ($cfg -and $cfg.spinners) {
+                    foreach ($sp in $cfg.spinners) {
+                        if (-not $sp.enabled) { continue }
+                        if ($tGiftId -and $sp.giftId -and ([string]$sp.giftId.Trim() -eq $tGiftId.Trim())) {
+                            $matchedCardSpinner = $sp; break
+                        }
+                        if ($tGiftName -and $sp.giftName) {
+                            $cleanReq = ($tGiftName -replace '[^a-zA-Z0-9]','').ToLower()
+                            $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                            if ($cleanReq -eq $cleanSp -or $sp.giftName.Trim().ToLower() -eq $tGiftName.Trim().ToLower()) {
+                                $matchedCardSpinner = $sp; break
+                            }
+                        }
+                    }
+                }
+
+                if ($matchedCardSpinner) {
+                    $slices = if ($matchedCardSpinner.slices) { $matchedCardSpinner.slices } else { @() }
+                    $pickedSlice = $null
+                    if ($slices.Count -gt 0) {
+                        $totalW = 0.0
+                        foreach ($s in $slices) {
+                            $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                            $totalW += $w
+                        }
+                        if ($totalW -le 0) { $totalW = 100.0 }
+                        $rnd = (Get-Random -Minimum 0.0 -Maximum $totalW)
+                        $curW = 0.0
+                        foreach ($s in $slices) {
+                            $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                            $curW += $w
+                            if ($rnd -le $curW) { $pickedSlice = $s; break }
+                        }
+                        if (-not $pickedSlice) { $pickedSlice = $slices[0] }
+                    }
+
+                    $spName = if ($matchedCardSpinner.name) { $matchedCardSpinner.name } else { "Spinner" }
+                    $targetSpId = if ($matchedCardSpinner.id) { [string]$matchedCardSpinner.id } else { "1" }
+                    $testAvatar = if ($data.avatar) { [string]$data.avatar } else { "images/default_avatar.svg" }
+
+                    if ($pickedSlice) {
+                        $isNumSlice = ($pickedSlice.isNumber -eq $true) -or 
+                                      ($pickedSlice.actionType -eq "score") -or 
+                                      ($pickedSlice.delta -ne $null -and $pickedSlice.delta -ne 0) -or 
+                                      ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                        if ($pickedSlice.actionType -eq "plant" -or $pickedSlice.actionType -eq "zombie" -or $pickedSlice.actionType -eq "power") {
+                            $isNumSlice = $false
+                        }
+
+                        if ($isNumSlice) {
+                            $deltaVal = 0
+                            if ($pickedSlice.delta -ne $null) {
+                                $deltaVal = [int]$pickedSlice.delta
+                            } elseif ($pickedSlice.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                $deltaVal = $sign * [int]$matches[2]
+                            }
+                            if ($deltaVal -ne 0) {
+                                Update-WinWidgetScore $deltaVal "spinner" $pickedSlice.label
+                            }
+                        }
+                    }
+
+                    Add-SpinnerHistoryRecord $username $testAvatar $pickedSlice $spName $targetSpId
+
+                    AddEventLog @{
+                        type = "spin_result"
+                        label = if ($pickedSlice) { "$($spName) - $($pickedSlice.label)" } else { "$($spName) Spin" }
+                        username = $username
+                        slice = $pickedSlice
+                        spinnerId = $targetSpId
+                        spinnerName = $spName
+                        slices = $slices
+                        icon = if ($matchedCardSpinner.giftIcon) { $matchedCardSpinner.giftIcon } else { $icon }
+                        hideInOverlay = $hideInOverlay
+                        success = $true
+                    }
+                }
             }
 
             # If it corresponds to a card id, increment counts
@@ -1710,12 +1795,12 @@ while ($true) {
                     }
                     default {
                         if ($delta -ne 0) {
-                            $cur.score = [int]$cur.score + $delta
                             if ($delta -gt 0) {
-                                $cur.wins = [int]$cur.wins + 1
+                                $cur.wins = [int]$cur.wins + $delta
                             } else {
-                                $cur.losses = [int]$cur.losses + 1
+                                $cur.losses = [int]$cur.losses + [Math]::Abs($delta)
                             }
+                            $cur.score = [int]$cur.wins - [int]$cur.losses
                         }
                     }
                 }
@@ -1834,6 +1919,36 @@ while ($true) {
                     $spInterval = if ($pickedSlice.interval) { [int]$pickedSlice.interval } else { 100 }
                     $spHide = ($pickedSlice.hideInOverlay -eq $true -or $pickedSlice.hideInOverlay -eq "true")
                     $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $pickedSlice.amount $username "" $spReps $spDelay $spInterval
+                }
+            }
+
+            # Also execute and count any matching gift card action in config.gifts (e.g. Heart Me -> Spawn Big Sun Nut x50)
+            if (-not $noGame -and $targetSpinner -and $config -and $config.gifts) {
+                $spGiftId = [string]$targetSpinner.giftId
+                $spGiftName = [string]$targetSpinner.giftName
+                foreach ($g in $config.gifts) {
+                    $cMatch = $false
+                    if ($g.enabled -and $g.giftId -and $spGiftId -and ([string]$g.giftId.Trim() -eq $spGiftId.Trim())) {
+                        $cMatch = $true
+                    } elseif ($g.enabled -and $g.giftName -and $spGiftName) {
+                        $cg = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                        $sg = ($spGiftName -replace '[^a-zA-Z0-9]','').ToLower()
+                        if ($cg -and $cg -eq $sg) { $cMatch = $true }
+                    }
+                    if ($cMatch) {
+                        $cIdStr = [string]$g.id
+                        if ($cIdStr -and $counts.ContainsKey($cIdStr)) {
+                            $counts[$cIdStr] = [int]$counts[$cIdStr] + 1
+                            SaveCounts
+                        }
+                        if ($g.command -and $g.command -ne "spin_wheel") {
+                            $gReps = if ($g.repetition) { [int]$g.repetition } else { 1 }
+                            $gDelay = if ($g.delay) { [int]$g.delay } else { 0 }
+                            $gIntv = if ($g.interval) { [int]$g.interval } else { 100 }
+                            SendToPvZGame $g.actionType $g.command ([int]$g.amount) $username "" $gReps $gDelay $gIntv | Out-Null
+                        }
+                        break
+                    }
                 }
             }
 
@@ -2012,14 +2127,48 @@ while ($true) {
                         $spDuration = if ($matchedSpinner.duration) { [int]$matchedSpinner.duration } else { 2500 }
                         $spTicks = if ($matchedSpinner.ticks) { [int]$matchedSpinner.ticks } else { 100 }
 
-                        # Also increment card count in $counts if this gift is mapped in config.gifts (e.g. Card 60 for Doughnut)
+                        # Also execute and increment the matched gift card action (e.g. Card 32: Heart Me -> Spawn Big Sun Nut x50)
                         if ($config -and $config.gifts) {
                             foreach ($g in $config.gifts) {
-                                if ($g.enabled -and $g.giftId -and ([string]$g.giftId.Trim() -eq [string]$giftId.Trim())) {
+                                $cardMatch = $false
+                                if ($g.enabled -and $g.giftId -and $giftId -and ([string]$g.giftId.Trim() -eq [string]$giftId.Trim())) {
+                                    $cardMatch = $true
+                                } elseif ($g.enabled -and $g.giftName -and $giftName) {
+                                    $cleanG = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                    $cleanR = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                    if ($cleanG -and $cleanG -eq $cleanR) { $cardMatch = $true }
+                                }
+
+                                if ($cardMatch) {
                                     $cardIdStr = [string]$g.id
                                     if ($cardIdStr -and $counts.ContainsKey($cardIdStr)) {
                                         $counts[$cardIdStr] = [int]$counts[$cardIdStr] + $repeatCount
                                         SaveCounts
+                                    }
+
+                                    # TRIGGER THE IN-GAME ACTION FOR THIS GIFT CARD!
+                                    if ($g.command -and $g.command -ne "spin_wheel") {
+                                        $totalAmt = [int]$g.amount
+                                        $giftReps = if ($g.repetition) { [int]$g.repetition } else { 1 }
+                                        if ($g.repetitionMultiplier -eq $true -or $g.repetitionMultiplier -eq "true") {
+                                            $giftReps = $giftReps * $repeatCount
+                                        } else {
+                                            $totalAmt = $totalAmt * $repeatCount
+                                        }
+                                        $giftDelay = if ($g.delay) { [int]$g.delay } else { 0 }
+                                        $giftInterval = if ($g.interval) { [int]$g.interval } else { 100 }
+                                        $giftHide = ($g.hideInOverlay -eq $true -or $g.hideInOverlay -eq "true")
+                                        SendToPvZGame $g.actionType $g.command $totalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
+                                        AddEventLog @{
+                                            type = "gift"
+                                            label = "$($g.label) ($($g.giftName))"
+                                            command = $g.command
+                                            amount = $totalAmt
+                                            username = $user
+                                            icon = if ($g.unitIcon) { $g.unitIcon } else { $icon }
+                                            hideInOverlay = $giftHide
+                                            success = $true
+                                        }
                                     }
                                     break
                                 }

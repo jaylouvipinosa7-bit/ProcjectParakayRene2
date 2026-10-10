@@ -377,7 +377,7 @@
         "giftId":  "7934",
         "giftName":  "Heart Me",
         "funcName":  "Spawn Big Sun Nut",
-        "funcImg":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_big_sun_nut.webp",
         "trigImg":  "images/tiktok-gifts/7934_heart_me.webp",
         "triggerValue":  "",
         "commands":  "spawn_big_sun_nut",
@@ -705,18 +705,6 @@
         "trigImg":  "images/trig_1.svg",
         "triggerValue":  "",
         "commands":  "plant_everywahre",
-        "repetition":  1
-    },
-    {
-        "id":  "61",
-        "action":  "SelectedGift",
-        "giftId":  "",
-        "giftName":  "Select trigger",
-        "funcName":  "Remove LawnMower",
-        "funcImg":  "images/game-icons/pvz/remove_lawnmower.webp",
-        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
-        "triggerValue":  "",
-        "commands":  "remove_lawnmower",
         "repetition":  1
     },
     {
