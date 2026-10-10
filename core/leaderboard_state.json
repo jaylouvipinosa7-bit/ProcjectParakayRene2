@@ -1,5 +1,12 @@
-{
-  "likes": {},
-  "coins": {},
-  "avatars": {}
+﻿{
+    "likes":  {
+                  "TestLiker":  1,
+                  "SuperFan":  100
+              },
+    "coins":  {
+
+              },
+    "avatars":  {
+
+                }
 }
