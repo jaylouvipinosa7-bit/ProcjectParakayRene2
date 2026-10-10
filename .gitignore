@@ -12,6 +12,8 @@ core/tiktok_live_state.json
 tiktok_live_state.json
 core/session_followers.json
 session_followers.json
+core/permissions_registry.json
+permissions_registry.json
 
 # Temporary logs & task files
 *.log

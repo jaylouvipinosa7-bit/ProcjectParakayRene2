@@ -22,8 +22,94 @@ $userConfigsFolder = Join-Path $folder "user_configs"
 if (-not (Test-Path $userConfigsFolder)) {
     New-Item -ItemType Directory -Path $userConfigsFolder -Force | Out-Null
 }
-$usersDbFile = Join-Path $userConfigsFolder "users_registry.json"
 $activeSessions = [System.Collections.Hashtable]::Synchronized(@{})
+$permissionsFile = Join-Path $folder "permissions_registry.json"
+
+function Load-Permissions {
+    $defaultPerms = @{
+        admin = ""
+        admins = @()
+        editors = @()
+    }
+    if (Test-Path $permissionsFile) {
+        try {
+            $raw = Get-Content $permissionsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $adm = if ($raw.admin) { [string]$raw.admin.Trim().ToLower() } else { "" }
+            $adms = @()
+            if ($raw.admins) {
+                foreach ($a in $raw.admins) { if ($a) { $adms += [string]$a.Trim().ToLower() } }
+            }
+            if ($adm -and -not ($adms -contains $adm)) { $adms += $adm }
+            $edts = @()
+            if ($raw.editors) {
+                foreach ($e in $raw.editors) { if ($e) { $edts += [string]$e.Trim().ToLower() } }
+            }
+            return @{
+                admin = $adm
+                admins = $adms
+                editors = $edts
+            }
+        } catch {}
+    }
+    return $defaultPerms
+}
+
+function Save-Permissions($permsObj) {
+    try {
+        $json = $permsObj | ConvertTo-Json -Depth 5
+        [System.IO.File]::WriteAllText($permissionsFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+function Get-UserRole($email) {
+    if (-not $email -or [string]::IsNullOrWhiteSpace($email)) {
+        return "viewer"
+    }
+    $clean = $email.Trim().ToLower()
+    $perms = Load-Permissions
+    if (-not $perms.admin -and ($perms.admins.Count -eq 0)) {
+        return "admin"
+    }
+    if ($clean -eq $perms.admin -or ($perms.admins -contains $clean)) {
+        return "admin"
+    }
+    if ($perms.editors -contains $clean) {
+        return "editor"
+    }
+    return "viewer"
+}
+
+function Get-CallerUser($request) {
+    $authHeader = $request.Headers["Authorization"]
+    $token = ""
+    if ($authHeader -and $authHeader -match 'Bearer\s+(.+)') {
+        $token = $matches[1].Trim()
+    } elseif ($request.QueryString['token']) {
+        $token = $request.QueryString['token']
+    } elseif ($request.Headers["X-Auth-Token"]) {
+        $token = $request.Headers["X-Auth-Token"]
+    }
+    if ($token -and $activeSessions.ContainsKey($token)) {
+        return $activeSessions[$token]
+    }
+    return $null
+}
+
+function Get-CallerRole($request) {
+    $user = Get-CallerUser $request
+    if ($user -and $user.email) {
+        return (Get-UserRole $user.email)
+    }
+    $emailParam = $request.QueryString['user']
+    if ($emailParam) {
+        return (Get-UserRole $emailParam)
+    }
+    $perms = Load-Permissions
+    if (-not $perms.admin -and ($perms.admins.Count -eq 0)) {
+        return "admin"
+    }
+    return "viewer"
+}
 
 function Get-UserConfigPath($email) {
     if (-not $email -or [string]::IsNullOrWhiteSpace($email)) {
@@ -424,12 +510,36 @@ function Add-SpinnerHistoryRecord($user, $avatar, $slice, $spName, $spId) {
     return $item
 }
 
-function LoadConfig {
+function LoadConfig($optionalUser = "") {
+    $targetPath = $configFile
+    if ($optionalUser -and -not [string]::IsNullOrWhiteSpace($optionalUser)) {
+        $up = Get-UserConfigPath $optionalUser
+        if (Test-Path $up) { $targetPath = $up }
+    } elseif ($script:tiktokConnectedUser) {
+        $up = Get-UserConfigPath $script:tiktokConnectedUser
+        if (Test-Path $up) { $targetPath = $up }
+    }
+
     $cfg = $null
-    if (Test-Path $configFile) {
+    if (Test-Path $targetPath) {
         try {
-            $cfg = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $cfg = Get-Content $targetPath -Raw -Encoding UTF8 | ConvertFrom-Json
         } catch {}
+    }
+
+    # If resolved config has no gifts, check latest user config in user_configs folder
+    if ((-not $cfg -or -not $cfg.gifts -or $cfg.gifts.Count -eq 0) -and (Test-Path $userConfigsFolder)) {
+        $latest = Get-ChildItem -Path $userConfigsFolder -Filter "*_config.json" -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+        if ($latest) {
+            try {
+                $altCfg = Get-Content $latest.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+                if ($altCfg -and $altCfg.gifts -and $altCfg.gifts.Count -gt 0) {
+                    $cfg = $altCfg
+                }
+            } catch {}
+        }
     }
     if ($cfg -and $cfg.gifts -and -not ($cfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
         $c3 = [PSCustomObject]@{
@@ -1111,6 +1221,16 @@ while ($true) {
                     continue
                 }
 
+                # Determine user role
+                $role = Get-UserRole $email
+                $perms = Load-Permissions
+                if (-not $perms.admin -and ($perms.admins.Count -eq 0)) {
+                    $perms.admin = $email
+                    $perms.admins = @($email)
+                    Save-Permissions $perms
+                    $role = "admin"
+                }
+
                 # Issue token
                 $token = "pvz_sess_" + [System.Guid]::NewGuid().ToString("N")
                 $sessObj = @{
@@ -1118,6 +1238,7 @@ while ($true) {
                     email = $email
                     name = $name
                     picture = $picture
+                    role = $role
                     loginTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
                 }
                 $activeSessions[$token] = $sessObj
@@ -1136,6 +1257,7 @@ while ($true) {
                     email = $email
                     name = $name
                     picture = $picture
+                    role = $role
                     lastLogin = (Get-Date).ToString("o")
                 }
                 [System.IO.File]::WriteAllText($usersDbFile, ($registry | ConvertTo-Json -Depth 5), [System.Text.Encoding]::UTF8)
@@ -1155,6 +1277,7 @@ while ($true) {
                             userEmail = $email
                             userName = $name
                             userPicture = $picture
+                            role = $role
                         }
                         gifts = @()
                         spinners = @()
@@ -1178,6 +1301,7 @@ while ($true) {
                         email = $email
                         name = $name
                         picture = $picture
+                        role = $role
                     }
                 }
             } catch {
@@ -1203,6 +1327,7 @@ while ($true) {
                 $avatar = "https://ui-avatars.com/api/?name=" + [System.Uri]::EscapeDataString($username) + "&background=000000&color=25f4ee&size=128&bold=true"
                 $email = "tiktok_$($username.ToLower())@tiktok.live"
 
+                $userRole = Get-UserRole $email
                 $sessObj = @{
                     token = $token
                     email = $email
@@ -1210,6 +1335,7 @@ while ($true) {
                     username = $username
                     platform = "tiktok"
                     picture = $avatar
+                    role = $userRole
                     loginTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
                 }
                 $activeSessions[$token] = $sessObj
@@ -1229,6 +1355,7 @@ while ($true) {
                             userEmail = $email
                             userName = $displayName
                             userPicture = $avatar
+                            role = $userRole
                             platform = "tiktok"
                         }
                         gifts = @()
@@ -1287,9 +1414,11 @@ while ($true) {
             }
 
             if ($token -and $activeSessions.ContainsKey($token)) {
+                $sess = $activeSessions[$token]
+                $sess.role = Get-UserRole $sess.email
                 Send-JsonResponse $response @{
                     authenticated = $true
-                    user = $activeSessions[$token]
+                    user = $sess
                 }
             } else {
                 Send-JsonResponse $response @{
@@ -1312,6 +1441,105 @@ while ($true) {
                 $activeSessions.Remove($token)
             }
             Send-JsonResponse $response @{ success = $true; message = "Signed out" }
+            continue
+        }
+
+        # 1f. Permissions & Role Management Endpoints
+        if ($reqPath -eq '/api/permissions' -and $request.HttpMethod -eq 'GET') {
+            $caller = Get-CallerUser $request
+            $perms = Load-Permissions
+            $role = if ($caller) { Get-UserRole $caller.email } else { Get-CallerRole $request }
+            $resObj = @{
+                status = "ok"
+                admin = $perms.admin
+                admins = $perms.admins
+                editors = $perms.editors
+                currentUserEmail = if ($caller) { $caller.email } else { "" }
+                currentUserRole = $role
+                isSetupMode = (-not $perms.admin -and ($perms.admins.Count -eq 0))
+            }
+            Send-JsonResponse $response $resObj
+            continue
+        }
+
+        if ($reqPath -eq '/api/permissions/add-editor' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $role = if ($caller) { Get-UserRole $caller.email } else { Get-CallerRole $request }
+            if ($role -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden: Only an Admin can add editors." } 403
+                continue
+            }
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $newEmail = if ($data.email) { [string]$data.email.Trim().ToLower() } else { "" }
+            if (-not $newEmail -or $newEmail -notmatch '^.+@.+\..+$') {
+                Send-JsonResponse $response @{ success = $false; message = "Valid Gmail/email address required." } 400
+                continue
+            }
+            $perms = Load-Permissions
+            if (-not ($perms.editors -contains $newEmail)) {
+                $perms.editors += $newEmail
+                Save-Permissions $perms
+            }
+            # Update any active sessions for this email
+            foreach ($k in $activeSessions.Keys) {
+                if ($activeSessions[$k].email -eq $newEmail) {
+                    $activeSessions[$k].role = "editor"
+                }
+            }
+            Send-JsonResponse $response @{ success = $true; message = "Added $newEmail as Editor"; editors = $perms.editors }
+            continue
+        }
+
+        if ($reqPath -eq '/api/permissions/remove-editor' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $role = if ($caller) { Get-UserRole $caller.email } else { Get-CallerRole $request }
+            if ($role -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden: Only an Admin can remove editors." } 403
+                continue
+            }
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $targetEmail = if ($data.email) { [string]$data.email.Trim().ToLower() } else { "" }
+            $perms = Load-Permissions
+            $perms.editors = @($perms.editors | Where-Object { $_ -ne $targetEmail })
+            Save-Permissions $perms
+            # Update any active sessions for this email
+            foreach ($k in $activeSessions.Keys) {
+                if ($activeSessions[$k].email -eq $targetEmail) {
+                    $activeSessions[$k].role = "viewer"
+                }
+            }
+            Send-JsonResponse $response @{ success = $true; message = "Removed $targetEmail from Editors"; editors = $perms.editors }
+            continue
+        }
+
+        if ($reqPath -eq '/api/permissions/set-admin' -and $request.HttpMethod -eq 'POST') {
+            $perms = Load-Permissions
+            $caller = Get-CallerUser $request
+            $isSetup = (-not $perms.admin -and ($perms.admins.Count -eq 0))
+            $role = if ($caller) { Get-UserRole $caller.email } else { Get-CallerRole $request }
+            
+            if (-not $isSetup -and $role -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden: Only the current Admin can change Admin settings." } 403
+                continue
+            }
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $adminEmail = if ($data.email) { [string]$data.email.Trim().ToLower() } else { "" }
+            if (-not $adminEmail -or $adminEmail -notmatch '^.+@.+\..+$') {
+                Send-JsonResponse $response @{ success = $false; message = "Valid Gmail address required." } 400
+                continue
+            }
+            $perms.admin = $adminEmail
+            if (-not ($perms.admins -contains $adminEmail)) {
+                $perms.admins += $adminEmail
+            }
+            Save-Permissions $perms
+            if ($caller) {
+                $caller.role = Get-UserRole $caller.email
+            }
+            Send-JsonResponse $response @{ success = $true; message = "Designated $adminEmail as Admin/Owner"; admin = $adminEmail; admins = $perms.admins }
             continue
         }
 
@@ -1384,6 +1612,11 @@ while ($true) {
                 Send-JsonResponse $response $content
                 continue
             } elseif ($request.HttpMethod -eq 'POST') {
+                $callerRole = Get-CallerRole $request
+                if ($callerRole -ne "admin" -and $callerRole -ne "editor") {
+                    Send-JsonResponse $response @{ status = "error"; message = "Access denied: You are in Viewer (Read-Only) mode. Only the Admin and authorized Editors can save changes." } 403
+                    continue
+                }
                 $body = ReadRequestBody $request
                 [System.IO.File]::WriteAllText($targetPath, $body, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $body, [System.Text.Encoding]::UTF8)
@@ -1401,6 +1634,11 @@ while ($true) {
 
         # 2b. Import Starter Template Preset
         if ($reqPath -eq '/api/config/template' -and $request.HttpMethod -eq 'POST') {
+            $callerRole = Get-CallerRole $request
+            if ($callerRole -ne "admin" -and $callerRole -ne "editor") {
+                Send-JsonResponse $response @{ status = "error"; message = "Access denied: Viewer mode cannot import templates. Editor or Admin permission required." } 403
+                continue
+            }
             $userParam = $request.QueryString['user']
             $targetPath = Get-UserConfigPath $userParam
             $srcTemplate = if (Test-Path $templateConfigFile) { $templateConfigFile } else { $configFile }

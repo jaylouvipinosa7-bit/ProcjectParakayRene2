@@ -2953,6 +2953,31 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .user-role-badge {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            line-height: 1.2;
+        }
+        .user-role-badge.role-admin {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid #f59e0b;
+            color: #fbbf24;
+        }
+        .user-role-badge.role-editor {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #34d399;
+        }
+        .user-role-badge.role-viewer {
+            background: rgba(148, 163, 184, 0.2);
+            border: 1px solid #64748b;
+            color: #94a3b8;
+        }
         .btn-signout {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.35);
@@ -3410,14 +3435,33 @@
                         <span class="user-online-dot"></span>
                     </div>
                     <div class="user-pill-info">
-                        <span id="userNameText" class="user-pill-name">User</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span id="userNameText" class="user-pill-name">User</span>
+                            <span id="userRoleBadge" class="user-role-badge role-admin">👑 Admin</span>
+                        </div>
                         <span id="userEmailText" class="user-pill-email">user@stream.live</span>
                     </div>
+                    <button id="btnOpenPermissions" type="button" class="btn btn-sm" onclick="openPermissionsModal()" style="display: none; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-weight: 700; padding: 4px 8px; border-radius: 6px; font-size: 11px;" title="Manage Authorized Editors by Gmail">
+                        👥 Editors
+                    </button>
                     <button class="btn-signout" onclick="signOutStreamer()" title="Sign out of current account">Sign Out</button>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- VIEWER READ-ONLY BANNER -->
+    <div id="viewerReadOnlyBanner" style="display: none; background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15)); border: 1px solid #f59e0b; color: #fbbf24; padding: 10px 18px; border-radius: 8px; margin: 12px 20px 0 20px; font-size: 13px; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">🔒</span>
+            <div>
+                <strong>Viewer Mode (Read-Only)</strong> — You can watch live triggers and status, but editing is disabled.
+                <div style="font-size: 11px; opacity: 0.85; margin-top: 2px;">Ask the stream Owner/Admin to add your Gmail as an <strong>Editor</strong>.</div>
+            </div>
+        </div>
+        <span style="background: rgba(245, 158, 11, 0.25); border: 1px solid #f59e0b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">READ ONLY</span>
+    </div>
+
     <!-- MAIN BODY -->
     <main class="app-body">
         <!-- NAVIGATION TABS -->
@@ -4307,6 +4351,74 @@
             PvZ Fusion 4.0 Studio • Official Interactive Controller
         </div>
     </footer>
+
+    <!-- MODAL: PERMISSIONS & EDITORS MANAGEMENT -->
+    <div id="permissionsModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 580px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 14px;">
+                <div>
+                    <h3 style="font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                        <span>👥</span> Access & Permissions Management
+                    </h3>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                        Only you (Admin) can add and remove editors using their Gmail address.
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closePermissionsModal()" style="padding: 4px 10px; font-weight: 700;">✕</button>
+            </div>
+
+            <div class="modal-body" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 20px;">
+                <!-- ADMIN OWNER CARD -->
+                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 14px 16px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">👑</span>
+                            <div>
+                                <div style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #fbbf24; letter-spacing: 0.5px;">Primary Administrator (Owner)</div>
+                                <div id="permAdminEmailDisplay" style="font-size: 14px; font-weight: 700; color: #f3f4f6; margin-top: 2px;">Loading admin...</div>
+                            </div>
+                        </div>
+                        <span class="user-role-badge role-admin">Full Admin</span>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <input type="email" id="permNewAdminInput" placeholder="Set or transfer Admin Gmail..." class="tiktok-input" style="flex: 1; font-size: 12px; padding: 6px 10px;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="handleSetAdminClick()" style="font-size: 11px;">Update Admin</button>
+                    </div>
+                </div>
+
+                <!-- ADD NEW EDITOR CARD -->
+                <div style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 16px;">
+                    <div style="font-size: 13px; font-weight: 800; color: #34d399; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                        <span>✏️</span> Add Authorized Editor via Gmail
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
+                        Editors can customize live gifts, triggers, spinners, and stream goals. They cannot manage other editors.
+                    </p>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="email" id="permNewEditorInput" placeholder="e.g. editor.streamer@gmail.com" class="tiktok-input" style="flex: 1; font-size: 13px; padding: 8px 12px;" onkeydown="if(event.key==='Enter')handleAddEditorClick()">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="handleAddEditorClick()" style="padding: 8px 16px; font-weight: 700;">
+                            + Add Editor
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CURRENT EDITORS LIST -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px;">Active Editors</span>
+                        <span id="permEditorCount" style="font-size: 11px; color: var(--text-muted);">0 Editors</span>
+                    </div>
+                    <div id="permEditorsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;">
+                        <!-- Injected via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 12px 24px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closePermissionsModal()">Done</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL: EDIT / ADD TRIGGER STUDIO -->
     <div id="giftModal" class="modal-backdrop">
@@ -5740,7 +5852,25 @@
             return null;
         }
 
-        function initGoogleAuthSystem() {
+        async function initGoogleAuthSystem() {
+            const token = localStorage.getItem('pvz_auth_token') || '';
+            if (token) {
+                try {
+                    const res = await fetch('/api/auth/session', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.authenticated && data.user) {
+                            currentUser = data.user;
+                            localStorage.setItem('pvz_google_auth_user', JSON.stringify(data.user));
+                            updateUserProfileUI(data.user);
+                            hideAuthGate();
+                            return;
+                        }
+                    }
+                } catch {}
+            }
             const user = getCurrentUser();
             if (user && (user.email || user.username)) {
                 updateUserProfileUI(user);
@@ -5767,6 +5897,9 @@
             const avatar = document.getElementById('userAvatarImg');
             const nameEl = document.getElementById('userNameText');
             const emailEl = document.getElementById('userEmailText');
+            const roleBadge = document.getElementById('userRoleBadge');
+            const btnPerms = document.getElementById('btnOpenPermissions');
+            const viewerBanner = document.getElementById('viewerReadOnlyBanner');
 
             if (!pill) return;
             if (user && (user.email || user.username)) {
@@ -5775,9 +5908,39 @@
                 if (avatar) avatar.src = user.picture || defaultAvatar;
                 if (nameEl) nameEl.innerText = user.name || user.username || (user.email ? user.email.split('@')[0] : 'Streamer');
                 if (emailEl) emailEl.innerText = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
+
+                const role = (user.role || 'viewer').toLowerCase();
+                if (roleBadge) {
+                    roleBadge.className = 'user-role-badge role-' + role;
+                    if (role === 'admin') {
+                        roleBadge.innerText = '👑 Admin';
+                    } else if (role === 'editor') {
+                        roleBadge.innerText = '✏️ Editor';
+                    } else {
+                        roleBadge.innerText = '👁️ Viewer';
+                    }
+                }
+
+                if (btnPerms) {
+                    btnPerms.style.display = (role === 'admin') ? 'inline-flex' : 'none';
+                }
+
+                if (viewerBanner) {
+                    viewerBanner.style.display = (role === 'viewer') ? 'flex' : 'none';
+                }
             } else {
                 pill.style.display = 'none';
+                if (viewerBanner) viewerBanner.style.display = 'none';
             }
+        }
+
+        function checkEditorPermission(actionName = "make changes") {
+            const user = getCurrentUser();
+            if (user && (user.role || 'viewer').toLowerCase() === 'viewer') {
+                showToast(`🔒 View-Only Mode: You cannot ${actionName}. Please ask the Admin to add your Gmail as an Editor.`, "WARN");
+                return false;
+            }
+            return true;
         }
 
         async function performTikTokLogin(username, name) {
@@ -5917,7 +6080,176 @@
             signOutStreamer();
         }
 
+        // ==================== PERMISSIONS & EDITOR MANAGEMENT ====================
+        async function openPermissionsModal() {
+            const modal = document.getElementById('permissionsModal');
+            if (!modal) return;
+            modal.classList.add('active');
+            await loadPermissionsData();
+        }
+
+        function closePermissionsModal() {
+            const modal = document.getElementById('permissionsModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function loadPermissionsData() {
+            const adminDisplay = document.getElementById('permAdminEmailDisplay');
+            const editorCount = document.getElementById('permEditorCount');
+            const editorsList = document.getElementById('permEditorsList');
+            const token = localStorage.getItem('pvz_auth_token') || '';
+
+            try {
+                const res = await fetch('/api/permissions', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) {
+                    showToast("Failed to load permissions", "ERR");
+                    return;
+                }
+                const data = await res.json();
+                
+                if (adminDisplay) {
+                    adminDisplay.innerText = data.admin || "No primary Admin configured (Setup mode)";
+                }
+
+                if (editorCount) {
+                    const count = (data.editors || []).length;
+                    editorCount.innerText = `${count} Editor${count === 1 ? '' : 's'}`;
+                }
+
+                if (editorsList) {
+                    if (!data.editors || data.editors.length === 0) {
+                        editorsList.innerHTML = `
+                            <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.08);">
+                                No editors added yet. Enter a Gmail above to grant editor access.
+                            </div>
+                        `;
+                    } else {
+                        editorsList.innerHTML = data.editors.map(email => `
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(email)}&background=10b981&color=fff&size=64&bold=true" style="width: 26px; height: 26px; border-radius: 50%;">
+                                    <div>
+                                        <div style="font-size: 13px; font-weight: 700; color: #f3f4f6;">${email}</div>
+                                        <div style="font-size: 10px; color: #34d399;">Authorized Editor</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="handleRemoveEditorClick('${email}')" style="padding: 4px 10px; font-size: 11px;">
+                                    Remove
+                                </button>
+                            </div>
+                        `).join('');
+                    }
+                }
+
+                if (data.isSetupMode && currentUser && currentUser.email) {
+                    const setupInput = document.getElementById('permNewAdminInput');
+                    if (setupInput) setupInput.value = currentUser.email;
+                }
+            } catch (err) {
+                console.error("Error loading permissions:", err);
+                showToast("Failed to fetch permissions data", "ERR");
+            }
+        }
+
+        async function handleAddEditorClick() {
+            const input = document.getElementById('permNewEditorInput');
+            const email = input ? input.value.trim().toLowerCase() : '';
+            if (!email || !email.includes('@')) {
+                showToast("Please enter a valid Gmail / email address", "ERR");
+                return;
+            }
+            const token = localStorage.getItem('pvz_auth_token') || '';
+            try {
+                const res = await fetch('/api/permissions/add-editor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`Added ${email} as Editor!`, "OK");
+                    if (input) input.value = '';
+                    await loadPermissionsData();
+                } else {
+                    showToast(data.message || "Failed to add editor", "ERR");
+                }
+            } catch (err) {
+                console.error("Add editor error:", err);
+                showToast("Failed to add editor", "ERR");
+            }
+        }
+
+        async function handleRemoveEditorClick(email) {
+            if (!confirm(`Are you sure you want to remove Editor access for ${email}? They will be demoted to View-Only mode.`)) {
+                return;
+            }
+            const token = localStorage.getItem('pvz_auth_token') || '';
+            try {
+                const res = await fetch('/api/permissions/remove-editor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`Removed ${email} from Editors`, "OK");
+                    await loadPermissionsData();
+                } else {
+                    showToast(data.message || "Failed to remove editor", "ERR");
+                }
+            } catch (err) {
+                console.error("Remove editor error:", err);
+                showToast("Failed to remove editor", "ERR");
+            }
+        }
+
+        async function handleSetAdminClick() {
+            const input = document.getElementById('permNewAdminInput');
+            const email = input ? input.value.trim().toLowerCase() : '';
+            if (!email || !email.includes('@')) {
+                showToast("Please enter a valid Gmail address", "ERR");
+                return;
+            }
+            if (!confirm(`Set ${email} as the Primary Administrator?`)) return;
+            const token = localStorage.getItem('pvz_auth_token') || '';
+            try {
+                const res = await fetch('/api/permissions/set-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`Admin updated to ${email}!`, "OK");
+                    if (input) input.value = '';
+                    await loadPermissionsData();
+                    if (currentUser && currentUser.email && currentUser.email.toLowerCase() === email) {
+                        currentUser.role = 'admin';
+                        localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser));
+                        updateUserProfileUI(currentUser);
+                    }
+                } else {
+                    showToast(data.message || "Failed to update admin", "ERR");
+                }
+            } catch (err) {
+                console.error("Set admin error:", err);
+                showToast("Failed to set admin", "ERR");
+            }
+        }
+
         async function importStarterTemplate() {
+            if (!checkEditorPermission("import templates")) return;
             const user = getCurrentUser();
             if (!user || (!user.email && !user.username)) {
                 showToast("Please sign in first", "WARN");
@@ -5928,8 +6260,12 @@
             }
             try {
                 const userKey = user.email || user.username;
+                const token = localStorage.getItem('pvz_auth_token') || '';
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
                 const res = await fetch(`/api/config/template?user=${encodeURIComponent(userKey)}`, {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: headers
                 });
                 if (res.ok) {
                     await loadConfig();
@@ -9208,6 +9544,7 @@
         }
 
         async function openAddGiftModal() {
+            if (!checkEditorPermission("create new triggers")) return;
             try {
                 editingGiftId = null;
                 activeSelectedGift = null;
@@ -9278,6 +9615,8 @@
         }
 
         async function saveGiftModal() {
+            if (!checkEditorPermission("save or edit triggers")) return;
+
             let name = document.getElementById('modalGiftName')?.value.trim() || '';
             const isSocialCard = (
                 editingGiftId === '1' || editingGiftId === '2' || editingGiftId === '3' || editingGiftId === '4' ||
@@ -9397,21 +9736,27 @@
                 });
             }
 
-            await saveConfigToServer();
-            renderGifts();
-            closeGiftModal();
-            showToast(`Saved "${functionName}" with ${currentGiftCommands.length} command(s)!`, "OK");
+            const ok = await saveConfigToServer();
+            if (ok !== false) {
+                renderGifts();
+                closeGiftModal();
+                showToast(`Saved "${functionName}" with ${currentGiftCommands.length} command(s)!`, "OK");
+            }
         }
 
         async function deleteGift(giftId) {
+            if (!checkEditorPermission("delete triggers")) return;
             if (!confirm("Are you sure you want to delete this trigger?")) return;
             config.gifts = config.gifts.filter(g => String(g.id) !== String(giftId));
-            await saveConfigToServer();
-            renderGifts();
-            showToast("Deleted trigger!", "OK");
+            const ok = await saveConfigToServer();
+            if (ok !== false) {
+                renderGifts();
+                showToast("Deleted trigger!", "OK");
+            }
         }
 
         async function deleteCurrentTrigger() {
+            if (!checkEditorPermission("delete triggers")) return;
             if (editingGiftId) {
                 await deleteGift(editingGiftId);
                 closeGiftModal();
@@ -9419,6 +9764,7 @@
         }
 
         async function toggleGift(giftId, enabled) {
+            if (!checkEditorPermission("toggle triggers")) return;
             const gift = config.gifts.find(g => String(g.id) === String(giftId));
             if (gift) {
                 gift.enabled = enabled;
@@ -9431,17 +9777,26 @@
                 const user = getCurrentUser();
                 const userKey = user ? (user.email || user.username || '') : '';
                 const userParam = userKey ? `?user=${encodeURIComponent(userKey)}` : '';
+                const token = localStorage.getItem('pvz_auth_token') || '';
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
                 const res = await fetch('/api/config' + userParam, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify(config, null, 2)
                 });
+                if (res.status === 403) {
+                    showToast("🔒 Permission Denied: Your account is in View-Only mode. Ask the Admin to grant you Editor permissions.", "ERR");
+                    return false;
+                }
                 if (res.ok) {
                     return await res.json();
                 }
             } catch (err) {
                 console.error("Save config error:", err);
             }
+            return false;
         }
 
         async function toggleTikTokConnect() {
