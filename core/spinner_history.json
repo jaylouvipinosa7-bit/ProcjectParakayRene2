@@ -2,6 +2,23 @@
     "history":  [
                     {
                         "spinnerId":  "spinner_1",
+                        "id":  "sh_1791609484287_205",
+                        "username":  "Gohan Malunggay",
+                        "timestamp":  1791609484290,
+                        "avatar":  "https://ui-avatars.com/api/?name=gohanmalunggay\u0026background=000000\u0026color=25f4ee\u0026size=128\u0026bold=true",
+                        "rarity":  "Legendary",
+                        "sliceId":  "s1_5",
+                        "timeStr":  "13:18:04",
+                        "isNumber":  false,
+                        "label":  "Ultimate Big Sniper",
+                        "icon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                        "spinnerName":  "Spinner",
+                        "actionType":  "plant",
+                        "color":  "#f59e0b",
+                        "delta":  null
+                    },
+                    {
+                        "spinnerId":  "spinner_1",
                         "id":  "sh_1791609321425_864",
                         "username":  "Viewer_3",
                         "timestamp":  1791609321425,
