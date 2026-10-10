@@ -328,29 +328,56 @@ function startConnection() {
         saveState();
     });
 
-    // Anti-spam: Only 1 follow per viewer per live stream session
-    const sessionFollowers = new Set();
+    // Anti-spam: Strictly 1 follow per viewer per day or per live session (persistent)
+    const followersFile = path.join(__dirname, 'session_followers.json');
+    function getTodayFollowers() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        try {
+            if (fs.existsSync(followersFile)) {
+                const raw = JSON.parse(fs.readFileSync(followersFile, 'utf8'));
+                if (raw && raw.date === todayStr && raw.followers) {
+                    return new Set(Object.keys(raw.followers));
+                }
+            }
+        } catch (e) {}
+        return new Set();
+    }
+    const sessionFollowers = getTodayFollowers();
 
-    // 3. Follow Event (Strictly 1 follow per viewer per live session)
+    // 3. Follow Event (Strictly 1 follow per viewer per day or per live session)
     tiktokConnection.on('follow', data => {
         liveState.lastEventTime = Date.now();
         const user = extractUserName(data);
+        const uniqueId = data.uniqueId || (data.user && data.user.uniqueId) || (data.userDetails && data.userDetails.uniqueId) || '';
+        const userId = data.userId || (data.user && data.user.userId) || (data.user && data.user.id) || '';
         const cleanUser = user.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const cleanUnique = (uniqueId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const trackerKey = userId ? `uid_${userId}` : (cleanUnique ? `u_${cleanUnique}` : `u_${cleanUser}`);
 
-        if (cleanUser && sessionFollowers.has(cleanUser)) {
-            console.log(`>>> [FOLLOW IGNORED] @${user} already followed in this stream session.`);
+        if ((trackerKey && sessionFollowers.has(trackerKey)) || (cleanUser && cleanUser !== 'viewer' && sessionFollowers.has(`u_${cleanUser}`))) {
+            console.log(`>>> [FOLLOW IGNORED] @${user} already followed today / in this stream session.`);
             return;
         }
-        if (cleanUser) {
-            sessionFollowers.add(cleanUser);
-        }
+
+        if (trackerKey) sessionFollowers.add(trackerKey);
+        if (cleanUser) sessionFollowers.add(`u_${cleanUser}`);
+
+        // Persist to session_followers.json
+        try {
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const folObj = {};
+            for (const f of sessionFollowers) folObj[f] = Date.now();
+            fs.writeFileSync(followersFile, JSON.stringify({ date: todayStr, followers: folObj }, null, 2), 'utf8');
+        } catch (e) {}
 
         const payload = {
             event: 'follow',
-            username: user
+            username: user,
+            userId: String(userId || ''),
+            uniqueId: String(uniqueId || '')
         };
 
-        console.log(`>>> [FOLLOW] ${user} followed! (1st time this session)`);
+        console.log(`>>> [FOLLOW] @${user} followed! (1st time today / this session)`);
         postWebhook(payload);
         saveState();
     });

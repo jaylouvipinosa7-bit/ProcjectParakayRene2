@@ -756,6 +756,11 @@
 
         // Handle Event
         function handleLiveEvent(ev) {
+            if (ev.type === 'config_updated' || ev.type === 'spinner_updated') {
+                fetchConfig().then(renderCards);
+                return;
+            }
+
             if (ev.hideInOverlay === true) {
                 return; // Silently execute without showing alert/popup on stream overlay
             }
@@ -892,18 +897,42 @@
                 cardList.forEach((slice, idx) => {
                     const rarity = slice.rarity || 'Normal';
                     const rarityClass = `rarity-${rarity.toLowerCase()}`;
-                    const imgUrl = slice.unitIcon || slice.icon || 'images/func_2.png';
-                    trackHtml += `
-                        <div class="s2e-reel-card ${rarityClass}" id="overlayReelCard_${idx}">
-                            <div class="card-glow-bg"></div>
-                            <span class="rarity-tag">${rarity}</span>
-                            <div class="card-img-wrap">
-                                <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
+                    const isNum = (slice.isNumber === true) || (slice.actionType === 'score') || (slice.delta !== undefined && slice.delta !== null && Number(slice.delta) !== 0) || /^[\+\-\u2212\u2013]?\s*\d+$/.test(String(slice.label || ''));
+                    const isPlantZombie = (slice.actionType === 'plant' || slice.actionType === 'zombie' || slice.actionType === 'power');
+                    const isScoreSlice = isNum && !isPlantZombie;
+
+                    if (isScoreSlice) {
+                        const cleanLabel = String(slice.label || '').replace(/[\u2212\u2013\u2014]/g, '-').trim();
+                        let dVal = slice.delta !== undefined ? Number(slice.delta) : parseInt(cleanLabel, 10);
+                        if (isNaN(dVal)) dVal = 0;
+                        const col = slice.color || (dVal >= 0 ? '#10b981' : '#f43f5e');
+                        const displayNum = (dVal > 0 ? `+${dVal}` : `${dVal}`);
+                        const signText = dVal >= 0 ? 'WIN +' : 'LOSE -';
+
+                        trackHtml += `
+                            <div class="s2e-reel-card ${rarityClass}" id="overlayReelCard_${idx}" style="border-color:${col}; box-shadow:0 0 16px ${col}40;">
+                                <div class="card-glow-bg" style="background:radial-gradient(circle, ${col}25 0%, transparent 70%);"></div>
+                                <span class="rarity-tag" style="border-color:${col}; color:${col};">${rarity}</span>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px;">
+                                    <div style="font-family:'Outfit', sans-serif; font-size:38px; font-weight:900; color:${col}; text-shadow:0 0 12px ${col}; line-height:1;">${displayNum}</div>
+                                    <div style="font-size:10px; font-weight:800; color:${dVal >= 0 ? '#34d399' : '#f87171'}; margin-top:4px;">${signText}</div>
+                                </div>
                             </div>
-                            <div class="card-title">${slice.label}</div>
-                            <div class="card-amount">x${slice.amount || 1}</div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        const imgUrl = slice.unitIcon || slice.icon || 'images/func_2.png';
+                        trackHtml += `
+                            <div class="s2e-reel-card ${rarityClass}" id="overlayReelCard_${idx}">
+                                <div class="card-glow-bg"></div>
+                                <span class="rarity-tag">${rarity}</span>
+                                <div class="card-img-wrap">
+                                    <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
+                                </div>
+                                <div class="card-title">${slice.label}</div>
+                                <div class="card-amount">x${slice.amount || 1}</div>
+                            </div>
+                        `;
+                    }
                 });
 
                 track.style.transition = 'none';
@@ -947,7 +976,17 @@
                         winningCardEl.style.zIndex = '15';
                     }
                     AudioEngine.playVictory();
-                    banner.innerHTML = `<span style="color:#ffffff;">WON:</span> <span style="color:${actualWinner.color || '#f59e0b'};">${actualWinner.label}</span> <span style="font-size:18px; color:#94a3b8;">(x${actualWinner.amount || 1})</span>`;
+                    const isWinnerNum = (actualWinner.isNumber === true) || (actualWinner.actionType === 'score') || (actualWinner.delta !== undefined && actualWinner.delta !== null && Number(actualWinner.delta) !== 0) || /^[\+\-\u2212\u2013]?\s*\d+$/.test(String(actualWinner.label || ''));
+                    const isWinnerPlantZombie = (actualWinner.actionType === 'plant' || actualWinner.actionType === 'zombie' || actualWinner.actionType === 'power');
+                    if (isWinnerNum && !isWinnerPlantZombie) {
+                        const cleanLabel = String(actualWinner.label || '').replace(/[\u2212\u2013\u2014]/g, '-').trim();
+                        let dVal = actualWinner.delta !== undefined ? Number(actualWinner.delta) : parseInt(cleanLabel, 10);
+                        if (isNaN(dVal)) dVal = 0;
+                        const isPos = dVal >= 0;
+                        banner.innerHTML = `<span style="color:#ffffff;">WON:</span> <span style="color:${isPos ? '#10b981' : '#f43f5e'}; font-weight:900;">${isPos ? '+' : ''}${dVal} ${isPos ? '(Score Added to WIN!)' : '(Score Deducted!)'}</span>`;
+                    } else {
+                        banner.innerHTML = `<span style="color:#ffffff;">WON:</span> <span style="color:${actualWinner.color || '#f59e0b'};">${actualWinner.label}</span> <span style="font-size:18px; color:#94a3b8;">(x${actualWinner.amount || 1})</span>`;
+                    }
                     banner.classList.add('show');
 
                     setTimeout(() => {

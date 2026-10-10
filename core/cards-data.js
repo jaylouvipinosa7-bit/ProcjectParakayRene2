@@ -5,10 +5,10 @@
         "giftId":  "",
         "giftName":  "Team plants likes",
         "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_garlicsniper.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_gatling_pea.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_garlic_sniper",
+        "commands":  "spawn_gatling_pea",
         "repetition":  1
     },
     {
@@ -17,10 +17,10 @@
         "giftId":  "",
         "giftName":  "Team zombies likes",
         "funcName":  "Spawn Trident Jugger-nut Gargantuar (240)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_bucket_zombie.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "ultimate_gold_gargantuar",
+        "commands":  "spawn_bucket_zombie",
         "repetition":  1
     },
     {
@@ -149,11 +149,11 @@
         "giftId":  "1402661",
         "giftName":  "Star Light",
         "funcName":  "Spawn Lost Machine III",
-        "funcImg":  "images/game-icons/pvz/spawn_lost_machine_iii.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_lost_machine_iii.webp",
         "trigImg":  "images/tiktok-gifts/1402661_star_light.webp",
         "triggerValue":  "",
         "commands":  "spawn_lost_machine_iii",
-        "repetition":  20
+        "repetition":  50
     },
     {
         "id":  "15",
@@ -280,11 +280,11 @@
         "action":  "SelectedGift",
         "giftId":  "6427",
         "giftName":  "Hat and Mustache",
-        "funcName":  "Spawn Ultimate Machine Nut Zombie",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
+        "funcName":  "Spinner 4",
+        "funcImg":  "images/spinner_wheel_icon.svg",
         "trigImg":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
         "triggerValue":  "",
-        "commands":  "spawn_ultimate_machine_nut_zombie",
+        "commands":  "spinner_1791624002508",
         "repetition":  50
     },
     {
@@ -477,7 +477,7 @@
         "trigImg":  "images/tiktok-gifts/13651_go_popular.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_chomper",
-        "repetition":  6
+        "repetition":  3
     },
     {
         "id":  "42",
@@ -718,5 +718,17 @@
         "triggerValue":  "",
         "commands":  "spawn_horsezombie",
         "repetition":  1
+    },
+    {
+        "id":  "1791627008321",
+        "action":  "SelectedGift",
+        "giftId":  "",
+        "giftName":  "hatdog",
+        "funcName":  "baliw",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
+        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimatehorse",
+        "repetition":  20
     }
 ];

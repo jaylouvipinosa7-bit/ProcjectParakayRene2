@@ -124,7 +124,41 @@ $teamZombiesLikes = 0
 $script:lastStreamTotalLikes = 0
 $script:lastTotalLikesTriggeredMilestone = 0
 $script:cardMilestones = [System.Collections.Hashtable]::Synchronized(@{})
-$script:sessionFollowers = [System.Collections.Hashtable]::Synchronized(@{})
+$script:followersFile = Join-Path $folder "session_followers.json"
+
+function Get-DailyFollowersTable {
+    $todayStr = (Get-Date -Format "yyyy-MM-dd")
+    $table = [System.Collections.Hashtable]::Synchronized(@{})
+    if (Test-Path $script:followersFile) {
+        try {
+            $data = Get-Content $script:followersFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($data -and $data.date -eq $todayStr -and $data.followers) {
+                foreach ($prop in $data.followers.PSObject.Properties) {
+                    $table[$prop.Name] = $prop.Value
+                }
+            }
+        } catch {}
+    }
+    return $table
+}
+
+function Save-DailyFollowersTable {
+    $todayStr = (Get-Date -Format "yyyy-MM-dd")
+    try {
+        $dict = @{}
+        foreach ($k in $script:sessionFollowers.Keys) {
+            $dict[$k] = $script:sessionFollowers[$k]
+        }
+        $obj = @{
+            date = $todayStr
+            followers = $dict
+        }
+        $json = $obj | ConvertTo-Json -Depth 5
+        [System.IO.File]::WriteAllText($script:followersFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:sessionFollowers = Get-DailyFollowersTable
 
 $verifiedGiftsFile = Join-Path $folder "tiktok_gifts_verified.json"
 $script:verifiedGiftsCatalog = $null
@@ -1363,6 +1397,7 @@ while ($true) {
                     }
                 }
                 Sync-ConfigToCards
+                AddEventLog @{ type = "config_updated"; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
                 Send-JsonResponse $response @{ status = "ok"; message = "Config saved and cards synchronized" }
                 continue
             }
@@ -2246,8 +2281,8 @@ while ($true) {
                                         SaveCounts
                                     }
 
-                                    # TRIGGER THE IN-GAME ACTION FOR THIS GIFT CARD!
-                                    if ($g.command -and $g.command -ne "spin_wheel") {
+                                    # TRIGGER THE IN-GAME ACTION FOR THIS GIFT CARD (if not a spinner card)!
+                                    if ($g.command -and $g.command -ne "spin_wheel" -and $g.actionType -ne "spinner" -and -not ($g.command -match '^spinner_')) {
                                         $totalAmt = [int]$g.amount
                                         $giftReps = if ($g.repetition) { [int]$g.repetition } else { 1 }
                                         if ($g.repetitionMultiplier -eq $true -or $g.repetitionMultiplier -eq "true") {
@@ -2591,30 +2626,62 @@ while ($true) {
                         }
                     }
                 }
-                # Follow event: Card 4 (Anti-Spam: Strictly 1 follow per viewer per stream)
+                # Follow event: Card 4 (Anti-Spam: Strictly 1 follow per viewer per day or per live)
                 elseif ($payload.event -eq "follow" -or $payload.type -eq "follow") {
-                    $user = if ($payload.username) { $payload.username } else { "New Follower" }
-                    $cleanFollowerKey = ($user.ToLower() -replace '[^a-z0-9]', '')
-                    if ($cleanFollowerKey) {
-                        if ($script:sessionFollowers.ContainsKey($cleanFollowerKey)) {
-                            Send-JsonResponse $response @{ status = "ok"; message = "Follow already processed for this user in this stream session" }
-                            continue
-                        }
-                        $script:sessionFollowers[$cleanFollowerKey] = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                    $user = if ($payload.username) { [string]$payload.username } else { "New Follower" }
+                    $userId = if ($payload.userId) { [string]$payload.userId } else { "" }
+                    $uniqueId = if ($payload.uniqueId) { [string]$payload.uniqueId } else { "" }
+                    
+                    $cleanUser = ($user.ToLower() -replace '[^a-z0-9]', '')
+                    $cleanUnique = ($uniqueId.ToLower() -replace '[^a-z0-9]', '')
+                    
+                    $trackerKey = if ($userId) { "uid_$userId" } elseif ($cleanUnique) { "u_$cleanUnique" } else { "u_$cleanUser" }
+                    
+                    if ($trackerKey -and $script:sessionFollowers.ContainsKey($trackerKey)) {
+                        Write-Host ">>> [FOLLOW IGNORED] @$user already followed today / in this live session." -ForegroundColor Yellow
+                        Send-JsonResponse $response @{ status = "ok"; message = "Follow already processed for this user today / in this live session" }
+                        continue
+                    }
+                    
+                    # Also check by clean username as fallback
+                    if ($cleanUser -and $cleanUser -ne "viewer" -and $cleanUser -ne "newfollower" -and $script:sessionFollowers.ContainsKey("u_$cleanUser")) {
+                        Write-Host ">>> [FOLLOW IGNORED] @$user already followed today / in this live session." -ForegroundColor Yellow
+                        Send-JsonResponse $response @{ status = "ok"; message = "Follow already processed for this user today / in this live session" }
+                        continue
                     }
 
-                    $card4 = $config.gifts | Where-Object { [string]$_.id -eq "4" }
-                    if ($card4 -and $card4.enabled) {
-                        SendToPvZGame $card4.actionType $card4.command $card4.amount $user | Out-Null
-                        if ($counts.Contains("4")) { $counts["4"] = [int]$counts["4"] + 1; SaveCounts }
-                        AddEventLog @{
-                            type = "follow"
-                            label = "New Follower: $user -> Summoned $($card4.label)"
-                            command = $card4.command
-                            amount = $card4.amount
-                            username = $user
-                            icon = $card4.unitIcon
-                            success = $true
+                    if ($trackerKey) {
+                        $script:sessionFollowers[$trackerKey] = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                    }
+                    if ($cleanUser) {
+                        $script:sessionFollowers["u_$cleanUser"] = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                    }
+                    Save-DailyFollowersTable
+
+                    $followCards = @($config.gifts | Where-Object { 
+                        $_.enabled -and ([string]$_.id -eq "4" -or $_.triggerType -eq "follow" -or $_.eventType -eq "follow" -or $_.giftName -match "^follow(er)?$")
+                    })
+                    
+                    if ($followCards.Count -gt 0) {
+                        foreach ($fc in $followCards) {
+                            $fcAmt = if ($fc.amount) { [int]$fc.amount } else { 1 }
+                            $fcReps = if ($fc.repetition) { [int]$fc.repetition } else { 1 }
+                            $fcDelay = if ($fc.delay) { [int]$fc.delay } else { 0 }
+                            $fcInt = if ($fc.interval) { [int]$fc.interval } else { 100 }
+                            SendToPvZGame $fc.actionType $fc.command $fcAmt $user "" $fcReps $fcDelay $fcInt | Out-Null
+                            
+                            $fcIdStr = [string]$fc.id
+                            if ($counts.Contains($fcIdStr)) { $counts[$fcIdStr] = [int]$counts[$fcIdStr] + 1; SaveCounts }
+                            
+                            AddEventLog @{
+                                type = "follow"
+                                label = "New Follower: $user -> Summoned $($fc.label)"
+                                command = $fc.command
+                                amount = $fcAmt
+                                username = $user
+                                icon = $fc.unitIcon
+                                success = $true
+                            }
                         }
                     }
                     Send-JsonResponse $response @{ status = "ok"; message = "Follow processed" }

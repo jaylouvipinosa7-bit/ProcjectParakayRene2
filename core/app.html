@@ -7153,21 +7153,33 @@
                     }
                     if (!imgUrl) imgUrl = 'images/func_2.png';
 
-                    const amountText = isNumberCard
-                        ? (signedDelta >= 0 ? '🌿 WIN' : '💀 LOSE')
-                        : `x${slice.amount || 1}`;
-
-                    html += `
-                        <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}">
-                            <div class="card-glow-bg"></div>
-                            <span class="rarity-tag">${slice.rarity || 'Normal'}</span>
-                            <div class="card-img-wrap">
-                                <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
+                    if (isNumberCard) {
+                        const col = slice.color || (signedDelta >= 0 ? '#10b981' : '#f43f5e');
+                        const displayNum = (signedDelta > 0 ? `+${Math.abs(signedDelta)}` : `${signedDelta}`);
+                        const signText = signedDelta >= 0 ? 'WIN +' : 'LOSE -';
+                        html += `
+                            <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}" style="border-color:${col}; box-shadow:0 0 14px ${col}40;">
+                                <div class="card-glow-bg" style="background: radial-gradient(circle, ${col}25 0%, transparent 70%);"></div>
+                                <span class="rarity-tag" style="border-color:${col}; color:${col};">${slice.rarity || 'Normal'}</span>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; width:100%;">
+                                    <div style="font-family:'Outfit', sans-serif; font-size:38px; font-weight:900; color:${col}; text-shadow:0 0 14px ${col}; line-height:1;">${displayNum}</div>
+                                    <div style="font-size:10px; font-weight:800; color:${signedDelta >= 0 ? '#34d399' : '#f87171'}; margin-top:4px;">${signText}</div>
+                                </div>
                             </div>
-                            <div class="card-title">${slice.label}</div>
-                            <div class="card-amount">${amountText}</div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        html += `
+                            <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}">
+                                <div class="card-glow-bg"></div>
+                                <span class="rarity-tag">${slice.rarity || 'Normal'}</span>
+                                <div class="card-img-wrap">
+                                    <img src="${imgUrl}" onerror="this.src='images/func_2.png'" alt="${slice.label}">
+                                </div>
+                                <div class="card-title">${slice.label}</div>
+                                <div class="card-amount">${amountText}</div>
+                            </div>
+                        `;
+                    }
                 });
             }
             track.innerHTML = html;
@@ -7759,11 +7771,30 @@
                 activeSpinnerId = newId;
             }
 
+            // Sync matching card in config.gifts so overlay displays as a Spinner card!
+            if (config && config.gifts && (giftName || giftId)) {
+                const targetSpId = editingModalSpinnerId || activeSpinnerId;
+                const matchedGift = config.gifts.find(g => {
+                    const matchId = giftId && g.giftId && String(g.giftId).trim() === String(giftId).trim();
+                    const matchName = giftName && g.giftName && g.giftName.toLowerCase().trim() === giftName.toLowerCase().trim();
+                    return matchId || matchName;
+                });
+                if (matchedGift) {
+                    matchedGift.actionType = 'spinner';
+                    matchedGift.command = targetSpId;
+                    matchedGift.spinnerId = targetSpId;
+                    matchedGift.label = name;
+                    matchedGift.functionName = name;
+                    matchedGift.unitIcon = 'images/spinner_wheel_icon.svg';
+                }
+            }
+
             closeSpinnerConfigModal();
             renderSpinnerStudio();
 
             try {
                 await saveConfigToServer();
+                fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
                 showToast(`Saved spinner "${name}"!`, "OK");
             } catch (err) {
                 showToast("Failed to save spinner: " + err.message, "ERR");
@@ -8379,7 +8410,7 @@
             const rawVal = parseInt(document.getElementById('numberValInput')?.value) || 1;
             const absVal = Math.abs(rawVal);
             const signedDelta = currentNumberIsPositive ? absVal : -absVal;
-            const label = (currentNumberIsPositive ? '+' : '−') + absVal;
+            const label = (currentNumberIsPositive ? '+' : '-') + absVal;
             const rarity = document.getElementById('numberRaritySelect')?.value || 'Normal';
             const weight = Math.max(1, parseInt(document.getElementById('numberWeightInput')?.value) || 10);
             const color = currentNumberColor || (currentNumberIsPositive ? '#10b981' : '#ef4444');
@@ -8387,7 +8418,9 @@
 
             const sliceData = {
                 actionType: 'score',
+                isNumber: true,
                 delta: signedDelta,
+                value: signedDelta,
                 label: label,
                 functionName: label,
                 amount: absVal,
@@ -8419,6 +8452,7 @@
             closeNumberSliceModal();
             renderSpinnerStudio();
             await saveConfigToServer();
+            fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
             showToast(`Number Card ${label} saved successfully!`, "OK");
         }
 
@@ -8431,6 +8465,7 @@
             closeNumberSliceModal();
             renderSpinnerStudio();
             await saveConfigToServer();
+            fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
             showToast("Number card deleted!", "WARN");
         }
 
@@ -8597,6 +8632,7 @@
                         unitIcon,
                         icon: unitIcon,
                         actionType: primaryActionType,
+                        isNumber: false,
                         repetition,
                         delay,
                         interval,
@@ -8619,6 +8655,7 @@
                     unitIcon,
                     icon: unitIcon,
                     actionType: primaryActionType,
+                    isNumber: false,
                     repetition,
                     delay,
                     interval,
@@ -8632,6 +8669,7 @@
                 await saveConfigToServer();
                 closeSliceModal();
                 renderSpinnerStudio();
+                fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
                 showToast(`Saved prize card: "${functionName}" with ${currentSliceCommands.length} command(s)!`, "OK");
             } catch (err) {
                 showToast("Failed to save prize card: " + err.message, "ERR");
@@ -8645,15 +8683,17 @@
         }
 
         async function deleteSlice(id) {
-            if (!config || !config.spinner || !config.spinner.slices) return;
-            if (config.spinner.slices.length <= 1) {
+            const sp = getActiveSpinner();
+            if (!sp || !sp.slices) return;
+            if (sp.slices.length <= 1) {
                 showToast("Must have at least 1 prize card in the pool!", "WARN");
                 return;
             }
-            config.spinner.slices = config.spinner.slices.filter(s => s.id !== id);
+            sp.slices = sp.slices.filter(s => s.id !== id);
             try {
                 await saveConfigToServer();
                 renderSpinnerStudio();
+                fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
                 showToast("Prize card removed from pool");
             } catch (err) {
                 showToast("Failed to delete prize card: " + err.message, "ERR");

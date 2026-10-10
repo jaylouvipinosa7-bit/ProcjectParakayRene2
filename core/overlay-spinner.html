@@ -604,6 +604,24 @@
             }
         }
 
+        function isNumberSliceItem(item) {
+            if (!item) return false;
+            if (item.actionType === 'plant' || item.actionType === 'zombie' || item.actionType === 'power') return false;
+            if (item.isNumber === true || item.actionType === 'score') return true;
+            if (item.delta !== undefined && item.delta !== null && Number(item.delta) !== 0) return true;
+            const cleanLabel = String(item.label || item.text || '').replace(/[\u2212\u2013\u2014]/g, '-').trim();
+            return /^([+-]?\d+)$/.test(cleanLabel);
+        }
+
+        function parseSliceDelta(item) {
+            if (!item) return 0;
+            if (item.delta !== undefined && item.delta !== null) return Number(item.delta);
+            if (item.value !== undefined && item.value !== null) return Number(item.value);
+            const cleanLabel = String(item.label || item.text || '').replace(/[\u2212\u2013\u2014]/g, '-').trim();
+            const val = parseInt(cleanLabel, 10);
+            return isNaN(val) ? 0 : val;
+        }
+
         // Match an incoming gift to its assigned spinner in config
         function findSpinnerForGift(giftName, giftId) {
             if (!config) return null;
@@ -636,7 +654,8 @@
                     return (gIdMatch || cGName === cleanGName) && (g.actionType === 'spinner' || (g.command && g.command.includes('spin')));
                 });
                 if (matchedGiftCard && spinners.length > 0) {
-                    return spinners[0];
+                    const boundSp = spinners.find(s => s.id === matchedGiftCard.spinnerId || (matchedGiftCard.command && matchedGiftCard.command.includes(s.id)));
+                    return boundSp || spinners[0];
                 }
             }
 
@@ -679,21 +698,24 @@
                 card.dataset.index = index;
                 card.dataset.id = item.id;
 
-                const isScore = item.actionType === 'score' || (item.delta !== undefined && item.delta !== null) || /^([+-]?\d+)$/.test(String(item.label || ''));
-                const col = item.color || '#38bdf8';
+                const isScore = isNumberSliceItem(item);
+                const deltaVal = parseSliceDelta(item);
+                const col = item.color || (deltaVal >= 0 ? '#10b981' : '#f43f5e');
                 const imgSrc = item.unitIcon || item.image || item.icon || 'images/func_2.png';
                 const labelText = item.label || item.text || item.name || 'Unit';
 
                 if (isScore) {
                     card.style.borderColor = col;
                     card.style.boxShadow = `0 0 18px ${col}40`;
+                    const signText = deltaVal >= 0 ? 'WIN +' : 'LOSE -';
+                    const displayNum = (deltaVal > 0 ? `+${deltaVal}` : `${deltaVal}`);
                     card.innerHTML = `
                         <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; padding:8px;">
                             <div style="font-family:'Outfit', sans-serif; font-size:42px; font-weight:900; color:${col}; text-shadow:0 0 16px ${col}; line-height:1; letter-spacing:-1px;">
-                                ${labelText}
+                                ${displayNum}
                             </div>
-                            <div style="font-size:11px; font-weight:800; color:#94a3b8; margin-top:6px; letter-spacing:0.5px;">
-                                ${parseInt(labelText) >= 0 ? 'WIN +' : 'LOSE -'}
+                            <div style="font-size:11px; font-weight:800; color:${deltaVal >= 0 ? '#34d399' : '#f87171'}; margin-top:6px; letter-spacing:0.5px;">
+                                ${signText}
                             </div>
                         </div>
                     `;
@@ -885,9 +907,9 @@
                 // Show Winner Celebration Banner
                 const banner = document.getElementById('winnerBanner');
                 const itemNameSpan = document.getElementById('winnerItemName');
-                const isScoreWin = winningItem.actionType === 'score' || (winningItem.delta !== undefined && winningItem.delta !== null) || /^([+-]?\d+)$/.test(String(winningItem.label || ''));
+                const isScoreWin = isNumberSliceItem(winningItem);
                 if (isScoreWin) {
-                    const deltaVal = parseInt(winningItem.delta ?? winningItem.label ?? 0);
+                    const deltaVal = parseSliceDelta(winningItem);
                     const isPos = deltaVal >= 0;
                     itemNameSpan.innerHTML = `<span style="color:${isPos ? '#10b981' : '#f43f5e'}; font-weight:900;">${isPos ? '+' : ''}${deltaVal} ${isPos ? 'Score Added to WIN!' : 'Score Deducted!'}</span>`;
                 } else {
@@ -921,6 +943,11 @@
 
         // Real-time Event Polling from backend (/api/events)
         function initEventsListener() {
+            // Periodic config reload every 3 seconds to keep prizes completely fresh
+            setInterval(async () => {
+                try { await loadConfig(); } catch (e) {}
+            }, 3000);
+
             setInterval(async () => {
                 try {
                     const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
@@ -933,16 +960,47 @@
                             if (ev.id && processedEventIds.has(ev.id)) continue;
                             if (ev.id) processedEventIds.add(ev.id);
 
+                            // Live config / spinner update from dashboard
+                            if (ev.type === 'config_updated' || ev.type === 'spinner_updated') {
+                                await loadConfig();
+                                continue;
+                            }
+
                             // 1. Direct Spin Result Event
                             if (ev.type === 'spin_result') {
-                                const sp = (config && config.spinners)
-                                    ? (config.spinners.find(s => String(s.id) === String(ev.spinnerId)) || 
-                                       config.spinners.find(s => s.name.toLowerCase() === (ev.spinnerName || '').toLowerCase()) ||
-                                       config.spinners[0])
-                                    : { name: ev.spinnerName || 'Spinner', slices: ev.slices };
+                                let sp = null;
+                                if (config && config.spinners) {
+                                    sp = config.spinners.find(s => String(s.id) === String(ev.spinnerId)) || 
+                                         config.spinners.find(s => s.name && s.name.toLowerCase() === (ev.spinnerName || '').toLowerCase()) ||
+                                         (ev.groupId ? config.spinners.find(s => String(s.groupId) === String(ev.groupId)) : null);
+                                }
+                                if (!sp) {
+                                    sp = {
+                                        id: ev.spinnerId || '1',
+                                        name: ev.spinnerName || 'Spinner',
+                                        duration: ev.duration || 2500,
+                                        ticks: ev.ticks || 100,
+                                        pointerIcon: ev.pointerIcon || ''
+                                    };
+                                }
+
+                                // Use live slices from the event so newly added cards (like -500) ALWAYS appear immediately!
+                                const liveSlices = (ev.slices && Array.isArray(ev.slices) && ev.slices.length > 0)
+                                    ? ev.slices
+                                    : (sp.slices || []);
+
+                                const dynamicSpinner = {
+                                    ...sp,
+                                    name: ev.spinnerName || sp.name,
+                                    id: ev.spinnerId || sp.id,
+                                    duration: ev.duration || sp.duration || 2500,
+                                    ticks: ev.ticks || sp.ticks || 100,
+                                    pointerIcon: ev.pointerIcon || sp.pointerIcon,
+                                    slices: liveSlices
+                                };
 
                                 showAndSpin({
-                                    spinner: sp,
+                                    spinner: dynamicSpinner,
                                     winner: ev.slice,
                                     username: ev.username || 'Gifter',
                                     avatar: ev.avatar,
