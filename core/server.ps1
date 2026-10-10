@@ -1375,6 +1375,10 @@ while ($true) {
                 $name = if ($data.name) { [string]$data.name.Trim() } else { "Google User" }
                 $picture = if ($data.picture) { [string]$data.picture } else { "" }
 
+                if ($email -and -not $email.Contains('@')) {
+                    $email = "$email@gmail.com"
+                }
+
                 if (-not $email -or $email -notmatch '^.+@.+\..+$') {
                     Send-JsonResponse $response @{ success = $false; message = "Valid Google email required" } 400
                     continue
@@ -1436,6 +1440,7 @@ while ($true) {
 
                 # Check if this user already has custom triggers configured
                 $userCfgPath = Get-UserConfigPath $email
+                $isNewUser = (-not (Test-Path $userCfgPath))
                 $tmplSpinners = @()
                 if (Test-Path $templateConfigFile) {
                     try {
@@ -1472,17 +1477,19 @@ while ($true) {
                     Sync-ConfigToCards
                 } else {
                     # User returning: activate their existing saved configuration, repair spinners if missing
-                    $userJson = [System.IO.File]::ReadAllText($userCfgPath, [System.Text.Encoding]::UTF8)
-                    try {
-                        $uObj = $userJson | ConvertFrom-Json
-                        if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
-                            $uObj.spinners = $tmplSpinners
-                            $userJson = $uObj | ConvertTo-Json -Depth 6
-                            [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
-                        }
-                    } catch {}
-                    [System.IO.File]::WriteAllText($configFile, $userJson, [System.Text.Encoding]::UTF8)
-                    Sync-ConfigToCards
+                    if (Test-Path $userCfgPath) {
+                        $userJson = [System.IO.File]::ReadAllText($userCfgPath, [System.Text.Encoding]::UTF8)
+                        try {
+                            $uObj = $userJson | ConvertFrom-Json
+                            if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
+                                $uObj.spinners = $tmplSpinners
+                                $userJson = $uObj | ConvertTo-Json -Depth 6
+                                [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
+                            }
+                        } catch {}
+                        [System.IO.File]::WriteAllText($configFile, $userJson, [System.Text.Encoding]::UTF8)
+                        Sync-ConfigToCards
+                    }
                 }
 
                 Send-JsonResponse $response @{
