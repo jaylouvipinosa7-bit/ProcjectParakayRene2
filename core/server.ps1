@@ -2602,16 +2602,6 @@ while ($true) {
             $cleanUserKey = ($username.ToLower() -replace '[^a-z0-9]', '')
             $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 
-            # Prevent duplicate spin triggers for the same viewer within 8 seconds
-            if ($cleanUserKey -and $script:recentSpins.ContainsKey($cleanUserKey)) {
-                $lastSpinTime = [int64]$script:recentSpins[$cleanUserKey]
-                if (($nowMs - $lastSpinTime) -lt 8000) {
-                    Send-JsonResponse $response @{ status = "ok"; message = "Already spun for this donation" }
-                    continue
-                }
-            }
-            $script:recentSpins[$cleanUserKey] = $nowMs
-
             $avatar = if ($request.QueryString['avatar']) { $request.QueryString['avatar'] } else { "images/default_avatar.svg" }
             $noGame = ($request.QueryString['noGameTrigger'] -eq 'true')
             
@@ -2673,6 +2663,8 @@ while ($true) {
                 avatar = $avatar
                 hideInOverlay = $spHide
                 success = $exec.success
+                winWidgetScore = $script:winWidget.score
+                winWidget = $script:winWidget
             }
             AddEventLog $logEntry
 
@@ -2688,6 +2680,7 @@ while ($true) {
                 avatar = $avatar
                 gameExecuted = $exec.success
                 winWidgetScore = $script:winWidget.score
+                winWidget = $script:winWidget
             }
             Send-JsonResponse $response $resObj
             continue

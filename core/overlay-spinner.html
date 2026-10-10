@@ -663,7 +663,7 @@
         }
 
         // Build the horizontal cards reel dynamically based on the assigned spinner's prizes
-        function buildReelForSpinner(spinner) {
+        function buildReelForSpinner(spinner, winner) {
             let slices = spinner.slices || [];
             
             // Fallback authentic items if slices empty
@@ -683,18 +683,22 @@
             const track = document.getElementById('reelTrack');
             track.innerHTML = '';
 
-            // Generate a 75-card strip using this spinner's real slices
+            const actualWinner = winner || slices[0];
+            const targetIndex = 40;
             totalReelCards = [];
-            const repeats = Math.ceil(75 / slices.length);
-            for (let r = 0; r < repeats; r++) {
-                for (let i = 0; i < slices.length; i++) {
-                    totalReelCards.push({ ...slices[i], uniqueIndex: totalReelCards.length });
+            for (let i = 0; i < 52; i++) {
+                if (i === targetIndex) {
+                    totalReelCards.push({ ...actualWinner, uniqueIndex: i });
+                } else {
+                    const randSlice = slices[Math.floor(Math.random() * slices.length)];
+                    totalReelCards.push({ ...randSlice, uniqueIndex: i });
                 }
             }
 
             totalReelCards.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = `spinner-card rarity-${(item.rarity || 'normal').toLowerCase()}`;
+                card.id = `reelCard_${index}`;
                 card.dataset.index = index;
                 card.dataset.id = item.id;
 
@@ -730,16 +734,8 @@
                 track.appendChild(card);
             });
 
-            // Initial center alignment under pointer
-            const viewport = document.getElementById('reelViewport');
-            const viewportWidth = viewport.offsetWidth || 980;
-            const centerPos = viewportWidth / 2;
-            const initialTargetIndex = Math.min(3, totalReelCards.length - 1);
-            const targetCenterOffset = (initialTargetIndex * FULL_CARD_STEP) + (CARD_WIDTH / 2);
-            const initialX = centerPos - targetCenterOffset;
-
             track.style.transition = 'none';
-            track.style.transform = `translateX(${initialX}px)`;
+            track.style.transform = 'translateX(0px)';
         }
 
         function updateQueueDisplay() {
@@ -792,8 +788,8 @@
             updateQueueDisplay();
             if (autoHideTimer) clearTimeout(autoHideTimer);
 
-            // 1. Build the reel using the assigned spinner's exact prize pool
-            buildReelForSpinner(spinner);
+            // 1. Build the reel placing the actual winner guaranteed under the needle
+            buildReelForSpinner(spinner, winner);
 
             // 2. Update pointer avatar with current spinner's profile! (Matches Photo 2)
             const avatarUrl = avatar || (spinner && spinner.pointerIcon) || 'images/default_avatar.svg';
@@ -827,7 +823,7 @@
 
             // 5. Wait for smooth entrance, then trigger the physics spin
             setTimeout(() => {
-                executeReelSpin(winner, (wonItem) => {
+                executeReelSpin(winner, spinner, (wonItem) => {
                     // Celebration is complete: If queue has items, spin next fast! Otherwise normal hold
                     const holdTime = spinQueue.length > 0 ? 1200 : 4500;
                     autoHideTimer = setTimeout(() => {
@@ -848,58 +844,51 @@
                         }
                     }, holdTime);
                 });
-            }, 400);
+            }, 350);
         }
 
-        // Real horizontal deceleration reel spin
-        function executeReelSpin(targetWinner, onComplete) {
+        // Real horizontal deceleration reel spin (DOM-measured exact stop)
+        function executeReelSpin(targetWinner, spinner, onComplete) {
             const track = document.getElementById('reelTrack');
             const viewport = document.getElementById('reelViewport');
             const viewportWidth = viewport.offsetWidth || 980;
             const centerPos = viewportWidth / 2;
+            const targetIndex = 40;
 
-            // Pick landing index in the extended strip (around index 50 to 60)
-            let winIdx = 52 + Math.floor(Math.random() * 8);
-            if (targetWinner) {
-                const found = totalReelCards.findIndex((it, idx) => idx >= 45 && (
-                    (targetWinner.id && it.id === targetWinner.id) ||
-                    (targetWinner.label && it.label === targetWinner.label) ||
-                    (targetWinner.command && it.command === targetWinner.command)
-                ));
-                if (found !== -1) winIdx = found;
+            const targetCardEl = document.getElementById(`reelCard_${targetIndex}`) || track.children[targetIndex];
+            if (!targetCardEl) {
+                if (onComplete) onComplete(targetWinner);
+                return;
             }
 
-            const winningItem = totalReelCards[winIdx] || totalReelCards[50];
+            void track.offsetWidth; // Force layout reflow
+            const cardCenterInTrack = targetCardEl.offsetLeft + (targetCardEl.offsetWidth / 2);
+            const finalTranslateX = centerPos - cardCenterInTrack;
 
-            // Subtle natural jitter (+/- 8px from dead center)
-            const jitter = (Math.random() - 0.5) * 12;
-            const targetX = (winIdx * FULL_CARD_STEP) + (CARD_WIDTH / 2) + jitter;
-            const finalTranslateX = centerPos - targetX;
-
-            const spinDuration = 4.8; // seconds
+            const durationMs = (spinner && spinner.duration) ? Number(spinner.duration) : 2500;
+            const spinDurationSec = durationMs / 1000;
 
             // Sound ticks loop during spin
-            let tickInterval = 60;
+            let tickInterval = 65;
             let currentTickTime = 0;
             const tickTimer = setInterval(() => {
                 currentTickTime += tickInterval;
                 playTickSound();
-                if (currentTickTime > 2500) tickInterval = 140;
-                if (currentTickTime > 3800) tickInterval = 280;
-                if (currentTickTime >= spinDuration * 1000 - 300) {
+                if (currentTickTime > durationMs * 0.6) tickInterval = 140;
+                if (currentTickTime > durationMs * 0.85) tickInterval = 280;
+                if (currentTickTime >= durationMs - 150) {
                     clearInterval(tickTimer);
                 }
             }, 75);
 
-            track.style.transition = `transform ${spinDuration}s cubic-bezier(0.12, 0.8, 0.33, 1)`;
+            track.style.transition = `transform ${spinDurationSec}s cubic-bezier(0.12, 0.95, 0.18, 1)`;
             track.style.transform = `translateX(${finalTranslateX}px)`;
 
             setTimeout(() => {
                 clearInterval(tickTimer);
 
                 // Highlight winning card under yellow pointer
-                const winningCard = track.children[winIdx];
-                if (winningCard) winningCard.classList.add('winner');
+                targetCardEl.classList.add('winner');
 
                 // Play victory sound
                 playWinFanfare();
@@ -907,18 +896,18 @@
                 // Show Winner Celebration Banner
                 const banner = document.getElementById('winnerBanner');
                 const itemNameSpan = document.getElementById('winnerItemName');
-                const isScoreWin = isNumberSliceItem(winningItem);
+                const isScoreWin = isNumberSliceItem(targetWinner);
                 if (isScoreWin) {
-                    const deltaVal = parseSliceDelta(winningItem);
+                    const deltaVal = parseSliceDelta(targetWinner);
                     const isPos = deltaVal >= 0;
                     itemNameSpan.innerHTML = `<span style="color:${isPos ? '#10b981' : '#f43f5e'}; font-weight:900;">${isPos ? '+' : ''}${deltaVal} ${isPos ? 'Score Added to WIN!' : 'Score Deducted!'}</span>`;
                 } else {
-                    itemNameSpan.innerText = winningItem.label || winningItem.text || 'Prize';
+                    itemNameSpan.innerText = targetWinner.label || targetWinner.text || 'Prize';
                 }
                 banner.style.display = 'flex';
 
-                if (onComplete) onComplete(winningItem);
-            }, spinDuration * 1000);
+                if (onComplete) onComplete(targetWinner);
+            }, durationMs);
         }
 
         // Test Spin Trigger

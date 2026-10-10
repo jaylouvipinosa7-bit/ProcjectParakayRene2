@@ -7404,7 +7404,8 @@
 
         async function resetWinWidgetCounters() {
             if (!confirm("Are you sure you want to reset Win/Lose and Score counters back to 0?")) return;
-            adjustWinWidget('reset');
+            await adjustWinWidget('reset');
+            await fetchWinWidget();
             showToast("Win/Lose counters reset to 0!", "OK");
         }
 
@@ -7951,6 +7952,14 @@
                 const res = await fetch(`/api/spin?${spParam.replace(/^&/, '')}${userParam}`, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;
+                if (!winner) {
+                    isSpinning = false;
+                    showToast("No winner returned: " + (data.message || 'Error'), "ERR");
+                    return;
+                }
+                if (data.winWidget) {
+                    renderWinWidgetData(data.winWidget);
+                }
                 fetchSpinnerHistory();
 
                 const slices = sp ? (sp.slices || []) : [];
@@ -7983,6 +7992,7 @@
                     playReelVictory();
                     showToast(`Landed on: ${winner.label}!`);
                     fetchSpinnerHistory();
+                    fetchWinWidget();
 
                     // Process next queued spin!
                     if (appSpinQueue.length > 0) {
@@ -8042,6 +8052,15 @@
                 const res = await fetch(endpoint, { method: 'POST' });
                 const data = await res.json();
                 const winner = data.winner;
+                if (!winner) {
+                    isSpinning = false;
+                    if (banner) banner.innerText = 'Spin error';
+                    showToast("No winner returned: " + (data.message || 'Error'), "ERR");
+                    return;
+                }
+                if (data.winWidget) {
+                    renderWinWidgetData(data.winWidget);
+                }
                 fetchSpinnerHistory();
 
                 const slices = sp ? (sp.slices || []) : [];
@@ -8149,6 +8168,7 @@
                     }
                     showToast(`Won: ${winner.label}!`);
                     fetchSpinnerHistory();
+                    fetchWinWidget();
 
                     // Process next queued spin!
                     if (appSpinQueue.length > 0) {
