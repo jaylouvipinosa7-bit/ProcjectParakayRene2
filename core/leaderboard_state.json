@@ -4,11 +4,33 @@
                   "SuperFan":  100
               },
     "coins":  {
-                  "Yuki":  1,
-                  "TestGifter":  159
+                  "FriendTester":  2,
+                  "TesterHeartMe":  1,
+                  "HeartFan":  1,
+                  "TesterRose":  1,
+                  "Tester1":  1,
+                  "Tester2":  20,
+                  "Tester3":  1,
+                  "Tester4":  30,
+                  "TestAccuracyUser":  43,
+                  "TestGifter":  633,
+                  "Yuki":  2,
+                  "Viewer_Alice":  2,
+                  "Viewer_Bob":  1
               },
     "avatars":  {
+                    "FriendTester":  "images/default_avatar.svg",
+                    "TesterHeartMe":  "images/default_avatar.svg",
+                    "HeartFan":  "images/default_avatar.svg",
+                    "TesterRose":  "images/default_avatar.svg",
+                    "Tester1":  "images/default_avatar.svg",
+                    "Tester2":  "images/default_avatar.svg",
+                    "Tester3":  "images/default_avatar.svg",
+                    "Tester4":  "images/default_avatar.svg",
+                    "TestAccuracyUser":  "images/default_avatar.svg",
+                    "TestGifter":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp",
                     "Yuki":  "images/default_avatar.svg",
-                    "TestGifter":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp"
+                    "Viewer_Alice":  "images/default_avatar.svg",
+                    "Viewer_Bob":  "images/default_avatar.svg"
                 }
 }

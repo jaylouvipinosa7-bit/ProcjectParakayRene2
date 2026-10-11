@@ -1,15 +1,15 @@
 $WshShell = New-Object -ComObject WScript.Shell
 $desktop = [System.Environment]::GetFolderPath('Desktop')
-$shortcutPath = Join-Path $desktop "PvZ Fusion Studio.lnk"
+$shortcutPath = Join-Path $desktop "RENEarn - PvZ Fusion Studio.lnk"
 
 $currentDir = $PSScriptRoot
-$exePath = Join-Path $currentDir "PvZ_Fusion_Studio.exe"
-$iconPath = Join-Path $currentDir "app_icon.ico"
+$exePath = if (Test-Path (Join-Path $currentDir "RENEarn_Studio.exe")) { Join-Path $currentDir "RENEarn_Studio.exe" } else { Join-Path $currentDir "Launch_Studio.bat" }
+$iconPath = if (Test-Path (Join-Path $currentDir "renearn.ico")) { Join-Path $currentDir "renearn.ico" } else { Join-Path $currentDir "app_icon.ico" }
 
 $shortcut = $WshShell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $exePath
 $shortcut.WorkingDirectory = $currentDir
-$shortcut.Description = "PvZ Fusion 4.0 - Interactive Live Stream Studio"
+$shortcut.Description = "RENEarn - Interactive Live Stream Studio & PvZ Fusion Mod Controller"
 $shortcut.IconLocation = "$iconPath, 0"
 $shortcut.Save()
 

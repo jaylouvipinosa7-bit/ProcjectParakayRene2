@@ -4,7 +4,8 @@ $testGifts = @(
     @{ name = "Rose"; id = "5655"; count = 1; coins = 1 },
     @{ name = "Ice Cream Cone"; id = "5827"; count = 1; coins = 1 },
     @{ name = "Perfume"; id = "5658"; count = 1; coins = 20 },
-    @{ name = "Doughnut"; id = "5879"; count = 1; coins = 30 }
+    @{ name = "Doughnut"; id = "5879"; count = 1; coins = 30 },
+    @{ name = "Hat and Mustache"; id = "6427"; count = 1; coins = 99 }
 )
 
 Write-Output "Testing simulated TikTok gift webhooks to http://127.0.0.1:8080/api/webhook/tiktok..."

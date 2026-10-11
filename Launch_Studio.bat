@@ -1,9 +1,9 @@
 @echo off
-title PvZ Fusion 4.0 Studio Launcher
+title RENEarn - PvZ Fusion Live Stream Studio
 color 0a
 
 echo ===============================================================================
-echo                PvZ FUSION 4.0 - INTERACTIVE STREAM STUDIO
+echo                RENEarn - INTERACTIVE STREAM STUDIO
 echo ===============================================================================
 echo.
 echo  [1/3] Closing any previous server instances...
@@ -50,8 +50,8 @@ if exist "%~dp0core\server.ps1" (
 ping 127.0.0.1 -n 3 >nul
 
 echo  Launching PvZ Fusion Studio Application...
-if exist "%~dp0PvZ_Fusion_Studio.exe" (
-    start "" "%~dp0PvZ_Fusion_Studio.exe"
+if exist "%~dp0RENEarn_Studio.exe" (
+    start "" "%~dp0RENEarn_Studio.exe"
 ) else (
     start msedge.exe --app=http://localhost:8080/app.html
 )

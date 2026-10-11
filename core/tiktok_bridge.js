@@ -249,6 +249,8 @@ function startConnection() {
     const activeStreaks = new Map();
     // Deduplication cache for non-streak gifts (prevents double firing when repeatEnd echoes duplicate count)
     const recentGiftPackets = new Map();
+    // Heart Me 1x per person per day cache (TikTok only allows 1 Heart Me send per viewer per day)
+    const heartMeUsersToday = new Map();
 
     // 1. Gift Event
     tiktokConnection.on('gift', data => {
@@ -271,6 +273,18 @@ function startConnection() {
         const streakKey = `${user}_${giftId}`;
         const now = Date.now();
 
+        // Heart Me deduplication: strictly 1 time per user per day!
+        const isHeartMe = (giftId === '7934' || (giftName && giftName.toLowerCase().replace(/[^a-z]/g, '') === 'heartme'));
+        if (isHeartMe) {
+            const todayDateStr = new Date().toISOString().slice(0, 10);
+            const userKey = (user || '').toLowerCase().trim();
+            if (heartMeUsersToday.get(userKey) === todayDateStr) {
+                console.log(`[TikTokBridge] Heart Me already registered for @${user} today. Skipping duplicate packet.`);
+                return;
+            }
+            heartMeUsersToday.set(userKey, todayDateStr);
+        }
+
         let deltaCount = 1;
 
         if (isStreak) {
@@ -290,10 +304,10 @@ function startConnection() {
             }
         } else {
             // Non-streak gift:
-            // Absorb duplicate socket echo (< 350ms) without blocking subsequent legitimate gifts
+            // Absorb duplicate socket echo (< 1200ms) without blocking subsequent legitimate gifts
             const nonStreakKey = `${user}_${giftId}_${totalCount}`;
             const lastProcessedTime = recentGiftPackets.get(nonStreakKey);
-            if (lastProcessedTime && (now - lastProcessedTime < 350)) {
+            if (lastProcessedTime && (now - lastProcessedTime < 1200)) {
                 return; // Skip duplicate echo!
             }
             recentGiftPackets.set(nonStreakKey, now);

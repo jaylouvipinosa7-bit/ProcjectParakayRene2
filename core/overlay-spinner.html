@@ -625,7 +625,8 @@
         // Match an incoming gift to its assigned spinner in config
         function findSpinnerForGift(giftName, giftId) {
             if (!config) return null;
-            const spinners = config.spinners || (config.spinner ? [config.spinner] : []);
+            const rawSpinners = config.spinners || (config.spinner ? [config.spinner] : []);
+            const spinners = Array.isArray(rawSpinners) ? rawSpinners : (rawSpinners && typeof rawSpinners === 'object' ? Object.values(rawSpinners) : []);
             const cleanGName = (giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
             for (const sp of spinners) {

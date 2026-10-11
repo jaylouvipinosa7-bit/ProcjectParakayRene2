@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PvZ Fusion 4.0 - Live Stream Control Studio</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" href="/app_icon.png">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/app_icon.png">
+    <title>RENEarn - PvZ Fusion Live Stream Studio</title>
+    <link rel="icon" type="image/png" href="images/renearn_icon.png">
+    <link rel="shortcut icon" href="images/renearn_icon.png">
+    <link rel="apple-touch-icon" href="images/renearn_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #070a0d;
-            --bg-surface: #0f141a;
-            --bg-card: #151c24;
-            --bg-card-hover: #1c2632;
-            --border-color: #24303f;
-            --border-glow: rgba(16, 185, 129, 0.25);
+            --bg-deep: #090a0f;
+            --bg-surface: #10121a;
+            --bg-card: #151824;
+            --bg-card-hover: #1e2232;
+            --border-color: rgba(239, 68, 68, 0.22);
+            --border-glow: rgba(239, 68, 68, 0.4);
             
-            --pvz-green: #10b981;
-            --pvz-green-light: #34d399;
-            --pvz-green-glow: rgba(16, 185, 129, 0.4);
+            --brand-red: #ef4444;
+            --brand-red-light: #f87171;
+            --brand-orange: #f97316;
+            --brand-gold: #f59e0b;
+            --brand-gradient: linear-gradient(135deg, #ef4444, #f97316);
+
+            --pvz-green: #22c55e;
+            --pvz-green-light: #4ade80;
+            --pvz-green-glow: rgba(34, 197, 94, 0.35);
             
-            --pvz-purple: #8b5cf6;
+            --pvz-purple: #a855f7;
             --pvz-gold: #f59e0b;
             --pvz-cyan: #06b6d4;
             --pvz-rose: #f43f5e;
@@ -58,8 +63,8 @@
             flex-direction: column;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 12% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 88% 85%, rgba(249, 115, 22, 0.06) 0%, transparent 45%);
         }
 
         header {
@@ -198,15 +203,16 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-color: #34d399;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-color: #f87171;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #dc2626, #ea580c);
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5);
+            border-color: #fca5a5;
         }
 
         .btn-danger {
@@ -240,11 +246,12 @@
             gap: 8px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
+            overflow-x: auto;
         }
 
         .tab-btn {
             background: transparent;
-            border: none;
+            border: 1px solid transparent;
             color: var(--text-secondary);
             font-size: 14px;
             font-weight: 700;
@@ -255,18 +262,20 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
 
         .tab-btn:hover {
             color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
         }
 
         .tab-btn.active {
             color: #ffffff;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(249, 115, 22, 0.16));
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
         }
 
         .tab-pane {
@@ -2719,6 +2728,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
         .auth-gate-backdrop.active {
             display: flex;
@@ -2729,6 +2739,8 @@
             border-radius: 24px;
             width: 100%;
             max-width: 480px;
+            max-height: 94vh;
+            overflow-y: auto;
             padding: 38px 32px;
             box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 45px rgba(16, 185, 129, 0.12);
             display: flex;
@@ -2828,6 +2840,10 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+        }
+        .auth-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
         }
         .auth-tab-btn.active {
             background: #1f2937;
@@ -3323,13 +3339,463 @@
             height: 100%;
             object-fit: contain;
         }
-    </style>
+    
+        /* ================= GAMES SELECTION & LIBRARY (S2E / RUNETIFY STYLE) ================= */
+        .games-view-container {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .games-hero-card {
+            background: linear-gradient(135deg, rgba(21, 24, 36, 0.95) 0%, rgba(16, 18, 26, 0.98) 100%);
+            border: 1.5px solid rgba(239, 68, 68, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            gap: 28px;
+            align-items: stretch;
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 24px rgba(239, 68, 68, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .games-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b);
+        }
+
+        .games-hero-poster-wrap {
+            position: relative;
+            width: 210px;
+            min-width: 210px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid rgba(239, 68, 68, 0.45);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+            aspect-ratio: 3/4;
+        }
+
+        .games-hero-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .games-hero-poster-wrap:hover .games-hero-poster {
+            transform: scale(1.04);
+        }
+
+        .games-hero-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(34, 197, 94, 0.6);
+            color: #4ade80;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .games-hero-tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+        }
+
+        .games-hero-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .games-hero-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+
+        .games-badge-active {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .games-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin: 4px 0;
+        }
+
+        .games-spec-item {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+        }
+
+        .games-spec-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+
+        .games-spec-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .games-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .game-grid-card {
+            background: #111420;
+            border: 1.5px solid #1e2436;
+            border-radius: var(--radius-md);
+            padding: 20px 14px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-grid-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(239, 68, 68, 0.45);
+            background: #161a29;
+            box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.6), 0 0 16px rgba(239, 68, 68, 0.15);
+        }
+
+        .game-grid-card.active-card {
+            border-color: #22c55e;
+            background: linear-gradient(180deg, #131c26 0%, #0e1620 100%);
+            box-shadow: 0 0 18px rgba(34, 197, 94, 0.2);
+        }
+
+        .game-grid-card-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-new {
+            background: #22c55e;
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+        }
+
+        .badge-soon {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #fbbf24;
+        }
+
+        .badge-active {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .game-grid-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            margin-top: 4px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+            transition: transform 0.25s ease;
+        }
+
+        .game-grid-card:hover .game-grid-icon-wrap {
+            transform: scale(1.1);
+        }
+
+        .game-grid-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-top: 2px;
+            line-height: 1.25;
+        }
+
+        .game-grid-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        /* ================= PVZ FUSION GAME ALBUM ================= */
+        .pvz-album-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .pvz-album-hero {
+            background: linear-gradient(135deg, rgba(21, 24, 36, 0.98) 0%, rgba(14, 16, 24, 0.98) 100%);
+            border: 1.5px solid rgba(239, 68, 68, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            display: flex;
+            gap: 32px;
+            align-items: stretch;
+            box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(239, 68, 68, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pvz-album-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b);
+        }
+
+        .pvz-album-poster-wrap {
+            position: relative;
+            width: 250px;
+            min-width: 250px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid rgba(239, 68, 68, 0.45);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.2);
+            aspect-ratio: 3/4;
+            background: #000;
+        }
+
+        .pvz-album-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .pvz-album-poster-wrap:hover .pvz-album-poster {
+            transform: scale(1.05);
+        }
+
+        .pvz-album-badge-floating {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(34, 197, 94, 0.7);
+            color: #4ade80;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pvz-album-dot-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        .pvz-album-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .pvz-album-header-tags {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .pvz-album-pill-active {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+        }
+
+        .pvz-album-pill-tag {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #38bdf8;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .pvz-album-pill-tag-orange {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .pvz-album-title {
+            font-size: 30px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            margin: 4px 0 8px 0;
+            line-height: 1.15;
+        }
+
+        .pvz-album-desc {
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .pvz-album-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin: 10px 0;
+        }
+
+        .pvz-album-meta-card {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+        }
+
+        .pvz-album-meta-label {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 3px;
+        }
+
+        .pvz-album-meta-val {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .pvz-album-features-section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .pvz-album-feature-card {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.2s ease;
+        }
+
+        .pvz-album-feature-card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+
+</style>
 </head>
 <body>
 
     <!-- STREAMER SIGN-IN GATE MODAL (TIKTOK & GOOGLE AUTHENTICATION) -->
     <div id="googleAuthGate" class="auth-gate-backdrop active">
         <div class="auth-card">
+            <button type="button" onclick="hideAuthGate()" title="Close / Continue to Studio" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; z-index: 10; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">✕</button>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px;">
+                <img src="images/renearn_icon.png" style="width: 42px; height: 42px; border-radius: 10px; border: 1.5px solid rgba(239, 68, 68, 0.5); box-shadow: 0 0 12px rgba(239, 68, 68, 0.45); object-fit: cover;">
+                <div style="text-align: left;">
+                    <div style="font-size: 22px; font-weight: 900; background: linear-gradient(135deg, #ff5757, #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.03em; line-height: 1.1;">RENEarn</div>
+                    <div style="font-size: 11px; color: #94a3b8; font-weight: 500;">PvZ Fusion Interactive Live Studio</div>
+                </div>
+            </div>
             <!-- Navigation Tabs: TikTok or Google -->
             <div class="auth-tabs-nav">
                 <button type="button" class="auth-tab-btn active" id="btnAuthTabTikTok" onclick="switchAuthTab('tiktok')">
@@ -3361,11 +3827,11 @@
                     Connect your <strong>TikTok Live Stream</strong> to unlock your personal triggers & summon plants or zombies in real-time.
                 </p>
 
-                <div class="auth-notice-box">
-                    <span style="font-size: 16px;">🌱</span>
+                <div class="auth-notice-box" style="border-color: rgba(37, 244, 238, 0.4); background: rgba(37, 244, 238, 0.08);">
+                    <span style="font-size: 18px;">🎮</span>
                     <div>
-                        <strong>Clean Customization Workspace</strong><br>
-                        New accounts begin with an empty customization list (no plants or zombies pre-filled) so you can freely build your own live triggers.
+                        <strong style="color: #25f4ee;">Streamer Workspace Preloaded & Ready</strong><br>
+                        Equipped with all 64 gift commands, 4 multi-spinners, and PvZ Fusion in-game triggers. Download and stream right away!
                     </div>
                 </div>
 
@@ -3405,34 +3871,26 @@
                     Sign in with your Google account to isolate and protect your personal workspace.
                 </p>
 
-                <div class="auth-notice-box">
-                    <span style="font-size: 16px;">🌱</span>
+                <div class="auth-notice-box" style="border-color: rgba(66, 133, 244, 0.4); background: rgba(66, 133, 244, 0.08);">
+                    <span style="font-size: 18px;">⚡</span>
                     <div>
-                        <strong>Clean Workspace for New Users</strong><br>
-                        New accounts begin with an empty customization list (no plants or zombies pre-filled) so you can freely build your own live triggers.
+                        <strong style="color: #60a5fa;">Full Gift System & Triggers Preloaded</strong><br>
+                        All 64 cards, multi-spinners, and game summon commands are fully pre-configured and operational.
                     </div>
                 </div>
 
-                <!-- Quick Select Option for Admin/Owner -->
-                <div style="margin-bottom: 16px; width: 100%;">
-                    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">⚡ Quick Select Account</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <button type="button" onclick="quickSelectGoogleAccount('jaylouvipinosa7@gmail.com', 'Jaylou')" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 8px; color: #fff; cursor: pointer; text-align: left; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.22)'" onmouseout="this.style.background='rgba(59, 130, 246, 0.12)'">
-                            <img src="https://ui-avatars.com/api/?name=Jaylou&background=3b82f6&color=fff&size=64&bold=true" style="width: 28px; height: 28px; border-radius: 50%;">
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; font-size: 13px;">Jaylou <span style="font-size: 10px; background: #3b82f6; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">👑 Owner</span></div>
-                                <div style="font-size: 11px; color: var(--text-muted);">jaylouvipinosa7@gmail.com</div>
-                            </div>
-                            <span style="font-size: 12px; opacity: 0.85; font-weight: 600; color: #60a5fa;">Sign In →</span>
-                        </button>
-                    </div>
+                <!-- Dynamic Saved Account on This Device Only (Hidden by default for new downloaders) -->
+                <div id="quickSelectAccountSection" style="margin-bottom: 16px; width: 100%; display: none;">
+                    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">⚡ Saved Account On This Device</div>
+                    <div id="quickSelectAccountList" style="display: flex; flex-direction: column; gap: 8px;"></div>
                 </div>
 
-                <div style="display: flex; align-items: center; width: 100%; margin: 8px 0 16px; gap: 10px;">
+                <div id="quickSelectDivider" style="display: none; align-items: center; width: 100%; margin: 8px 0 16px; gap: 10px;">
                     <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
                     <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">or enter account</span>
                     <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
                 </div>
+
 
                 <!-- Google Account Input Form -->
                 <form id="googleAuthForm" onsubmit="handleGoogleAuthSubmit(event)" style="width: 100%;">
@@ -3467,10 +3925,10 @@
     <header>
         <div class="header-content">
             <div class="brand">
-                <div class="brand-icon">PvZ</div>
+                <img src="images/renearn_icon.png" class="brand-icon-img" alt="RENEarn" style="width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid rgba(239, 68, 68, 0.5); object-fit: cover; box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);">
                 <div>
-                    <div class="brand-title">PvZ Fusion 4.0 Studio</div>
-                    <div class="brand-subtitle">Interactive Stream Controller</div>
+                    <div class="brand-title" style="background: linear-gradient(135deg, #ff5757, #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 0.04em;">RENEarn</div>
+                    <div class="brand-subtitle">Interactive Stream Studio & Mod Controller</div>
                 </div>
             </div>
 
@@ -3525,6 +3983,43 @@
         </div>
     </header>
 
+    <!-- RENEARN MOD DIRECTORY & CONNECTION BAR (S2E & RUNETIFY INTEGRATION) -->
+    <div class="renearn-mod-bar" style="background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(239, 68, 68, 0.25); padding: 8px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; backdrop-filter: blur(12px); margin-bottom: 4px;">
+        <div style="display: flex; align-items: center; gap: 10px; min-width: 290px;">
+            <img src="images/renearn_icon.png" style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.4); object-fit: cover; box-shadow: 0 0 8px rgba(239,68,68,0.3);">
+            <div>
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;">
+                    <span style="color: #cbd5e1;">PvZFusion Mod Version:</span>
+                    <span style="color: #38bdf8; font-weight: 800;">47v</span>
+                    <span style="background: #2563eb; color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase;">Active</span>
+                    <span style="color: #94a3b8; font-size: 11px;">Installed Version: <strong style="color: #4ade80;">47v (BETA)</strong></span>
+                </div>
+                <div style="font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; margin-top: 1px;">
+                    <span id="renearnEngineDot" style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e;"></span>
+                    <span id="renearnEngineStatus">MelonLoader + Runetify Mod Linked (Port 55001)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Directory Path Input & Selector -->
+        <div style="display: flex; align-items: center; gap: 6px; flex: 1; max-width: 560px; min-width: 260px;">
+            <input type="text" id="gameDirectoryInput" value="C:\Users\pc\Downloads\ano na\Game Files" placeholder="Path to PvZ Fusion game files directory..." style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #f1f5f9; font-family: monospace;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="saveGameDirectory()" style="white-space: nowrap; font-size: 11px; font-weight: 600; padding: 6px 10px; background: rgba(37, 99, 235, 0.25); border-color: #3b82f6; color: #60a5fa;" title="Save and apply game path">
+                Select Directory
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" class="btn btn-sm" style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #4ade80; font-size: 11px; font-weight: 700; cursor: default; padding: 5px 9px;">
+                ✓ Installed
+            </button>
+            <button type="button" class="btn btn-sm" onclick="openGameFolder()" style="background: #2563eb; border: 1px solid #3b82f6; color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 4px; padding: 5px 9px;" title="Open Game Files folder">
+                📁 Open Folder
+            </button>
+        </div>
+    </div>
+
     <!-- VIEWER READ-ONLY BANNER -->
     <div id="viewerReadOnlyBanner" style="display: none; background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15)); border: 1px solid #f59e0b; color: #fbbf24; padding: 10px 18px; border-radius: 8px; margin: 12px 20px 0 20px; font-size: 13px; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -3540,29 +4035,175 @@
     <!-- MAIN BODY -->
     <main class="app-body">
         <!-- NAVIGATION TABS -->
+        <!-- NAVIGATION TABS -->
         <nav class="tabs-header">
-            <button class="tab-btn active" onclick="switchTab('gifts')">
+            <button class="tab-btn active" data-tab="album" id="tabBtnAlbum" onclick="switchTab('album')">
+                Game Album
+            </button>
+            <button class="tab-btn" data-tab="gifts" id="tabBtnGifts" onclick="switchTab('gifts')">
                 Gift Commands
             </button>
-            <button class="tab-btn" onclick="switchTab('social')">
+            <button class="tab-btn" data-tab="social" onclick="switchTab('social')">
                 Social Triggers
             </button>
-            <button class="tab-btn" onclick="switchTab('spinner')">
+            <button class="tab-btn" data-tab="spinner" onclick="switchTab('spinner')">
                 Lucky Wheel
             </button>
-            <button class="tab-btn" onclick="switchTab('gamemaster')">
+            <button class="tab-btn" data-tab="gamemaster" onclick="switchTab('gamemaster')">
                 Game Master
             </button>
-            <button class="tab-btn" onclick="switchTab('settings')">
+            <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
                 Overlay Settings
             </button>
-            <button class="tab-btn" onclick="switchTab('leaderboard')">
-                🏆 Rankings & Donators
+            <button class="tab-btn" data-tab="leaderboard" onclick="switchTab('leaderboard')">
+                Rankings & Donators
             </button>
         </nav>
 
+                <!-- TAB: PVZ FUSION GAME ALBUM -->
+        <div id="tab-album" class="tab-pane active">
+            <div class="pvz-album-container">
+
+                <!-- MAIN ALBUM SHOWCASE HERO (INSPIRED BY REFERENCE PHOTOS) -->
+                <div class="pvz-album-hero">
+                    <!-- ALBUM POSTER COVER -->
+                    <div class="pvz-album-poster-wrap">
+                        <img src="images/pvz_fusion_cover.jpg" alt="Plants vs. Zombies Fusion Edition" class="pvz-album-poster">
+                        <div class="pvz-album-badge-floating">
+                            <span class="pvz-album-dot-pulse"></span>
+                            ACTIVE ALBUM
+                        </div>
+                    </div>
+
+                    <!-- ALBUM DETAILS -->
+                    <div class="pvz-album-info">
+                        <div>
+                            <div class="pvz-album-header-tags">
+                                <span class="pvz-album-pill-active">CONNECTED & READY</span>
+                                <span class="pvz-album-pill-tag">VERSION 47v BETA</span>
+                                <span class="pvz-album-pill-tag-orange">MELONLOADER 0.7.3</span>
+                            </div>
+
+                            <h1 class="pvz-album-title">
+                                Plants vs. Zombies: Fusion Edition
+                            </h1>
+
+                            <p class="pvz-album-desc">
+                                Official interactive live streaming game album for TikTok Live. When your viewers send gifts like Rose, Heart Me, Doughnut, Whale, or Galaxy, hybrid fusion plants and custom boss zombies spawn directly into your game in real time.
+                            </p>
+                        </div>
+
+                        <!-- LIVE METRICS GRID -->
+                        <div class="pvz-album-meta-grid">
+                            <div class="pvz-album-meta-card">
+                                <div class="pvz-album-meta-label">Mod Bridge Port</div>
+                                <div class="pvz-album-meta-val" style="color: #4ade80;">
+                                    Port 55001 (Runetify / S2E)
+                                </div>
+                            </div>
+                            <div class="pvz-album-meta-card">
+                                <div class="pvz-album-meta-label">Target Executable</div>
+                                <div class="pvz-album-meta-val" style="color: #38bdf8; font-family: monospace;">
+                                    PlantsVsZombiesRH.exe
+                                </div>
+                            </div>
+                            <div class="pvz-album-meta-card">
+                                <div class="pvz-album-meta-label">Game Directory</div>
+                                <div class="pvz-album-meta-val" style="color: #cbd5e1; font-size: 12px;">
+                                    ...\games ko to ya\Game Files
+                                </div>
+                            </div>
+                            <div class="pvz-album-meta-card">
+                                <div class="pvz-album-meta-label">Interactive Catalog</div>
+                                <div class="pvz-album-meta-val" style="color: #f59e0b;">
+                                    150+ Fusion Plants & Bosses
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QUICK CONTROLS -->
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding-top: 4px;">
+                            <button class="btn btn-primary" onclick="switchTab('gifts')" style="background: linear-gradient(135deg, #ef4444, #f97316); border: none; font-weight: 800; padding: 11px 22px; font-size: 13.5px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);">
+                                Manage Gift Commands
+                            </button>
+                            <button class="btn btn-secondary" onclick="switchTab('spinner')" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24; font-weight: 700; padding: 11px 18px; font-size: 13.5px;">
+                                Open Lucky Wheel
+                            </button>
+                            <button class="btn btn-secondary" onclick="openGameFolder()" style="background: rgba(37, 99, 235, 0.2); border-color: #3b82f6; color: #60a5fa; font-weight: 600; padding: 11px 18px; font-size: 13.5px;">
+                                Open Game Folder
+                            </button>
+                            <button class="btn btn-secondary" onclick="checkGameConnection()" style="border-color: rgba(255, 255, 255, 0.2); color: #e2e8f0; font-weight: 600; padding: 11px 16px; font-size: 13.5px;">
+                                Refresh Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALBUM FEATURE MODULES -->
+                <div class="pvz-album-features-section">
+                    <div style="margin-bottom: 18px;">
+                        <h2 style="font-size: 18px; font-weight: 800; color: #fff; margin: 0 0 4px 0;">Interactive Game Album Modules</h2>
+                        <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0;">Everything included in your active Plants vs. Zombies Fusion stream profile:</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                        
+                        <div class="pvz-album-feature-card">
+                            <div style="font-size: 26px; padding: 10px; background: rgba(239, 68, 68, 0.15); border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                                🎁
+                            </div>
+                            <div>
+                                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px 0;">TikTok Gift Triggers</h3>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.45;">
+                                    Map any gift (Rose, Heart Me, Doughnut, Whale) to spawn custom fusion plants or unleash Gargantuars.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pvz-album-feature-card">
+                            <div style="font-size: 26px; padding: 10px; background: rgba(245, 158, 11, 0.15); border-radius: 10px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                                🎡
+                            </div>
+                            <div>
+                                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px 0;">Boss Lucky Wheel</h3>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.45;">
+                                    Viewers spin a live roulette wheel on your OBS overlay with 25+ customizable game modifications.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pvz-album-feature-card">
+                            <div style="font-size: 26px; padding: 10px; background: rgba(34, 197, 94, 0.15); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.3);">
+                                🏆
+                            </div>
+                            <div>
+                                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px 0;">Win / Loss Tracker</h3>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.45;">
+                                    Animated streak counter with golden wreaths and sound alert celebrations whenever you clear waves.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pvz-album-feature-card">
+                            <div style="font-size: 26px; padding: 10px; background: rgba(56, 189, 248, 0.15); border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.3);">
+                                ⚡
+                            </div>
+                            <div>
+                                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 4px 0;">Instant Panic Kill</h3>
+                                <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.45;">
+                                    Emergency button at top right to instantly eliminate all zombies on screen if viewers send too many gifts.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <!-- TAB 1: GIFTS -->
-        <div id="tab-gifts" class="tab-pane active">
+        <div id="tab-gifts" class="tab-pane">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h2 style="font-size: 20px; font-weight: 800;">TikTok Gift Commands</h2>
@@ -4594,6 +5235,7 @@
                             <div class="form-group" style="flex: 2;">
                                 <label class="form-label">Gift Name</label>
                                 <input type="text" id="modalGiftName" class="form-input" placeholder="e.g. Rose" oninput="onCustomGiftInputsChanged()">
+                                <div id="modalGiftAutoCorrectBadge" style="display: none; margin-top: 6px; font-size: 11px; padding: 5px 10px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;"></div>
                             </div>
                             <div class="form-group" style="flex: 1;">
                                 <label class="form-label">Coins</label>
@@ -5180,7 +5822,7 @@
     </div>
 
     <!-- MODAL: ALL COMMANDS & UNIT CATALOG PICKER (1,381 PvZ FUSION UNITS & POWERS) -->
-    <div id="allCommandsPickerModal" class="modal-backdrop">
+    <div id="allCommandsPickerModal" class="modal-backdrop" style="z-index: 2500;">
         <div class="modal-box" style="max-width: 740px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px;">
             <div class="modal-header" style="margin-bottom: 12px;">
                 <div>
@@ -5429,7 +6071,8 @@
                         <div style="flex: 1; display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
                             <div>
                                 <label class="form-label" style="font-size: 11px;">Gift Name</label>
-                                <input type="text" id="spModalGiftName" class="form-input" style="font-size: 12px;" placeholder="e.g. Perfume, Doughnut">
+                                <input type="text" id="spModalGiftName" class="form-input" style="font-size: 12px;" placeholder="e.g. Perfume, Doughnut" oninput="onSpinnerGiftNameInput()">
+                                <div id="spModalGiftAutoCorrectBadge" style="display: none; margin-top: 4px; font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399;"></div>
                             </div>
                             <div>
                                 <label class="form-label" style="font-size: 11px;">Coins</label>
@@ -5480,12 +6123,17 @@
                 <!-- INITIAL POOL TEMPLATE (FOR NEW SPINNERS) -->
                 <div id="spModalTemplateRow" style="display: none; background: rgba(0,0,0,0.3); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 10px;">
                     <label class="form-label" style="margin-bottom: 6px;">Initial Prize Pool Template</label>
-                    <select id="spModalTemplate" class="form-select">
-                        <option value="plants">Plants & Powers Pool (High-tier plants & utilities)</option>
-                        <option value="zombies">Zombies & Bosses Pool (Gargantuars, Bosses, Kirov)</option>
-                        <option value="hybrid">Balanced Hybrid Pool (Mix of plants and zombies)</option>
+                    <select id="spModalTemplate" class="form-select" onchange="onSpinnerTemplateChanged(this.value)">
+                        <option value="numbers">Win Score Numbers Pool (+ / - Win Points: +1, +2, +5, +10, -1, -5, etc.)</option>
+                        <option value="penalty">Win Streak Penalty Pool (- Points Only: -1, -2, -3, -5, -10, etc.)</option>
+                        <option value="plants">Plants & Powers Pool (PvZ Game Commands: Doom Cherry, Cattail, Sniper)</option>
+                        <option value="zombies">Zombies & Bosses Pool (PvZ Game Commands: Super Gargantuar, Bosses, Kirov)</option>
+                        <option value="hybrid">Balanced Hybrid Pool (Mix of Plants & Zombies Commands)</option>
                         <option value="empty">Empty (Build from scratch)</option>
                     </select>
+                    <div id="spModalTemplateDesc" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+                        Generates accurate prize cards, unit icons, and game commands or +/- score points for this spinner.
+                    </div>
                 </div>
             </div>
 
@@ -5500,7 +6148,7 @@
     </div>
 
     <!-- ==================== MODAL: SELECT TRIGGER (PHOTO MATCH) ==================== -->
-    <div id="triggerSelectorModal" class="modal-backdrop">
+    <div id="triggerSelectorModal" class="modal-backdrop" style="z-index: 2500;">
         <div class="modal-box select-trigger-modal-box">
             <!-- HEADER -->
             <div class="modal-header select-trigger-header">
@@ -6166,15 +6814,28 @@
         }
 
         function showAuthGate() {
+            renderQuickSelect();
             const gate = document.getElementById('googleAuthGate');
-            if (gate) gate.classList.add('active');
+            if (gate) {
+                gate.style.display = 'flex';
+                gate.classList.add('active');
+            }
             document.body.classList.add('auth-locked');
+            // Default to Google Login for direct Gmail sign-in
+            switchAuthTab('google');
         }
 
         function hideAuthGate() {
             const gate = document.getElementById('googleAuthGate');
-            if (gate) gate.classList.remove('active');
+            if (gate) {
+                gate.style.display = 'none';
+                gate.classList.remove('active');
+            }
             document.body.classList.remove('auth-locked');
+            // If user closed gate without logging in, ensure they are in Viewer mode
+            if (!currentUser) {
+                updateUserProfileUI({ role: 'viewer', name: 'Guest Viewer', email: '' });
+            }
         }
 
         function updateUserProfileUI(user) {
@@ -6194,7 +6855,20 @@
                 if (nameEl) nameEl.innerText = user.name || user.username || (user.email ? user.email.split('@')[0] : 'Streamer');
                 if (emailEl) emailEl.innerText = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
 
-                const role = (user.role || 'viewer').toLowerCase();
+                // Check Admin / Streamer Guarantee:
+                const emailStr = (user.email || '').toLowerCase().trim();
+                let role = (user.role || '').toLowerCase();
+                if (emailStr === 'jaylouvipinosa7@gmail.com' || emailStr.includes('jaylouvipinosa7')) {
+                    role = 'admin';
+                    user.role = 'admin';
+                    try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(user)); } catch(e){}
+                } else if (!role || role === 'viewer') {
+                    // Streamers logging into their desktop studio are Editors by default
+                    role = 'editor';
+                    user.role = 'editor';
+                    try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(user)); } catch(e){}
+                }
+
                 if (roleBadge) {
                     roleBadge.className = 'user-role-badge role-' + role;
                     if (role === 'admin') {
@@ -6215,14 +6889,35 @@
                 }
             } else {
                 pill.style.display = 'none';
-                if (viewerBanner) viewerBanner.style.display = 'none';
+                if (btnPerms) btnPerms.style.display = 'none';
+                if (viewerBanner) {
+                    viewerBanner.style.display = 'none';
+                }
             }
         }
 
         function checkEditorPermission(actionName = "make changes") {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('viewer') === 'true' || urlParams.get('readonly') === 'true') {
+                showToast(`🔒 View-Only Mode: You cannot ${actionName}.`, "WARN");
+                return false;
+            }
+            // Streamer running on their local desktop machine (127.0.0.1 or localhost) always has full edit rights
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocal && !urlParams.get('viewer') && !urlParams.get('readonly')) {
+                return true;
+            }
             const user = getCurrentUser();
-            if (user && (user.role || 'viewer').toLowerCase() === 'viewer') {
-                showToast(`🔒 View-Only Mode: You cannot ${actionName}. Please ask the Admin to add your Gmail as an Editor.`, "WARN");
+            let role = 'editor';
+            if (user) {
+                const emailStr = (user.email || '').toLowerCase().trim();
+                if (emailStr === 'jaylouvipinosa7@gmail.com' || emailStr.includes('jaylouvipinosa7')) {
+                    return true;
+                }
+                role = (user.role || 'editor').toLowerCase();
+            }
+            if (role === 'viewer') {
+                showToast(`🔒 Viewer Mode: You cannot ${actionName}. Only Admins and Editors can modify triggers and settings.`, "WARN");
                 return false;
             }
             return true;
@@ -6257,9 +6952,9 @@
 
                     await loadConfig();
                     if (data.isNewUser) {
-                        showToast(`Welcome @${cleanUser}! Clean workspace ready for customization.`, "OK");
+                        showToast(`Welcome @${cleanUser}! 64 gift commands & multi-spinners loaded and ready to stream.`, "OK");
                     } else {
-                        showToast(`Connected TikTok Live as @${cleanUser}!`, "OK");
+                        showToast(`Connected TikTok Live as @${cleanUser}! (64 triggers ready)`, "OK");
                     }
                 } else {
                     showToast(data.message || "TikTok login failed", "ERR");
@@ -6289,11 +6984,14 @@
         }
 
         async function performGoogleLogin(email, name, picture) {
-            if (!email || !email.includes('@')) {
-                showToast("Please enter a valid Google email address", "ERR");
+            if (!email || !email.trim()) {
+                showToast("Please enter your Google email address or username", "ERR");
                 return;
             }
-            const cleanEmail = email.trim().toLowerCase();
+            let cleanEmail = email.trim().toLowerCase();
+            if (!cleanEmail.includes('@')) {
+                cleanEmail = cleanEmail + '@gmail.com';
+            }
             const cleanName = (name && name.trim()) ? name.trim() : cleanEmail.split('@')[0];
             const avatar = picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=10b981&color=fff&size=128&bold=true`;
 
@@ -6307,15 +7005,16 @@
                 if (data.success) {
                     currentUser = data.user;
                     localStorage.setItem('pvz_google_auth_user', JSON.stringify(data.user));
+                    localStorage.setItem('pvz_recent_account', JSON.stringify(data.user));
                     if (data.token) localStorage.setItem('pvz_auth_token', data.token);
 
                     updateUserProfileUI(data.user);
                     hideAuthGate();
                     await loadConfig();
                     if (data.isNewUser) {
-                        showToast(`Welcome ${data.user.name}! Your clean workspace is ready for customization.`, "OK");
+                        showToast(`Welcome ${data.user.name}! 64 gift commands & multi-spinners loaded and ready to stream.`, "OK");
                     } else {
-                        showToast(`Welcome back, ${data.user.name}!`, "OK");
+                        showToast(`Welcome back, ${data.user.name}! (64 triggers ready)`, "OK");
                     }
                 } else {
                     showToast(data.message || "Google Login failed", "ERR");
@@ -6324,6 +7023,7 @@
                 console.error("Login request error:", err);
                 currentUser = { email: cleanEmail, name: cleanName, picture: avatar, platform: 'google' };
                 localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser));
+                localStorage.setItem('pvz_recent_account', JSON.stringify(currentUser));
                 updateUserProfileUI(currentUser);
                 hideAuthGate();
                 await loadConfig();
@@ -6344,20 +7044,70 @@
             performGoogleLogin(email, name);
         }
 
+        function renderQuickSelect() {
+            const section = document.getElementById('quickSelectAccountSection');
+            const list = document.getElementById('quickSelectAccountList');
+            const divider = document.getElementById('quickSelectDivider');
+            if (!section || !list) return;
+
+            let savedUser = null;
+            try {
+                const raw = localStorage.getItem('pvz_recent_account') || localStorage.getItem('pvz_google_auth_user');
+                if (raw) savedUser = JSON.parse(raw);
+            } catch (e) {}
+
+            if (savedUser && (savedUser.email || savedUser.username)) {
+                const isOwner = (savedUser.role === 'admin' || savedUser.role === 'owner');
+                const roleBadge = isOwner ? '<span style="font-size: 10px; background: #3b82f6; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">👑 Owner</span>' : '';
+                const cleanEmail = savedUser.email || savedUser.username;
+                const cleanName = savedUser.name || savedUser.username || cleanEmail.split('@')[0];
+                const avatarUrl = savedUser.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=3b82f6&color=fff&size=64&bold=true`;
+                
+                list.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                        <button type="button" onclick="quickSelectGoogleAccount('${cleanEmail.replace(/'/g, "\\'")}', '${cleanName.replace(/'/g, "\\'")}')" style="flex: 1; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 8px; color: #fff; cursor: pointer; text-align: left; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.22)'" onmouseout="this.style.background='rgba(59, 130, 246, 0.12)'">
+                            <img src="${avatarUrl}" style="width: 28px; height: 28px; border-radius: 50%;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${cleanName} ${roleBadge}</div>
+                                <div style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${cleanEmail}</div>
+                            </div>
+                            <span style="font-size: 12px; opacity: 0.85; font-weight: 600; color: #60a5fa;">Sign In →</span>
+                        </button>
+                        <button type="button" onclick="clearSavedDeviceAccount(event)" title="Forget this account on this device" style="padding: 10px 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; color: #f87171; cursor: pointer; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">✕</button>
+                    </div>
+                `;
+                section.style.display = 'block';
+                if (divider) divider.style.display = 'flex';
+            } else {
+                section.style.display = 'none';
+                if (divider) divider.style.display = 'none';
+                list.innerHTML = '';
+            }
+        }
+
+        function clearSavedDeviceAccount(e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            localStorage.removeItem('pvz_recent_account');
+            localStorage.removeItem('pvz_google_auth_user');
+            localStorage.removeItem('pvz_auth_token');
+            renderQuickSelect();
+            showToast("Saved account forgotten on this device", "OK");
+        }
+
         async function signOutStreamer() {
-            if (!confirm("Are you sure you want to sign out of your streamer account?")) return;
             try {
                 const token = localStorage.getItem('pvz_auth_token') || '';
-                await fetch(`/api/auth/logout?token=${encodeURIComponent(token)}`, { method: 'POST' });
+                if (token) await fetch(`/api/auth/logout?token=${encodeURIComponent(token)}`, { method: 'POST' });
             } catch {}
             localStorage.removeItem('pvz_google_auth_user');
             localStorage.removeItem('pvz_auth_token');
+            localStorage.removeItem('pvz_recent_account');
             currentUser = null;
+            
+            // Instantly transition UI to unauthenticated state and show login screen
             updateUserProfileUI(null);
-            config = { streamer: {}, gifts: [], spinners: [] };
-            renderGifts();
             showAuthGate();
-            showToast("Signed out successfully", "OK");
+            showToast("Signed out. Please sign in to access your streamer studio.", "OK");
         }
 
         // Backward compatibility alias
@@ -6564,15 +7314,63 @@
             }
         }
 
+        // ==================== RENEARN GAME DIRECTORY & MOD INTEGRATION ====================
+        function initGameDirectory() {
+            const defaultDetected = 'C:\\Users\\pc\\Desktop\\games ko to ya\\Game Files';
+            const savedPath = localStorage.getItem('renearn_game_directory') || defaultDetected;
+            const input = document.getElementById('gameDirectoryInput');
+            if (input) input.value = savedPath;
+        }
+
+        function saveGameDirectory() {
+            if (!checkEditorPermission("save game directory")) return;
+            const input = document.getElementById('gameDirectoryInput');
+            if (!input) return;
+            const dir = input.value.trim();
+            if (!dir) {
+                showToast("Please enter a valid directory path", "ERR");
+                return;
+            }
+            localStorage.setItem('renearn_game_directory', dir);
+            showToast("Game directory connected: " + dir, "OK");
+            try {
+                fetch('/api/game/directory', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ directory: dir })
+                });
+            } catch {}
+        }
+
+        function openGameFolder() {
+            const input = document.getElementById('gameDirectoryInput');
+            const dir = input ? input.value.trim() : 'C:\\Users\\pc\\Downloads\\ano na\\Game Files';
+            navigator.clipboard.writeText(dir).then(() => {
+                showToast("Directory path copied to clipboard!", "OK");
+            }).catch(() => {
+                showToast("Game path: " + dir, "INFO");
+            });
+            try {
+                fetch('/api/game/open-folder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: dir })
+                });
+            } catch {}
+        }
+
         // Init
         window.addEventListener('DOMContentLoaded', async () => {
+            const btnTT = document.getElementById('btnAuthTabTikTok');
+            const btnGG = document.getElementById('btnAuthTabGoogle');
+            if (btnTT) btnTT.addEventListener('click', () => switchAuthTab('tiktok'));
+            if (btnGG) btnGG.addEventListener('click', () => switchAuthTab('google'));
+
+            initGameDirectory();
             initGoogleAuthSystem();
             fetchLanIp();
             await loadCatalog();
-            const user = getCurrentUser();
-            if (user && (user.email || user.username)) {
-                await loadConfig();
-            }
+            await loadConfig();
             initWheel();
             await initWinWidget();
             startPollingStatus();
@@ -6586,7 +7384,9 @@
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
             
             const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+                if (b.getAttribute('data-tab') === tabId) return true;
                 const text = b.innerText.toLowerCase();
+                if (tabId === 'album') return text.includes('album');
                 if (tabId === 'leaderboard') return text.includes('ranking') || text.includes('leaderboard') || text.includes('donator');
                 return text.includes(tabId);
             });
@@ -6832,13 +7632,36 @@
             showToast(`Fired (${repCount}x): ${gift.giftName} -> ${gift.label}`);
 
             const prof = getTesterProfile();
-            const isSpinner = gift.actionType === 'spinner' || gift.command === 'spin_wheel' || (gift.command && gift.command.includes('spin'));
+            const isSpinner = gift.actionType === 'spinner' || gift.command === 'spin_wheel' || (gift.command && gift.command.includes('spin')) || Boolean(gift.triggerSpinner);
 
             try {
                 if (isSpinner) {
-                    const spId = gift.spinnerId || (gift.command && gift.command.startsWith('spinner_') ? gift.command : '');
+                    const spId = gift.triggerSpinner || gift.spinnerId || (gift.command && gift.command.startsWith('spinner_') ? gift.command : '');
                     const spParam = spId ? `&spinnerId=${encodeURIComponent(spId)}` : '';
                     await fetch(`/api/spin?username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}${spParam}`, { method: 'POST' });
+
+                    // Also execute any plant or zombie commands attached to this card!
+                    if (gift.commands && gift.commands.length > 0) {
+                        for (const subCmd of gift.commands) {
+                            if (subCmd.command && !subCmd.command.startsWith('spinner_') && subCmd.command !== 'spin_wheel') {
+                                await fetch('/api/test', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        type: 'game_trigger',
+                                        label: subCmd.label || gift.label,
+                                        command: subCmd.command,
+                                        actionType: subCmd.actionType || 'plant',
+                                        amount: subCmd.amount || gift.amount || 1,
+                                        repetition: repCount,
+                                        delay: gift.delay || 0,
+                                        interval: (gift.interval !== undefined && gift.interval !== null) ? gift.interval : 100,
+                                        hideInOverlay: gift.hideInOverlay === true
+                                    })
+                                }).catch(()=>{});
+                            }
+                        }
+                    }
                 } else {
                     await fetch('/api/test', {
                         method: 'POST',
@@ -6859,23 +7682,10 @@
                             username: prof.name,
                             avatar: prof.avatar,
                             icon: gift.icon,
-                            coins: gift.coins
+                            coins: gift.coins,
+                            commands: gift.commands || []
+                        })
                     });
-
-                    // Also trigger matching spinner if card triggers a spinner (e.g. Heart Me Card 32 -> spinner_plusminus)
-                    const cleanGName = (gift.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const cleanGId = (gift.giftId || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
-                    const matchedSp = (config.spinners || []).find(s => {
-                        if (!s.enabled) return false;
-                        const sGId = (s.giftId || '').toString().toLowerCase().replace(/[^a-z0-9]/g, '');
-                        const sGName = (s.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                        if (cleanGId && sGId && (cleanGId === sGId || ((cleanGId === '7934' || cleanGId === 'heartme') && (sGId === '7934' || sGId === 'heartme')))) return true;
-                        if (cleanGName && sGName && (cleanGName === sGName || (cleanGName.includes('heart') && sGName.includes('heart')))) return true;
-                        return false;
-                    });
-                    if (matchedSp) {
-                        fetch(`/api/spin?username=${encodeURIComponent(prof.name)}&avatar=${encodeURIComponent(prof.avatar)}&spinnerId=${encodeURIComponent(matchedSp.id)}`, { method: 'POST' }).catch(()=>{});
-                    }
                 }
             } catch (err) {
                 showToast("Test failed: " + err.message, "ERR");
@@ -6992,7 +7802,7 @@
                     }
                 } catch {}
             }
-            setInterval(checkEvents, 1000);
+            setInterval(checkEvents, 100);
             setInterval(fetchSpinnerHistory, 2500);
         }
 
@@ -7359,6 +8169,30 @@
         }
 
         async function adjustWinWidget(action) {
+            // Instant 0ms Optimistic UI update so numbers change immediately
+            if (action === 'win' || action === 'win_plus') {
+                winWidgetState.wins = (parseInt(winWidgetState.wins) || 0) + 1;
+                winWidgetState.score = winWidgetState.wins - (parseInt(winWidgetState.losses) || 0);
+                renderWinWidgetData(winWidgetState);
+            } else if (action === 'lose' || action === 'lose_plus') {
+                winWidgetState.losses = (parseInt(winWidgetState.losses) || 0) + 1;
+                winWidgetState.score = (parseInt(winWidgetState.wins) || 0) - winWidgetState.losses;
+                renderWinWidgetData(winWidgetState);
+            } else if (action === 'win_minus') {
+                winWidgetState.wins = Math.max(0, (parseInt(winWidgetState.wins) || 0) - 1);
+                winWidgetState.score = winWidgetState.wins - (parseInt(winWidgetState.losses) || 0);
+                renderWinWidgetData(winWidgetState);
+            } else if (action === 'lose_minus') {
+                winWidgetState.losses = Math.max(0, (parseInt(winWidgetState.losses) || 0) - 1);
+                winWidgetState.score = (parseInt(winWidgetState.wins) || 0) - winWidgetState.losses;
+                renderWinWidgetData(winWidgetState);
+            } else if (action === 'reset') {
+                winWidgetState.wins = 0;
+                winWidgetState.losses = 0;
+                winWidgetState.score = 0;
+                renderWinWidgetData(winWidgetState);
+            }
+
             try {
                 const res = await fetch('/api/win-widget/adjust', {
                     method: 'POST',
@@ -7459,10 +8293,6 @@
 
         function setupWinWidgetHotkeys() {
             function handleWinHotkey(e) {
-                // Avoid capturing when typing inside input / textarea
-                const activeTag = (document.activeElement && document.activeElement.tagName) || '';
-                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) return;
-
                 const code = e.code || '';
                 const key = e.key || '';
                 const keyCode = e.keyCode || e.which || 0;
@@ -7476,18 +8306,30 @@
                 const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+' || keyCode === 187 || keyCode === 107;
                 const isBracketRight = code === 'BracketRight' || key === ']' || keyCode === 221;
 
+                if (!((alt && isMinus) || isBracketLeft || (alt && isEqual) || isBracketRight)) {
+                    return;
+                }
+
+                // If user pressed the hotkey while an input/card was focused, blur it and proceed
+                const activeTag = (document.activeElement && document.activeElement.tagName) || '';
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) {
+                    // If typing text in search/name fields (not numeric display cards), skip single bracket keys
+                    if (!alt && (document.activeElement.type === 'text' || document.activeElement.tagName === 'TEXTAREA')) {
+                        return;
+                    }
+                    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                        document.activeElement.blur();
+                    }
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+
                 const now = Date.now();
-                const isElectron = window.navigator && window.navigator.userAgent && window.navigator.userAgent.includes('Electron');
 
                 // Alt + '-' OR '[' => LOSE / Score -1
                 if ((alt && isMinus) || isBracketLeft) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (alt && isElectron) {
-                        flashLoseCard();
-                        return; // Handled by Electron globalShortcut to prevent double points
-                    }
-                    if (lastHotkeyAction === 'lose_plus' && (now - lastHotkeyTime) < 350) return;
+                    if (lastHotkeyAction === 'lose_plus' && (now - lastHotkeyTime) < 90) return;
                     lastHotkeyTime = now;
                     lastHotkeyAction = 'lose_plus';
                     adjustWinWidget('lose_plus');
@@ -7498,13 +8340,7 @@
 
                 // Alt + '=' OR ']' => WIN / Score +1
                 if ((alt && isEqual) || isBracketRight) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (alt && isElectron) {
-                        flashWinCard();
-                        return; // Handled by Electron globalShortcut to prevent double points
-                    }
-                    if (lastHotkeyAction === 'win_plus' && (now - lastHotkeyTime) < 350) return;
+                    if (lastHotkeyAction === 'win_plus' && (now - lastHotkeyTime) < 90) return;
                     lastHotkeyTime = now;
                     lastHotkeyAction = 'win_plus';
                     adjustWinWidget('win_plus');
@@ -7514,7 +8350,15 @@
                 }
             }
 
-            // Suppress browser alt menu focus on Windows Chromium
+            // Suppress browser alt menu focus on Windows Chromium so Alt doesn't activate window menu
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
+                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                    }
+                }
+            }, { capture: true, passive: false });
+
             window.addEventListener('keyup', (e) => {
                 if (e.key === 'Alt' || e.code === 'AltLeft' || e.code === 'AltRight') {
                     e.preventDefault();
@@ -7533,6 +8377,9 @@
 
         function getSpinners() {
             if (!config) return [];
+            if (config.spinners && !Array.isArray(config.spinners) && typeof config.spinners === 'object') {
+                config.spinners = Object.values(config.spinners);
+            }
             if (!config.spinners || !Array.isArray(config.spinners) || config.spinners.length === 0) {
                 if (config.spinner) {
                     config.spinners = [config.spinner];
@@ -7778,6 +8625,7 @@
                             </div>
                         `;
                     } else {
+                        const amountText = (slice.amount && slice.amount > 1) ? `x${slice.amount}` : (slice.amount ? `x${slice.amount}` : '');
                         html += `
                             <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}">
                                 <div class="card-glow-bg"></div>
@@ -8105,12 +8953,19 @@
                     return;
                 }
 
+                // Strictly ensure winner belongs to the active spinner deck
+                let activeWinner = winner;
+                const winnerExists = slices.some(s => s.id === winner.id || s.label === winner.label);
+                if (!winnerExists) {
+                    activeWinner = slices[Math.floor(Math.random() * slices.length)];
+                }
+
                 // Construct a sequence of ~45 cards, placing the winner at index targetIndex
                 const targetIndex = 35;
                 const cardList = [];
                 for (let i = 0; i < 46; i++) {
                     if (i === targetIndex) {
-                        cardList.push(winner);
+                        cardList.push(activeWinner);
                     } else {
                         const randomSlice = slices[Math.floor(Math.random() * slices.length)];
                         cardList.push(randomSlice);
@@ -8200,9 +9055,9 @@
                     }
                     playReelVictory();
                     if (banner) {
-                        banner.innerHTML = `<span style="color:#ffffff;">Won:</span> <span style="color:${winner.color || '#f59e0b'};">${winner.label}</span> <span style="font-size:12px; color:var(--text-muted);">(x${winner.amount || 1})</span>`;
+                        banner.innerHTML = `<span style="color:#ffffff;">Won:</span> <span style="color:${activeWinner.color || '#f59e0b'};">${activeWinner.label}</span> <span style="font-size:12px; color:var(--text-muted);">(x${activeWinner.amount || 1})</span>`;
                     }
-                    showToast(`Won: ${winner.label}!`);
+                    showToast(`Won: ${activeWinner.label}!`);
                     fetchSpinnerHistory();
                     fetchWinWidget();
 
@@ -8286,6 +9141,45 @@
             });
         }
 
+        function onSpinnerTemplateChanged(template) {
+            const nameEl = document.getElementById('spModalName');
+            const descEl = document.getElementById('spModalTemplateDesc');
+
+            if (template === 'numbers') {
+                if (nameEl && (!nameEl.value || nameEl.value.startsWith('Spinner') || nameEl.value.includes('Lucky') || nameEl.value.includes('Penalty'))) {
+                    nameEl.value = 'Win Score Numbers (+/-)';
+                }
+                setSpinnerGiftPreset('Heart Me', '7934', 'images/tiktok-gifts/7934_heart_me.webp', 1);
+                if (descEl) descEl.innerHTML = '<span style="color:#10b981;font-weight:700;">Numbers Pool:</span> 16 authentic Win/Lose points cards (+1 to +500 and -1 to -500). Updates the Win Fraction overlay score in real time!';
+            } else if (template === 'penalty') {
+                if (nameEl && (!nameEl.value || nameEl.value.startsWith('Spinner') || nameEl.value.includes('Lucky') || nameEl.value.includes('Numbers'))) {
+                    nameEl.value = 'Win Streak Penalty (-)';
+                }
+                setSpinnerGiftPreset('Hat and Mustache', '6427', 'images/tiktok-gifts/6427_hat_and_mustache.webp', 99);
+                if (descEl) descEl.innerHTML = '<span style="color:#ef4444;font-weight:700;">Penalty Pool:</span> 11 penalty score cards (-1, -2, -3, -5, -10, -20, -50, etc.). Decrements stream win streak score!';
+            } else if (template === 'plants') {
+                if (nameEl && (!nameEl.value || nameEl.value.startsWith('Spinner') || nameEl.value.includes('Numbers') || nameEl.value.includes('Zombies'))) {
+                    nameEl.value = 'Plants Lucky Wheel';
+                }
+                setSpinnerGiftPreset('Perfume', '5658', 'images/tiktok-gifts/perfume_gift.webp', 20);
+                if (descEl) descEl.innerHTML = '<span style="color:#22c55e;font-weight:700;">Plants Pool:</span> High-tier PvZ plants and powers (Nuclear Doom Cherry, Super Threepeater, Cattail, Mowers) with in-game spawn commands.';
+            } else if (template === 'zombies') {
+                if (nameEl && (!nameEl.value || nameEl.value.startsWith('Spinner') || nameEl.value.includes('Numbers') || nameEl.value.includes('Plants'))) {
+                    nameEl.value = 'Zombies Lucky Wheel';
+                }
+                setSpinnerGiftPreset('Doughnut', '5879', 'images/tiktok-gifts/5879_doughnut.webp', 30);
+                if (descEl) descEl.innerHTML = '<span style="color:#eab308;font-weight:700;">Zombies Pool:</span> Bosses and heavy zombies (Super Gargantuar, Football Zombie, Kirov, Horse) with in-game spawn commands.';
+            } else if (template === 'hybrid') {
+                if (nameEl && (!nameEl.value || nameEl.value.startsWith('Spinner') || nameEl.value.includes('Numbers'))) {
+                    nameEl.value = 'Hybrid PvZ Wheel';
+                }
+                setSpinnerGiftPreset('Rose', '5655', 'images/tiktok-gifts/5655_rose.webp', 1);
+                if (descEl) descEl.innerHTML = '<span style="color:#38bdf8;font-weight:700;">Hybrid Pool:</span> Balanced mix of plants and zombies with in-game spawn commands.';
+            } else {
+                if (descEl) descEl.innerHTML = 'Empty pool. You can add custom cards manually after creating.';
+            }
+        }
+
         function openCreateSpinnerModal() {
             editingModalSpinnerId = null;
             document.getElementById('spinnerConfigModalTitle').innerText = 'Create New Custom Spinner';
@@ -8297,11 +9191,11 @@
 
             document.getElementById('spModalName').value = `Spinner ${list.length + 1}`;
             document.getElementById('spModalGroupId').value = maxGrp + 1;
-            setSpinnerGiftPreset('Perfume', 'perfume', 'images/tiktok-gifts/perfume_gift.webp', 20);
             document.getElementById('spModalDuration').value = '2500';
             document.getElementById('spModalTicks').value = '100';
             document.getElementById('spModalAudience').value = 'Anyone';
-            document.getElementById('spModalTemplate').value = 'plants';
+            document.getElementById('spModalTemplate').value = 'numbers';
+            onSpinnerTemplateChanged('numbers');
 
             document.getElementById('spinnerConfigModal').classList.add('active');
         }
@@ -8366,16 +9260,101 @@
                 // Creating new spinner!
                 const template = document.getElementById('spModalTemplate').value;
                 let initialSlices = [];
-                if (template === 'plants') {
-                    const refSp = list.find(s => s.id === 'spinner_1') || list[0];
-                    initialSlices = refSp ? JSON.parse(JSON.stringify(refSp.slices)) : [];
+
+                if (template === 'numbers') {
+                    const refSp = list.find(s => s.id === 'spinner_plusminus' || (s.name && s.name.toLowerCase().includes('score')) || (s.name && s.name.toLowerCase().includes('number')));
+                    if (refSp && Array.isArray(refSp.slices) && refSp.slices.length > 0) {
+                        initialSlices = JSON.parse(JSON.stringify(refSp.slices)).map((s, idx) => ({
+                            ...s,
+                            id: `num_${Date.now()}_${idx}`,
+                            actionType: 'score',
+                            isNumber: true
+                        }));
+                    } else {
+                        // Authentic built-in 16 number slices (+/- Win Score Points)
+                        initialSlices = [
+                            { id: `s1_${Date.now()}`, label: '+1', actionType: 'score', isNumber: true, delta: 1, command: 'score_add_1', amount: 1, weight: 18, color: '#10b981', unitIcon: 'images/numbers/num_pos_1.svg', rarity: 'Normal' },
+                            { id: `s2_${Date.now()}`, label: '+2', actionType: 'score', isNumber: true, delta: 2, command: 'score_add_2', amount: 2, weight: 15, color: '#10b981', unitIcon: 'images/numbers/num_pos_2.svg', rarity: 'Normal' },
+                            { id: `s3_${Date.now()}`, label: '+5', actionType: 'score', isNumber: true, delta: 5, command: 'score_add_5', amount: 5, weight: 12, color: '#10b981', unitIcon: 'images/numbers/num_pos_5.svg', rarity: 'Rare' },
+                            { id: `s4_${Date.now()}`, label: '+10', actionType: 'score', isNumber: true, delta: 10, command: 'score_add_10', amount: 10, weight: 9, color: '#10b981', unitIcon: 'images/numbers/num_pos_10.svg', rarity: 'Rare' },
+                            { id: `s5_${Date.now()}`, label: '+20', actionType: 'score', isNumber: true, delta: 20, command: 'score_add_20', amount: 20, weight: 6, color: '#10b981', unitIcon: 'images/numbers/num_pos_20.svg', rarity: 'Epic' },
+                            { id: `s6_${Date.now()}`, label: '+50', actionType: 'score', isNumber: true, delta: 50, command: 'score_add_50', amount: 50, weight: 3, color: '#10b981', unitIcon: 'images/numbers/num_pos_50.svg', rarity: 'Legendary' },
+                            { id: `s7_${Date.now()}`, label: '+100', actionType: 'score', isNumber: true, delta: 100, command: 'score_add_100', amount: 100, weight: 2, color: '#10b981', unitIcon: 'images/numbers/num_pos_100.svg', rarity: 'Mythic' },
+                            { id: `s8_${Date.now()}`, label: '+500', actionType: 'score', isNumber: true, delta: 500, command: 'score_add_500', amount: 500, weight: 1, color: '#10b981', unitIcon: 'images/numbers/num_pos_500.svg', rarity: 'Mythic' },
+                            { id: `s9_${Date.now()}`, label: '-1', actionType: 'score', isNumber: true, delta: -1, command: 'score_sub_1', amount: 1, weight: 18, color: '#ef4444', unitIcon: 'images/numbers/num_neg_1.svg', rarity: 'Normal' },
+                            { id: `s10_${Date.now()}`, label: '-2', actionType: 'score', isNumber: true, delta: -2, command: 'score_sub_2', amount: 2, weight: 15, color: '#ef4444', unitIcon: 'images/numbers/num_neg_2.svg', rarity: 'Normal' },
+                            { id: `s11_${Date.now()}`, label: '-5', actionType: 'score', isNumber: true, delta: -5, command: 'score_sub_5', amount: 5, weight: 12, color: '#ef4444', unitIcon: 'images/numbers/num_neg_5.svg', rarity: 'Rare' },
+                            { id: `s12_${Date.now()}`, label: '-10', actionType: 'score', isNumber: true, delta: -10, command: 'score_sub_10', amount: 10, weight: 8, color: '#ef4444', unitIcon: 'images/numbers/num_neg_10.svg', rarity: 'Rare' },
+                            { id: `s13_${Date.now()}`, label: '-20', actionType: 'score', isNumber: true, delta: -20, command: 'score_sub_20', amount: 20, weight: 5, color: '#ef4444', unitIcon: 'images/numbers/num_neg_20.svg', rarity: 'Epic' },
+                            { id: `s14_${Date.now()}`, label: '-50', actionType: 'score', isNumber: true, delta: -50, command: 'score_sub_50', amount: 50, weight: 3, color: '#ef4444', unitIcon: 'images/numbers/num_neg_50.svg', rarity: 'Legendary' },
+                            { id: `s15_${Date.now()}`, label: '-100', actionType: 'score', isNumber: true, delta: -100, command: 'score_sub_100', amount: 100, weight: 2, color: '#ef4444', unitIcon: 'images/numbers/num_neg_100.svg', rarity: 'Mythic' },
+                            { id: `s16_${Date.now()}`, label: '-500', actionType: 'score', isNumber: true, delta: -500, command: 'score_sub_500', amount: 500, weight: 1, color: '#ef4444', unitIcon: 'images/numbers/num_neg_500.svg', rarity: 'Mythic' }
+                        ];
+                    }
+                } else if (template === 'penalty') {
+                    const refSp = list.find(s => s.id === 'spinner_hat' || (s.name && s.name.toLowerCase().includes('penalty')));
+                    if (refSp && Array.isArray(refSp.slices) && refSp.slices.length > 0) {
+                        initialSlices = JSON.parse(JSON.stringify(refSp.slices)).map((s, idx) => ({
+                            ...s,
+                            id: `pen_${Date.now()}_${idx}`,
+                            actionType: 'score',
+                            isNumber: true
+                        }));
+                    } else {
+                        initialSlices = [
+                            { id: `h1_${Date.now()}`, label: '-1', actionType: 'score', isNumber: true, delta: -1, command: 'score_sub_1', amount: 1, weight: 25, color: '#ef4444', unitIcon: 'images/numbers/num_neg_1.svg', rarity: 'Normal' },
+                            { id: `h2_${Date.now()}`, label: '-2', actionType: 'score', isNumber: true, delta: -2, command: 'score_sub_2', amount: 2, weight: 20, color: '#ef4444', unitIcon: 'images/numbers/num_neg_2.svg', rarity: 'Normal' },
+                            { id: `h3_${Date.now()}`, label: '-3', actionType: 'score', isNumber: true, delta: -3, command: 'score_sub_3', amount: 3, weight: 15, color: '#ef4444', unitIcon: 'images/numbers/num_neg_3.svg', rarity: 'Rare' },
+                            { id: `h4_${Date.now()}`, label: '-5', actionType: 'score', isNumber: true, delta: -5, command: 'score_sub_5', amount: 5, weight: 12, color: '#ef4444', unitIcon: 'images/numbers/num_neg_5.svg', rarity: 'Rare' },
+                            { id: `h5_${Date.now()}`, label: '-10', actionType: 'score', isNumber: true, delta: -10, command: 'score_sub_10', amount: 10, weight: 8, color: '#ef4444', unitIcon: 'images/numbers/num_neg_10.svg', rarity: 'Epic' },
+                            { id: `h6_${Date.now()}`, label: '-15', actionType: 'score', isNumber: true, delta: -15, command: 'score_sub_15', amount: 15, weight: 6, color: '#ef4444', unitIcon: 'images/numbers/num_neg_15.svg', rarity: 'Epic' },
+                            { id: `h7_${Date.now()}`, label: '-20', actionType: 'score', isNumber: true, delta: -20, command: 'score_sub_20', amount: 20, weight: 5, color: '#ef4444', unitIcon: 'images/numbers/num_neg_20.svg', rarity: 'Legendary' },
+                            { id: `h8_${Date.now()}`, label: '-50', actionType: 'score', isNumber: true, delta: -50, command: 'score_sub_50', amount: 50, weight: 3, color: '#ef4444', unitIcon: 'images/numbers/num_neg_50.svg', rarity: 'Legendary' },
+                            { id: `h9_${Date.now()}`, label: '-100', actionType: 'score', isNumber: true, delta: -100, command: 'score_sub_100', amount: 100, weight: 2, color: '#ef4444', unitIcon: 'images/numbers/num_neg_100.svg', rarity: 'Mythic' },
+                            { id: `h10_${Date.now()}`, label: '-200', actionType: 'score', isNumber: true, delta: -200, command: 'score_sub_200', amount: 200, weight: 2, color: '#ef4444', unitIcon: 'images/numbers/num_neg_200.svg', rarity: 'Mythic' },
+                            { id: `h11_${Date.now()}`, label: '-500', actionType: 'score', isNumber: true, delta: -500, command: 'score_sub_500', amount: 500, weight: 1, color: '#ef4444', unitIcon: 'images/numbers/num_neg_500.svg', rarity: 'Mythic' }
+                        ];
+                    }
+                } else if (template === 'plants') {
+                    const refSp = list.find(s => s.id === 'spinner_1' || (s.name && s.name.toLowerCase().includes('plant')));
+                    if (refSp && Array.isArray(refSp.slices) && refSp.slices.length > 0) {
+                        initialSlices = JSON.parse(JSON.stringify(refSp.slices)).map((s, idx) => ({ ...s, id: `plt_${Date.now()}_${idx}` }));
+                    } else {
+                        // Authentic PvZ Plants and powers with in-game spawn commands
+                        initialSlices = [
+                            { id: `p1_${Date.now()}`, label: "Nuclear Doom Cherry", actionType: "plant", command: "spawn_supergargantuar;spawn_ultimatecattail", amount: 3, weight: 5, rarity: "Mythic", unitIcon: "images/game-icons/pvz/spawn_nucleardoomcherry.webp" },
+                            { id: `p2_${Date.now()}`, label: "Super Threepeater SP", actionType: "plant", command: "spawn_superthreepeater_sp", amount: 6, weight: 8, rarity: "Legendary", unitIcon: "images/game-icons/pvz/spawn_superthreepeater_sp.webp" },
+                            { id: `p3_${Date.now()}`, label: "Ultimate Cattail", actionType: "plant", command: "spawn_ultimatecattail", amount: 1, weight: 10, rarity: "Legendary", unitIcon: "images/game-icons/pvz/spawn_ultimatecattail.webp" },
+                            { id: `p4_${Date.now()}`, label: "Ultimate Sniper Gatling", actionType: "plant", command: "spawn_ultimatesnipergatling", amount: 10, weight: 10, rarity: "Legendary", unitIcon: "images/game-icons/pvz/spawn_ultimatesnipergatling.webp" },
+                            { id: `p5_${Date.now()}`, label: "Ultimate Big Sniper", actionType: "plant", command: "spawn_ultimate_big_sniper", amount: 1, weight: 12, rarity: "Epic", unitIcon: "images/game-icons/pvz/spawn_ultimate_big_sniper.webp" },
+                            { id: `p6_${Date.now()}`, label: "Charm All Zombies", actionType: "power", command: "charmallzombies", amount: 1, weight: 15, rarity: "Epic", unitIcon: "images/game-icons/pvz/charm_all_zombies.webp" },
+                            { id: `p7_${Date.now()}`, label: "Launch Lawnmowers", actionType: "power", command: "startlawnmowers", amount: 1, weight: 15, rarity: "Epic", unitIcon: "images/game-icons/pvz/lawnmower.webp" },
+                            { id: `p8_${Date.now()}`, label: "Big Sun Nut", actionType: "plant", command: "spawn_big_sun_nut", amount: 50, weight: 20, rarity: "Rare", unitIcon: "images/game-icons/pvz/spawn_big_sun_nut.webp" },
+                            { id: `p9_${Date.now()}`, label: "Bedrock Tall Nut", actionType: "plant", command: "spawn_bedrocktallnut", amount: 6, weight: 20, rarity: "Rare", unitIcon: "images/game-icons/pvz/spawn_bedrocktallnut.webp" },
+                            { id: `p10_${Date.now()}`, label: "Random Plant", actionType: "plant", command: "spawn_random_plant", amount: 10, weight: 25, rarity: "Normal", unitIcon: "images/game-icons/pvz/spawn_random_plant.webp" }
+                        ];
+                    }
                 } else if (template === 'zombies') {
-                    const refSp = list.find(s => s.id === 'spinner_2') || list[0];
-                    initialSlices = refSp ? JSON.parse(JSON.stringify(refSp.slices)) : [];
+                    const refSp = list.find(s => s.id === 'spinner_2' || (s.name && s.name.toLowerCase().includes('zombie')));
+                    if (refSp && Array.isArray(refSp.slices) && refSp.slices.length > 0) {
+                        initialSlices = JSON.parse(JSON.stringify(refSp.slices)).map((s, idx) => ({ ...s, id: `zmb_${Date.now()}_${idx}` }));
+                    } else {
+                        // Authentic PvZ Zombies and Bosses with in-game spawn commands
+                        initialSlices = [
+                            { id: `z1_${Date.now()}`, label: "Super Gargantuar", actionType: "zombie", command: "spawn_supergargantuar", amount: 1, weight: 5, rarity: "Mythic", unitIcon: "images/game-icons/pvz/spawn_supergargantuar.webp" },
+                            { id: `z2_${Date.now()}`, label: "Ultimate Football Zombie", actionType: "zombie", command: "spawn_ultimate_football_zombie", amount: 2, weight: 8, rarity: "Legendary", unitIcon: "images/game-icons/pvz/spawn_ultimate_football_zombie.webp" },
+                            { id: `z3_${Date.now()}`, label: "Kirov Airship", actionType: "zombie", command: "spawn_kirov_c", amount: 1, weight: 10, rarity: "Legendary", unitIcon: "images/game-icons/pvz/spawn_kirov_c.webp" },
+                            { id: `z4_${Date.now()}`, label: "Ultimate Squalour Zombie", actionType: "zombie", command: "spawn_squalour_zombie", amount: 3, weight: 12, rarity: "Epic", unitIcon: "images/game-icons/pvz/spawn_squalour_zombie.webp" },
+                            { id: `z5_${Date.now()}`, label: "Summoned Horse", actionType: "zombie", command: "spawn_summonedhorse", amount: 5, weight: 15, rarity: "Epic", unitIcon: "images/game-icons/pvz/spawn_summonedhorse.webp" },
+                            { id: `z6_${Date.now()}`, label: "Eternal Zombie", actionType: "zombie", command: "spawn_eternalzombie_c", amount: 4, weight: 18, rarity: "Rare", unitIcon: "images/game-icons/pvz/spawn_eternalzombie_c.webp" },
+                            { id: `z7_${Date.now()}`, label: "Lost Penguin", actionType: "zombie", command: "spawn_lost_penguin", amount: 6, weight: 20, rarity: "Rare", unitIcon: "images/game-icons/pvz/spawn_lost_penguin.webp" },
+                            { id: `z8_${Date.now()}`, label: "Random Zombie", actionType: "zombie", command: "spawn_random_zombie", amount: 8, weight: 25, rarity: "Normal", unitIcon: "images/game-icons/pvz/spawn_random_zombie.webp" }
+                        ];
+                    }
                 } else if (template === 'hybrid') {
-                    const s1 = list[0]?.slices || [];
-                    const s2 = list[1]?.slices || [];
-                    initialSlices = JSON.parse(JSON.stringify([...s1.slice(0, 5), ...s2.slice(0, 5)]));
+                    const plantSlices = list.find(s => s.id === 'spinner_1')?.slices || [];
+                    const zombieSlices = list.find(s => s.id === 'spinner_2')?.slices || [];
+                    initialSlices = JSON.parse(JSON.stringify([...plantSlices.slice(0, 5), ...zombieSlices.slice(0, 5)])).map((s, idx) => ({ ...s, id: `hyb_${Date.now()}_${idx}` }));
                 }
 
                 const newId = `spinner_${Date.now()}`;
@@ -8393,17 +9372,19 @@
                     enabled: true,
                     mode: 'reel',
                     style: 'neon',
-                    pointerIcon: 'images/game-icons/pvz/spawn_ultimatecattail.webp',
+                    pointerIcon: (template === 'numbers' || template === 'penalty') ? 'images/game-icons/pvz/spawn_ultimatecattail.webp' : (template === 'zombies' ? 'images/game-icons/pvz/spawn_supergargantuar.webp' : 'images/game-icons/pvz/spawn_ultimatecattail.webp'),
                     slices: initialSlices
                 };
                 list.push(newSpinner);
+                config.spinners = list;
+                config.spinner = newSpinner;
                 activeSpinnerId = newId;
             }
 
-            // Sync matching card in config.gifts so overlay displays as a Spinner card!
+            // Sync or insert matching card in config.gifts so overlay displays as a Spinner card and triggers from live TikTok gifts!
             if (config && config.gifts && (giftName || giftId)) {
                 const targetSpId = editingModalSpinnerId || activeSpinnerId;
-                const matchedGift = config.gifts.find(g => {
+                let matchedGift = config.gifts.find(g => {
                     const matchId = giftId && g.giftId && String(g.giftId).trim() === String(giftId).trim();
                     const matchName = giftName && g.giftName && g.giftName.toLowerCase().trim() === giftName.toLowerCase().trim();
                     return matchId || matchName;
@@ -8415,16 +9396,41 @@
                     matchedGift.label = name;
                     matchedGift.functionName = name;
                     matchedGift.unitIcon = 'images/spinner_wheel_icon.svg';
+                } else if (giftName) {
+                    const newGiftCard = {
+                        id: String(Date.now()),
+                        giftName: giftName,
+                        giftId: String(giftId || ''),
+                        coins: Number(coins) || 1,
+                        icon: giftIcon || 'images/tiktok-gifts/7934_heart_me.webp',
+                        unitIcon: 'images/spinner_wheel_icon.svg',
+                        actionType: 'spinner',
+                        command: targetSpId,
+                        spinnerId: targetSpId,
+                        label: name,
+                        functionName: name,
+                        amount: 1,
+                        enabled: true,
+                        platform: 'tiktok',
+                        triggerType: 'gift',
+                        availableFor: audience || 'Anyone'
+                    };
+                    config.gifts.push(newGiftCard);
                 }
             }
 
+            config.spinners = list;
             closeSpinnerConfigModal();
             renderSpinnerStudio();
 
             try {
-                await saveConfigToServer();
+                const saveResult = await saveConfigToServer();
                 fetch('/api/test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'config_updated' }) }).catch(() => {});
-                showToast(`Saved spinner "${name}"!`, "OK");
+                if (saveResult !== false) {
+                    showToast(`Saved spinner "${name}"!`, "OK");
+                } else {
+                    showToast(`Spinner "${name}" created locally, but could not be saved to server (check role permissions).`, "WARN");
+                }
             } catch (err) {
                 showToast("Failed to save spinner: " + err.message, "ERR");
             }
@@ -8441,9 +9447,11 @@
 
             const name = list[idx].name;
             list.splice(idx, 1);
+            config.spinners = list;
             if (activeSpinnerId === id) {
-                activeSpinnerId = list[0].id;
+                activeSpinnerId = list[0]?.id || 'spinner_1';
             }
+            config.spinner = list[0] || null;
 
             renderSpinnerStudio();
             try {
@@ -8469,6 +9477,7 @@
 
             const item = list.splice(idx, 1)[0];
             list.splice(newIdx, 0, item);
+            config.spinners = list;
 
             renderSpinnerStudio();
             try {
@@ -8837,12 +9846,25 @@
                     if (index === 0) {
                         const imgEl = document.getElementById('giftMainIconImg');
                         if (imgEl) imgEl.src = imgStr;
+                        const prevImg = document.getElementById('previewUnitImg');
+                        if (prevImg) prevImg.src = imgStr;
+                        const prevName = document.getElementById('previewUnitName');
+                        if (prevName) prevName.innerText = u.name;
+                        const prevTag = document.getElementById('previewCategoryTag');
+                        if (prevTag) {
+                            prevTag.innerText = actType.toUpperCase();
+                            prevTag.className = `action-badge ${actType}`;
+                        }
+                        const fnInp = document.getElementById('giftFunctionName');
+                        if (fnInp && (!fnInp.value || fnInp.value === 'Custom')) fnInp.value = u.name;
                     }
                 } else {
                     renderSliceCommands();
                     if (index === 0) {
                         const imgEl = document.getElementById('sliceMainIconImg');
                         if (imgEl) imgEl.src = imgStr;
+                        const fnInp = document.getElementById('sliceFunctionName');
+                        if (fnInp && (!fnInp.value || fnInp.value === 'Custom')) fnInp.value = u.name;
                     }
                     updateSlicePreview();
                 }
@@ -9466,6 +10488,18 @@
             return [];
         }
 
+        function autocorrectTikTokGift(name) {
+            if (!name) return null;
+            const gifts = getTikTokGifts();
+            const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!clean) return null;
+            return gifts.find(g => {
+                if (!g || !g.name) return false;
+                const gClean = g.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return gClean === clean || gClean.includes(clean) || clean.includes(gClean);
+            }) || null;
+        }
+
         function getCatalogUnits(cat) {
             if (!catalog) return [];
             // Our catalog uses a single "all" array with a "type" field on each item
@@ -9745,27 +10779,7 @@
             if (pCount) pCount.innerText = `x${amt} Spawns`;
         }
 
-        function setLikePreset(val) {
-            const inp = document.getElementById('modalLikeThreshold');
-            if (inp) {
-                inp.value = val;
-                onLikeThresholdChanged();
-            }
-        }
-
-        function onLikeThresholdChanged() {
-            const val = parseInt(document.getElementById('modalLikeThreshold')?.value) || 50;
-            const previewCoins = document.getElementById('previewGiftCoins');
-            if (!previewCoins) return;
-            if (editingGiftId === '1') {
-                previewCoins.innerText = `Every ${val} Likes (Team Plants)`;
-            } else if (editingGiftId === '2') {
-                previewCoins.innerText = `Every ${val} Likes (Team Zombies)`;
-            } else if (editingGiftId === '3' || currentEditingTriggerType === 'likes_all') {
-                const kStr = (val >= 1000) ? (val / 1000) + 'K' : val;
-                previewCoins.innerText = `Stream Goal: Every ${kStr} Likes`;
-            }
-        }
+// (setLikePreset and onLikeThresholdChanged defined above)
 
         // ==================== OPEN / SAVE MODAL STUDIO ====================
         async function openEditGiftModal(giftId) {
@@ -9859,6 +10873,23 @@
                 const mainImg = document.getElementById('giftMainIconImg');
                 if (mainImg) mainImg.src = gift.unitIcon || (currentGiftCommands[0] ? currentGiftCommands[0].icon : 'images/super_gargantuar.png');
 
+                const firstCmd = currentGiftCommands[0] || {};
+                const prevUnitImg = document.getElementById('previewUnitImg');
+                if (prevUnitImg) prevUnitImg.src = firstCmd.icon || gift.unitIcon || 'images/func_2.png';
+                const prevUnitName = document.getElementById('previewUnitName');
+                if (prevUnitName) prevUnitName.innerText = firstCmd.label || gift.label || 'Unit Name';
+                const prevUnitTag = document.getElementById('previewCategoryTag');
+                if (prevUnitTag) {
+                    const actType = (firstCmd.actionType || gift.actionType || 'zombie').toLowerCase();
+                    prevUnitTag.innerText = actType.toUpperCase();
+                    prevUnitTag.className = `action-badge ${actType}`;
+                }
+                const prevUnitCount = document.getElementById('previewUnitCount');
+                if (prevUnitCount) {
+                    const repVal = document.getElementById('giftRepetition')?.value || 1;
+                    prevUnitCount.innerText = `x${repVal} Spawns`;
+                }
+
                 renderGiftCommands();
                 if (currentEditingTriggerType === 'gift') {
                     renderTikTokGiftPicker();
@@ -9869,6 +10900,9 @@
                 console.error("openEditGiftModal error:", err);
             }
         }
+
+
+
 
         async function openAddGiftModal() {
             if (!checkEditorPermission("create new triggers")) return;
@@ -9929,6 +10963,18 @@
                 const mainImg = document.getElementById('giftMainIconImg');
                 if (mainImg) mainImg.src = 'images/super_gargantuar.png';
 
+                const pUImg = document.getElementById('previewUnitImg');
+                if (pUImg) pUImg.src = 'images/super_gargantuar.png';
+                const pUName = document.getElementById('previewUnitName');
+                if (pUName) pUName.innerText = 'Spawn Super Gargantuar';
+                const pUTag = document.getElementById('previewCategoryTag');
+                if (pUTag) {
+                    pUTag.innerText = 'ZOMBIE';
+                    pUTag.className = 'action-badge zombie';
+                }
+                const pUCount = document.getElementById('previewUnitCount');
+                if (pUCount) pUCount.innerText = 'x1 Spawns';
+
                 renderGiftCommands();
                 renderTikTokGiftPicker();
 
@@ -9969,8 +11015,20 @@
             }
 
             let coins = isSocialCard ? 0 : (parseInt(document.getElementById('modalGiftCoins')?.value) || 1);
-            const giftId = document.getElementById('modalGiftId')?.value.trim() || '';
+            let giftId = document.getElementById('modalGiftId')?.value.trim() || '';
             let icon = document.getElementById('modalGiftIconUrl')?.value.trim() || (activeSelectedGift ? activeSelectedGift.icon : '');
+
+            // Auto-correct gift trigger against verified TikTok gifts catalog
+            if (!isSocialCard && currentEditingTriggerType === 'gift' && name) {
+                const autoG = autocorrectTikTokGift(name);
+                if (autoG) {
+                    name = autoG.name;
+                    if (!giftId) giftId = String(autoG.id);
+                    if (!coins || coins <= 1) coins = autoG.coins || 1;
+                    if (!icon || icon.includes('default') || icon.includes('5655_rose')) icon = autoG.icon || icon;
+                }
+            }
+
             if (!icon || isSocialCard || currentEditingTriggerType !== 'gift') {
                 if (currentEditingTriggerType === 'likes_all' || editingGiftId === '3') icon = 'images/trig_7.svg';
                 else if (currentEditingTriggerType === 'likes_person' || editingGiftId === '1' || editingGiftId === '2') icon = 'images/trig_7.svg';
@@ -10105,6 +11163,7 @@
         }
 
         async function saveConfigToServer() {
+            if (!checkEditorPermission("save configuration")) return false;
             try {
                 const user = getCurrentUser();
                 const userKey = user ? (user.email || user.username || '') : '';
@@ -11188,6 +12247,7 @@
         }
 
         async function saveAllLeaderboardSettings() {
+            if (!checkEditorPermission("save leaderboard settings")) return;
             const cfg = {
                 coins: {
                     position: (document.getElementById('coinsPosition') || {}).value || 'left',
@@ -11275,6 +12335,7 @@
         }
 
         async function resetLeaderboard(type) {
+            if (!checkEditorPermission("reset leaderboard")) return;
             if (!confirm(`Are you sure you want to reset ${type.toUpperCase()} rankings?`)) return;
             try {
                 const res = await fetch('/api/leaderboard/reset', {
@@ -11311,6 +12372,57 @@
                 </div>
             `).join('');
         }
-    </script>
+    
+        // Games Selection & Library Helpers
+        function selectGameProfile(gameId) {
+            if (gameId === 'pvz') {
+                showToast(' Plants vs. Zombies Fusion Edition is your active game!', 'success');
+                switchTab('gifts');
+            } else {
+                showComingSoonGame(gameId);
+            }
+        }
+
+        function showComingSoonGame(gameName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-backdrop';
+            modal.id = 'comingSoonGameModal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal" style="max-width: 480px; text-align: center; border: 1.5px solid rgba(239, 68, 68, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                    <div style="font-size: 48px; margin-bottom: 12px;"></div>
+                    <h3 style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px;">${gameName} Support Coming Soon!</h3>
+                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 18px;">
+                        Currently, <strong>Plants vs. Zombies Fusion Edition</strong> is the active live stream interactive game connected to your RENEarn Studio.
+                    </p>
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: left; font-size: 12px; color: #fca5a5;">
+                         <strong>Note:</strong> We are building dedicated socket bridges for ${gameName} in upcoming RENEarn updates. All your existing overlays, leaderboards, and donation widgets will carry over automatically!
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-primary" onclick="document.getElementById('comingSoonGameModal').remove(); switchTab('gifts');">
+                            Go to PvZ Fusion Commands
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('comingSoonGameModal').remove();">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function filterGameCatalog(query) {
+            const term = (query || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('#gamesCatalogGrid .game-grid-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (!term || text.includes(term)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+</script>
 </body>
 </html>

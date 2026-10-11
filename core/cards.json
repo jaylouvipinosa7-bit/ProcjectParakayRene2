@@ -376,11 +376,11 @@
         "action":  "SelectedGift",
         "giftId":  "7934",
         "giftName":  "Heart Me",
-        "funcName":  "Spawn Big Sun Nut",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_big_sun_nut.webp",
+        "funcName":  "Win Score Numbers (+/-)",
+        "funcImg":  "images/spinner_wheel_icon.svg",
         "trigImg":  "images/tiktok-gifts/7934_heart_me.webp",
         "triggerValue":  "",
-        "commands":  "spawn_big_sun_nut",
+        "commands":  "spinner_1791698132034",
         "repetition":  50
     },
     {
@@ -744,27 +744,39 @@
         "repetition":  20
     },
     {
-        "id":  "imp_1791635865195_244",
-        "action":  "LikeAmount",
-        "giftId":  "",
-        "giftName":  "Total Likes",
-        "funcName":  "Spawn UltimateHorse",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/trig_7.svg",
-        "triggerValue":  "50000",
-        "commands":  "spawn_ultimatehorse",
-        "repetition":  20
+        "id":  "1791698133182",
+        "action":  "SelectedGift",
+        "giftId":  "5879",
+        "giftName":  "Doughnut",
+        "funcName":  "Zombies Lucky Wheel",
+        "funcImg":  "images/spinner_wheel_icon.svg",
+        "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
+        "triggerValue":  "",
+        "commands":  "spinner_1791698133182",
+        "repetition":  1
     },
     {
-        "id":  "imp_1791635907788_9823",
-        "action":  "LikeAmount",
-        "giftId":  "",
-        "giftName":  "Total Likes",
-        "funcName":  "Spawn UltimateHorse",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/trig_7.svg",
-        "triggerValue":  "50000",
-        "commands":  "spawn_ultimatehorse",
-        "repetition":  20
+        "id":  "1791698134030",
+        "action":  "SelectedGift",
+        "giftId":  "5658",
+        "giftName":  "Perfume",
+        "funcName":  "Plants Lucky Wheel",
+        "funcImg":  "images/spinner_wheel_icon.svg",
+        "trigImg":  "images/tiktok-gifts/perfume_gift.webp",
+        "triggerValue":  "",
+        "commands":  "spinner_1791698134030",
+        "repetition":  1
+    },
+    {
+        "id":  "1791698411759",
+        "action":  "SelectedGift",
+        "giftId":  "13087",
+        "giftName":  "Bubble Gum",
+        "funcName":  "Win Score Numbers (+/-)",
+        "funcImg":  "images/spinner_wheel_icon.svg",
+        "trigImg":  "images/tiktok-gifts/13087_bubble_gum.webp",
+        "triggerValue":  "",
+        "commands":  "spinner_1791698132034",
+        "repetition":  1
     }
 ]

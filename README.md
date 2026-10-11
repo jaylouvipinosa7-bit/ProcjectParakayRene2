@@ -1,4 +1,4 @@
-# 🌻 PvZ Fusion 4.0 - Live Stream Control Studio
+# 🔥 RENEarn - PvZ Fusion Live Stream Studio
 
 > **Version 1.0.0 Official Release**  
 > Complete interactive streaming engine connecting **TikTok LIVE**, **OBS Studio**, and **Plants vs. Zombies Fusion**.
@@ -7,7 +7,7 @@
 
 ## 📖 Overview
 
-**PvZ Fusion Studio** is a native Windows streaming companion application built for content creators streaming *Plants vs. Zombies Fusion*. When viewers send gifts, likes, or chat commands on TikTok LIVE, the app triggers in-game plant & zombie spawns, animates dynamic OBS stream overlays, tracks win/loss goals, and runs spammable prize spinners.
+**RENEarn** is a native Windows streaming companion application built for content creators streaming *Plants vs. Zombies Fusion*. When viewers send gifts, likes, or chat commands on TikTok LIVE, the app triggers in-game plant & zombie spawns, animates dynamic OBS stream overlays, tracks win/loss goals, and runs spammable prize spinners.
 
 ---
 
