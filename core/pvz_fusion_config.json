@@ -1464,12 +1464,7 @@
                                             "rarity":  "Normal",
                                             "unitIcon":  "images/game-icons/pvz/spawn_ultimate_corn.webp"
                                         }
-                                    ],
-                         "wheelTheme":  "pvz_sunburst",
-                         "centerFinial":  "sunflower_gold",
-                         "pointerTheme":  "emerald_gem",
-                         "reelTheme":  "casino_felt",
-                         "wheelRarityStyle":  "rarity_enamel"
+                                    ]
                      },
                      {
                          "id":  "spinner_2",
@@ -1565,12 +1560,7 @@
                                             "rarity":  "Normal",
                                             "unitIcon":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp"
                                         }
-                                    ],
-                         "wheelTheme":  "obsidian_vip",
-                         "centerFinial":  "ruby_dome",
-                         "pointerTheme":  "neon_laser",
-                         "reelTheme":  "obsidian_luxury",
-                         "wheelRarityStyle":  "rarity_enamel"
+                                    ]
                      },
                      {
                          "id":  "spinner_plusminus",
@@ -2039,12 +2029,7 @@
                                             "repetitionMultiplier":  false,
                                             "id":  "pm_1791700071745"
                                         }
-                                    ],
-                         "wheelTheme":  "casino_royale",
-                         "centerFinial":  "turret_3d",
-                         "pointerTheme":  "brass_chevron",
-                         "reelTheme":  "casino_felt",
-                         "wheelRarityStyle":  "rarity_enamel"
+                                    ]
                      },
                      {
                          "id":  "spinner_hat",
@@ -2181,12 +2166,7 @@
                                             "color":  "#ef4444",
                                             "unitIcon":  "images/numbers/num_neg_500.svg"
                                         }
-                                    ],
-                         "wheelTheme":  "casino_royale",
-                         "centerFinial":  "turret_3d",
-                         "pointerTheme":  "brass_chevron",
-                         "reelTheme":  "casino_felt",
-                         "wheelRarityStyle":  "rarity_enamel"
+                                    ]
                      },
                      {
                          "id":  "spinner_1791698132034",
@@ -2300,12 +2280,7 @@
                                             "unitIcon":  "images/numbers/num_pos_500.svg",
                                             "isNumber":  true
                                         }
-                                    ],
-                         "wheelTheme":  "casino_royale",
-                         "centerFinial":  "turret_3d",
-                         "pointerTheme":  "brass_chevron",
-                         "reelTheme":  "casino_felt",
-                         "wheelRarityStyle":  "rarity_enamel"
+                                    ]
                      }
                  ],
     "winWidget":  {
@@ -2317,5 +2292,6 @@
                       "label":  "Win",
                       "enabled":  true,
                       "score":  -4
-                  }
+                  },
+    "activePresetId":  "preset_live_balagbagan"
 }

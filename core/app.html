@@ -3837,6 +3837,563 @@
             transform: translateY(-2px);
         }
 
+        /* ==========================================================================
+           RENEARN GIFTS WORKSPACE: PRESETS (PIC 1) & COMMAND ROWS (PIC 4) STYLES
+           ========================================================================== */
+        .gifts-view-mode-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: linear-gradient(180deg, #131724 0%, #0d101a 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .gifts-view-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            color: #94a3b8;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gifts-view-tab-btn:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .gifts-view-tab-btn.active {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(249, 115, 22, 0.12) 100%);
+            color: #ffffff;
+            border-color: rgba(239, 68, 68, 0.55);
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
+        }
+
+        .gifts-view-tab-btn .view-tag-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+        }
+
+        .gifts-view-tab-btn.active .view-tag-badge {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        /* Preset Row Card (Matches Picture 1) */
+        .preset-row-card {
+            background: linear-gradient(135deg, rgba(18, 22, 35, 0.95) 0%, rgba(13, 17, 27, 0.98) 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        .preset-row-card:hover {
+            border-color: rgba(239, 68, 68, 0.45);
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 26px rgba(239, 68, 68, 0.12);
+        }
+
+        .preset-row-card.active-stream-preset {
+            border-color: rgba(16, 185, 129, 0.6);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(14, 20, 29, 0.98) 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .preset-left-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 260px;
+            flex-shrink: 0;
+        }
+
+        .preset-cover-badge {
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .preset-cover-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preset-title-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+            line-height: 1.25;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preset-game-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+
+        .preset-sub-meta {
+            font-size: 11.5px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preset-sprites-strip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            overflow-x: auto;
+            padding: 4px 0;
+            min-width: 200px;
+        }
+
+        .preset-sprite-thumbnail {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            object-fit: contain;
+            padding: 2px;
+            flex-shrink: 0;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .preset-sprite-thumbnail:hover {
+            transform: scale(1.18);
+            border-color: #38bdf8;
+            z-index: 5;
+        }
+
+        .preset-overflow-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-left: 6px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .preset-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .preset-btn-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            font-size: 15px;
+        }
+
+        .preset-btn-action.edit-btn {
+            background: #0969da;
+            color: #ffffff;
+        }
+
+        .preset-btn-action.edit-btn:hover {
+            background: #1f883d;
+            transform: translateY(-1px);
+        }
+
+        .preset-btn-action.copy-btn {
+            background: #0969da;
+            color: #ffffff;
+        }
+
+        .preset-btn-action.copy-btn:hover {
+            background: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        .preset-btn-action.delete-btn {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .preset-btn-action.delete-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .preset-btn-activate {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-btn-activate:hover {
+            background: #10b981;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .preset-btn-activate.is-active {
+            background: #10b981;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        /* Detailed Command Row (Matches Picture 4) */
+        .cmd-detail-row {
+            background: linear-gradient(135deg, rgba(16, 20, 32, 0.95) 0%, rgba(12, 16, 26, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.15s ease;
+        }
+
+        .cmd-detail-row:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(20, 25, 40, 0.98);
+        }
+
+        .cmd-reorder-handle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+            width: 22px;
+        }
+
+        .cmd-reorder-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 10px;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 4px;
+            transition: all 0.12s;
+        }
+
+        .cmd-reorder-btn:hover {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .cmd-trigger-col {
+            width: 145px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .cmd-trigger-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cmd-trigger-icon-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cmd-trigger-role {
+            font-size: 10px;
+            color: #8b949e;
+            font-weight: 700;
+        }
+
+        .cmd-trigger-event-text {
+            font-size: 12px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .cmd-trigger-cost {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+
+        .cmd-unit-col {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cmd-unit-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cmd-exec-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .cmd-exec-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .cmd-exec-params {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .cmd-exec-code-badge {
+            font-family: monospace;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 1px 6px;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .cmd-plus-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.12s;
+        }
+
+        .cmd-plus-btn:hover {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+        }
+
+        .cmd-spinner-col {
+            width: 145px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .cmd-spinner-label {
+            font-size: 10px;
+            color: #8b949e;
+            font-weight: 700;
+        }
+
+        .cmd-spinner-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 11.5px;
+            padding: 3px 6px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .cmd-audio-col {
+            min-width: 160px;
+            max-width: 220px;
+            flex-shrink: 0;
+        }
+
+        .cmd-audio-pill {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cmd-audio-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cmd-audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #8b949e;
+        }
+
+        .btn-add-audio {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.15s;
+        }
+
+        .btn-add-audio:hover {
+            color: #ffffff;
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .cmd-actions-col {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .cmd-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.12s;
+            font-size: 13px;
+        }
+
+        .cmd-action-btn.play-btn {
+            background: #f97316;
+            color: #ffffff;
+        }
+
+        .cmd-action-btn.play-btn:hover {
+            background: #ea580c;
+        }
+
+        .cmd-action-btn.edit-btn {
+            background: #0969da;
+            color: #ffffff;
+        }
+
+        .cmd-action-btn.edit-btn:hover {
+            background: #1f883d;
+        }
+
+        .cmd-action-btn.copy-btn {
+            background: #0969da;
+            color: #ffffff;
+        }
+
+        .cmd-action-btn.copy-btn:hover {
+            background: #0284c7;
+        }
+
+        .cmd-action-btn.delete-btn {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .cmd-action-btn.delete-btn:hover {
+            background: #b91c1c;
+        }
+
 </style>
 </head>
 <body>
@@ -4422,8 +4979,88 @@
                 </div>
             </div>
 
-            <div id="giftCardsGrid" class="card-grid">
-                <!-- Dynamically populated -->
+            <!-- ==================== GIFTS VIEW SWITCHER BAR ==================== -->
+            <div class="gifts-view-mode-bar" id="giftsViewModeBar">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button id="viewBtnPresets" class="gifts-view-tab-btn active" onclick="setGiftsViewMode('presets')" type="button" title="View all Game Presets and multi-game collections">
+                        <span>🎮</span> Game Presets <span class="view-tag-badge">Presets List</span>
+                    </button>
+                    <button id="viewBtnCommands" class="gifts-view-tab-btn" onclick="setGiftsViewMode('commands')" type="button" title="Detailed horizontal command rows customization">
+                        <span>⚡</span> Custom Command Rows <span class="view-tag-badge">Customizations</span>
+                    </button>
+                    <button id="viewBtnCards" class="gifts-view-tab-btn" onclick="setGiftsViewMode('cards')" type="button" title="Visual 4-column card grid">
+                        <span>🎴</span> Card Grid Preview
+                    </button>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-primary" onclick="openNewPresetModal()" type="button" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-weight: 800;">
+                        <span>➕</span> Add Game Preset
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="openAddGiftModal()" type="button" style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); font-weight: 800;">
+                        <span>⚡</span> Add Command Trigger
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 1: GAME PRESETS (PICTURE 1 LAYOUT) ==================== -->
+            <div id="giftsPresetsView" class="gifts-panel-view" style="display: block;">
+                <!-- Filter bar & Search -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(14, 18, 28, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 14px;">
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;" id="presetGameFilterPills">
+                        <button class="pill active" onclick="filterPresetsByGame('all', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">All Games</button>
+                        <button class="pill" onclick="filterPresetsByGame('PvZFusion', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">PvZFusion</button>
+                        <button class="pill" onclick="filterPresetsByGame('Minecraft', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">Minecraft</button>
+                        <button class="pill" onclick="filterPresetsByGame('tabs', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">TABS</button>
+                        <button class="pill" onclick="filterPresetsByGame('uebs2', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">UEBS 2</button>
+                        <button class="pill" onclick="filterPresetsByGame('Crown Clash', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">Crown Clash</button>
+                        <button class="pill" onclick="filterPresetsByGame('Custom', this)" style="cursor: pointer; font-size: 11.5px; font-weight: 800;">Custom</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex: 1; max-width: 320px;">
+                        <input type="text" id="presetSearchInput" oninput="onPresetSearchInput(this.value)" placeholder="🔍 Search presets or games..." style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px; font-size: 12.5px; color: #ffffff; outline: none;">
+                    </div>
+                </div>
+
+                <!-- Presets Container (Rows match Picture 1) -->
+                <div id="presetsListContainer">
+                    <!-- Populated dynamically via renderGamePresets() -->
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 2: DETAILED COMMAND ROWS (PICTURE 4 LAYOUT) ==================== -->
+            <div id="giftsCommandsView" class="gifts-panel-view" style="display: none;">
+                <!-- Header context bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(14, 18, 28, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="setGiftsViewMode('presets')" style="font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                            <span>←</span> All Presets
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 12px; color: #8b949e; font-weight: 700;">Active Preset:</span>
+                            <span id="activePresetBadgeText" style="font-size: 13.5px; font-weight: 800; color: #ffffff; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35); padding: 3px 10px; border-radius: 6px;">live balagbagan (PvZFusion)</span>
+                        </div>
+                        <select id="presetQuickSelectDropdown" onchange="switchPresetFromDropdown(this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; outline: none;">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" id="commandRowSearchInput" oninput="onCommandRowSearch(this.value)" placeholder="🔍 Filter command triggers..." style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #ffffff; outline: none; width: 200px;">
+                        <button class="btn btn-sm btn-primary" onclick="openAddGiftModal()" type="button" style="font-size: 12px; font-weight: 800;">
+                            + Add Command Trigger
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command Rows Container (Horizontal rows matching Picture 4) -->
+                <div id="commandRowsContainer">
+                    <!-- Populated dynamically via renderDetailedCommandRows() -->
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 3: CARD GRID PREVIEW (PICTURE 2) ==================== -->
+            <div id="giftsCardsView" class="gifts-panel-view" style="display: none;">
+                <div id="giftCardsGrid" class="card-grid">
+                    <!-- Dynamically populated -->
+                </div>
             </div>
         </div>
 
@@ -5318,9 +5955,25 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: COMMAND SEQUENCE BUILDER (PHOTO MATCH) -->
+                <!-- STEP 2: COMMAND SEQUENCE BUILDER (MULTI-GAME COMPATIBLE) -->
                 <div>
-                    <label class="form-label" style="margin-bottom: 8px; display: block; font-weight: 800;">Step 2: Configure Command Sequence</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <label class="form-label" style="margin: 0; font-weight: 800;">Step 2: Configure Game Command Sequence</label>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 11px; color: #8b949e; font-weight: 700;">Target Game:</span>
+                            <select id="modalTargetGameSelect" onchange="onModalTargetGameChanged(this.value)" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 6px; padding: 3px 8px; font-size: 11.5px; font-weight: 800; color: #38bdf8; outline: none; cursor: pointer;">
+                                <option value="PvZFusion">PvZ Fusion 4.0</option>
+                                <option value="Minecraft">Minecraft (Java / Bedrock)</option>
+                                <option value="tabs">TABS (Battle Simulator)</option>
+                                <option value="uebs2">Ultimate Epic Battle 2</option>
+                                <option value="Crown Clash">Crown Clash</option>
+                                <option value="Custom">Custom Game / Universal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Quick game command templates bar -->
+                    <div id="modalGameQuickTemplates" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;">
+                    </div>
                     <div class="cmd-seq-box">
                         <!-- TOP ROW: ICON + FUNCTION NAME + HIDE IN OVERLAY + SELECT BACKGROUND -->
                         <div class="cmd-seq-top-row">
@@ -5408,6 +6061,71 @@
                     <button type="button" class="btn btn-secondary btn-sm" onclick="closeGiftModal()">Cancel</button>
                     <button type="button" class="btn-cmd-save-green" onclick="saveGiftModal()">Save</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT GAME PRESET (PICTURE 1) -->
+    <div id="presetModal" class="modal-backdrop">
+        <div class="modal-box" style="max-width: 580px; background: #111827; border: 1.5px solid #374151; border-radius: 20px; padding: 24px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 id="presetModalTitle" style="font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #f3f4f6; margin: 0;">
+                        <span style="font-size: 22px;">🎮</span> Create New Game Preset
+                    </h3>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+                        Add a multi-game configuration for PvZ Fusion, Minecraft, TABS, UEBS 2, or your custom game!
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm" onclick="closePresetModal()" style="padding: 4px 8px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;">✕</button>
+            </div>
+
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; display: block;">Preset Name</label>
+                    <input type="text" id="presetInputName" class="form-input" placeholder="e.g. Minecraft Chaos Arena, PvZ Hardcore Boss..." style="width: 100%; font-size: 14px; font-weight: 700; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 8px; color: #fff;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; display: block;">Game Platform</label>
+                        <select id="presetInputGame" class="form-input" onchange="onPresetGameChanged(this.value)" style="width: 100%; font-size: 13px; font-weight: 700; cursor: pointer; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 8px; color: #fff;">
+                            <option value="PvZFusion">Plants vs Zombies Fusion</option>
+                            <option value="Minecraft">Minecraft (Java / Bedrock)</option>
+                            <option value="tabs">TABS (Battle Simulator)</option>
+                            <option value="uebs2">Ultimate Epic Battle 2</option>
+                            <option value="Crown Clash">Crown Clash</option>
+                            <option value="Custom">Custom Game / Universal Hotkeys</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; display: block;">Cover / Game Badge</label>
+                        <select id="presetInputCover" class="form-input" style="width: 100%; font-size: 13px; font-weight: 700; cursor: pointer; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 8px; color: #fff;">
+                            <option value="images/games/pvz_badge.svg">PvZ Fusion Logo Badge</option>
+                            <option value="images/games/tnt.svg">Minecraft TNT Block</option>
+                            <option value="images/games/shield.svg">Minecraft Shieldrunner</option>
+                            <option value="images/games/tabs.svg">TABS Googly Logo</option>
+                            <option value="images/games/uebs2.svg">UEBS 2 Golden Crest</option>
+                            <option value="images/games/crown_clash.svg">Crown Clash Swords</option>
+                            <option value="images/renearn_icon.png">RENEarn Dragon Icon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; display: block;">Initial Commands Template</label>
+                    <select id="presetInputStarter" class="form-input" style="width: 100%; font-size: 13px; font-weight: 700; cursor: pointer; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 8px; color: #fff;">
+                        <option value="auto_game">Auto-generate game starter pack (Recommended)</option>
+                        <option value="clone_active">Clone from current active preset</option>
+                        <option value="empty">Start with empty trigger list</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closePresetModal()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="saveNewPresetModal()" style="padding: 8px 18px; font-weight: 800;">Create Preset</button>
             </div>
         </div>
     </div>
@@ -7610,6 +8328,8 @@
                 renderGifts();
                 renderSocial();
                 renderSpinnerStudio();
+                renderDetailedCommandRows();
+                loadAndRenderPresets();
                 if (config.streamer && config.streamer.tiktokUsername) {
                     const inp = document.getElementById('tiktokUsernameInput');
                     if (inp) inp.value = config.streamer.tiktokUsername;
@@ -7617,6 +8337,724 @@
             } catch (err) {
                 console.error("Error loading config:", err);
             }
+        }
+
+        // ==========================================================================
+        // RENEARN MULTI-GAME WORKSPACE & PRESETS (PICTURE 1 & 4 IMPLEMENTATION)
+        // ==========================================================================
+        let currentGiftsViewMode = 'presets'; // Default to Game Presets matching Picture 1!
+        let allPresetsList = [];
+        let activePresetId = 'preset_live_balagbagan';
+        let currentEditingPresetId = 'preset_live_balagbagan';
+        let selectedGameFilter = 'all';
+        let presetSearchQuery = '';
+        let commandRowSearchQuery = '';
+        const audioPlayersMap = {};
+
+        function setGiftsViewMode(mode) {
+            currentGiftsViewMode = mode;
+            ['presets', 'commands', 'cards'].forEach(m => {
+                const btn = document.getElementById('viewBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+                if (btn) btn.classList.toggle('active', m === mode);
+            });
+
+            const vPresets = document.getElementById('giftsPresetsView');
+            const vCommands = document.getElementById('giftsCommandsView');
+            const vCards = document.getElementById('giftsCardsView');
+
+            if (vPresets) vPresets.style.display = (mode === 'presets') ? 'block' : 'none';
+            if (vCommands) vCommands.style.display = (mode === 'commands') ? 'block' : 'none';
+            if (vCards) vCards.style.display = (mode === 'cards') ? 'block' : 'none';
+
+            if (mode === 'presets') {
+                loadAndRenderPresets();
+            } else if (mode === 'commands') {
+                renderDetailedCommandRows();
+            } else if (mode === 'cards') {
+                renderGifts();
+            }
+        }
+
+        async function loadAndRenderPresets() {
+            try {
+                const res = await fetch('/api/presets');
+                if (res.ok) {
+                    const data = await res.json();
+                    allPresetsList = data.presets || [];
+                    if (data.activePresetId) {
+                        activePresetId = data.activePresetId;
+                        if (!currentEditingPresetId) currentEditingPresetId = data.activePresetId;
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load /api/presets, fallback:", err);
+            }
+            updatePresetDropdown();
+            renderGamePresets();
+        }
+
+        function updatePresetDropdown() {
+            const dropdown = document.getElementById('presetQuickSelectDropdown');
+            if (!dropdown) return;
+            dropdown.innerHTML = '';
+            allPresetsList.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `${p.name} (${p.game || 'PvZFusion'})`;
+                if (p.id === currentEditingPresetId) opt.selected = true;
+                dropdown.appendChild(opt);
+            });
+        }
+
+        function switchPresetFromDropdown(presetId) {
+            currentEditingPresetId = presetId;
+            const currentPreset = allPresetsList.find(p => p.id === presetId);
+            if (currentPreset && currentPreset.events && currentPreset.events.length > 0) {
+                // If not yet active, we can also offer to activate
+                config.gifts = currentPreset.events;
+            }
+            renderDetailedCommandRows();
+            renderGifts();
+        }
+
+        function filterPresetsByGame(game, btnEl) {
+            selectedGameFilter = game;
+            const container = document.getElementById('presetGameFilterPills');
+            if (container) {
+                const pills = container.querySelectorAll('.pill');
+                pills.forEach(p => p.classList.remove('active'));
+                if (btnEl) btnEl.classList.add('active');
+            }
+            renderGamePresets();
+        }
+
+        function onPresetSearchInput(val) {
+            presetSearchQuery = val || '';
+            renderGamePresets();
+        }
+
+        function onCommandRowSearch(val) {
+            commandRowSearchQuery = val || '';
+            renderDetailedCommandRows();
+        }
+
+        // Render Game Presets List (Pixel-perfect to Picture 1)
+        function renderGamePresets() {
+            const container = document.getElementById('presetsListContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let filtered = allPresetsList.slice();
+            if (selectedGameFilter !== 'all') {
+                filtered = filtered.filter(p => {
+                    const g = (p.game || '').toLowerCase();
+                    return g === selectedGameFilter.toLowerCase();
+                });
+            }
+
+            if (presetSearchQuery.trim()) {
+                const q = presetSearchQuery.toLowerCase();
+                filtered = filtered.filter(p => {
+                    return (p.name && p.name.toLowerCase().includes(q)) ||
+                           (p.game && p.game.toLowerCase().includes(q));
+                });
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.3); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: 14px; color: #8b949e;">
+                        <div style="font-size: 36px; margin-bottom: 8px;">🎮</div>
+                        <div style="font-size: 15px; font-weight: 800; color: #ffffff;">No Game Presets found for "${selectedGameFilter}"</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #64748b;">Click "+ Add Game Preset" above to create presets for Minecraft, PvZ Fusion, TABS, and other games!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(preset => {
+                const card = document.createElement('div');
+                const isActive = (preset.id === activePresetId);
+                card.className = 'preset-row-card' + (isActive ? ' active-stream-preset' : '');
+
+                // Cover badge determination
+                let coverSrc = preset.coverIcon;
+                if (!coverSrc) {
+                    const gLower = (preset.game || '').toLowerCase();
+                    if (gLower.includes('minecraft')) coverSrc = 'images/games/tnt.svg';
+                    else if (gLower.includes('tabs')) coverSrc = 'images/games/tabs.svg';
+                    else if (gLower.includes('uebs')) coverSrc = 'images/games/uebs2.svg';
+                    else if (gLower.includes('crown')) coverSrc = 'images/games/crown_clash.svg';
+                    else coverSrc = 'images/games/pvz_badge.svg';
+                }
+
+                // Sprites preview strip (6 to 8 sprites)
+                let spriteItems = [];
+                if (Array.isArray(preset.previewSprites) && preset.previewSprites.length > 0) {
+                    spriteItems = preset.previewSprites;
+                } else if (Array.isArray(preset.events) && preset.events.length > 0) {
+                    spriteItems = preset.events.slice(0, 8).map(ev => {
+                        if (ev.unitIcon) return ev.unitIcon;
+                        if (ev.function && ev.function.image) return ev.function.image;
+                        if (ev.command) return 'images/game-icons/pvz/' + ev.command.split(';')[0].trim() + '.webp';
+                        return 'images/func_2.png';
+                    });
+                } else {
+                    spriteItems = [
+                        'images/game-icons/pvz/spawn_gatling_pea.webp',
+                        'images/game-icons/pvz/spawn_bucket_zombie.webp'
+                    ];
+                }
+
+                const eventsCount = (preset.events && preset.events.length) ? preset.events.length : (preset.eventsCount || 10);
+                const overflow = preset.overflowCount || (eventsCount > 8 ? `+${eventsCount - 8}` : '');
+
+                let spritesHtml = spriteItems.map(src => `
+                    <img src="${src}" class="preset-sprite-thumbnail" alt="Unit" onerror="this.src='images/func_2.png'; this.style.opacity='0.3'">
+                `).join('');
+
+                if (overflow) {
+                    spritesHtml += `<span class="preset-overflow-text">${overflow}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="preset-left-info">
+                        <div class="preset-cover-badge">
+                            <img src="${coverSrc}" alt="${preset.name}" onerror="this.src='images/renearn_icon.png'">
+                        </div>
+                        <div>
+                            <div class="preset-title-text">
+                                <span>${preset.name}</span>
+                                ${isActive ? `<span style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 5px; text-transform: uppercase;">ACTIVE LIVE</span>` : ''}
+                            </div>
+                            <div class="preset-game-label">Game: <strong style="color: #38bdf8;">${preset.game || 'PvZFusion'}</strong></div>
+                            <div class="preset-sub-meta">
+                                <span>Events Count: <strong style="color: #ffffff;">${eventsCount}</strong></span>
+                                <span>•</span>
+                                <span>Created: ${preset.createdAt || '08/03/2026'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preset-sprites-strip">
+                        ${spritesHtml}
+                    </div>
+
+                    <div class="preset-actions-group">
+                        <button type="button" class="preset-btn-activate ${isActive ? 'is-active' : ''}" onclick="activatePreset('${preset.id}')" title="${isActive ? 'Currently Active in live stream' : 'Activate this preset for PvZ / stream'}">
+                            ${isActive ? '✓ In Use' : '⚡ Activate'}
+                        </button>
+                        <button type="button" class="preset-btn-action edit-btn" onclick="openPresetInCommandsView('${preset.id}')" title="Edit and customize commands for this preset (Picture 4)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button type="button" class="preset-btn-action copy-btn" onclick="duplicatePreset('${preset.id}')" title="Duplicate / Clone this preset">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        </button>
+                        <button type="button" class="preset-btn-action delete-btn" onclick="deletePreset('${preset.id}')" title="Delete this preset">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        async function activatePreset(presetId) {
+            if (!checkEditorPermission("activate presets")) return;
+            try {
+                const res = await fetch('/api/presets/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: presetId })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    activePresetId = presetId;
+                    currentEditingPresetId = presetId;
+                    showToast(`🎮 Preset "${data.presetName || presetId}" is now live on stream!`, "SUCCESS");
+                    await loadConfig();
+                    loadAndRenderPresets();
+                } else {
+                    showToast(data.message || "Failed to activate preset", "ERROR");
+                }
+            } catch (err) {
+                showToast("Network error activating preset", "ERROR");
+            }
+        }
+
+        function openPresetInCommandsView(presetId) {
+            currentEditingPresetId = presetId;
+            const target = allPresetsList.find(p => p.id === presetId);
+            if (target && target.events && target.events.length > 0 && presetId !== activePresetId) {
+                config.gifts = target.events;
+            }
+            setGiftsViewMode('commands');
+        }
+
+        async function duplicatePreset(presetId) {
+            if (!checkEditorPermission("duplicate presets")) return;
+            try {
+                const res = await fetch('/api/presets/duplicate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: presetId })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast("Preset cloned successfully!", "SUCCESS");
+                    loadAndRenderPresets();
+                } else {
+                    showToast(data.message || "Failed to duplicate preset", "ERROR");
+                }
+            } catch (err) {
+                showToast("Error duplicating preset", "ERROR");
+            }
+        }
+
+        async function deletePreset(presetId) {
+            if (!checkEditorPermission("delete presets")) return;
+            if (!confirm("Are you sure you want to delete this game preset?")) return;
+            try {
+                const res = await fetch('/api/presets/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: presetId })
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast("Preset deleted", "WARN");
+                    loadAndRenderPresets();
+                } else {
+                    showToast(data.message || "Failed to delete preset", "ERROR");
+                }
+            } catch (err) {
+                showToast("Error deleting preset", "ERROR");
+            }
+        }
+
+        function openNewPresetModal() {
+            const modal = document.getElementById('presetModal');
+            if (modal) {
+                document.getElementById('presetInputName').value = '';
+                document.getElementById('presetInputGame').value = 'PvZFusion';
+                document.getElementById('presetInputCover').value = 'images/games/pvz_badge.svg';
+                modal.classList.add('active');
+            }
+        }
+
+        function closePresetModal() {
+            const modal = document.getElementById('presetModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function onPresetGameChanged(game) {
+            const coverSelect = document.getElementById('presetInputCover');
+            if (!coverSelect) return;
+            const gLower = game.toLowerCase();
+            if (gLower.includes('minecraft')) coverSelect.value = 'images/games/tnt.svg';
+            else if (gLower.includes('tabs')) coverSelect.value = 'images/games/tabs.svg';
+            else if (gLower.includes('uebs')) coverSelect.value = 'images/games/uebs2.svg';
+            else if (gLower.includes('crown')) coverSelect.value = 'images/games/crown_clash.svg';
+            else coverSelect.value = 'images/games/pvz_badge.svg';
+        }
+
+        async function saveNewPresetModal() {
+            if (!checkEditorPermission("create presets")) return;
+            const name = document.getElementById('presetInputName').value.trim();
+            if (!name) {
+                showToast("Please enter a preset name", "WARN");
+                return;
+            }
+            const game = document.getElementById('presetInputGame').value;
+            const cover = document.getElementById('presetInputCover').value;
+            const starter = document.getElementById('presetInputStarter').value;
+
+            let initialEvents = [];
+            if (starter === 'clone_active') {
+                initialEvents = (config && config.gifts) ? JSON.parse(JSON.stringify(config.gifts)) : [];
+            } else if (starter === 'auto_game') {
+                if (game === 'Minecraft') {
+                    initialEvents = [
+                        { id: "mc_" + Date.now() + "_1", giftName: "Spawn Zombie", coins: 1, icon: "images/tiktok-gifts/5655_rose.webp", unitIcon: "images/games/sprites/mc_zombie.svg", actionType: "zombie", command: "/summon zombie ~ ~ ~", label: "Spawn Zombie", repetition: 5, targetGame: "Minecraft", spinnerRarity: "Common" },
+                        { id: "mc_" + Date.now() + "_2", giftName: "Ignite TNT", coins: 20, icon: "images/tiktok-gifts/5827_icecream.webp", unitIcon: "images/games/sprites/mc_tnt.svg", actionType: "bomb", command: "/summon tnt ~ ~ ~", label: "Ignite Live TNT", repetition: 1, targetGame: "Minecraft", spinnerRarity: "Rare" },
+                        { id: "mc_" + Date.now() + "_3", giftName: "Equip Armor", coins: 99, icon: "images/tiktok-gifts/5655_rose.webp", unitIcon: "images/games/sprites/mc_diamond.svg", actionType: "plant", command: "/give @p diamond_chestplate 1", label: "Diamond Armor", repetition: 1, targetGame: "Minecraft", spinnerRarity: "Epic" }
+                    ];
+                } else if (game === 'tabs') {
+                    initialEvents = [
+                        { id: "tb_" + Date.now() + "_1", giftName: "Summon Dragon", coins: 99, icon: "images/tiktok-gifts/5655_rose.webp", unitIcon: "images/games/sprites/tabs_dragon.svg", actionType: "zombie", command: "tabs_spawn?unit=dragon", label: "Red Dragon", repetition: 1, targetGame: "tabs", spinnerRarity: "Legendary" },
+                        { id: "tb_" + Date.now() + "_2", giftName: "Clubber Swarm", coins: 10, icon: "images/tiktok-gifts/5827_icecream.webp", unitIcon: "images/games/sprites/tabs_clubber.svg", actionType: "plant", command: "tabs_spawn?unit=clubber", label: "Wobbly Clubber", repetition: 5, targetGame: "tabs", spinnerRarity: "Common" }
+                    ];
+                } else if (game === 'Crown Clash') {
+                    initialEvents = [
+                        { id: "cc_" + Date.now() + "_1", giftName: "Goblin Swarm", coins: 5, icon: "images/tiktok-gifts/5655_rose.webp", unitIcon: "images/games/sprites/cc_goblin.svg", actionType: "zombie", command: "cc_deploy?card=goblin_swarm", label: "Deploy Goblins", repetition: 3, targetGame: "Crown Clash", spinnerRarity: "Common" }
+                    ];
+                } else {
+                    initialEvents = (config && config.gifts) ? JSON.parse(JSON.stringify(config.gifts.slice(0, 10))) : [];
+                }
+            }
+
+            const newPreset = {
+                id: "preset_" + Date.now(),
+                name: name,
+                game: game,
+                coverIcon: cover,
+                createdAt: (new Date()).toLocaleDateString(),
+                events: initialEvents,
+                eventsCount: initialEvents.length
+            };
+
+            try {
+                const res = await fetch('/api/presets/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newPreset)
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    showToast(`Preset "${name}" created!`, "SUCCESS");
+                    closePresetModal();
+                    await loadAndRenderPresets();
+                } else {
+                    showToast(data.message || "Failed to save preset", "ERROR");
+                }
+            } catch (err) {
+                showToast("Error saving preset", "ERROR");
+            }
+        }
+
+        function onModalTargetGameChanged(game) {
+            const quickBar = document.getElementById('modalGameQuickTemplates');
+            if (!quickBar) return;
+            quickBar.innerHTML = '';
+
+            const templates = {
+                'Minecraft': [
+                    { label: '+ Summon Zombie', cmd: '/summon zombie ~ ~ ~', icon: 'images/games/sprites/mc_zombie.svg', type: 'zombie' },
+                    { label: '+ Summon TNT', cmd: '/summon tnt ~ ~ ~', icon: 'images/games/sprites/mc_tnt.svg', type: 'bomb' },
+                    { label: '+ Give Diamond', cmd: '/give @p diamond 1', icon: 'images/games/sprites/mc_diamond.svg', type: 'plant' },
+                    { label: '+ Totem of Undying', cmd: '/give @p totem_of_undying 1', icon: 'images/games/sprites/mc_totem.svg', type: 'plant' },
+                    { label: '+ Lightning Bolt', cmd: '/summon lightning_bolt ~ ~ ~', icon: 'images/games/sprites/mc_luckyblock.svg', type: 'bomb' }
+                ],
+                'PvZFusion': [
+                    { label: '+ Super Gargantuar', cmd: 'spawn_supergargantuar', icon: 'images/game-icons/pvz/spawn_supergargantuar.webp', type: 'zombie' },
+                    { label: '+ Gatling Pea', cmd: 'spawn_gatling_pea', icon: 'images/game-icons/pvz/spawn_gatling_pea.webp', type: 'plant' },
+                    { label: '+ Horse Stampede', cmd: 'spawn_ultimatehorse', icon: 'images/game-icons/pvz/spawn_ultimatehorse.webp', type: 'zombie' },
+                    { label: '+ Unlimited Sun', cmd: 'planteverywhere', icon: 'images/game-icons/pvz/plant_everywahre.webp', type: 'plant' }
+                ],
+                'tabs': [
+                    { label: '+ Fire Dragon', cmd: 'tabs_spawn?unit=dragon', icon: 'images/games/sprites/tabs_dragon.svg', type: 'zombie' },
+                    { label: '+ Zeus Lightning', cmd: 'tabs_strike?spell=lightning', icon: 'images/games/sprites/tabs_zeus.svg', type: 'bomb' },
+                    { label: '+ Wobbly Clubber', cmd: 'tabs_spawn?unit=clubber', icon: 'images/games/sprites/tabs_clubber.svg', type: 'plant' }
+                ],
+                'uebs2': [
+                    { label: '+ T-Rex Dino', cmd: 'uebs_spawn?unit=trex', icon: 'images/games/sprites/uebs_trex.svg', type: 'zombie' },
+                    { label: '+ Demon Horde', cmd: 'uebs_spawn?unit=demon', icon: 'images/games/sprites/uebs_demon.svg', type: 'zombie' },
+                    { label: '+ Knight Army', cmd: 'uebs_spawn?unit=knight', icon: 'images/games/sprites/uebs_knight.svg', type: 'plant' }
+                ],
+                'Crown Clash': [
+                    { label: '+ Goblin Swarm', cmd: 'cc_deploy?card=goblin_swarm', icon: 'images/games/sprites/cc_goblin.svg', type: 'zombie' },
+                    { label: '+ Royal Knight', cmd: 'cc_deploy?card=knight', icon: 'images/games/sprites/cc_knight.svg', type: 'plant' },
+                    { label: '+ Arch-Mage', cmd: 'cc_deploy?card=wizard', icon: 'images/games/sprites/cc_wizard.svg', type: 'plant' }
+                ],
+                'Custom': [
+                    { label: '+ Hotkey (Alt+F1)', cmd: 'hotkey:ALT+F1', icon: 'images/game-icons/stream/custom_action.webp', type: 'custom' },
+                    { label: '+ Sound Alert', cmd: 'sound:streak_alert.mp3', icon: 'images/game-icons/stream/discord_ping.webp', type: 'custom' },
+                    { label: '+ Webhook Trigger', cmd: 'http://localhost:8080/api/test', icon: 'images/game-icons/stream/bsod.webp', type: 'custom' }
+                ]
+            };
+
+            const list = templates[game] || templates['PvZFusion'];
+            list.forEach(t => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pill';
+                btn.style.fontSize = '11px';
+                btn.style.padding = '3px 9px';
+                btn.style.cursor = 'pointer';
+                btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+                btn.style.color = '#38bdf8';
+                btn.style.background = 'rgba(56, 189, 248, 0.08)';
+                btn.textContent = t.label;
+                btn.onclick = () => {
+                    currentGiftCommands.push({
+                        name: `Commands #${currentGiftCommands.length + 1}`,
+                        command: t.cmd,
+                        label: t.label.replace('+ ', ''),
+                        icon: t.icon,
+                        actionType: t.type,
+                        amount: 1
+                    });
+                    renderGiftCommands();
+                    showToast(`Added ${t.label}!`, "SUCCESS");
+                };
+                quickBar.appendChild(btn);
+            });
+        }
+
+        // Render Detailed Horizontal Command Rows (Pixel-perfect to Picture 4)
+        function renderDetailedCommandRows() {
+            const container = document.getElementById('commandRowsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const currentPreset = allPresetsList.find(p => p.id === currentEditingPresetId) || allPresetsList.find(p => p.id === activePresetId) || {
+                name: 'live balagbagan',
+                game: 'PvZFusion'
+            };
+
+            const badgeText = document.getElementById('activePresetBadgeText');
+            if (badgeText) {
+                badgeText.innerText = `${currentPreset.name} (${currentPreset.game || 'PvZFusion'})`;
+            }
+
+            let items = (config && config.gifts && config.gifts.length > 0) ? config.gifts : [];
+            if (currentPreset && currentPreset.events && currentPreset.events.length > 0 && currentPreset.id !== activePresetId) {
+                items = currentPreset.events;
+            }
+
+            if (commandRowSearchQuery.trim()) {
+                const q = commandRowSearchQuery.toLowerCase();
+                items = items.filter(g => {
+                    return (g.giftName && g.giftName.toLowerCase().includes(q)) ||
+                           (g.label && g.label.toLowerCase().includes(q)) ||
+                           (g.command && g.command.toLowerCase().includes(q));
+                });
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.3); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: 14px; color: #8b949e;">
+                        <div style="font-size: 36px; margin-bottom: 8px;">⚡</div>
+                        <div style="font-size: 15px; font-weight: 800; color: #ffffff;">No command triggers found</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #64748b;">Click "+ Add Command Trigger" above to add spawns, powers, or commands!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            items.forEach((gift, idx) => {
+                const row = document.createElement('div');
+                row.className = 'cmd-detail-row';
+
+                let triggerIcon = gift.icon || 'images/tiktok-gifts/5655_rose.webp';
+                let triggerTypeLabel = 'TikTok Gift';
+                let triggerCostBadge = `${gift.coins || 1} Coins`;
+
+                if (String(gift.id) === '1' || gift.triggerType === 'likes_person' || gift.eventType === 'team_plants_likes') {
+                    triggerTypeLabel = 'TikTok Likes';
+                    triggerCostBadge = `Every ${gift.likeThreshold || 50} Likes`;
+                    triggerIcon = 'images/trig_7.svg';
+                } else if (String(gift.id) === '2' || gift.eventType === 'team_zombies_likes') {
+                    triggerTypeLabel = 'TikTok Likes';
+                    triggerCostBadge = `Every ${gift.likeThreshold || 50} Likes`;
+                    triggerIcon = 'images/trig_7.svg';
+                } else if (String(gift.id) === '3' || gift.triggerType === 'likes_all' || gift.eventType === 'total_likes') {
+                    triggerTypeLabel = 'TikTok Likes';
+                    const kStr = (gift.likeThreshold >= 1000) ? (gift.likeThreshold / 1000) + 'K' : (gift.likeThreshold || '50K');
+                    triggerCostBadge = `${kStr} Likes`;
+                    triggerIcon = 'images/trig_7.svg';
+                } else if (String(gift.id) === '4' || gift.triggerType === 'follow' || gift.eventType === 'follow') {
+                    triggerTypeLabel = 'TikTok Follow';
+                    triggerCostBadge = 'Follower';
+                    triggerIcon = 'images/trig_1.svg';
+                } else if (gift.triggerType === 'custom') {
+                    triggerTypeLabel = 'TikTok Custom';
+                    triggerCostBadge = 'Event';
+                    triggerIcon = 'images/game-icons/stream/custom_action.webp';
+                }
+
+                const unitImgSrc = gift.unitIcon || ('images/game-icons/pvz/' + (gift.command ? gift.command.split(';')[0].trim() : '') + '.webp');
+                const commandsCount = (gift.commands && gift.commands.length) ? gift.commands.length : 1;
+                const mainCommandStr = (gift.commands && gift.commands[0] && gift.commands[0].command) ? gift.commands[0].command : (gift.command || 'planteverywhere');
+                const reps = gift.repetition !== undefined ? gift.repetition : (gift.amount || 1);
+                const interval = gift.interval !== undefined ? gift.interval : 100;
+                const delay = gift.delay !== undefined ? gift.delay : 0;
+                const mult = gift.repetitionMultiplier !== false;
+
+                const rarityVal = gift.spinnerRarity || 'None';
+                const groupVal = gift.spinnerGroupId || '';
+
+                const hasAudio = gift.audio && gift.audio.file;
+                const audioHtml = hasAudio ? `
+                    <div class="cmd-audio-pill">
+                        <div class="cmd-audio-title" title="${gift.audio.file}">${gift.audio.file.split('/').pop()}</div>
+                        <div class="cmd-audio-controls">
+                            <span>⏱ ${gift.audio.duration || '00:01'}</span>
+                            <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 1px 4px; border-radius: 4px; font-weight: 700;">short</span>
+                            <span>🔊 ${Math.round((gift.audio.volume || 1) * 100)}%</span>
+                            <button type="button" onclick="playAudioPreview('${gift.id}', '${gift.audio.file}')" style="background: none; border: none; color: #f59e0b; cursor: pointer; font-size: 11px;">▶</button>
+                        </div>
+                    </div>
+                ` : `
+                    <button type="button" class="btn-add-audio" onclick="attachAudioToGift('${gift.id}')">Add Audio</button>
+                `;
+
+                row.innerHTML = `
+                    <div class="cmd-reorder-handle">
+                        <button type="button" class="cmd-reorder-btn" onclick="reorderGift('${gift.id}', -1)" title="Move Up">▲</button>
+                        <span style="font-size: 11px; color: #475569;">≡</span>
+                        <button type="button" class="cmd-reorder-btn" onclick="reorderGift('${gift.id}', 1)" title="Move Down">▼</button>
+                    </div>
+
+                    <div class="cmd-trigger-col">
+                        <div class="cmd-trigger-icon-wrap">
+                            <img src="${triggerIcon}" alt="Trigger" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                        </div>
+                        <div>
+                            <div class="cmd-trigger-role">Anyone</div>
+                            <div class="cmd-trigger-event-text">♪ ${triggerTypeLabel}</div>
+                            <div class="cmd-trigger-cost">${triggerCostBadge}</div>
+                        </div>
+                    </div>
+
+                    <div class="cmd-unit-col">
+                        <img src="${unitImgSrc}" alt="Unit" onerror="this.src='images/func_2.png'; this.style.opacity='0.2'">
+                    </div>
+
+                    <div class="cmd-exec-col">
+                        <div class="cmd-exec-title">${gift.label || gift.functionName || gift.command || 'Custom'}</div>
+                        <div class="cmd-exec-params">
+                            <span>Repetition: <strong style="color: #fff;">${reps}</strong></span>
+                            <span>Interval: <strong style="color: #fff;">${interval}</strong></span>
+                            <span>Delay: <strong style="color: #fff;">${delay}</strong></span>
+                            <span>Multiplier: <strong style="color: #fff;">${mult ? 'true' : 'false'}</strong></span>
+                            <span>Commands: <strong style="color: #38bdf8;">${commandsCount}</strong></span>
+                            <span class="cmd-exec-code-badge">${mainCommandStr}</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="cmd-plus-btn" onclick="openEditGiftModal('${gift.id}')" title="Add / Chain sub-command">+</button>
+
+                    <div class="cmd-spinner-col">
+                        <label class="cmd-spinner-label">Gift Spinner rarity:</label>
+                        <select class="cmd-spinner-select" onchange="updateGiftSpinnerRarity('${gift.id}', this.value)">
+                            <option value="None" ${rarityVal === 'None' ? 'selected' : ''}>None</option>
+                            <option value="Common" ${rarityVal === 'Common' ? 'selected' : ''}>Common</option>
+                            <option value="Uncommon" ${rarityVal === 'Uncommon' ? 'selected' : ''}>Uncommon</option>
+                            <option value="Rare" ${rarityVal === 'Rare' ? 'selected' : ''}>Rare</option>
+                            <option value="Epic" ${rarityVal === 'Epic' ? 'selected' : ''}>Epic</option>
+                            <option value="Legendary" ${rarityVal === 'Legendary' ? 'selected' : ''}>Legendary</option>
+                            <option value="Mythic" ${rarityVal === 'Mythic' ? 'selected' : ''}>Mythic</option>
+                        </select>
+                        <label class="cmd-spinner-label" style="margin-top: 2px;">Gift Spinner Groups:</label>
+                        <select class="cmd-spinner-select" onchange="updateGiftSpinnerGroup('${gift.id}', this.value)">
+                            <option value="">Groups ▼</option>
+                            <option value="5" ${groupVal === '5' ? 'selected' : ''}>Group 5 (Plants)</option>
+                            <option value="6" ${groupVal === '6' ? 'selected' : ''}>Group 6 (Zombies)</option>
+                            <option value="7" ${groupVal === '7' ? 'selected' : ''}>Group 7 (Score +/-)</option>
+                            <option value="8" ${groupVal === '8' ? 'selected' : ''}>Group 8 (Streak Penalty)</option>
+                            <option value="10" ${groupVal === '10' ? 'selected' : ''}>Group 10 (Score Numbers)</option>
+                        </select>
+                    </div>
+
+                    <div class="cmd-audio-col">
+                        ${audioHtml}
+                    </div>
+
+                    <div class="cmd-actions-col">
+                        <button type="button" class="cmd-action-btn play-btn" onclick="testGift('${gift.id}')" title="Test Trigger">▶</button>
+                        <button type="button" class="cmd-action-btn edit-btn" onclick="openEditGiftModal('${gift.id}')" title="Edit Trigger">✏️</button>
+                        <button type="button" class="cmd-action-btn copy-btn" onclick="duplicateGift('${gift.id}')" title="Duplicate Trigger">📑</button>
+                        <button type="button" class="cmd-action-btn delete-btn" onclick="deleteGift('${gift.id}')" title="Delete Trigger">🗑️</button>
+                    </div>
+                `;
+
+                container.appendChild(row);
+            });
+        }
+
+        async function reorderGift(giftId, direction) {
+            if (!checkEditorPermission("reorder commands")) return;
+            if (!config || !config.gifts) return;
+            const idx = config.gifts.findIndex(g => String(g.id) === String(giftId));
+            if (idx === -1) return;
+            const targetIdx = idx + direction;
+            if (targetIdx < 0 || targetIdx >= config.gifts.length) return;
+
+            const temp = config.gifts[idx];
+            config.gifts[idx] = config.gifts[targetIdx];
+            config.gifts[targetIdx] = temp;
+
+            renderDetailedCommandRows();
+            renderGifts();
+            await saveConfigQuietly();
+        }
+
+        async function duplicateGift(giftId) {
+            if (!checkEditorPermission("duplicate commands")) return;
+            if (!config || !config.gifts) return;
+            const target = config.gifts.find(g => String(g.id) === String(giftId));
+            if (!target) return;
+
+            const clone = JSON.parse(JSON.stringify(target));
+            clone.id = "g_" + Date.now();
+            clone.giftName = (clone.giftName || 'Trigger') + ' (Copy)';
+            config.gifts.push(clone);
+
+            showToast("Command trigger duplicated!", "SUCCESS");
+            renderDetailedCommandRows();
+            renderGifts();
+            await saveConfigQuietly();
+        }
+
+        async function updateGiftSpinnerRarity(giftId, rarity) {
+            if (!config || !config.gifts) return;
+            const g = config.gifts.find(item => String(item.id) === String(giftId));
+            if (g) {
+                g.spinnerRarity = rarity;
+                await saveConfigQuietly();
+            }
+        }
+
+        async function updateGiftSpinnerGroup(giftId, groupId) {
+            if (!config || !config.gifts) return;
+            const g = config.gifts.find(item => String(item.id) === String(giftId));
+            if (g) {
+                g.spinnerGroupId = groupId;
+                await saveConfigQuietly();
+            }
+        }
+
+        async function attachAudioToGift(giftId) {
+            if (!config || !config.gifts) return;
+            const g = config.gifts.find(item => String(item.id) === String(giftId));
+            if (!g) return;
+
+            const sampleAudios = [
+                { file: "sounds/streak_alert.mp3", duration: "00:01", volume: 1.0 },
+                { file: "sounds/jackpot_win.mp3", duration: "00:02", volume: 0.9 },
+                { file: "sounds/roulette_spin.mp3", duration: "00:03", volume: 0.8 },
+                { file: "sounds/alert.mp3", duration: "00:01", volume: 1.0 }
+            ];
+            const chosen = sampleAudios[Math.floor(Math.random() * sampleAudios.length)];
+            g.audio = chosen;
+            showToast("Audio track attached to trigger!", "SUCCESS");
+            renderDetailedCommandRows();
+            await saveConfigQuietly();
+        }
+
+        function playAudioPreview(giftId, file) {
+            try {
+                if (audioPlayersMap[giftId]) {
+                    audioPlayersMap[giftId].pause();
+                    audioPlayersMap[giftId] = null;
+                    return;
+                }
+                const audio = new Audio(file);
+                audio.play().catch(() => {});
+                audioPlayersMap[giftId] = audio;
+                audio.onended = () => { audioPlayersMap[giftId] = null; };
+            } catch (e) {}
+        }
+
+        async function saveConfigQuietly() {
+            try {
+                await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+            } catch (err) {}
         }
 
         // Render Gift Cards (100% Plain English, No Mojibake)
@@ -11699,6 +13137,11 @@
                     renderTikTokGiftPicker();
                 }
 
+                const targetGame = gift.targetGame || (allPresetsList.find(p => p.id === currentEditingPresetId)?.game) || 'PvZFusion';
+                const gameSel = document.getElementById('modalTargetGameSelect');
+                if (gameSel) gameSel.value = targetGame;
+                onModalTargetGameChanged(targetGame);
+
                 document.getElementById('giftModal').classList.add('active');
             } catch (err) {
                 console.error("openEditGiftModal error:", err);
@@ -11778,6 +13221,12 @@
                 }
                 const pUCount = document.getElementById('previewUnitCount');
                 if (pUCount) pUCount.innerText = 'x1 Spawns';
+
+                const curPres = allPresetsList.find(p => p.id === currentEditingPresetId) || allPresetsList.find(p => p.id === activePresetId);
+                const defGame = curPres ? (curPres.game || 'PvZFusion') : 'PvZFusion';
+                const addGameSel = document.getElementById('modalTargetGameSelect');
+                if (addGameSel) addGameSel.value = defGame;
+                onModalTargetGameChanged(defGame);
 
                 renderGiftCommands();
                 renderTikTokGiftPicker();
@@ -11933,6 +13382,8 @@
             const ok = await saveConfigToServer();
             if (ok !== false) {
                 renderGifts();
+                renderDetailedCommandRows();
+                renderGamePresets();
                 closeGiftModal();
                 showToast(`Saved "${functionName}" with ${currentGiftCommands.length} command(s)!`, "OK");
             }
@@ -11945,6 +13396,8 @@
             const ok = await saveConfigToServer();
             if (ok !== false) {
                 renderGifts();
+                renderDetailedCommandRows();
+                renderGamePresets();
                 showToast("Deleted trigger!", "OK");
             }
         }

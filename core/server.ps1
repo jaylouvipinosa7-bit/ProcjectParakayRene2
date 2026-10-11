@@ -2336,6 +2336,172 @@ while ($true) {
             continue
         }
 
+        # 2g. Presets Management (List all, Activate, Save, Duplicate, Delete)
+        if ($reqPath -eq '/api/presets' -and $request.HttpMethod -eq 'GET') {
+            $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+            $presetsList = @()
+            if (Test-Path $s2ePresetsFile) {
+                try {
+                    $jsonText = Get-Content $s2ePresetsFile -Raw -Encoding UTF8
+                    $parsedObj = $jsonText | ConvertFrom-Json
+                    if ($parsedObj) {
+                        foreach ($prop in $parsedObj.PSObject.Properties) {
+                            $item = $prop.Value
+                            if (-not $item.id) { $item | Add-Member -MemberType NoteProperty -Name "id" -Value $prop.Name -Force }
+                            $presetsList += $item
+                        }
+                    }
+                } catch {}
+            }
+            $activeId = "preset_live_balagbagan"
+            if (Test-Path $configFile) {
+                try {
+                    $cfgObj = Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    if ($cfgObj.activePresetId) { $activeId = $cfgObj.activePresetId }
+                } catch {}
+            }
+            Send-JsonResponse $response @{
+                status = "ok"
+                activePresetId = $activeId
+                presets = $presetsList
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/presets/activate' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $payload = $body | ConvertFrom-Json
+                $presetId = if ($payload.id) { [string]$payload.id } else { "" }
+                if (-not $presetId) {
+                    Send-JsonResponse $response @{ status = "error"; message = "Preset ID required" } 400
+                    continue
+                }
+
+                $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+                $foundPreset = $null
+                if (Test-Path $s2ePresetsFile) {
+                    $jsonText = Get-Content $s2ePresetsFile -Raw -Encoding UTF8
+                    $parsedObj = $jsonText | ConvertFrom-Json
+                    if ($parsedObj.PSObject.Properties[$presetId]) {
+                        $foundPreset = $parsedObj.PSObject.Properties[$presetId].Value
+                    }
+                }
+
+                if (-not $foundPreset) {
+                    Send-JsonResponse $response @{ status = "error"; message = "Preset not found: $presetId" } 404
+                    continue
+                }
+
+                # Update active config
+                $targetPath = Get-UserConfigPath $null
+                $cfgObj = if (Test-Path $targetPath) { Get-Content $targetPath -Raw -Encoding UTF8 | ConvertFrom-Json } else {
+                    Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                }
+
+                $cfgObj | Add-Member -MemberType NoteProperty -Name "activePresetId" -Value $presetId -Force
+                if ($foundPreset.events -and $foundPreset.events.Count -gt 0) {
+                    $cfgObj.gifts = $foundPreset.events
+                }
+
+                $updatedJson = $cfgObj | ConvertTo-Json -Depth 10
+                [System.IO.File]::WriteAllText($targetPath, $updatedJson, [System.Text.Encoding]::UTF8)
+                [System.IO.File]::WriteAllText($configFile, $updatedJson, [System.Text.Encoding]::UTF8)
+                Sync-ConfigToCards
+                AddEventLog @{ type = "config_updated"; activePresetId = $presetId; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+
+                Send-JsonResponse $response @{
+                    status = "ok"
+                    activePresetId = $presetId
+                    presetName = $foundPreset.name
+                    game = $foundPreset.game
+                    eventsCount = if ($foundPreset.events) { $foundPreset.events.Count } else { 0 }
+                    message = "Preset '$($foundPreset.name)' is now live!"
+                }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/presets/save' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $payload = $body | ConvertFrom-Json
+                $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+                $localPresets = [ordered]@{}
+                if (Test-Path $s2ePresetsFile) {
+                    $raw = Get-Content $s2ePresetsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    foreach ($p in $raw.PSObject.Properties) { $localPresets[$p.Name] = $p.Value }
+                }
+
+                $pId = if ($payload.id) { [string]$payload.id } else { ("preset_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) }
+                $payload | Add-Member -MemberType NoteProperty -Name "_id" -Value $pId -Force
+                $payload | Add-Member -MemberType NoteProperty -Name "id" -Value $pId -Force
+                $localPresets[$pId] = $payload
+                [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+
+                Send-JsonResponse $response @{ status = "ok"; id = $pId; message = "Preset saved successfully" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/presets/duplicate' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $payload = $body | ConvertFrom-Json
+                $origId = if ($payload.id) { [string]$payload.id } else { "" }
+                $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+                $localPresets = [ordered]@{}
+                if (Test-Path $s2ePresetsFile) {
+                    $raw = Get-Content $s2ePresetsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    foreach ($p in $raw.PSObject.Properties) { $localPresets[$p.Name] = $p.Value }
+                }
+
+                if (-not $localPresets.Contains($origId)) {
+                    Send-JsonResponse $response @{ status = "error"; message = "Preset not found" } 404
+                    continue
+                }
+
+                $clone = $localPresets[$origId] | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+                $newId = "preset_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                $clone._id = $newId
+                $clone.id = $newId
+                $clone.name = [string]$clone.name + " (Copy)"
+                $clone.createdAt = (Get-Date -Format "MM/dd/yyyy")
+                $localPresets[$newId] = $clone
+                [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+
+                Send-JsonResponse $response @{ status = "ok"; newId = $newId; preset = $clone; message = "Preset duplicated" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/presets/delete' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $payload = $body | ConvertFrom-Json
+                $delId = if ($payload.id) { [string]$payload.id } else { "" }
+                $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
+                $localPresets = [ordered]@{}
+                if (Test-Path $s2ePresetsFile) {
+                    $raw = Get-Content $s2ePresetsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    foreach ($p in $raw.PSObject.Properties) {
+                        if ($p.Name -ne $delId) { $localPresets[$p.Name] = $p.Value }
+                    }
+                }
+                [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+                Send-JsonResponse $response @{ status = "ok"; id = $delId; message = "Preset deleted" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
+            }
+            continue
+        }
+
         # 3. Units Catalog
         if ($reqPath -eq '/api/catalog') {
             $content = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) } else { "{}" }
