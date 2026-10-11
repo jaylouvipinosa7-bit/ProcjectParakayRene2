@@ -16,7 +16,8 @@
                   "TestGifter":  633,
                   "Yuki":  2,
                   "Viewer_Alice":  2,
-                  "Viewer_Bob":  1
+                  "Viewer_Bob":  1,
+                  "RENEarn":  152
               },
     "avatars":  {
                     "FriendTester":  "images/default_avatar.svg",
@@ -31,6 +32,7 @@
                     "TestGifter":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp",
                     "Yuki":  "images/default_avatar.svg",
                     "Viewer_Alice":  "images/default_avatar.svg",
-                    "Viewer_Bob":  "images/default_avatar.svg"
+                    "Viewer_Bob":  "images/default_avatar.svg",
+                    "RENEarn":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp"
                 }
 }

@@ -18,7 +18,7 @@ foreach ($g in $testGifts) {
         totalRepeatCount = $g.count
         coins = $g.coins
         diamondCount = $g.coins
-        username = "TestGifter"
+        username = "RENEarn"
         avatarUrl = "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp"
         giftPictureUrl = "images/tiktok-gifts/$($g.id)_test.webp"
     } | ConvertTo-Json

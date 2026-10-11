@@ -150,13 +150,11 @@
                                                 ]
                                  },
     "preset_live_balagbagan":  {
-                                   "_id":  "preset_live_balagbagan",
-                                   "id":  "preset_live_balagbagan",
                                    "name":  "live balagbagan",
                                    "game":  "PvZFusion",
                                    "createdAt":  "08/03/2026",
                                    "coverIcon":  "images/games/pvz_badge.svg",
-                                   "eventsCount":  100,
+                                   "eventsCount":  65,
                                    "overflowCount":  "+89",
                                    "previewSprites":  [
                                                           "images/game-icons/pvz/spawn_gatling_pea.webp",
@@ -174,9 +172,9 @@
                                                       "giftId":  "",
                                                       "coins":  0,
                                                       "icon":  "images/trig_7.svg",
-                                                      "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_gatling_pea.webp",
+                                                      "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_fire_cattail.webp",
                                                       "actionType":  "plant",
-                                                      "command":  "spawn_gatling_pea",
+                                                      "command":  "spawn_fire_cattail;spawn_ice_cattail",
                                                       "label":  "Spawn Blazer Snipea (1167)",
                                                       "amount":  1,
                                                       "enabled":  true,
@@ -184,9 +182,17 @@
                                                       "commands":  [
                                                                        {
                                                                            "name":  "Commands #1",
-                                                                           "command":  "spawn_gatling_pea",
-                                                                           "label":  "Spawn Gatling Pea",
-                                                                           "icon":  "images/game-icons/pvz/spawn_gatling_pea.webp",
+                                                                           "command":  "spawn_fire_cattail",
+                                                                           "label":  "Spawn Flame Cattail (1069)",
+                                                                           "icon":  "images/game-icons/pvz/spawn_fire_cattail.webp",
+                                                                           "actionType":  "plant",
+                                                                           "amount":  1
+                                                                       },
+                                                                       {
+                                                                           "name":  "Commands #2",
+                                                                           "command":  "spawn_ice_cattail",
+                                                                           "label":  "Spawn Frost Cattail (1068)",
+                                                                           "icon":  "images/game-icons/pvz/spawn_ice_cattail.webp",
                                                                            "actionType":  "plant",
                                                                            "amount":  1
                                                                        }
@@ -200,7 +206,8 @@
                                                       "triggerType":  "likes_person",
                                                       "triggerValue":  "50",
                                                       "platform":  "tiktok",
-                                                      "availableFor":  "Anyone"
+                                                      "availableFor":  "Anyone",
+                                                      "allowImport":  true
                                                   },
                                                   {
                                                       "id":  "2",
@@ -208,9 +215,9 @@
                                                       "giftId":  "",
                                                       "coins":  0,
                                                       "icon":  "images/trig_7.svg",
-                                                      "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_bucket_zombie.webp",
+                                                      "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_gargantuar.webp",
                                                       "actionType":  "zombie",
-                                                      "command":  "spawn_bucket_zombie",
+                                                      "command":  "spawn_gargantuar",
                                                       "label":  "Spawn Trident Jugger-nut Gargantuar (240)",
                                                       "amount":  1,
                                                       "enabled":  true,
@@ -218,9 +225,9 @@
                                                       "commands":  [
                                                                        {
                                                                            "name":  "Commands #1",
-                                                                           "command":  "spawn_bucket_zombie",
-                                                                           "label":  "Spawn Buckethead Zombie (4)",
-                                                                           "icon":  "images/game-icons/pvz/spawn_bucket_zombie.webp",
+                                                                           "command":  "spawn_gargantuar",
+                                                                           "label":  "Spawn Gargantuar (35)",
+                                                                           "icon":  "images/game-icons/pvz/spawn_gargantuar.webp",
                                                                            "actionType":  "zombie",
                                                                            "amount":  1
                                                                        }
@@ -234,7 +241,8 @@
                                                       "triggerType":  "likes_person",
                                                       "triggerValue":  "50",
                                                       "platform":  "tiktok",
-                                                      "availableFor":  "Anyone"
+                                                      "availableFor":  "Anyone",
+                                                      "allowImport":  true
                                                   },
                                                   {
                                                       "id":  "3",
@@ -1219,7 +1227,7 @@
                                                       "giftName":  "Share Stream",
                                                       "giftId":  "",
                                                       "coins":  1,
-                                                      "icon":  "images/trig_1.svg",
+                                                      "icon":  "images/trig_3.svg",
                                                       "unitIcon":  "http://localhost:8080/images/game-icons/pvz/plant_everywahre.webp",
                                                       "actionType":  "plant",
                                                       "command":  "plant_everywahre",
@@ -1246,7 +1254,8 @@
                                                       "triggerType":  "custom",
                                                       "triggerValue":  "1",
                                                       "platform":  "tiktok",
-                                                      "availableFor":  "Anyone"
+                                                      "availableFor":  "Anyone",
+                                                      "allowImport":  true
                                                   },
                                                   {
                                                       "id":  "63",
@@ -1309,17 +1318,17 @@
                                                       "icon":  "images/tiktok-gifts/5655_rose.webp"
                                                   },
                                                   {
-                                                      "id":  "1791698133182",
-                                                      "giftName":  "Doughnut",
-                                                      "giftId":  "5879",
-                                                      "coins":  30,
-                                                      "icon":  "images/tiktok-gifts/5879_doughnut.webp",
+                                                      "id":  "1791698411759",
+                                                      "giftName":  "Bubble Gum",
+                                                      "giftId":  "13087",
+                                                      "coins":  99,
+                                                      "icon":  "images/tiktok-gifts/13087_bubble_gum.webp",
                                                       "unitIcon":  "images/spinner_wheel_icon.svg",
                                                       "actionType":  "spinner",
-                                                      "command":  "spinner_1791698133182",
-                                                      "spinnerId":  "spinner_1791698133182",
-                                                      "label":  "Zombies Lucky Wheel",
-                                                      "functionName":  "Zombies Lucky Wheel",
+                                                      "command":  "spinner_1791698132034",
+                                                      "spinnerId":  "spinner_1791698132034",
+                                                      "label":  "Win Score Numbers (+/-)",
+                                                      "functionName":  "Win Score Numbers (+/-)",
                                                       "amount":  1,
                                                       "enabled":  true,
                                                       "platform":  "tiktok",
@@ -1345,24 +1354,27 @@
                                                       "availableFor":  "Anyone"
                                                   },
                                                   {
-                                                      "id":  "1791698411759",
-                                                      "giftName":  "Bubble Gum",
-                                                      "giftId":  "13087",
-                                                      "coins":  99,
-                                                      "icon":  "images/tiktok-gifts/13087_bubble_gum.webp",
+                                                      "id":  "1791698133182",
+                                                      "giftName":  "Doughnut",
+                                                      "giftId":  "5879",
+                                                      "coins":  30,
+                                                      "icon":  "images/tiktok-gifts/5879_doughnut.webp",
                                                       "unitIcon":  "images/spinner_wheel_icon.svg",
                                                       "actionType":  "spinner",
-                                                      "command":  "spinner_1791698132034",
-                                                      "spinnerId":  "spinner_1791698132034",
-                                                      "label":  "Win Score Numbers (+/-)",
-                                                      "functionName":  "Win Score Numbers (+/-)",
+                                                      "command":  "spinner_1791698133182",
+                                                      "spinnerId":  "spinner_1791698133182",
+                                                      "label":  "Zombies Lucky Wheel",
+                                                      "functionName":  "Zombies Lucky Wheel",
                                                       "amount":  1,
                                                       "enabled":  true,
                                                       "platform":  "tiktok",
                                                       "triggerType":  "gift",
                                                       "availableFor":  "Anyone"
                                                   }
-                                              ]
+                                              ],
+                                   "_key":  "preset_live_balagbagan",
+                                   "_id":  "preset_live_balagbagan",
+                                   "id":  "preset_live_balagbagan"
                                },
     "preset_pvz_classic":  {
                                "_id":  "preset_pvz_classic",

@@ -8056,20 +8056,30 @@
                     adminDisplay.innerText = data.admin || "No primary Admin configured (Setup mode)";
                 }
 
+                // Robustly normalize data.editors into an array
+                let editorsArray = [];
+                if (Array.isArray(data.editors)) {
+                    editorsArray = data.editors;
+                } else if (data.editors && typeof data.editors === 'object') {
+                    editorsArray = Object.values(data.editors);
+                } else if (typeof data.editors === 'string' && data.editors.trim()) {
+                    editorsArray = [data.editors.trim()];
+                }
+
                 if (editorCount) {
-                    const count = (data.editors || []).length;
+                    const count = editorsArray.length;
                     editorCount.innerText = `${count} Editor${count === 1 ? '' : 's'}`;
                 }
 
                 if (editorsList) {
-                    if (!data.editors || data.editors.length === 0) {
+                    if (editorsArray.length === 0) {
                         editorsList.innerHTML = `
                             <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 12px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.08);">
                                 No editors added yet. Enter a Gmail above to grant editor access.
                             </div>
                         `;
                     } else {
-                        editorsList.innerHTML = data.editors.map(email => `
+                        editorsList.innerHTML = editorsArray.map(email => `
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(email)}&background=10b981&color=fff&size=64&bold=true" style="width: 26px; height: 26px; border-radius: 50%;">
@@ -8104,6 +8114,8 @@
                 return;
             }
             const token = localStorage.getItem('pvz_auth_token') || '';
+            const curUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const callerEmail = (curUser && curUser.email) ? curUser.email : 'jaylouvipinosa7@gmail.com';
             try {
                 const res = await fetch('/api/permissions/add-editor', {
                     method: 'POST',
@@ -8111,7 +8123,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email, callerEmail })
                 });
                 const data = await res.json();
                 if (res.ok && data.success) {
@@ -8132,6 +8144,8 @@
                 return;
             }
             const token = localStorage.getItem('pvz_auth_token') || '';
+            const curUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const callerEmail = (curUser && curUser.email) ? curUser.email : 'jaylouvipinosa7@gmail.com';
             try {
                 const res = await fetch('/api/permissions/remove-editor', {
                     method: 'POST',
@@ -8139,7 +8153,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email, callerEmail })
                 });
                 const data = await res.json();
                 if (res.ok && data.success) {
@@ -8163,6 +8177,8 @@
             }
             if (!confirm(`Set ${email} as the Primary Administrator?`)) return;
             const token = localStorage.getItem('pvz_auth_token') || '';
+            const curUser = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const callerEmail = (curUser && curUser.email) ? curUser.email : 'jaylouvipinosa7@gmail.com';
             try {
                 const res = await fetch('/api/permissions/set-admin', {
                     method: 'POST',
@@ -8170,7 +8186,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email, callerEmail })
                 });
                 const data = await res.json();
                 if (res.ok && data.success) {
@@ -9397,10 +9413,7 @@
         }
 
         function getTesterProfile() {
-            const u = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
-            const name = (u && (u.name || u.username)) ? (u.name || u.username) : 'Tester';
-            const avatar = (u && (u.picture || u.avatar)) ? (u.picture || u.avatar) : 'images/default_avatar.svg';
-            return { name, avatar };
+            return { name: 'RENEarn', avatar: 'images/default_avatar.svg' };
         }
 
         // Test Single Gift
@@ -9436,7 +9449,8 @@
                                         repetition: repCount,
                                         delay: gift.delay || 0,
                                         interval: (gift.interval !== undefined && gift.interval !== null) ? gift.interval : 100,
-                                        hideInOverlay: gift.hideInOverlay === true
+                                        hideInOverlay: gift.hideInOverlay === true,
+                                        username: 'RENEarn'
                                     })
                                 }).catch(()=>{});
                             }
@@ -9459,7 +9473,7 @@
                             interval: (gift.interval !== undefined && gift.interval !== null) ? gift.interval : 100,
                             repetitionMultiplier: gift.repetitionMultiplier !== false,
                             hideInOverlay: gift.hideInOverlay === true,
-                            username: prof.name,
+                            username: 'RENEarn',
                             avatar: prof.avatar,
                             icon: gift.icon,
                             coins: gift.coins,
@@ -9489,7 +9503,7 @@
                         command: soc.command,
                         actionType: soc.actionType,
                         amount: soc.amount || 1,
-                        username: 'SocialTester'
+                        username: 'RENEarn'
                     })
                 });
             } catch (err) {
@@ -9509,7 +9523,7 @@
                         command,
                         amount,
                         label,
-                        username: 'Streamer'
+                        username: 'RENEarn'
                     })
                 });
                 const data = await res.json();
@@ -14529,13 +14543,13 @@
                         giftName: 'Rose',
                         diamondCount: 1,
                         repeatCount: 1,
-                        username: 'TestViewer'
+                        username: 'RENEarn'
                     };
                 } else if (type === 'likes_50k') {
                     payload = {
                         event: 'like',
                         totalLikeCount: 50000,
-                        username: 'TestLiker'
+                        username: 'RENEarn'
                     };
                 }
                 const resp = await fetch('/api/webhook/tiktok', {

@@ -5,10 +5,10 @@
         "giftId":  "",
         "giftName":  "Team plants likes",
         "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_gatling_pea.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_fire_cattail.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_gatling_pea",
+        "commands":  "spawn_fire_cattail;spawn_ice_cattail",
         "repetition":  1
     },
     {
@@ -17,10 +17,10 @@
         "giftId":  "",
         "giftName":  "Team zombies likes",
         "funcName":  "Spawn Trident Jugger-nut Gargantuar (240)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_bucket_zombie.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_gargantuar.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_bucket_zombie",
+        "commands":  "spawn_gargantuar",
         "repetition":  1
     },
     {
@@ -702,7 +702,7 @@
         "giftName":  "Share Stream",
         "funcName":  "Plant everywahre",
         "funcImg":  "http://localhost:8080/images/game-icons/pvz/plant_everywahre.webp",
-        "trigImg":  "images/trig_1.svg",
+        "trigImg":  "images/trig_3.svg",
         "triggerValue":  "",
         "commands":  "plant_everywahre",
         "repetition":  1
@@ -744,15 +744,15 @@
         "repetition":  20
     },
     {
-        "id":  "1791698133182",
+        "id":  "1791698411759",
         "action":  "SelectedGift",
-        "giftId":  "5879",
-        "giftName":  "Doughnut",
-        "funcName":  "Zombies Lucky Wheel",
+        "giftId":  "13087",
+        "giftName":  "Bubble Gum",
+        "funcName":  "Win Score Numbers (+/-)",
         "funcImg":  "images/spinner_wheel_icon.svg",
-        "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
+        "trigImg":  "images/tiktok-gifts/13087_bubble_gum.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791698133182",
+        "commands":  "spinner_1791698132034",
         "repetition":  1
     },
     {
@@ -768,15 +768,15 @@
         "repetition":  1
     },
     {
-        "id":  "1791698411759",
+        "id":  "1791698133182",
         "action":  "SelectedGift",
-        "giftId":  "13087",
-        "giftName":  "Bubble Gum",
-        "funcName":  "Win Score Numbers (+/-)",
+        "giftId":  "5879",
+        "giftName":  "Doughnut",
+        "funcName":  "Zombies Lucky Wheel",
         "funcImg":  "images/spinner_wheel_icon.svg",
-        "trigImg":  "images/tiktok-gifts/13087_bubble_gum.webp",
+        "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791698132034",
+        "commands":  "spinner_1791698133182",
         "repetition":  1
     }
 ];
