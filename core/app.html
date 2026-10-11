@@ -10084,65 +10084,72 @@
 
         let lastHotkeyTime = 0;
         let lastHotkeyAction = '';
+        let winHotkeysInitialized = false;
 
-        function setupWinWidgetHotkeys() {
-            function handleWinHotkey(e) {
-                const code = e.code || '';
-                const key = e.key || '';
-                const keyCode = e.keyCode || e.which || 0;
-                const alt = e.altKey;
+        function handleWinHotkey(e) {
+            // Ignore auto-repeat when key is held down
+            if (e.repeat) return;
 
-                // Minus indicators: Alt + '-' / Alt + '_' / NumpadSubtract / keyCodes 189 / 109, or '[' (keyCode 219)
-                const isMinus = code === 'Minus' || code === 'NumpadSubtract' || key === '-' || key === '_' || keyCode === 189 || keyCode === 109;
-                const isBracketLeft = code === 'BracketLeft' || key === '[' || keyCode === 219;
+            const code = e.code || '';
+            const key = e.key || '';
+            const keyCode = e.keyCode || e.which || 0;
+            const alt = e.altKey;
 
-                // Plus indicators: Alt + '=' / Alt + '+' / NumpadAdd / keyCodes 187 / 107, or ']' (keyCode 221)
-                const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+' || keyCode === 187 || keyCode === 107;
-                const isBracketRight = code === 'BracketRight' || key === ']' || keyCode === 221;
+            // Minus indicators: Alt + '-' / Alt + '_' / NumpadSubtract / keyCodes 189 / 109, or '[' (keyCode 219)
+            const isMinus = code === 'Minus' || code === 'NumpadSubtract' || key === '-' || key === '_' || keyCode === 189 || keyCode === 109;
+            const isBracketLeft = code === 'BracketLeft' || key === '[' || keyCode === 219;
 
-                if (!((alt && isMinus) || isBracketLeft || (alt && isEqual) || isBracketRight)) {
+            // Plus indicators: Alt + '=' / Alt + '+' / NumpadAdd / keyCodes 187 / 107, or ']' (keyCode 221)
+            const isEqual = code === 'Equal' || code === 'NumpadAdd' || key === '=' || key === '+' || keyCode === 187 || keyCode === 107;
+            const isBracketRight = code === 'BracketRight' || key === ']' || keyCode === 221;
+
+            if (!((alt && isMinus) || isBracketLeft || (alt && isEqual) || isBracketRight)) {
+                return;
+            }
+
+            // If user pressed the hotkey while an input/card was focused, blur it and proceed
+            const activeTag = (document.activeElement && document.activeElement.tagName) || '';
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) {
+                // If typing text in search/name fields (not numeric display cards), skip single bracket keys
+                if (!alt && (document.activeElement.type === 'text' || document.activeElement.tagName === 'TEXTAREA')) {
                     return;
                 }
-
-                // If user pressed the hotkey while an input/card was focused, blur it and proceed
-                const activeTag = (document.activeElement && document.activeElement.tagName) || '';
-                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) {
-                    // If typing text in search/name fields (not numeric display cards), skip single bracket keys
-                    if (!alt && (document.activeElement.type === 'text' || document.activeElement.tagName === 'TEXTAREA')) {
-                        return;
-                    }
-                    if (document.activeElement && typeof document.activeElement.blur === 'function') {
-                        document.activeElement.blur();
-                    }
-                }
-
-                e.preventDefault();
-                e.stopPropagation();
-
-                const now = Date.now();
-
-                // Alt + '-' OR '[' => LOSE / Score -1
-                if ((alt && isMinus) || isBracketLeft) {
-                    if (lastHotkeyAction === 'lose_plus' && (now - lastHotkeyTime) < 90) return;
-                    lastHotkeyTime = now;
-                    lastHotkeyAction = 'lose_plus';
-                    adjustWinWidget('lose_plus');
-                    flashLoseCard();
-                    showToast("LOSE count & Score -1 (Alt + -)", "WARN");
-                    return;
-                }
-
-                // Alt + '=' OR ']' => WIN / Score +1
-                if ((alt && isEqual) || isBracketRight) {
-                    if (lastHotkeyAction === 'win_plus' && (now - lastHotkeyTime) < 90) return;
-                    lastHotkeyTime = now;
-                    lastHotkeyAction = 'win_plus';
-                    adjustWinWidget('win_plus');
-                    flashWinCard();
-                    showToast("WIN count & Score +1 (Alt + =)", "OK");
-                    return;
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
                 }
             }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const now = Date.now();
+
+            // Alt + '-' OR '[' => LOSE / Score -1
+            if ((alt && isMinus) || isBracketLeft) {
+                if (lastHotkeyAction === 'lose_plus' && (now - lastHotkeyTime) < 350) return;
+                lastHotkeyTime = now;
+                lastHotkeyAction = 'lose_plus';
+                adjustWinWidget('lose_plus');
+                flashLoseCard();
+                showToast("LOSE count & Score -1 (Alt + -)", "WARN");
+                return;
+            }
+
+            // Alt + '=' OR ']' => WIN / Score +1
+            if ((alt && isEqual) || isBracketRight) {
+                if (lastHotkeyAction === 'win_plus' && (now - lastHotkeyTime) < 350) return;
+                lastHotkeyTime = now;
+                lastHotkeyAction = 'win_plus';
+                adjustWinWidget('win_plus');
+                flashWinCard();
+                showToast("WIN count & Score +1 (Alt + =)", "OK");
+                return;
+            }
+        }
+
+        function setupWinWidgetHotkeys() {
+            if (winHotkeysInitialized) return;
+            winHotkeysInitialized = true;
 
             // Suppress browser alt menu focus on Windows Chromium so Alt doesn't activate window menu
             window.addEventListener('keydown', (e) => {
@@ -10159,8 +10166,6 @@
                 }
             }, { capture: true, passive: false });
 
-            // Only attach once on window to prevent duplicate event dispatch
-            window.removeEventListener('keydown', handleWinHotkey, true);
             window.addEventListener('keydown', handleWinHotkey, { capture: true, passive: false });
         }
         setupWinWidgetHotkeys();

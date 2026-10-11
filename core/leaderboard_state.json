@@ -1,7 +1,14 @@
 ﻿{
     "likes":  {
                   "TestLiker":  1,
-                  "SuperFan":  100
+                  "SuperFan":  100,
+                  "𝑠𝑡𝑎𝑤𝑏𝑒𝑟𝑟𝑦 𝑛𝑜𝑐ℎ𝑖:3":  35,
+                  "EL_Editzzz":  150,
+                  "K":  1089,
+                  "Ертас":  401,
+                  "yozora112":  171,
+                  "R.e.m🥀":  112,
+                  "DG":  1321
               },
     "coins":  {
                   "FriendTester":  2,
@@ -14,10 +21,19 @@
                   "Tester4":  30,
                   "TestAccuracyUser":  43,
                   "TestGifter":  633,
-                  "Yuki":  2,
                   "Viewer_Alice":  2,
                   "Viewer_Bob":  1,
-                  "RENEarn":  152
+                  "RENEarn":  152,
+                  "Yuki":  3,
+                  "Boss Jat":  1,
+                  "eam_mee_tehh":  24,
+                  "S E A N N🍃":  7,
+                  ".":  1,
+                  "GENKI DAMA":  66,
+                  "DahdahMhiemhie":  62,
+                  "Rezmir":  210,
+                  "v.":  2,
+                  "DG":  38
               },
     "avatars":  {
                     "FriendTester":  "images/default_avatar.svg",
@@ -30,9 +46,24 @@
                     "Tester4":  "images/default_avatar.svg",
                     "TestAccuracyUser":  "images/default_avatar.svg",
                     "TestGifter":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp",
-                    "Yuki":  "images/default_avatar.svg",
                     "Viewer_Alice":  "images/default_avatar.svg",
                     "Viewer_Bob":  "images/default_avatar.svg",
-                    "RENEarn":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp"
+                    "RENEarn":  "https://p16-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/sample.webp",
+                    "𝑠𝑡𝑎𝑤𝑏𝑒𝑟𝑟𝑦 𝑛𝑜𝑐ℎ𝑖:3":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ddb4388150c441d20a4b2ece63b909a9~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=cf30f3ac\u0026x-expires=1791885600\u0026x-signature=%2FgTAXPzPK%2B37GvLyrPM4bYAd20M%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "EL_Editzzz":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/1bb8853f1635ca435d966d6e15c982f9~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=10db8bb7\u0026x-expires=1791885600\u0026x-signature=NO1PjU%2FlDPynBvzqKGEPWT3ezec%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "Yuki":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2b0d70d17a03fa33913c4f8768d02db0~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=bbf41959\u0026x-expires=1791885600\u0026x-signature=kZVEl8jgnGYlRAqc4OLe47bZjrU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "Boss Jat":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d00ab86f7af52bdc3f76eaf28bdb3108~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=4431e2b9\u0026x-expires=1791885600\u0026x-signature=ACAG6EZI5kfpssQm%2F%2BNuLy90k9U%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "K":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8e52222002d9e46bc014f4646ed9ad7f~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=b00634fe\u0026x-expires=1791885600\u0026x-signature=X8BOYyXAXJ4Ck3V59XBIK1jDmUU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "Ертас":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/bc84b7b668f7cdf94cbf6340d64e4a98~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=a372ed6e\u0026x-expires=1791885600\u0026x-signature=JpP3eVvSXkg2F0SMXUdu74Q9QKs%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "eam_mee_tehh":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d66f7877edcf075d73d91c187b15376a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=89b8fc70\u0026x-expires=1791885600\u0026x-signature=rFcIBB5hvWh%2B1TWxI%2BMWvmix1Ns%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=9b759fb9\u0026idc=my3",
+                    "S E A N N🍃":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/72201c268a13898567c34095378b053b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=8714d7b3\u0026x-expires=1791885600\u0026x-signature=A7wrAKk%2BW1c2VTA07yqDwDnjE5Q%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    ".":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/82c3bd78845c30cbcdb271cb50108e59~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=83954645\u0026x-expires=1791885600\u0026x-signature=3GUaB8yDsitmG0yLqT4wDAryhMU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my3",
+                    "yozora112":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b669f51343214b20f7324805b8a9af1f~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=d20c515a\u0026x-expires=1791885600\u0026x-signature=COJI1468adGO%2FcwOaWvRgzH%2B2aY%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "GENKI DAMA":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7361007662153170949~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=a686e6da\u0026x-expires=1791885600\u0026x-signature=8iiFYNs6fmQ%2Be49uOseXBL3teX0%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "DahdahMhiemhie":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7eeeae519bb9d4b718cda76dda6b9693~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=81f74945\u0026x-expires=1791885600\u0026x-signature=iWeMEoVjaYjKk9L71Ygeeraol0A%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "R.e.m🥀":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/75a133c272535eedf870b8748935401f~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=1d8632b2\u0026x-expires=1791885600\u0026x-signature=Yt6OQ3SRyHTJwydVHllMpxgFCd8%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                    "Rezmir":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b6f38395facbb4dd5acf70c7f526d1bd~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=b2814572\u0026x-expires=1791885600\u0026x-signature=VyMEXG%2FE8PvjeNEbI5UqEskjNOk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "v.":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/54d0231c9f29d8c0dae7a64136a76419~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=6921c2e0\u0026x-expires=1791885600\u0026x-signature=USJo0z%2BfMUhntfAC2jSyN%2BSs6l0%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                    "DG":  "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-giso/edd139b0e9a1932a083d78ae0edcf80f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=1f66fd29\u0026x-expires=1791885600\u0026x-signature=sTEjn3Z3JGqKQ1SKjzLQ66mND34%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my"
                 }
 }

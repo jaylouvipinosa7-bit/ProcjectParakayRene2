@@ -3163,7 +3163,7 @@ while ($true) {
 
                 # Server-side fast debounce: prevent accidental duplicate keystrokes while staying ultra responsive
                 $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
-                if ($action -and $script:lastWinAdjustAction -eq $action -and ($nowMs - $script:lastWinAdjustTime) -lt 90) {
+                if ($action -and $script:lastWinAdjustAction -eq $action -and ($nowMs - $script:lastWinAdjustTime) -lt 350) {
                     Send-JsonResponse $response (Load-WinWidget)
                     continue
                 }

@@ -778,5 +778,17 @@
         "triggerValue":  "",
         "commands":  "spinner_1791698133182",
         "repetition":  1
+    },
+    {
+        "id":  "1791715811937",
+        "action":  "SelectedGift",
+        "giftId":  "5827",
+        "giftName":  "Ice Cream Cone",
+        "funcName":  "Ultimate Gold Gargantuar",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
+        "trigImg":  "images/tiktok-gifts/5827_ice_cream_cone.webp",
+        "triggerValue":  "",
+        "commands":  "ultimate_gold_gargantuar",
+        "repetition":  3
     }
 ]

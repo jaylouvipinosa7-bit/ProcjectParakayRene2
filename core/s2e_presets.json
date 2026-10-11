@@ -154,7 +154,7 @@
                                    "game":  "PvZFusion",
                                    "createdAt":  "08/03/2026",
                                    "coverIcon":  "images/games/pvz_badge.svg",
-                                   "eventsCount":  65,
+                                   "eventsCount":  66,
                                    "overflowCount":  "+89",
                                    "previewSprites":  [
                                                           "images/game-icons/pvz/spawn_gatling_pea.webp",
@@ -1370,6 +1370,41 @@
                                                       "platform":  "tiktok",
                                                       "triggerType":  "gift",
                                                       "availableFor":  "Anyone"
+                                                  },
+                                                  {
+                                                      "id":  "1791715811937",
+                                                      "giftName":  "Ice Cream Cone",
+                                                      "coins":  1,
+                                                      "likeThreshold":  50,
+                                                      "giftId":  "5827",
+                                                      "actionType":  "zombie",
+                                                      "command":  "ultimate_gold_gargantuar",
+                                                      "commands":  [
+                                                                       {
+                                                                           "name":  "Commands #1",
+                                                                           "command":  "ultimate_gold_gargantuar",
+                                                                           "label":  "Ultimate Gold Gargantuar",
+                                                                           "icon":  "images/game-icons/pvz/ultimate_gold_gargantuar.webp",
+                                                                           "actionType":  "zombie",
+                                                                           "amount":  1
+                                                                       }
+                                                                   ],
+                                                      "functionName":  "Ultimate Gold Gargantuar",
+                                                      "label":  "Ultimate Gold Gargantuar",
+                                                      "unitIcon":  "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
+                                                      "amount":  3,
+                                                      "repetition":  3,
+                                                      "delay":  0,
+                                                      "interval":  100,
+                                                      "repetitionMultiplier":  true,
+                                                      "allowImport":  true,
+                                                      "hideInOverlay":  false,
+                                                      "triggerType":  "gift",
+                                                      "triggerValue":  "1",
+                                                      "platform":  "tiktok",
+                                                      "availableFor":  "Anyone",
+                                                      "enabled":  true,
+                                                      "icon":  "images/tiktok-gifts/5827_ice_cream_cone.webp"
                                                   }
                                               ],
                                    "_key":  "preset_live_balagbagan",

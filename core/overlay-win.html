@@ -547,6 +547,7 @@
         let lastOverlayHotkeyAction = '';
 
         window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
             const isMinus = e.code === 'Minus' || e.code === 'NumpadSubtract' || e.key === '-' || e.key === '_' || e.keyCode === 189 || e.keyCode === 109;
             const isEqualOrPlus = e.code === 'Equal' || e.code === 'NumpadAdd' || e.key === '=' || e.key === '+' || e.keyCode === 187 || e.keyCode === 107;
             const isBracketLeft = e.code === 'BracketLeft' || e.key === '[' || e.keyCode === 219;
