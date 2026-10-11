@@ -725,11 +725,13 @@ function LoadConfig($optionalUser = "") {
     if ($cfg -and $cfg.spinners) {
         foreach ($sp in $cfg.spinners) {
             if ($sp.id -eq "spinner_plusminus") {
-                if ($sp.giftId -eq "5655" -or $sp.giftName -eq "Rose" -or [string]::IsNullOrWhiteSpace($sp.giftId)) {
-                    $sp.giftId = "7934"
-                    $sp.giftName = "Heart Me"
-                    $sp.coins = 1
-                    $sp.giftIcon = "images/tiktok-gifts/7934_heart_me.webp"
+                $spGId = if ($sp.PSObject.Properties['giftId']) { [string]$sp.giftId } else { "" }
+                $spGName = if ($sp.PSObject.Properties['giftName']) { [string]$sp.giftName } else { "" }
+                if ($spGId -eq "5655" -or $spGName -eq "Rose" -or [string]::IsNullOrWhiteSpace($spGId)) {
+                    if ($sp.PSObject.Properties['giftId']) { $sp.giftId = "7934" } else { $sp | Add-Member -MemberType NoteProperty -Name "giftId" -Value "7934" -Force }
+                    if ($sp.PSObject.Properties['giftName']) { $sp.giftName = "Heart Me" } else { $sp | Add-Member -MemberType NoteProperty -Name "giftName" -Value "Heart Me" -Force }
+                    if ($sp.PSObject.Properties['coins']) { $sp.coins = 1 } else { $sp | Add-Member -MemberType NoteProperty -Name "coins" -Value 1 -Force }
+                    if ($sp.PSObject.Properties['giftIcon']) { $sp.giftIcon = "images/tiktok-gifts/7934_heart_me.webp" } else { $sp | Add-Member -MemberType NoteProperty -Name "giftIcon" -Value "images/tiktok-gifts/7934_heart_me.webp" -Force }
                 }
             }
         }
@@ -762,12 +764,21 @@ function Sync-ConfigToCards {
         $overlayCards = @()
         foreach ($g in $cfg.gifts) {
             # Auto-correct & enrich gift metadata from verified catalog if ID or icon is missing
-            if ($g.giftName -and (-not $g.giftId -or [string]::IsNullOrWhiteSpace($g.giftId) -or -not $g.icon)) {
-                $auto = Resolve-AutoCorrectGift $g.giftName $g.giftId
+            $curGiftId = if ($g.PSObject.Properties['giftId']) { [string]$g.giftId } else { "" }
+            $curIcon = if ($g.PSObject.Properties['icon']) { [string]$g.icon } else { "" }
+            $curCoins = if ($g.PSObject.Properties['coins']) { [int]$g.coins } else { 0 }
+            if ($g.giftName -and ([string]::IsNullOrWhiteSpace($curGiftId) -or [string]::IsNullOrWhiteSpace($curIcon))) {
+                $auto = Resolve-AutoCorrectGift $g.giftName $curGiftId
                 if ($auto) {
-                    if (-not $g.giftId -or [string]::IsNullOrWhiteSpace($g.giftId)) { $g.giftId = [string]$auto.id }
-                    if (-not $g.coins -or [int]$g.coins -eq 0) { $g.coins = [int]$auto.coins }
-                    if (-not $g.icon -or $g.icon -eq "" -or $g.icon -like "*default*") { $g.icon = [string]$auto.icon }
+                    if ([string]::IsNullOrWhiteSpace($curGiftId)) {
+                        if ($g.PSObject.Properties['giftId']) { $g.giftId = [string]$auto.id } else { $g | Add-Member -MemberType NoteProperty -Name "giftId" -Value ([string]$auto.id) -Force }
+                    }
+                    if ($curCoins -eq 0) {
+                        if ($g.PSObject.Properties['coins']) { $g.coins = [int]$auto.coins } else { $g | Add-Member -MemberType NoteProperty -Name "coins" -Value ([int]$auto.coins) -Force }
+                    }
+                    if ([string]::IsNullOrWhiteSpace($curIcon) -or $curIcon -like "*default*") {
+                        if ($g.PSObject.Properties['icon']) { $g.icon = [string]$auto.icon } else { $g | Add-Member -MemberType NoteProperty -Name "icon" -Value ([string]$auto.icon) -Force }
+                    }
                 }
             }
 
