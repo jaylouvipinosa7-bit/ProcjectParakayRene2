@@ -4677,11 +4677,32 @@
         <div id="tab-album" class="tab-pane active">
             <div class="pvz-album-container">
 
+                <!-- GAME ALBUM SELECTION SELECTOR BAR -->
+                <div class="album-selection-strip" style="display: flex; gap: 10px; align-items: center; margin-bottom: 18px; overflow-x: auto; padding: 10px 14px; background: rgba(14, 18, 28, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;">
+                    <div style="font-size: 12px; font-weight: 800; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; margin-right: 4px;">Choose Game Album:</div>
+                    <button type="button" class="album-select-pill active" id="albumPillPvZFusion" onclick="selectGameAlbum('PvZFusion')" style="background: rgba(239, 68, 68, 0.18); border: 1.5px solid #ef4444; color: #fca5a5; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e;"></span>
+                        🌿 Plants vs. Zombies Fusion
+                    </button>
+                    <button type="button" class="album-select-pill" id="albumPillMinecraft" onclick="selectGameAlbum('Minecraft')" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        ⛏️ Minecraft Chaos
+                    </button>
+                    <button type="button" class="album-select-pill" id="albumPilltabs" onclick="selectGameAlbum('tabs')" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        ⚔️ TABS Simulator
+                    </button>
+                    <button type="button" class="album-select-pill" id="albumPilluebs2" onclick="selectGameAlbum('uebs2')" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        🦖 UEBS 2 Battles
+                    </button>
+                    <button type="button" class="album-select-pill" id="albumPillCrownClash" onclick="selectGameAlbum('Crown Clash')" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        👑 Crown Clash
+                    </button>
+                </div>
+
                 <!-- MAIN ALBUM SHOWCASE HERO (INSPIRED BY REFERENCE PHOTOS) -->
                 <div class="pvz-album-hero">
                     <!-- ALBUM POSTER COVER -->
                     <div class="pvz-album-poster-wrap">
-                        <img src="images/pvz_fusion_cover.jpg" alt="Plants vs. Zombies Fusion Edition" class="pvz-album-poster">
+                        <img id="mainAlbumPosterImg" src="images/pvz_fusion_cover.jpg" alt="Plants vs. Zombies Fusion Edition" class="pvz-album-poster">
                         <div class="pvz-album-badge-floating">
                             <span class="pvz-album-dot-pulse"></span>
                             ACTIVE ALBUM
@@ -4691,17 +4712,17 @@
                     <!-- ALBUM DETAILS -->
                     <div class="pvz-album-info">
                         <div>
-                            <div class="pvz-album-header-tags">
+                            <div class="pvz-album-header-tags" id="mainAlbumHeaderTags">
                                 <span class="pvz-album-pill-active">CONNECTED & READY</span>
                                 <span class="pvz-album-pill-tag">VERSION 47v BETA</span>
                                 <span class="pvz-album-pill-tag-orange">MELONLOADER 0.7.3</span>
                             </div>
 
-                            <h1 class="pvz-album-title">
+                            <h1 class="pvz-album-title" id="mainAlbumHeroTitle">
                                 Plants vs. Zombies: Fusion Edition
                             </h1>
 
-                            <p class="pvz-album-desc">
+                            <p class="pvz-album-desc" id="mainAlbumHeroDesc">
                                 Official interactive live streaming game album for TikTok Live. When your viewers send gifts like Rose, Heart Me, Doughnut, Whale, or Galaxy, hybrid fusion plants and custom boss zombies spawn directly into your game in real time.
                             </p>
                         </div>
@@ -4710,13 +4731,13 @@
                         <div class="pvz-album-meta-grid">
                             <div class="pvz-album-meta-card">
                                 <div class="pvz-album-meta-label">Mod Bridge Port</div>
-                                <div class="pvz-album-meta-val" style="color: #4ade80;">
+                                <div class="pvz-album-meta-val" id="mainAlbumMetaPort" style="color: #4ade80;">
                                     Port 55001 (Runetify / S2E)
                                 </div>
                             </div>
                             <div class="pvz-album-meta-card">
                                 <div class="pvz-album-meta-label">Target Executable</div>
-                                <div class="pvz-album-meta-val" style="color: #38bdf8; font-family: monospace;">
+                                <div class="pvz-album-meta-val" id="mainAlbumMetaExe" style="color: #38bdf8; font-family: monospace;">
                                     PlantsVsZombiesRH.exe
                                 </div>
                             </div>
@@ -4728,7 +4749,7 @@
                             </div>
                             <div class="pvz-album-meta-card">
                                 <div class="pvz-album-meta-label">Interactive Catalog</div>
-                                <div class="pvz-album-meta-val" style="color: #f59e0b;">
+                                <div class="pvz-album-meta-val" id="mainAlbumMetaCatalog" style="color: #f59e0b;">
                                     150+ Fusion Plants & Bosses
                                 </div>
                             </div>
@@ -4736,7 +4757,7 @@
 
                         <!-- QUICK CONTROLS -->
                         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding-top: 4px;">
-                            <button class="btn btn-primary" onclick="switchTab('gifts')" style="background: linear-gradient(135deg, #ef4444, #f97316); border: none; font-weight: 800; padding: 11px 22px; font-size: 13.5px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);">
+                            <button class="btn btn-primary" onclick="openAlbumGiftCommands()" style="background: linear-gradient(135deg, #ef4444, #f97316); border: none; font-weight: 800; padding: 11px 22px; font-size: 13.5px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4); cursor: pointer;">
                                 Manage Gift Commands
                             </button>
                             <button class="btn btn-secondary" onclick="switchTab('spinner')" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24; font-weight: 700; padding: 11px 18px; font-size: 13.5px;">
@@ -5028,25 +5049,50 @@
 
             <!-- ==================== VIEW 2: DETAILED COMMAND ROWS (PICTURE 4 LAYOUT) ==================== -->
             <div id="giftsCommandsView" class="gifts-panel-view" style="display: none;">
-                <!-- Header context bar -->
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(14, 18, 28, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 16px;">
-                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="setGiftsViewMode('presets')" style="font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                            <span>←</span> All Presets
-                        </button>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 12px; color: #8b949e; font-weight: 700;">Active Preset:</span>
-                            <span id="activePresetBadgeText" style="font-size: 13.5px; font-weight: 800; color: #ffffff; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35); padding: 3px 10px; border-radius: 6px;">live balagbagan (PvZFusion)</span>
-                        </div>
-                        <select id="presetQuickSelectDropdown" onchange="switchPresetFromDropdown(this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; outline: none;">
-                            <!-- Populated dynamically -->
-                        </select>
+                <!-- Front Picture / Active Album Commands Hero Showcase (Matches Album Photo) -->
+                <div class="commands-hero-card" id="commandsHeroCard" style="display: flex; align-items: center; gap: 18px; margin-bottom: 16px; background: linear-gradient(135deg, rgba(20, 26, 40, 0.95) 0%, rgba(13, 17, 26, 0.98) 100%); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 16px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
+                    <!-- Ambient Glow -->
+                    <div style="position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, transparent 70%); filter: blur(25px); pointer-events: none;"></div>
+
+                    <!-- The Front / Picture of the commands (What the album shows!) -->
+                    <div class="commands-front-cover-wrap" style="position: relative; width: 92px; height: 120px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.2); box-shadow: 0 6px 20px rgba(0,0,0,0.6); flex-shrink: 0; background: #000;">
+                        <img id="commandsFrontCoverImg" src="images/pvz_fusion_cover.jpg" alt="Active Album Game" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='images/pvz_fusion_cover.jpg'">
+                        <span class="commands-front-live-dot" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: #34d399; font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(52, 211, 153, 0.4); display: flex; align-items: center; gap: 4px;">
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981;"></span>
+                            ALBUM
+                        </span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <input type="text" id="commandRowSearchInput" oninput="onCommandRowSearch(this.value)" placeholder="🔍 Filter command triggers..." style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #ffffff; outline: none; width: 200px;">
-                        <button class="btn btn-sm btn-primary" onclick="openAddGiftModal()" type="button" style="font-size: 12px; font-weight: 800;">
-                            + Add Command Trigger
-                        </button>
+
+                    <!-- Details & Controls -->
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                            <span id="commandsFrontGameBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Plants vs. Zombies: Fusion</span>
+                            <span id="commandsFrontActivePresetBadge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;">Live Stream Preset</span>
+                        </div>
+                        <h2 id="commandsFrontTitle" style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0; letter-spacing: -0.3px;">
+                            Plants vs. Zombies Fusion Commands
+                        </h2>
+                        <p id="commandsFrontDesc" style="font-size: 12.5px; color: #94a3b8; margin: 0 0 10px 0; line-height: 1.4;">
+                            Interactive TikTok gift commands & mod triggers for this game album. When viewers send gifts, in-game actions trigger live!
+                        </p>
+
+                        <!-- Action Toolbar -->
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="setGiftsViewMode('presets')" style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;">
+                                <span>←</span> All Presets
+                            </button>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="font-size: 11.5px; color: #8b949e; font-weight: 700;">Preset:</span>
+                                <span id="activePresetBadgeText" style="display: none;"></span>
+                                <select id="presetQuickSelectDropdown" onchange="switchPresetFromDropdown(this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); color: #f1f5f9; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; outline: none;">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="openAddGiftModal()" type="button" style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+                                <span>➕</span> Add Command Trigger
+                            </button>
+                            <input type="text" id="commandRowSearchInput" oninput="onCommandRowSearch(this.value)" placeholder="🔍 Filter triggers..." style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 10px; font-size: 11.5px; color: #ffffff; outline: none; width: 180px;">
+                        </div>
                     </div>
                 </div>
 
@@ -6102,10 +6148,11 @@
                     <div>
                         <label class="form-label" style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; display: block;">Cover / Game Badge</label>
                         <select id="presetInputCover" class="form-input" style="width: 100%; font-size: 13px; font-weight: 700; cursor: pointer; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 8px 12px; border-radius: 8px; color: #fff;">
-                            <option value="images/games/pvz_badge.svg">PvZ Fusion Logo Badge</option>
+                            <option value="images/pvz_fusion_cover.jpg">PvZ Fusion Official Album Poster (Recommended)</option>
+                            <option value="images/games/minecraft.jpg">Minecraft Chaos Cover</option>
                             <option value="images/games/tnt.svg">Minecraft TNT Block</option>
                             <option value="images/games/shield.svg">Minecraft Shieldrunner</option>
-                            <option value="images/games/tabs.svg">TABS Googly Logo</option>
+                            <option value="images/games/tabs.svg">TABS Battle Simulator</option>
                             <option value="images/games/uebs2.svg">UEBS 2 Golden Crest</option>
                             <option value="images/games/crown_clash.svg">Crown Clash Swords</option>
                             <option value="images/renearn_icon.png">RENEarn Dragon Icon</option>
@@ -8342,6 +8389,8 @@
         // ==========================================================================
         // RENEARN MULTI-GAME WORKSPACE & PRESETS (PICTURE 1 & 4 IMPLEMENTATION)
         // ==========================================================================
+        // RENEARN MULTI-GAME WORKSPACE & PRESETS (PICTURE 1 & 4 IMPLEMENTATION)
+        // ==========================================================================
         let currentGiftsViewMode = 'presets'; // Default to Game Presets matching Picture 1!
         let allPresetsList = [];
         let activePresetId = 'preset_live_balagbagan';
@@ -8350,6 +8399,116 @@
         let presetSearchQuery = '';
         let commandRowSearchQuery = '';
         const audioPlayersMap = {};
+
+        // Active Game Album Catalog & State (Matches Photo 1 & 2 Parity)
+        let currentActiveAlbumGame = 'PvZFusion';
+        let activeAlbumPosterUrl = 'images/pvz_fusion_cover.jpg';
+
+        const gameAlbumsCatalog = {
+            'PvZFusion': {
+                name: 'Plants vs. Zombies: Fusion Edition',
+                poster: 'images/pvz_fusion_cover.jpg',
+                port: 'Port 55001 (Runetify / S2E)',
+                exe: 'PlantsVsZombiesRH.exe',
+                catalog: '150+ Fusion Plants & Bosses',
+                desc: 'Official interactive live streaming game album for TikTok Live. When your viewers send gifts like Rose, Heart Me, Doughnut, Whale, or Galaxy, hybrid fusion plants and custom boss zombies spawn directly into your game in real time.'
+            },
+            'Minecraft': {
+                name: 'Minecraft: Chaos Live Edition',
+                poster: 'images/games/minecraft.jpg',
+                port: 'Port 25565 / RCON 25575',
+                exe: 'javaw.exe / Minecraft.exe',
+                catalog: 'Mob Spawns, TNT, Lightning & Armor',
+                desc: 'Real-time viewer interactive Minecraft mod triggers. Gifts summon live creepers, ignite TNT near the player, give netherite/diamonds, and trigger thunder strikes during your live broadcast.'
+            },
+            'tabs': {
+                name: 'Totally Accurate Battle Simulator',
+                poster: 'images/games/tabs.svg',
+                port: 'Port 55002 (TABS Webhook)',
+                exe: 'TotallyAccurateBattleSimulator.exe',
+                catalog: 'Wobbly Units, Dragons & Zeus',
+                desc: 'Wobbly physics warfare connected to live gifts! Viewers unleash dragons, mammoth armies, and catastrophic lightning storms into your active battle arena.'
+            },
+            'uebs2': {
+                name: 'Ultimate Epic Battle Simulator 2',
+                poster: 'images/games/uebs2.svg',
+                port: 'Port 55003 (UEBS Bridge)',
+                exe: 'UEBS2.exe',
+                catalog: '100,000+ Zombie & Dino Hordes',
+                desc: 'Massive simulation warfare where TikTok gifts deploy legions of knights, bloodthirsty T-Rex dinosaurs, and demonic hordes onto the battlefield.'
+            },
+            'Crown Clash': {
+                name: 'Crown Clash Arena',
+                poster: 'images/games/crown_clash.svg',
+                port: 'Port 55004 (Crown Mod)',
+                exe: 'CrownClash.exe',
+                catalog: 'Tower Defense Cards & Spells',
+                desc: 'Viewer card deployment arena. Viewers throw goblin barrels, rage spells, and royal giants directly onto the stream playfield in real time.'
+            }
+        };
+
+        function selectGameAlbum(gameName) {
+            currentActiveAlbumGame = gameName;
+            const albumData = gameAlbumsCatalog[gameName] || gameAlbumsCatalog['PvZFusion'];
+            activeAlbumPosterUrl = albumData.poster;
+
+            // Highlight chosen pill
+            document.querySelectorAll('.album-select-pill').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderColor = 'rgba(255,255,255,0.12)';
+                btn.style.color = '#cbd5e1';
+                btn.style.background = 'rgba(255,255,255,0.04)';
+            });
+            const activeBtn = document.getElementById('albumPill' + gameName);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.style.borderColor = '#ef4444';
+                activeBtn.style.color = '#fca5a5';
+                activeBtn.style.background = 'rgba(239, 68, 68, 0.18)';
+            }
+
+            // Update Album Showcase hero elements
+            const posterImg = document.getElementById('mainAlbumPosterImg');
+            if (posterImg) posterImg.src = albumData.poster;
+
+            const titleEl = document.getElementById('mainAlbumHeroTitle');
+            if (titleEl) titleEl.innerText = albumData.name;
+
+            const descEl = document.getElementById('mainAlbumHeroDesc');
+            if (descEl) descEl.innerText = albumData.desc;
+
+            const portEl = document.getElementById('mainAlbumMetaPort');
+            if (portEl) portEl.innerText = albumData.port;
+
+            const exeEl = document.getElementById('mainAlbumMetaExe');
+            if (exeEl) exeEl.innerText = albumData.exe;
+
+            const catEl = document.getElementById('mainAlbumMetaCatalog');
+            if (catEl) catEl.innerText = albumData.catalog;
+
+            // Sync with filter and update presets
+            selectedGameFilter = (gameName === 'PvZFusion') ? 'all' : gameName;
+            renderGamePresets();
+            showToast(`Active Game Album selected: ${albumData.name}`, "OK");
+        }
+
+        function openAlbumGiftCommands(targetGame) {
+            const game = targetGame || currentActiveAlbumGame || 'PvZFusion';
+            const albumData = gameAlbumsCatalog[game] || gameAlbumsCatalog['PvZFusion'];
+            activeAlbumPosterUrl = albumData.poster;
+
+            switchTab('gifts');
+            setGiftsViewMode('commands');
+
+            // Find matching preset for this game
+            const match = allPresetsList.find(p => (p.game || '').toLowerCase() === game.toLowerCase());
+            if (match) {
+                openPresetInCommandsView(match.id);
+            } else {
+                renderDetailedCommandRows();
+            }
+            showToast(`Managing commands for Album: ${albumData.name}`, "OK");
+        }
 
         function setGiftsViewMode(mode) {
             currentGiftsViewMode = mode;
@@ -8410,7 +8569,6 @@
             currentEditingPresetId = presetId;
             const currentPreset = allPresetsList.find(p => p.id === presetId);
             if (currentPreset && currentPreset.events && currentPreset.events.length > 0) {
-                // If not yet active, we can also offer to activate
                 config.gifts = currentPreset.events;
             }
             renderDetailedCommandRows();
@@ -8438,7 +8596,7 @@
             renderDetailedCommandRows();
         }
 
-        // Render Game Presets List (Pixel-perfect to Picture 1)
+        // Render Game Presets List (Pixel-perfect to Picture 1, with Album Photo on Photo 2)
         function renderGamePresets() {
             const container = document.getElementById('presetsListContainer');
             if (!container) return;
@@ -8476,15 +8634,15 @@
                 const isActive = (preset.id === activePresetId);
                 card.className = 'preset-row-card' + (isActive ? ' active-stream-preset' : '');
 
-                // Cover badge determination
+                // Cover badge determination: Active Album Photo Parity (Replaces text badge in Photo 2!)
                 let coverSrc = preset.coverIcon;
-                if (!coverSrc) {
-                    const gLower = (preset.game || '').toLowerCase();
-                    if (gLower.includes('minecraft')) coverSrc = 'images/games/tnt.svg';
+                const gLower = (preset.game || '').toLowerCase();
+                if (!coverSrc || coverSrc === 'images/games/pvz_badge.svg') {
+                    if (gLower.includes('minecraft')) coverSrc = 'images/games/minecraft.jpg';
                     else if (gLower.includes('tabs')) coverSrc = 'images/games/tabs.svg';
                     else if (gLower.includes('uebs')) coverSrc = 'images/games/uebs2.svg';
                     else if (gLower.includes('crown')) coverSrc = 'images/games/crown_clash.svg';
-                    else coverSrc = 'images/games/pvz_badge.svg';
+                    else coverSrc = (activeAlbumPosterUrl || 'images/pvz_fusion_cover.jpg');
                 }
 
                 // Sprites preview strip (6 to 8 sprites)
@@ -8519,7 +8677,7 @@
                 card.innerHTML = `
                     <div class="preset-left-info">
                         <div class="preset-cover-badge">
-                            <img src="${coverSrc}" alt="${preset.name}" onerror="this.src='images/renearn_icon.png'">
+                            <img src="${coverSrc}" alt="${preset.name}" onerror="this.src='images/pvz_fusion_cover.jpg'">
                         </div>
                         <div>
                             <div class="preset-title-text">
@@ -8584,7 +8742,7 @@
 
         function openPresetInCommandsView(presetId) {
             currentEditingPresetId = presetId;
-            const target = allPresetsList.find(p => p.id === presetId);
+            const target = allPresetsList.find(p => p.id === presetId || p._id === presetId || p._key === presetId);
             if (target && target.events && target.events.length > 0 && presetId !== activePresetId) {
                 config.gifts = target.events;
             }
@@ -8613,7 +8771,22 @@
 
         async function deletePreset(presetId) {
             if (!checkEditorPermission("delete presets")) return;
-            if (!confirm("Are you sure you want to delete this game preset?")) return;
+            const target = allPresetsList.find(p => p.id === presetId || p._id === presetId || p._key === presetId);
+            const pName = target ? target.name : 'preset';
+            if (!confirm(`Are you sure you want to delete preset "${pName}"?`)) return;
+
+            // Instant optimistic deletion from UI so button always works
+            allPresetsList = allPresetsList.filter(p => p.id !== presetId && p._id !== presetId && p._key !== presetId);
+            if (activePresetId === presetId && allPresetsList.length > 0) {
+                activePresetId = allPresetsList[0].id;
+            }
+            if (currentEditingPresetId === presetId && allPresetsList.length > 0) {
+                currentEditingPresetId = allPresetsList[0].id;
+            }
+            renderGamePresets();
+            updatePresetDropdown();
+            showToast(`Preset "${pName}" deleted`, "WARN");
+
             try {
                 const res = await fetch('/api/presets/delete', {
                     method: 'POST',
@@ -8622,13 +8795,14 @@
                 });
                 const data = await res.json();
                 if (data.status === 'ok') {
-                    showToast("Preset deleted", "WARN");
                     loadAndRenderPresets();
                 } else {
-                    showToast(data.message || "Failed to delete preset", "ERROR");
+                    showToast(data.message || "Failed to delete preset from server", "ERROR");
+                    loadAndRenderPresets();
                 }
             } catch (err) {
-                showToast("Error deleting preset", "ERROR");
+                console.error("Error deleting preset:", err);
+                loadAndRenderPresets();
             }
         }
 
@@ -8637,7 +8811,7 @@
             if (modal) {
                 document.getElementById('presetInputName').value = '';
                 document.getElementById('presetInputGame').value = 'PvZFusion';
-                document.getElementById('presetInputCover').value = 'images/games/pvz_badge.svg';
+                document.getElementById('presetInputCover').value = 'images/pvz_fusion_cover.jpg';
                 modal.classList.add('active');
             }
         }
@@ -8651,11 +8825,11 @@
             const coverSelect = document.getElementById('presetInputCover');
             if (!coverSelect) return;
             const gLower = game.toLowerCase();
-            if (gLower.includes('minecraft')) coverSelect.value = 'images/games/tnt.svg';
+            if (gLower.includes('minecraft')) coverSelect.value = 'images/games/minecraft.jpg';
             else if (gLower.includes('tabs')) coverSelect.value = 'images/games/tabs.svg';
             else if (gLower.includes('uebs')) coverSelect.value = 'images/games/uebs2.svg';
             else if (gLower.includes('crown')) coverSelect.value = 'images/games/crown_clash.svg';
-            else coverSelect.value = 'images/games/pvz_badge.svg';
+            else coverSelect.value = 'images/pvz_fusion_cover.jpg';
         }
 
         async function saveNewPresetModal() {
@@ -8797,10 +8971,32 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const currentPreset = allPresetsList.find(p => p.id === currentEditingPresetId) || allPresetsList.find(p => p.id === activePresetId) || {
+            const currentPreset = allPresetsList.find(p => p.id === currentEditingPresetId || p._id === currentEditingPresetId || p._key === currentEditingPresetId) ||
+                                  allPresetsList.find(p => p.id === activePresetId || p._id === activePresetId || p._key === activePresetId) || {
                 name: 'live balagbagan',
-                game: 'PvZFusion'
+                game: 'PvZFusion',
+                coverIcon: 'images/pvz_fusion_cover.jpg'
             };
+
+            // Dynamically update the front picture / album showcase header for this preset (Active Album Parity)
+            let albumCover = currentPreset.coverIcon;
+            const gLower = (currentPreset.game || '').toLowerCase();
+            if (!albumCover || albumCover === 'images/games/pvz_badge.svg') {
+                if (gLower.includes('minecraft')) albumCover = 'images/games/minecraft.jpg';
+                else if (gLower.includes('tabs')) albumCover = 'images/games/tabs.svg';
+                else if (gLower.includes('uebs')) albumCover = 'images/games/uebs2.svg';
+                else if (gLower.includes('crown')) albumCover = 'images/games/crown_clash.svg';
+                else albumCover = (activeAlbumPosterUrl || 'images/pvz_fusion_cover.jpg');
+            }
+
+            const frontCoverImg = document.getElementById('commandsFrontCoverImg');
+            if (frontCoverImg) frontCoverImg.src = albumCover;
+
+            const frontTitle = document.getElementById('commandsFrontTitle');
+            if (frontTitle) frontTitle.innerText = `${currentPreset.name} Commands`;
+
+            const frontGameBadge = document.getElementById('commandsFrontGameBadge');
+            if (frontGameBadge) frontGameBadge.innerText = currentPreset.game || 'PvZFusion';
 
             const badgeText = document.getElementById('activePresetBadgeText');
             if (badgeText) {
@@ -8811,6 +9007,9 @@
             if (currentPreset && currentPreset.events && currentPreset.events.length > 0 && currentPreset.id !== activePresetId) {
                 items = currentPreset.events;
             }
+
+            const frontDesc = document.getElementById('commandsFrontDesc');
+            if (frontDesc) frontDesc.innerText = `Interactive TikTok commands for ${currentPreset.name} (${items.length} commands). Mapped live to stream!`;
 
             if (commandRowSearchQuery.trim()) {
                 const q = commandRowSearchQuery.toLowerCase();
@@ -13379,6 +13578,18 @@
                 });
             }
 
+            // If editing a preset, also sync events into curP and save preset
+            const curP = allPresetsList.find(p => p.id === currentEditingPresetId || p._id === currentEditingPresetId || p._key === currentEditingPresetId);
+            if (curP && Array.isArray(curP.events)) {
+                curP.events = JSON.parse(JSON.stringify(config.gifts));
+                curP.eventsCount = curP.events.length;
+                fetch('/api/presets/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(curP)
+                }).catch(() => {});
+            }
+
             const ok = await saveConfigToServer();
             if (ok !== false) {
                 renderGifts();
@@ -13391,15 +13602,33 @@
 
         async function deleteGift(giftId) {
             if (!checkEditorPermission("delete triggers")) return;
-            if (!confirm("Are you sure you want to delete this trigger?")) return;
-            config.gifts = config.gifts.filter(g => String(g.id) !== String(giftId));
-            const ok = await saveConfigToServer();
-            if (ok !== false) {
-                renderGifts();
-                renderDetailedCommandRows();
-                renderGamePresets();
-                showToast("Deleted trigger!", "OK");
+            if (!confirm("Are you sure you want to delete this command trigger?")) return;
+
+            // 1. Remove from config.gifts
+            if (config && Array.isArray(config.gifts)) {
+                config.gifts = config.gifts.filter(g => String(g.id) !== String(giftId));
             }
+
+            // 2. Also remove from current preset events if editing preset
+            const curP = allPresetsList.find(p => p.id === currentEditingPresetId || p._id === currentEditingPresetId || p._key === currentEditingPresetId);
+            if (curP && Array.isArray(curP.events)) {
+                curP.events = curP.events.filter(g => String(g.id) !== String(giftId));
+                curP.eventsCount = curP.events.length;
+                fetch('/api/presets/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(curP)
+                }).catch(() => {});
+            }
+
+            // 3. Immediately re-render all views
+            renderGifts();
+            renderDetailedCommandRows();
+            renderGamePresets();
+            showToast("Command trigger deleted!", "OK");
+
+            // 4. Persist config to backend
+            await saveConfigToServer();
         }
 
         async function deleteCurrentTrigger() {

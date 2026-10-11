@@ -2347,6 +2347,7 @@ while ($true) {
                     if ($parsedObj) {
                         foreach ($prop in $parsedObj.PSObject.Properties) {
                             $item = $prop.Value
+                            $item | Add-Member -MemberType NoteProperty -Name "_key" -Value $prop.Name -Force
                             if (-not $item.id) { $item | Add-Member -MemberType NoteProperty -Name "id" -Value $prop.Name -Force }
                             $presetsList += $item
                         }
@@ -2380,11 +2381,18 @@ while ($true) {
 
                 $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
                 $foundPreset = $null
+                $foundKey = $null
                 if (Test-Path $s2ePresetsFile) {
                     $jsonText = Get-Content $s2ePresetsFile -Raw -Encoding UTF8
                     $parsedObj = $jsonText | ConvertFrom-Json
-                    if ($parsedObj.PSObject.Properties[$presetId]) {
-                        $foundPreset = $parsedObj.PSObject.Properties[$presetId].Value
+                    foreach ($p in $parsedObj.PSObject.Properties) {
+                        $itemPresetId = if ($p.Value.id) { [string]$p.Value.id } else { "" }
+                        $itemUId = if ($p.Value._id) { [string]$p.Value._id } else { "" }
+                        if ($p.Name -eq $presetId -or $itemPresetId -eq $presetId -or $itemUId -eq $presetId) {
+                            $foundPreset = $p.Value
+                            $foundKey = $p.Name
+                            break
+                        }
                     }
                 }
 
@@ -2399,7 +2407,7 @@ while ($true) {
                     Get-Content $configFile -Raw -Encoding UTF8 | ConvertFrom-Json
                 }
 
-                $cfgObj | Add-Member -MemberType NoteProperty -Name "activePresetId" -Value $presetId -Force
+                $cfgObj | Add-Member -MemberType NoteProperty -Name "activePresetId" -Value $foundKey -Force
                 if ($foundPreset.events -and $foundPreset.events.Count -gt 0) {
                     $cfgObj.gifts = $foundPreset.events
                 }
@@ -2408,11 +2416,11 @@ while ($true) {
                 [System.IO.File]::WriteAllText($targetPath, $updatedJson, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $updatedJson, [System.Text.Encoding]::UTF8)
                 Sync-ConfigToCards
-                AddEventLog @{ type = "config_updated"; activePresetId = $presetId; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+                AddEventLog @{ type = "config_updated"; activePresetId = $foundKey; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
 
                 Send-JsonResponse $response @{
                     status = "ok"
-                    activePresetId = $presetId
+                    activePresetId = $foundKey
                     presetName = $foundPreset.name
                     game = $foundPreset.game
                     eventsCount = if ($foundPreset.events) { $foundPreset.events.Count } else { 0 }
@@ -2435,13 +2443,22 @@ while ($true) {
                     foreach ($p in $raw.PSObject.Properties) { $localPresets[$p.Name] = $p.Value }
                 }
 
-                $pId = if ($payload.id) { [string]$payload.id } else { ("preset_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) }
-                $payload | Add-Member -MemberType NoteProperty -Name "_id" -Value $pId -Force
-                $payload | Add-Member -MemberType NoteProperty -Name "id" -Value $pId -Force
-                $localPresets[$pId] = $payload
+                $saveTargetId = if ($payload.id) { [string]$payload.id } else { ("preset_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) }
+                $existingKey = $null
+                foreach ($k in $localPresets.Keys) {
+                    $val = $localPresets[$k]
+                    if ($k -eq $saveTargetId -or ($val.id -and [string]$val.id -eq $saveTargetId) -or ($val._id -and [string]$val._id -eq $saveTargetId)) {
+                        $existingKey = $k
+                        break
+                    }
+                }
+                $saveKey = if ($existingKey) { $existingKey } else { $saveTargetId }
+                $payload | Add-Member -MemberType NoteProperty -Name "_id" -Value $saveKey -Force
+                $payload | Add-Member -MemberType NoteProperty -Name "id" -Value $saveKey -Force
+                $localPresets[$saveKey] = $payload
                 [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
 
-                Send-JsonResponse $response @{ status = "ok"; id = $pId; message = "Preset saved successfully" }
+                Send-JsonResponse $response @{ status = "ok"; id = $saveKey; message = "Preset saved successfully" }
             } catch {
                 Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
             }
@@ -2460,21 +2477,30 @@ while ($true) {
                     foreach ($p in $raw.PSObject.Properties) { $localPresets[$p.Name] = $p.Value }
                 }
 
-                if (-not $localPresets.Contains($origId)) {
+                $origPreset = $null
+                foreach ($k in $localPresets.Keys) {
+                    $val = $localPresets[$k]
+                    if ($k -eq $origId -or ($val.id -and [string]$val.id -eq $origId) -or ($val._id -and [string]$val._id -eq $origId)) {
+                        $origPreset = $val
+                        break
+                    }
+                }
+
+                if (-not $origPreset) {
                     Send-JsonResponse $response @{ status = "error"; message = "Preset not found" } 404
                     continue
                 }
 
-                $clone = $localPresets[$origId] | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+                $clone = $origPreset | ConvertTo-Json -Depth 10 | ConvertFrom-Json
                 $newId = "preset_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
-                $clone._id = $newId
-                $clone.id = $newId
-                $clone.name = [string]$clone.name + " (Copy)"
-                $clone.createdAt = (Get-Date -Format "MM/dd/yyyy")
+                $clone | Add-Member -MemberType NoteProperty -Name "_id" -Value $newId -Force
+                $clone | Add-Member -MemberType NoteProperty -Name "id" -Value $newId -Force
+                $clone | Add-Member -MemberType NoteProperty -Name "name" -Value ([string]$clone.name + " (Copy)") -Force
+                $clone | Add-Member -MemberType NoteProperty -Name "createdAt" -Value (Get-Date -Format "MM/dd/yyyy") -Force
                 $localPresets[$newId] = $clone
                 [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
 
-                Send-JsonResponse $response @{ status = "ok"; newId = $newId; preset = $clone; message = "Preset duplicated" }
+                Send-JsonResponse $response @{ status = "ok"; newId = $newId; preset = $clone; message = "Preset duplicated successfully" }
             } catch {
                 Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
             }
@@ -2488,14 +2514,22 @@ while ($true) {
                 $delId = if ($payload.id) { [string]$payload.id } else { "" }
                 $s2ePresetsFile = Join-Path $folder "s2e_presets.json"
                 $localPresets = [ordered]@{}
+                $deletedCount = 0
                 if (Test-Path $s2ePresetsFile) {
                     $raw = Get-Content $s2ePresetsFile -Raw -Encoding UTF8 | ConvertFrom-Json
                     foreach ($p in $raw.PSObject.Properties) {
-                        if ($p.Name -ne $delId) { $localPresets[$p.Name] = $p.Value }
+                        $itemPresetId = if ($p.Value.id) { [string]$p.Value.id } else { "" }
+                        $itemUId = if ($p.Value._id) { [string]$p.Value._id } else { "" }
+                        $matches = ($p.Name -eq $delId) -or ($itemPresetId -eq $delId) -or ($itemUId -eq $delId)
+                        if ($matches) {
+                            $deletedCount++
+                        } else {
+                            $localPresets[$p.Name] = $p.Value
+                        }
                     }
                 }
                 [System.IO.File]::WriteAllText($s2ePresetsFile, ($localPresets | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
-                Send-JsonResponse $response @{ status = "ok"; id = $delId; message = "Preset deleted" }
+                Send-JsonResponse $response @{ status = "ok"; id = $delId; deletedCount = $deletedCount; message = "Preset deleted successfully" }
             } catch {
                 Send-JsonResponse $response @{ status = "error"; message = "$_" } 400
             }
