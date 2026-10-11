@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="wheel-engine.js"></script>
     <style>
         :root {
             --bg-deep: #090a0f;
@@ -958,6 +959,61 @@
             color: #94a3b8;
         }
         .rarity-normal .rarity-tag { color: #e2e8f0; background: rgba(148, 163, 184, 0.2); border: 1px solid rgba(148, 163, 184, 0.4); }
+
+        /* ==================== LUXURY HORIZONTAL REEL THEMES ==================== */
+        /* 1. Casino Royale Velvet & Gold Filigree */
+        .s2e-reel-card.theme-casino_felt,
+        .s2e-reel-track.theme-casino_felt .s2e-reel-card {
+            background: radial-gradient(circle at 50% 18%, #2d0c15 0%, #17050a 65%, #090204 100%) !important;
+            border: 2px solid #b45309 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(254, 240, 138, 0.35), 0 0 12px rgba(245, 158, 11, 0.25) !important;
+        }
+        .s2e-reel-card.theme-casino_felt::before,
+        .s2e-reel-track.theme-casino_felt .s2e-reel-card::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 9px;
+            pointer-events: none;
+        }
+        .s2e-reel-card.theme-casino_felt .rarity-tag,
+        .s2e-reel-track.theme-casino_felt .s2e-reel-card .rarity-tag {
+            background: linear-gradient(135deg, #78350f, #b45309) !important;
+            color: #fef08a !important;
+            border: 1px solid #fde047 !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+        }
+
+        /* 2. Cyberpunk Holographic */
+        .s2e-reel-card.theme-neon_cyber,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card {
+            background: linear-gradient(180deg, #090d16 0%, #03060a 100%) !important;
+            border: 2px solid #00f0ff !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.2) !important;
+        }
+        .s2e-reel-card.theme-neon_cyber .rarity-tag,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card .rarity-tag {
+            background: rgba(0, 240, 255, 0.2) !important;
+            color: #00f0ff !important;
+            border: 1px solid #00f0ff !important;
+            text-shadow: 0 0 8px #00f0ff !important;
+        }
+
+        /* 3. Obsidian VIP Titanium */
+        .s2e-reel-card.theme-obsidian_luxury,
+        .s2e-reel-track.theme-obsidian_luxury .s2e-reel-card {
+            background: linear-gradient(180deg, #1c1917 0%, #0c0a09 100%) !important;
+            border: 2px solid #eab308 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.95), 0 0 14px rgba(234, 179, 8, 0.3) !important;
+        }
+        .s2e-reel-card.theme-obsidian_luxury .rarity-tag,
+        .s2e-reel-track.theme-obsidian_luxury .s2e-reel-card .rarity-tag {
+            background: #292524 !important;
+            color: #fde047 !important;
+            border: 1px solid #ca8a04 !important;
+        }
 
         /* Manual Editable Input for Dual LOSE / WIN Cards (Exact Match to Photo 1) */
         .card-editable-input {
@@ -4594,6 +4650,9 @@
                             <a href="/overlay-spinner.html" target="_blank" class="btn btn-secondary btn-sm" style="color: #38bdf8;">
                                 ↗ Open Overlay
                             </a>
+                            <button type="button" class="btn btn-secondary btn-sm" style="color: #4ade80;" onclick="window.open('/overlay-spinner.html?preview=true','_blank')">
+                                👁 Preview in TikTok Studio
+                            </button>
                         </div>
                     </div>
 
@@ -4697,11 +4756,14 @@
 
             <!-- CLASSIC CANVAS WHEEL VIEW -->
             <div id="wheelStudioView" style="display: none; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; flex-direction: column; align-items: center; gap: 16px;">
-                <div style="position: relative; width: 320px; height: 320px; display: flex; justify-content: center; align-items: center;">
-                    <div class="wheel-pin" style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid #ef4444; z-index: 10; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));"></div>
-                    <canvas id="wheelCanvas" width="320" height="320" style="transition: transform 4.5s cubic-bezier(0.12, 0.95, 0.22, 1); border-radius: 50%; box-shadow: 0 0 30px rgba(0,0,0,0.6);"></canvas>
+                <div style="position: relative; width: 360px; height: 360px; display: flex; justify-content: center; align-items: center;">
+                    <div id="wheelStudioPointer" class="wheel-pointer-container" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); z-index: 25; pointer-events: none; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.95));"></div>
+                    <canvas id="wheelCanvas" width="720" height="720" style="width: 360px; height: 360px; transition: transform 4.5s cubic-bezier(0.12, 0.95, 0.22, 1); border-radius: 50%; box-shadow: 0 10px 45px rgba(0,0,0,0.9), 0 0 35px rgba(180, 83, 9, 0.35);"></canvas>
                 </div>
-                <button class="btn btn-primary" onclick="spinWheel()">Test Spin Wheel</button>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="spinWheel()" id="btnTestSpinWheel">Test Spin Wheel</button>
+                    <button class="btn btn-secondary" onclick="openSpinnerAppearanceModal()">🎨 Spinner Appearance & Themes</button>
+                </div>
             </div>
 
             <!-- PRIZE CARDS & RARITY POOL -->
@@ -5854,7 +5916,20 @@
 
     <!-- MODAL: SPINNER CUSTOMIZER (STUDIO CUSTOMIZER) -->
     <div id="spinnerAppearanceModal" class="modal-backdrop">
-        <div class="modal-box" style="max-width: 580px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 22px;">
+        <div class="modal-box" style="max-width: 640px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 22px; max-height: 90vh; overflow-y: auto;">
+            <!-- TARGET SPINNER SELECTOR -->
+            <div style="background: rgba(13, 17, 23, 0.95); border: 1.5px solid #388bfd; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 0 16px rgba(56, 139, 253, 0.25);">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <span style="font-size: 13px; font-weight: 800; color: #f59e0b; white-space: nowrap;">🎯 Target Spinner:</span>
+                    <select id="customizerTargetSpinner" class="form-select" onchange="onCustomizerTargetSpinnerChanged(this.value)" style="background: #161b22; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 700; flex: 1;">
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="pill" id="customizerActiveModeBadge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); font-weight: 800; font-size: 11px; padding: 4px 10px;">Reel Mode</span>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="toggleCustomizerActiveMode()" style="padding: 3px 8px; font-size: 11px;" title="Switch between Horizontal Reel and Circular Wheel">Switch Mode</button>
+                </div>
+            </div>
+
             <!-- TOP BAR -->
             <div style="display: flex; gap: 16px; margin-bottom: 16px; position: relative;">
                 <!-- Thumbnail Box / Spinner Pointer Icon -->
@@ -5874,9 +5949,9 @@
                 <!-- Function Name & Close -->
                 <div style="flex: 1;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <label style="font-size: 13px; font-weight: 700; color: #c9d1d9;">Function Name:</label>
+                        <label style="font-size: 13px; font-weight: 700; color: #c9d1d9;">Spinner Name:</label>
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <a href="#" onclick="showToast('Gift Spinner: Spins randomly on roulette gift with configured weights'); return false;" style="font-size: 12px; color: #58a6ff; text-decoration: none;">Read about spinner</a>
+                            <a href="#" onclick="showToast('Customize each spinner independently with high-roller casino styling'); return false;" style="font-size: 12px; color: #58a6ff; text-decoration: none;">Help</a>
                             <button type="button" onclick="closeSpinnerAppearanceModal()" style="background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1;">&times;</button>
                         </div>
                     </div>
@@ -5885,7 +5960,7 @@
                     <!-- Pointer Icon Input & Presets -->
                     <div style="margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid #21262d; border-radius: 6px; padding: 8px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 11px; font-weight: 700; color: #8b949e;">Spinner Pointer Icon:</span>
+                            <span style="font-size: 11px; font-weight: 700; color: #8b949e;">Custom Marker / Avatar Icon:</span>
                             <span style="font-size: 10px; color: #58a6ff;">(Icon on spinner pointer)</span>
                         </div>
                         <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
@@ -5905,6 +5980,74 @@
                         <input type="checkbox" id="customizerHideOverlay" style="accent-color: #388bfd;">
                         Hide Event In Overlay
                     </label>
+                </div>
+            </div>
+
+            <!-- LUXURY CASINO STYLING & APPEARANCE (REFERENCE PHOTO 1) -->
+            <div style="background: linear-gradient(180deg, rgba(30, 16, 9, 0.85) 0%, rgba(13, 17, 23, 0.95) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.6);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 18px;">🎰</span>
+                        <span style="font-size: 13px; font-weight: 800; color: #fef08a; letter-spacing: 0.3px;">WHEEL & REEL LUXURY STYLING</span>
+                    </div>
+                    <span style="font-size: 11px; color: #d97706; font-weight: 700;">Casino Roulette Craftsmanship</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <!-- Circular Wheel Aesthetic Theme -->
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 4px;">Wheel Theme (Circular)</label>
+                        <select id="customizerWheelTheme" class="form-select" onchange="onCustomizerStylePreviewChanged()" style="background: #0d1117; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
+                            <option value="casino_royale">🎰 Casino Royale (Mahogany & Brass - Picture 1)</option>
+                            <option value="pvz_gold">🌻 Royal Sunburst (24K Gold & Emerald)</option>
+                            <option value="cyberpunk_neon">⚡ Cyberpunk Neon (Dark Titanium & Lasers)</option>
+                            <option value="obsidian_vip">👑 Obsidian VIP (Matte Carbon & Gold)</option>
+                            <option value="emerald_montecarlo">🎲 Monte Carlo Emerald (Classic Felt & Brass)</option>
+                        </select>
+                    </div>
+
+                    <!-- Center Turret / Finial Spindle -->
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 4px;">Center Spindle / Finial</label>
+                        <select id="customizerCenterFinial" class="form-select" onchange="onCustomizerStylePreviewChanged()" style="background: #0d1117; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
+                            <option value="turret_3d">🪙 3D Chrome & Brass Turret (Picture 1)</option>
+                            <option value="golden_crown">👑 Royal Gold Crown</option>
+                            <option value="ruby_gem">💎 Faceted Ruby Jewel</option>
+                            <option value="avatar_badge">👤 Streamer / Custom Icon Coin</option>
+                        </select>
+                    </div>
+
+                    <!-- Pointer Needle Pin Style -->
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 4px;">Pointer Needle Style</label>
+                        <select id="customizerPointerTheme" class="form-select" onchange="onCustomizerStylePreviewChanged()" style="background: #0d1117; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
+                            <option value="brass_chevron">🗡️ Luxury Brass Chevron + Ruby (Picture 1)</option>
+                            <option value="ivory_ball">⚪ Casino Ivory Roulette Ball</option>
+                            <option value="neon_laser">⚡ Neon Cyber Laser</option>
+                            <option value="custom_badge">🖼️ Custom Pointer Icon Pin</option>
+                        </select>
+                    </div>
+
+                    <!-- Wheel Pockets Color / Rarity Scheme -->
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 4px;">Pocket Colors & Rarity</label>
+                        <select id="customizerWheelRarityStyle" class="form-select" onchange="onCustomizerStylePreviewChanged()" style="background: #0d1117; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
+                            <option value="rarity_enamel">💎 Jewel Enamel by Rarity (Ruby, Amber, Purple, Blue, Onyx)</option>
+                            <option value="classic_roulette">🎲 Classic Roulette (Alternating Ruby Red & Onyx Black)</option>
+                            <option value="slice_custom">🎨 Custom Slices Assigned Colors</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Horizontal Spinner Reel Card Theme -->
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: #f59e0b; display: block; margin-bottom: 4px;">Horizontal Spinner Reel Card Theme</label>
+                    <select id="customizerReelTheme" class="form-select" onchange="onCustomizerStylePreviewChanged()" style="background: #0d1117; border: 1px solid #30363d; color: #ffffff; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
+                        <option value="casino_felt">🎰 Casino Royale Velvet (Gold Beveled Borders & Luxury Glow)</option>
+                        <option value="neon_cyber">⚡ Cyberpunk Holographic (Neon Grid & Laser Accents)</option>
+                        <option value="obsidian_luxury">👑 Obsidian VIP (Matte Titanium & 24K Gold Foil)</option>
+                        <option value="pvz_classic">🌿 Classic Vibrant Game Cards</option>
+                    </select>
                 </div>
             </div>
 
@@ -5947,7 +6090,7 @@
 
                 <!-- Row 2: Style, Images Outline, Text -->
                 <div>
-                    <div style="font-size: 11px; color: #8b949e; font-weight: 700; margin-bottom: 4px;">Style</div>
+                    <div style="font-size: 11px; color: #8b949e; font-weight: 700; margin-bottom: 4px;">Rarity Style</div>
                     <select id="customizerStyle" class="form-select" style="background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
                         <option value="neon">Show Rarity (Neon)</option>
                         <option value="hide_rarity">Hide Rarity</option>
@@ -5965,7 +6108,7 @@
                 </div>
 
                 <div>
-                    <div style="font-size: 11px; color: #8b949e; font-weight: 700; margin-bottom: 4px;">Text</div>
+                    <div style="font-size: 11px; color: #8b949e; font-weight: 700; margin-bottom: 4px;">Text Display</div>
                     <select id="customizerText" class="form-select" style="background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;">
                         <option value="name_amount">Show Name + Amount</option>
                         <option value="name">Show Name Only</option>
@@ -8557,6 +8700,9 @@
                         <button type="button" class="btn btn-sm ${isSelected ? 'btn-primary' : 'btn-secondary'}" onclick="selectActiveSpinner('${sp.id}')" title="Configure this spinner's prizes">
                             ${isSelected ? 'Active Pool' : 'Edit Pool'}
                         </button>
+                        <button type="button" class="btn btn-sm" onclick="openSpinnerAppearanceModal('${sp.id}')" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);" title="Style & customize this spinner">
+                            🎨 Style
+                        </button>
                         <button type="button" class="btn btn-sm" onclick="spinSpecificSpinner('${sp.id}')" style="background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4);" title="Test spin this spinner">
                             Test Spin
                         </button>
@@ -8573,6 +8719,9 @@
             const track = document.getElementById('dashboardReelTrack');
             const spinner = getActiveSpinner();
             if (!track || !spinner || !spinner.slices) return;
+
+            const rTheme = spinner.reelTheme || 'casino_felt';
+            track.className = 's2e-reel-track theme-' + rTheme;
 
             const slices = spinner.slices;
             if (slices.length === 0) {
@@ -8615,7 +8764,7 @@
                         const displayNum = (signedDelta > 0 ? `+${Math.abs(signedDelta)}` : `${signedDelta}`);
                         const signText = signedDelta >= 0 ? 'WIN +' : 'LOSE -';
                         html += `
-                            <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}" style="border-color:${col}; box-shadow:0 0 14px ${col}40;">
+                            <div class="s2e-reel-card ${rarityClass} theme-${rTheme}" data-slice-id="${slice.id}" style="border-color:${col}; box-shadow:0 0 14px ${col}40;">
                                 <div class="card-glow-bg" style="background: radial-gradient(circle, ${col}25 0%, transparent 70%);"></div>
                                 <span class="rarity-tag" style="border-color:${col}; color:${col};">${slice.rarity || 'Normal'}</span>
                                 <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; width:100%;">
@@ -8627,7 +8776,7 @@
                     } else {
                         const amountText = (slice.amount && slice.amount > 1) ? `x${slice.amount}` : (slice.amount ? `x${slice.amount}` : '');
                         html += `
-                            <div class="s2e-reel-card ${rarityClass}" data-slice-id="${slice.id}">
+                            <div class="s2e-reel-card ${rarityClass} theme-${rTheme}" data-slice-id="${slice.id}">
                                 <div class="card-glow-bg"></div>
                                 <span class="rarity-tag">${slice.rarity || 'Normal'}</span>
                                 <div class="card-img-wrap">
@@ -8714,45 +8863,581 @@
             });
         }
 
+        // ==================== LUXURY CASINO ROULETTE & WHEEL ENGINE ====================
+        function getWheelPointerHTML(theme = 'brass_chevron', customIcon = '') {
+            if (theme === 'ivory_ball') {
+                return `
+                    <div style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.95));">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f1f5f9 45%, #cbd5e1 80%, #94a3b8 100%); box-shadow: 0 3px 8px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.9); border: 1.5px solid rgba(255,255,255,0.7);"></div>
+                        <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #cbd5e1; margin-top: -2px;"></div>
+                    </div>
+                `;
+            }
+            if (theme === 'neon_laser') {
+                return `
+                    <div style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 0 14px #00f0ff);">
+                        <svg viewBox="0 0 32 42" width="34" height="44" fill="none">
+                            <polygon points="16,40 2,12 8,2 24,2 30,12" fill="#090d16" stroke="#00f0ff" stroke-width="2.5"/>
+                            <polygon points="16,35 6,13 11,5 21,5 26,13" fill="#00f0ff" opacity="0.8"/>
+                            <circle cx="16" cy="15" r="5.5" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                `;
+            }
+            if (theme === 'custom_badge' && customIcon) {
+                return `
+                    <div style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.95));">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; border: 2.5px solid #f59e0b; background: #0f172a; overflow: hidden; box-shadow: 0 0 14px rgba(245, 158, 11, 0.65); display: flex; align-items: center; justify-content: center;">
+                            <img src="${customIcon}" onerror="this.src='images/func_2.png'" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #f59e0b; margin-top: -3px;"></div>
+                    </div>
+                `;
+            }
+            // Default: 'brass_chevron' (High-roller Casino Brass Chevron with Ruby Facet - Matches Reference Photo 1)
+            return `
+                <div style="width: 36px; height: 46px; position: relative; filter: drop-shadow(0 4px 14px rgba(0,0,0,0.95));">
+                    <svg viewBox="0 0 34 44" width="36" height="46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="studioBrassPtr" x1="0" y1="0" x2="34" y2="44" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#fef08a"/>
+                                <stop offset="25%" stop-color="#eab308"/>
+                                <stop offset="50%" stop-color="#b45309"/>
+                                <stop offset="75%" stop-color="#fde047"/>
+                                <stop offset="100%" stop-color="#78350f"/>
+                            </linearGradient>
+                            <radialGradient id="studioRubyPtrJewel" cx="45%" cy="40%" r="55%">
+                                <stop offset="0%" stop-color="#ff7185"/>
+                                <stop offset="45%" stop-color="#e11d48"/>
+                                <stop offset="85%" stop-color="#881337"/>
+                                <stop offset="100%" stop-color="#4c0519"/>
+                            </radialGradient>
+                        </defs>
+                        <path d="M17 43 L3 13 C1 9 4 3 9 3 L25 3 C30 3 33 9 31 13 Z" fill="url(#studioBrassPtr)" stroke="#1a0f02" stroke-width="1.8" />
+                        <path d="M17 38 L6 14 C4.5 11 6.5 6 10 6 L24 6 C27.5 6 29.5 11 28 14 Z" fill="#2d1507" opacity="0.65"/>
+                        <circle cx="17" cy="15" r="7.5" fill="url(#studioRubyPtrJewel)" stroke="#fde047" stroke-width="1.2"/>
+                        <circle cx="15.2" cy="13.2" r="2.2" fill="#ffffff" opacity="0.85"/>
+                    </svg>
+                </div>
+            `;
+        }
+
+        function renderWheelStudioPointer(targetSp = null) {
+            const container = document.getElementById('wheelStudioPointer');
+            if (!container) return;
+            const sp = targetSp || getActiveSpinner();
+            const ptrTheme = (sp && sp.pointerTheme) || 'brass_chevron';
+            const ptrIcon = (sp && sp.pointerIcon) || 'images/game-icons/pvz/spawn_ultimatecattail.webp';
+            container.innerHTML = getWheelPointerHTML(ptrTheme, ptrIcon);
+        }
+
+        function drawRealisticWheel(canvas, spinner) {
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = Math.min(w, h) / 2 - 4;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const sp = spinner || {};
+            const slices = (sp.slices && sp.slices.length > 0) ? sp.slices : [
+                { id: '1', label: '+500', rarity: 'Mythic', delta: 500 },
+                { id: '2', label: '-100', rarity: 'Mythic', delta: -100 },
+                { id: '3', label: '+100', rarity: 'Legendary', delta: 100 },
+                { id: '4', label: '-50', rarity: 'Legendary', delta: -50 },
+                { id: '5', label: '+50', rarity: 'Epic', delta: 50 },
+                { id: '6', label: '-25', rarity: 'Rare', delta: -25 },
+                { id: '7', label: '+20', rarity: 'Normal', delta: 20 },
+                { id: '8', label: '-10', rarity: 'Normal', delta: -10 }
+            ];
+
+            const num = slices.length || 8;
+            const arc = (2 * Math.PI) / num;
+
+            // Theme options
+            const theme = sp.wheelTheme || 'casino_royale';
+            const centerFinial = sp.centerFinial || 'turret_3d';
+            const colorMode = sp.wheelRarityStyle || 'rarity_enamel';
+
+            // Geometric radii for 3D depth
+            const rOuter = R;
+            const rWoodIn = R * 0.84;
+            const rBrassIn = R * 0.81;
+            const rTrackIn = R * 0.72;
+            const rPocketOut = R * 0.72;
+            const rPocketIn = R * 0.44;
+            const rConeIn = R * 0.22;
+            const rTurretBase = R * 0.22;
+            const rTurretMid = R * 0.15;
+            const rTurretTop = R * 0.085;
+
+            // ================= 1. OUTER RIM (POLISHED MAHOGANY WOOD / THEMED RIM) =================
+            ctx.save();
+            let rimGrad;
+            if (theme === 'pvz_gold') {
+                rimGrad = ctx.createRadialGradient(cx, cy, rWoodIn, cx, cy, rOuter);
+                rimGrad.addColorStop(0.0, '#78350f');
+                rimGrad.addColorStop(0.3, '#d97706');
+                rimGrad.addColorStop(0.7, '#fef08a');
+                rimGrad.addColorStop(1.0, '#451a03');
+            } else if (theme === 'cyberpunk_neon') {
+                rimGrad = ctx.createRadialGradient(cx, cy, rWoodIn, cx, cy, rOuter);
+                rimGrad.addColorStop(0.0, '#0b0f19');
+                rimGrad.addColorStop(0.4, '#161e2e');
+                rimGrad.addColorStop(0.8, '#0d131f');
+                rimGrad.addColorStop(1.0, '#04060a');
+            } else if (theme === 'obsidian_vip') {
+                rimGrad = ctx.createRadialGradient(cx, cy, rWoodIn, cx, cy, rOuter);
+                rimGrad.addColorStop(0.0, '#1c1917');
+                rimGrad.addColorStop(0.4, '#292524');
+                rimGrad.addColorStop(0.8, '#18181b');
+                rimGrad.addColorStop(1.0, '#09090b');
+            } else if (theme === 'emerald_montecarlo') {
+                rimGrad = ctx.createRadialGradient(cx, cy, rWoodIn, cx, cy, rOuter);
+                rimGrad.addColorStop(0.0, '#064e3b');
+                rimGrad.addColorStop(0.35, '#047857');
+                rimGrad.addColorStop(0.75, '#022c22');
+                rimGrad.addColorStop(1.0, '#011c15');
+            } else {
+                // Default: Casino Royale Polished Dark Mahogany Wood (Picture 1)
+                rimGrad = ctx.createRadialGradient(cx, cy, rWoodIn, cx, cy, rOuter);
+                rimGrad.addColorStop(0.00, '#2b0e04');
+                rimGrad.addColorStop(0.25, '#4a1b0b');
+                rimGrad.addColorStop(0.60, '#381206');
+                rimGrad.addColorStop(0.85, '#220802');
+                rimGrad.addColorStop(1.00, '#0f0301');
+            }
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, 0, 2 * Math.PI);
+            ctx.fillStyle = rimGrad;
+            ctx.fill();
+
+            // Lacquered high-gloss surface sheen
+            const glossGrad = ctx.createLinearGradient(cx - rOuter, cy - rOuter, cx + rOuter, cy + rOuter);
+            glossGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0.18)');
+            glossGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0.02)');
+            glossGrad.addColorStop(0.55, 'rgba(0, 0, 0, 0.22)');
+            glossGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0.12)');
+            ctx.fillStyle = glossGrad;
+            ctx.fill();
+
+            // Outer dark rim edge
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOuter, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#050100';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // ================= 2. BRASS RIVETS / STUDS =================
+            const rivetCount = Math.max(16, Math.min(32, num * 2));
+            const rRivets = (rOuter + rWoodIn) / 2;
+            for (let k = 0; k < rivetCount; k++) {
+                const ra = (k / rivetCount) * 2 * Math.PI;
+                const rx = cx + rRivets * Math.cos(ra);
+                const ry = cy + rRivets * Math.sin(ra);
+
+                const rSize = Math.max(2.5, R * 0.012);
+                const rGrad = ctx.createRadialGradient(rx - 1, ry - 1, 0, rx, ry, rSize);
+                if (theme === 'cyberpunk_neon') {
+                    rGrad.addColorStop(0, '#ffffff');
+                    rGrad.addColorStop(0.4, '#00f0ff');
+                    rGrad.addColorStop(1, '#005577');
+                } else if (theme === 'pvz_gold') {
+                    rGrad.addColorStop(0, '#a7f3d0');
+                    rGrad.addColorStop(0.5, '#10b981');
+                    rGrad.addColorStop(1, '#064e3b');
+                } else {
+                    rGrad.addColorStop(0, '#fef08a');
+                    rGrad.addColorStop(0.4, '#eab308');
+                    rGrad.addColorStop(0.85, '#b45309');
+                    rGrad.addColorStop(1, '#451a03');
+                }
+
+                ctx.beginPath();
+                ctx.arc(rx, ry, rSize, 0, 2 * Math.PI);
+                ctx.fillStyle = rGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.85)';
+                ctx.shadowBlur = 3;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Tiny specular highlight
+                ctx.beginPath();
+                ctx.arc(rx - 0.7, ry - 0.7, rSize * 0.35, 0, 2 * Math.PI);
+                ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // ================= 3. POLISHED BRASS INLAY BEZEL RING =================
+            ctx.save();
+            const brassGrad = ctx.createRadialGradient(cx, cy, rBrassIn, cx, cy, rWoodIn);
+            if (theme === 'cyberpunk_neon') {
+                brassGrad.addColorStop(0.0, '#003344');
+                brassGrad.addColorStop(0.5, '#00f0ff');
+                brassGrad.addColorStop(1.0, '#001a24');
+            } else {
+                brassGrad.addColorStop(0.0, '#78350f');
+                brassGrad.addColorStop(0.2, '#fde047');
+                brassGrad.addColorStop(0.5, '#eab308');
+                brassGrad.addColorStop(0.8, '#fef08a');
+                brassGrad.addColorStop(1.0, '#451a03');
+            }
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rWoodIn, 0, 2 * Math.PI);
+            ctx.arc(cx, cy, rBrassIn, 0, 2 * Math.PI, true);
+            ctx.fillStyle = brassGrad;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rWoodIn, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#270e02';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // ================= 4. SUNKEN BALL TRACK (APRON BOWL) =================
+            ctx.save();
+            const trackGrad = ctx.createRadialGradient(cx, cy, rTrackIn, cx, cy, rBrassIn);
+            trackGrad.addColorStop(0.00, '#100401');
+            trackGrad.addColorStop(0.40, '#240b03');
+            trackGrad.addColorStop(0.75, '#180702');
+            trackGrad.addColorStop(1.00, '#060100');
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rBrassIn, 0, 2 * Math.PI);
+            ctx.arc(cx, cy, rTrackIn, 0, 2 * Math.PI, true);
+            ctx.fillStyle = trackGrad;
+            ctx.fill();
+
+            // Ball track sunken inner shadow
+            ctx.beginPath();
+            ctx.arc(cx, cy, rTrackIn + 3, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'rgba(0,0,0,0.9)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Polished metallic lip ring above pocket ring
+            ctx.beginPath();
+            ctx.arc(cx, cy, rPocketOut, 0, 2 * Math.PI);
+            ctx.strokeStyle = (theme === 'cyberpunk_neon') ? '#00f0ff' : '#d97706';
+            ctx.lineWidth = 1.8;
+            ctx.stroke();
+            ctx.restore();
+
+            // ================= 5. ENAMEL POCKETS & METALLIC FRETS =================
+            ctx.save();
+            for (let i = 0; i < num; i++) {
+                const sAngle = i * arc;
+                const eAngle = (i + 1) * arc;
+                const mAngle = sAngle + arc / 2;
+                const slice = slices[i] || { label: 'Item ' + (i+1) };
+
+                // Determine pocket enamel color
+                let col1 = '#881337', col2 = '#4c0519';
+                const rText = (slice.rarity || 'Normal').toLowerCase();
+                const isNumber = slice.delta !== undefined || /^([+-]?\d+)$/.test(slice.label || '');
+                const delta = Number(slice.delta !== undefined ? slice.delta : parseInt(slice.label) || 0);
+
+                if (colorMode === 'classic_roulette') {
+                    if (delta === 0 || slice.label === '0' || slice.isZero) {
+                        col1 = '#047857'; col2 = '#064e3b'; // Zero Emerald Green
+                    } else if (i % 2 === 0) {
+                        col1 = '#9f1239'; col2 = '#4c0519'; // Ruby Red
+                    } else {
+                        col1 = '#18181b'; col2 = '#09090b'; // Onyx Black
+                    }
+                } else if (colorMode === 'slice_custom' && slice.color) {
+                    col1 = slice.color;
+                    col2 = '#09090b';
+                } else {
+                    // Jewel Enamel by Rarity
+                    switch (rText) {
+                        case 'mythic':
+                            col1 = '#b91c1c'; col2 = '#450a0a'; break; // Ruby Crimson
+                        case 'legendary':
+                            col1 = '#d97706'; col2 = '#78350f'; break; // Amber Gold
+                        case 'epic':
+                            col1 = '#7e22ce'; col2 = '#3b0764'; break; // Royal Amethyst
+                        case 'rare':
+                            col1 = '#2563eb'; col2 = '#172554'; break; // Sapphire Blue
+                        default:
+                            col1 = (isNumber && delta > 0) ? '#059669' : '#1f2937';
+                            col2 = (isNumber && delta > 0) ? '#064e3b' : '#09090b';
+                            break;
+                    }
+                }
+
+                // Draw pocket wedge
+                ctx.beginPath();
+                ctx.arc(cx, cy, rPocketOut, sAngle, eAngle);
+                ctx.arc(cx, cy, rPocketIn, eAngle, sAngle, true);
+                ctx.closePath();
+
+                const pocketGrad = ctx.createRadialGradient(cx, cy, rPocketIn, cx, cy, rPocketOut);
+                pocketGrad.addColorStop(0.0, col1);
+                pocketGrad.addColorStop(0.7, col2);
+                pocketGrad.addColorStop(1.0, '#000000');
+                ctx.fillStyle = pocketGrad;
+                ctx.fill();
+
+                // Pocket floor specular highlight
+                ctx.save();
+                ctx.clip();
+                const sheenGrad = ctx.createLinearGradient(
+                    cx + rPocketIn * Math.cos(mAngle), cy + rPocketIn * Math.sin(mAngle),
+                    cx + rPocketOut * Math.cos(mAngle), cy + rPocketOut * Math.sin(mAngle)
+                );
+                sheenGrad.addColorStop(0, 'rgba(255,255,255,0.22)');
+                sheenGrad.addColorStop(0.4, 'rgba(255,255,255,0.0)');
+                sheenGrad.addColorStop(1, 'rgba(0,0,0,0.4)');
+                ctx.fillStyle = sheenGrad;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Draw Metallic Separator Frets
+            for (let i = 0; i < num; i++) {
+                const sAngle = i * arc;
+                const cosA = Math.cos(sAngle);
+                const sinA = Math.sin(sAngle);
+
+                const x1 = cx + (rPocketIn - 4) * cosA;
+                const y1 = cy + (rPocketIn - 4) * sinA;
+                const x2 = cx + (rPocketOut + 1) * cosA;
+                const y2 = cy + (rPocketOut + 1) * sinA;
+
+                // Fret dark cast shadow
+                ctx.beginPath();
+                ctx.moveTo(x1 - 1.2 * sinA, y1 + 1.2 * cosA);
+                ctx.lineTo(x2 - 1.2 * sinA, y2 + 1.2 * cosA);
+                ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // Fret metallic body
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = (theme === 'cyberpunk_neon') ? '#00f0ff' : '#eab308';
+                ctx.lineWidth = 1.8;
+                ctx.stroke();
+
+                // Fret top specular reflection
+                ctx.beginPath();
+                ctx.moveTo(x1 + 0.6 * sinA, y1 - 0.6 * cosA);
+                ctx.lineTo(x2 + 0.6 * sinA, y2 - 0.6 * cosA);
+                ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            }
+
+            // Draw Pocket Labels / Numbers (Radial Alignment)
+            const fontPx = Math.max(10, Math.min(18, Math.floor((rPocketOut - rPocketIn) * 0.38 * (14 / Math.max(10, num)) + 4)));
+            for (let i = 0; i < num; i++) {
+                const mAngle = (i + 0.5) * arc;
+                const slice = slices[i] || {};
+                let label = slice.label || '';
+                if (slice.delta !== undefined && slice.delta !== null) {
+                    const d = Number(slice.delta);
+                    label = d > 0 ? `+${d}` : `${d}`;
+                }
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(mAngle);
+
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.font = `900 ${fontPx}px 'Outfit', 'Plus Jakarta Sans', sans-serif`;
+
+                // Embossed metallic gold typography
+                ctx.shadowColor = 'rgba(0,0,0,0.95)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                ctx.fillStyle = '#fef08a';
+                ctx.fillText(label, rPocketOut - 12, 0);
+
+                // Top subtle specular reflection
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(label, rPocketOut - 12, -0.6);
+
+                ctx.restore();
+            }
+            ctx.restore();
+
+            // ================= 6. INNER CONE & RADIAL SPOKES =================
+            ctx.save();
+            const coneGrad = ctx.createRadialGradient(cx, cy, rConeIn, cx, cy, rPocketIn);
+            coneGrad.addColorStop(0.00, '#541e0a');
+            coneGrad.addColorStop(0.35, '#3d1406');
+            coneGrad.addColorStop(0.75, '#240a03');
+            coneGrad.addColorStop(1.00, '#120401');
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rPocketIn, 0, 2 * Math.PI);
+            ctx.arc(cx, cy, rConeIn, 0, 2 * Math.PI, true);
+            ctx.fillStyle = coneGrad;
+            ctx.fill();
+
+            // Cone brass border rings
+            ctx.beginPath();
+            ctx.arc(cx, cy, rPocketIn, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rConeIn, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#b45309';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Radial spoke frets connecting from pockets to center turret base
+            for (let i = 0; i < num; i++) {
+                const sAngle = i * arc;
+                const cosA = Math.cos(sAngle);
+                const sinA = Math.sin(sAngle);
+
+                ctx.beginPath();
+                ctx.moveTo(cx + rConeIn * cosA, cy + rConeIn * sinA);
+                ctx.lineTo(cx + rPocketIn * cosA, cy + rPocketIn * sinA);
+                ctx.strokeStyle = 'rgba(234, 179, 8, 0.45)';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // ================= 7. CENTER SPINDLE FINIAL (REFERENCE PHOTO 1) =================
+            ctx.save();
+            if (centerFinial === 'golden_crown') {
+                // Royal Crown Finial
+                const cGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rTurretBase);
+                cGrad.addColorStop(0, '#fef08a');
+                cGrad.addColorStop(0.5, '#eab308');
+                cGrad.addColorStop(1, '#78350f');
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretBase, 0, 2 * Math.PI);
+                ctx.fillStyle = cGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 10;
+                ctx.fill();
+
+                // Crown points
+                for (let k = 0; k < 8; k++) {
+                    const ca = (k / 8) * 2 * Math.PI;
+                    ctx.beginPath();
+                    ctx.arc(cx + rTurretMid * Math.cos(ca), cy + rTurretMid * Math.sin(ca), 3, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fill();
+                }
+            } else if (centerFinial === 'ruby_gem') {
+                // Faceted Ruby Jewel Finial
+                const rGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rTurretBase);
+                rGrad.addColorStop(0, '#ff7185');
+                rGrad.addColorStop(0.5, '#e11d48');
+                rGrad.addColorStop(1, '#881337');
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretBase, 0, 2 * Math.PI);
+                ctx.fillStyle = rGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.85)';
+                ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretBase, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            } else {
+                // Default: 3D Lathe-Turned Chrome & Brass Turret Spindle (Picture 1)
+                // Tier 1: Stepped Brass Fluted Base
+                const tBaseGrad = ctx.createRadialGradient(cx, cy, rTurretMid, cx, cy, rTurretBase);
+                tBaseGrad.addColorStop(0.0, '#78350f');
+                tBaseGrad.addColorStop(0.25, '#fef08a');
+                tBaseGrad.addColorStop(0.55, '#d97706');
+                tBaseGrad.addColorStop(0.85, '#fde047');
+                tBaseGrad.addColorStop(1.0, '#451a03');
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretBase, 0, 2 * Math.PI);
+                ctx.fillStyle = tBaseGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.75)';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretBase, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#270e02';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Tier 2: Concave Polished Chrome Spindle Waist
+                const tMidGrad = ctx.createRadialGradient(cx - rTurretMid * 0.25, cy - rTurretMid * 0.25, 0, cx, cy, rTurretMid);
+                tMidGrad.addColorStop(0.00, '#ffffff');
+                tMidGrad.addColorStop(0.35, '#cbd5e1');
+                tMidGrad.addColorStop(0.65, '#64748b');
+                tMidGrad.addColorStop(0.90, '#334155');
+                tMidGrad.addColorStop(1.00, '#0f172a');
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretMid, 0, 2 * Math.PI);
+                ctx.fillStyle = tMidGrad;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretMid, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Tier 3: 3D Polished Chrome Spherical Top Finial Orb
+                const lx = cx - rTurretTop * 0.35;
+                const ly = cy - rTurretTop * 0.35;
+                const orbGrad = ctx.createRadialGradient(lx, ly, rTurretTop * 0.05, cx, cy, rTurretTop);
+                orbGrad.addColorStop(0.00, '#ffffff');
+                orbGrad.addColorStop(0.20, '#f8fafc');
+                orbGrad.addColorStop(0.50, '#94a3b8');
+                orbGrad.addColorStop(0.80, '#475569');
+                orbGrad.addColorStop(1.00, '#0f172a');
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, rTurretTop, 0, 2 * Math.PI);
+                ctx.fillStyle = orbGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.85)';
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Specular White Hot-Spot on Sphere Top-Left
+                const spotGrad = ctx.createRadialGradient(lx, ly, 0, lx, ly, rTurretTop * 0.45);
+                spotGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0.95)');
+                spotGrad.addColorStop(0.4, 'rgba(255, 255, 255, 0.55)');
+                spotGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+
+                ctx.beginPath();
+                ctx.arc(lx, ly, rTurretTop * 0.45, 0, 2 * Math.PI);
+                ctx.fillStyle = spotGrad;
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
         function drawWheel() {
             const canvas = document.getElementById('wheelCanvas');
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
             const spinner = getActiveSpinner();
-            const slices = (spinner && spinner.slices) ? spinner.slices : [];
-            const numSlices = slices.length || 8;
-            const arc = (2 * Math.PI) / numSlices;
-            const radius = canvas.width / 2;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            for (let i = 0; i < numSlices; i++) {
-                const angle = i * arc;
-                const slice = slices[i] || { label: 'Item ' + (i+1), color: '#10b981' };
-                const color = slice.color || getRarityColor(slice.rarity);
-
-                ctx.beginPath();
-                ctx.fillStyle = color;
-                ctx.moveTo(radius, radius);
-                ctx.arc(radius, radius, radius - 4, angle, angle + arc);
-                ctx.lineTo(radius, radius);
-                ctx.fill();
-
-                ctx.strokeStyle = '#070a0d';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-
-                ctx.save();
-                ctx.translate(radius, radius);
-                ctx.rotate(angle + arc / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 12px Plus Jakarta Sans';
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 4;
-                ctx.fillText(slice.label, radius - 20, 4);
-                ctx.restore();
-            }
+            renderWheelStudioPointer(spinner);
+            drawRealisticWheel(canvas, spinner);
         }
 
         function getRarityColor(rarity) {
@@ -10351,14 +11036,80 @@
             }
         }
 
-        // ==================== APPEARANCE MODAL CONTROLS ====================
-        // ==================== CUSTOMIZER MODAL CONTROLS ====================
-        function openSpinnerAppearanceModal() {
-            if (!config || !config.spinner) return;
-            const s = config.spinner;
+        // ==================== CUSTOMIZER & LUXURY APPEARANCE CONTROLS ====================
+        let customizerActiveTargetId = null;
+
+        function openSpinnerAppearanceModal(targetId = null) {
+            if (!config) return;
+            const spinners = getSpinners();
+            if (spinners.length === 0) {
+                showToast("No spinners found to configure", "WARN");
+                return;
+            }
+
+            customizerActiveTargetId = targetId || activeSpinnerId || (spinners[0] && spinners[0].id);
+
+            // Populate the target spinner selector
+            const targetSel = document.getElementById('customizerTargetSpinner');
+            if (targetSel) {
+                targetSel.innerHTML = spinners.map(sp => 
+                    `<option value="${sp.id}" ${sp.id === customizerActiveTargetId ? 'selected' : ''}>${sp.name || 'Spinner'} (${sp.mode === 'wheel' ? 'Wheel' : 'Reel'})</option>`
+                ).join('');
+            }
+
+            loadSpinnerAppearanceForm(customizerActiveTargetId);
+            document.getElementById('spinnerAppearanceModal').classList.add('active');
+        }
+
+        function onCustomizerTargetSpinnerChanged(val) {
+            customizerActiveTargetId = val;
+            loadSpinnerAppearanceForm(val);
+            selectActiveSpinner(val);
+        }
+
+        function toggleCustomizerActiveMode() {
+            const list = getSpinners();
+            const s = list.find(x => x.id === customizerActiveTargetId);
+            if (!s) return;
+            s.mode = (s.mode === 'wheel' ? 'reel' : 'wheel');
+            const badge = document.getElementById('customizerActiveModeBadge');
+            if (badge) {
+                badge.innerText = s.mode === 'wheel' ? 'Wheel Mode' : 'Reel Mode';
+                badge.style.color = s.mode === 'wheel' ? '#38bdf8' : '#10b981';
+            }
+            renderSpinnerStudio();
+            showToast(`${s.name} mode switched to: ${s.mode === 'wheel' ? 'Classic Wheel' : 'Horizontal Reel'}`);
+        }
+
+        function loadSpinnerAppearanceForm(id) {
+            const list = getSpinners();
+            const s = list.find(x => x.id === id) || getActiveSpinner();
+            if (!s) return;
 
             const nameInput = document.getElementById('customizerFunctionName');
-            if (nameInput) nameInput.value = s.functionName || 'Spinner';
+            if (nameInput) nameInput.value = s.name || s.functionName || 'Spinner';
+
+            const badge = document.getElementById('customizerActiveModeBadge');
+            if (badge) {
+                badge.innerText = s.mode === 'wheel' ? 'Wheel Mode' : 'Reel Mode';
+                badge.style.color = s.mode === 'wheel' ? '#38bdf8' : '#10b981';
+            }
+
+            // Luxury Styling fields
+            const wheelThemeSel = document.getElementById('customizerWheelTheme');
+            if (wheelThemeSel) wheelThemeSel.value = s.wheelTheme || 'casino_royale';
+
+            const centerFinialSel = document.getElementById('customizerCenterFinial');
+            if (centerFinialSel) centerFinialSel.value = s.centerFinial || 'turret_3d';
+
+            const ptrThemeSel = document.getElementById('customizerPointerTheme');
+            if (ptrThemeSel) ptrThemeSel.value = s.pointerTheme || 'brass_chevron';
+
+            const rarityStyleSel = document.getElementById('customizerWheelRarityStyle');
+            if (rarityStyleSel) rarityStyleSel.value = s.wheelRarityStyle || 'rarity_enamel';
+
+            const reelThemeSel = document.getElementById('customizerReelTheme');
+            if (reelThemeSel) reelThemeSel.value = s.reelTheme || 'casino_felt';
 
             const hideOverlay = document.getElementById('customizerHideOverlay');
             if (hideOverlay) hideOverlay.checked = !!s.hideEventInOverlay;
@@ -10407,7 +11158,36 @@
             const evCount = document.getElementById('customizerEventsCount');
             if (evCount) evCount.innerText = s.slices ? s.slices.length : 8;
 
-            document.getElementById('spinnerAppearanceModal').classList.add('active');
+            const grpIdEl = document.getElementById('customizerGroupId');
+            if (grpIdEl) grpIdEl.innerText = s.groupId || 1;
+        }
+
+        function onCustomizerStylePreviewChanged() {
+            const list = getSpinners();
+            const s = list.find(x => x.id === customizerActiveTargetId) || getActiveSpinner();
+            if (!s) return;
+
+            const wt = document.getElementById('customizerWheelTheme');
+            if (wt) s.wheelTheme = wt.value;
+
+            const cf = document.getElementById('customizerCenterFinial');
+            if (cf) s.centerFinial = cf.value;
+
+            const pt = document.getElementById('customizerPointerTheme');
+            if (pt) s.pointerTheme = pt.value;
+
+            const wr = document.getElementById('customizerWheelRarityStyle');
+            if (wr) s.wheelRarityStyle = wr.value;
+
+            const rt = document.getElementById('customizerReelTheme');
+            if (rt) s.reelTheme = rt.value;
+
+            // Live preview in Studio
+            if (s.mode === 'wheel') {
+                drawWheel();
+            } else {
+                renderReelPreview(true);
+            }
         }
 
         function onCustomizerPointerIconChanged(val) {
@@ -10445,10 +11225,30 @@
         }
 
         async function saveCustomizerModal() {
-            if (!config || !config.spinner) return;
-            const s = config.spinner;
+            if (!config) return;
+            const list = getSpinners();
+            const s = list.find(x => x.id === customizerActiveTargetId) || getActiveSpinner();
+            if (!s) return;
 
-            s.functionName = document.getElementById('customizerFunctionName').value.trim() || 'Spinner';
+            const nameVal = document.getElementById('customizerFunctionName').value.trim();
+            if (nameVal) s.name = nameVal;
+
+            // Save luxury theme fields
+            const wt = document.getElementById('customizerWheelTheme');
+            if (wt) s.wheelTheme = wt.value;
+
+            const cf = document.getElementById('customizerCenterFinial');
+            if (cf) s.centerFinial = cf.value;
+
+            const pt = document.getElementById('customizerPointerTheme');
+            if (pt) s.pointerTheme = pt.value;
+
+            const wr = document.getElementById('customizerWheelRarityStyle');
+            if (wr) s.wheelRarityStyle = wr.value;
+
+            const rt = document.getElementById('customizerReelTheme');
+            if (rt) s.reelTheme = rt.value;
+
             s.hideEventInOverlay = document.getElementById('customizerHideOverlay').checked;
             s.duration = parseInt(document.getElementById('customizerDurationInput').value) || 4500;
             s.ticksCount = parseInt(document.getElementById('customizerTicksInput').value) || 35;
@@ -10461,7 +11261,6 @@
             s.selectSound = document.getElementById('customizerSelectSound').value;
             s.showGifterAvatar = document.getElementById('customizerShowGifterAvatar').checked;
             s.alsoUseEditsVideo = document.getElementById('customizerEditsVideo').checked;
-            s.mode = s.style === 'classic' ? 'wheel' : 'reel';
 
             const ptrVal = document.getElementById('customizerPointerIconInput');
             if (ptrVal && ptrVal.value.trim()) {
@@ -10470,11 +11269,16 @@
                 if (dImg) dImg.src = s.pointerIcon;
             }
 
+            // Sync with active config
+            if (config.spinner && (config.spinner.id === s.id || activeSpinnerId === s.id)) {
+                config.spinner = s;
+            }
+
             try {
                 await saveConfigToServer();
                 closeSpinnerAppearanceModal();
                 renderSpinnerStudio();
-                showToast("Spinner settings saved successfully!", "OK");
+                showToast(`Saved appearance & luxury theme for "${s.name}"!`, "OK");
             } catch (err) {
                 showToast("Failed to save spinner settings: " + err.message, "ERR");
             }

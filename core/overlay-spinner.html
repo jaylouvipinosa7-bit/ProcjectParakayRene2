@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <script src="wheel-engine.js"></script>
     <style>
         :root {
             --card-width: 114px;
@@ -389,6 +390,35 @@
         .spinner-card.rarity-rare::after { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
         .spinner-card.rarity-normal::after { background: #10b981; box-shadow: 0 0 8px #10b981; }
 
+        /* LUXURY HORIZONTAL REEL THEMES */
+        .spinner-card.theme-casino_felt,
+        .reel-track.theme-casino_felt .spinner-card {
+            background: radial-gradient(circle at 50% 18%, #2d0c15 0%, #17050a 65%, #090204 100%) !important;
+            border: 2px solid #b45309 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(254, 240, 138, 0.35), 0 0 12px rgba(245, 158, 11, 0.25) !important;
+        }
+        .spinner-card.theme-casino_felt::before,
+        .reel-track.theme-casino_felt .spinner-card::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        .spinner-card.theme-neon_cyber,
+        .reel-track.theme-neon_cyber .spinner-card {
+            background: linear-gradient(180deg, #090d16 0%, #03060a 100%) !important;
+            border: 2px solid #00f0ff !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.2) !important;
+        }
+        .spinner-card.theme-obsidian_luxury,
+        .reel-track.theme-obsidian_luxury .spinner-card {
+            background: linear-gradient(180deg, #1c1917 0%, #0c0a09 100%) !important;
+            border: 2px solid #eab308 !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.95), 0 0 14px rgba(234, 179, 8, 0.3) !important;
+        }
+
         .spinner-card.winner {
             transform: scale(1.12);
             border-color: #f59e0b !important;
@@ -458,6 +488,56 @@
             0% { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
+
+        /* ==================== 3D REALISTIC ROULETTE WHEEL STYLES ==================== */
+        .wheel-viewport-wrap {
+            position: relative;
+            width: 440px;
+            height: 440px;
+            margin: 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wheelCanvas {
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.95), 0 0 45px rgba(245, 158, 11, 0.45);
+            transition: transform 4.5s cubic-bezier(0.12, 0.95, 0.22, 1);
+        }
+
+        .wheel-pointer-container {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95));
+        }
+
+        .spinner-card .rarity-tag {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 8.5px;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.65);
+            color: #94a3b8;
+        }
+
+        .spinner-card .card-amount {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #38bdf8;
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body>
@@ -512,6 +592,12 @@
                     <!-- Cards populated dynamically based on assigned spinner -->
                 </div>
             </div>
+        </div>
+
+        <!-- WHEEL VIEWPORT WRAP (Classic Canvas Roulette Wheel) -->
+        <div class="wheel-viewport-wrap" id="wheelViewportWrap" style="display: none;">
+            <div id="wheelPointerContainer" class="wheel-pointer-container"></div>
+            <canvas id="wheelCanvas" width="800" height="800"></canvas>
         </div>
 
         <!-- WINNER CELEBRATION BANNER -->
@@ -683,6 +769,8 @@
 
             const track = document.getElementById('reelTrack');
             track.innerHTML = '';
+            const reelTheme = (spinner && spinner.reelTheme) || 'casino_felt';
+            track.className = `reel-track theme-${reelTheme}`;
 
             const actualWinner = winner || slices[0];
             const targetIndex = 40;
@@ -698,7 +786,7 @@
 
             totalReelCards.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = `spinner-card rarity-${(item.rarity || 'normal').toLowerCase()}`;
+                card.className = `spinner-card rarity-${(item.rarity || 'normal').toLowerCase()} theme-${reelTheme}`;
                 card.id = `reelCard_${index}`;
                 card.dataset.index = index;
                 card.dataset.id = item.id;
@@ -709,14 +797,16 @@
                 const imgSrc = item.unitIcon || item.image || item.icon || 'images/func_2.png';
                 const labelText = item.label || item.text || item.name || 'Unit';
 
+                const rarity = item.rarity || 'Normal';
                 if (isScore) {
                     card.style.borderColor = col;
                     card.style.boxShadow = `0 0 18px ${col}40`;
                     const signText = deltaVal >= 0 ? 'WIN +' : 'LOSE -';
                     const displayNum = (deltaVal > 0 ? `+${deltaVal}` : `${deltaVal}`);
                     card.innerHTML = `
+                        <span class="rarity-tag" style="border-color:${col}; color:${col};">${rarity}</span>
                         <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; padding:8px;">
-                            <div style="font-family:'Outfit', sans-serif; font-size:42px; font-weight:900; color:${col}; text-shadow:0 0 16px ${col}; line-height:1; letter-spacing:-1px;">
+                            <div style="font-family:'Outfit', sans-serif; font-size:40px; font-weight:900; color:${col}; text-shadow:0 0 16px ${col}; line-height:1; letter-spacing:-1px;">
                                 ${displayNum}
                             </div>
                             <div style="font-size:11px; font-weight:800; color:${deltaVal >= 0 ? '#34d399' : '#f87171'}; margin-top:6px; letter-spacing:0.5px;">
@@ -726,10 +816,12 @@
                     `;
                 } else {
                     card.innerHTML = `
+                        <span class="rarity-tag">${rarity}</span>
                         <div class="card-img-wrap">
                             <img src="${imgSrc}" onerror="this.src='images/func_2.png'" alt="${labelText}">
                         </div>
                         <div class="card-label" title="${labelText}">${labelText}</div>
+                        <div class="card-amount">x${item.amount || 1}</div>
                     `;
                 }
                 track.appendChild(card);
@@ -768,7 +860,9 @@
             }
         }
 
-        // SHOW UP OVERLAY DYNAMICALLY ON ASSIGNED GIFT, SPIN REEL, AND AUTO-HIDE
+        let wheelRotation = 0;
+
+        // DUAL-MODE SPINNER: SPINS EITHER 3D ROULETTE WHEEL OR HORIZONTAL REEL
         function showAndSpin(options) {
             const {
                 spinner,
@@ -789,20 +883,39 @@
             updateQueueDisplay();
             if (autoHideTimer) clearTimeout(autoHideTimer);
 
-            // 1. Build the reel placing the actual winner guaranteed under the needle
-            buildReelForSpinner(spinner, winner);
+            const mode = (spinner && spinner.mode) || 'wheel';
 
-            // 2. Update pointer avatar with current spinner's profile! (Matches Photo 2)
-            const avatarUrl = avatar || (spinner && spinner.pointerIcon) || 'images/default_avatar.svg';
-            const pointerImg = document.getElementById('pointerAvatarImg');
-            if (pointerImg) pointerImg.src = avatarUrl;
-            const pointerTag = document.getElementById('pointerUserTag');
-            if (pointerTag) {
-                pointerTag.innerText = `@${username}`;
-                pointerTag.style.display = 'block';
+            // 1. Setup Mode Viewports
+            const wheelWrap = document.getElementById('wheelViewportWrap');
+            const reelWrap = document.querySelector('.reel-viewport-wrap');
+
+            if (mode === 'wheel') {
+                if (reelWrap) reelWrap.style.display = 'none';
+                if (wheelWrap) wheelWrap.style.display = 'flex';
+
+                const canvas = document.getElementById('wheelCanvas');
+                const ptrContainer = document.getElementById('wheelPointerContainer');
+                if (ptrContainer) {
+                    ptrContainer.innerHTML = getWheelPointerHTML(spinner.pointerTheme || 'brass_chevron', spinner.pointerIcon || avatar || '');
+                }
+                drawRealisticWheel(canvas, spinner);
+            } else {
+                if (wheelWrap) wheelWrap.style.display = 'none';
+                if (reelWrap) reelWrap.style.display = 'block';
+
+                buildReelForSpinner(spinner, winner);
+
+                const avatarUrl = avatar || (spinner && spinner.pointerIcon) || 'images/default_avatar.svg';
+                const pointerImg = document.getElementById('pointerAvatarImg');
+                if (pointerImg) pointerImg.src = avatarUrl;
+                const pointerTag = document.getElementById('pointerUserTag');
+                if (pointerTag) {
+                    pointerTag.innerText = `@${username}`;
+                    pointerTag.style.display = 'block';
+                }
             }
 
-            // 3. Update Gifter Announcement Badge
+            // 2. Update Gifter Announcement Badge
             const iconEl = document.getElementById('gifterGiftIcon');
             if (iconEl) iconEl.src = giftIcon || (spinner && spinner.giftIcon) || 'images/tiktok-gifts/perfume_gift.webp';
 
@@ -817,15 +930,14 @@
             winBanner.style.display = 'none';
             document.querySelectorAll('.spinner-card.winner').forEach(el => el.classList.remove('winner'));
 
-            // 4. SHOW UP THE OVERLAY (Slides & fades into view smoothly)
+            // 3. SHOW UP THE OVERLAY (Slides & fades into view smoothly)
             const stage = document.getElementById('spinnerStageContainer');
             stage.classList.remove('fading-out');
             stage.classList.add('active');
 
-            // 5. Wait for smooth entrance, then trigger the physics spin
+            // 4. Trigger spin
             setTimeout(() => {
-                executeReelSpin(winner, spinner, (wonItem) => {
-                    // Celebration is complete: If queue has items, spin next fast! Otherwise normal hold
+                const onComplete = (wonItem) => {
                     const holdTime = spinQueue.length > 0 ? 1200 : 4500;
                     autoHideTimer = setTimeout(() => {
                         if (spinQueue.length > 0) {
@@ -834,7 +946,6 @@
                             isSpinning = false;
                             showAndSpin(next);
                         } else {
-                            // AUTO-HIDE: Smoothly fade and slide away back to 100% transparent!
                             stage.classList.add('fading-out');
                             setTimeout(() => {
                                 stage.classList.remove('active');
@@ -844,8 +955,77 @@
                             }, 450);
                         }
                     }, holdTime);
-                });
+                };
+
+                if (mode === 'wheel') {
+                    executeWheelSpin(winner, spinner, onComplete);
+                } else {
+                    executeReelSpin(winner, spinner, onComplete);
+                }
             }, 350);
+        }
+
+        // Real 3D Roulette physics deceleration spin
+        function executeWheelSpin(targetWinner, spinner, onComplete) {
+            const canvas = document.getElementById('wheelCanvas');
+            if (!canvas) {
+                if (onComplete) onComplete(targetWinner);
+                return;
+            }
+
+            const slices = (spinner && spinner.slices && spinner.slices.length > 0) ? spinner.slices : [];
+            let winIdx = slices.findIndex(s => targetWinner && s.id === targetWinner.id);
+            if (winIdx === -1) winIdx = 0;
+
+            const durationMs = (spinner && spinner.duration) ? Number(spinner.duration) : 4500;
+            const sliceAngle = 360 / (slices.length || 8);
+
+            const targetNormalized = ((270 - (winIdx + 0.5) * sliceAngle) % 360 + 360) % 360;
+            const currentMod = ((wheelRotation % 360) + 360) % 360;
+            let delta = (targetNormalized - currentMod) % 360;
+            if (delta <= 0) delta += 360;
+            const totalRotation = wheelRotation + (360 * 5) + delta;
+            wheelRotation = totalRotation;
+
+            canvas.style.transition = `transform ${durationMs}ms cubic-bezier(0.12, 0.95, 0.22, 1)`;
+            canvas.style.transform = `rotate(${totalRotation}deg)`;
+
+            // Ticking audio during wheel spin
+            let ticks = 0;
+            const totalTicks = 32;
+            let tickDelay = 70;
+            function scheduleWheelTick() {
+                if (ticks >= totalTicks) return;
+                playTickSound();
+                ticks++;
+                tickDelay = 70 + Math.pow(ticks / totalTicks, 3) * 360;
+                setTimeout(scheduleWheelTick, tickDelay);
+            }
+            setTimeout(scheduleWheelTick, 100);
+
+            setTimeout(() => {
+                playWinFanfare();
+
+                const actualWinner = targetWinner || slices[winIdx] || { label: 'Prize' };
+                const isNum = isNumberSliceItem(actualWinner);
+                const banner = document.getElementById('winnerBanner');
+                const itemNameSpan = document.getElementById('winnerItemName');
+
+                if (isNum) {
+                    const deltaVal = parseSliceDelta(actualWinner);
+                    const isPos = deltaVal >= 0;
+                    if (itemNameSpan) {
+                        itemNameSpan.innerHTML = `<span style="color:${isPos ? '#10b981' : '#f43f5e'}; font-weight:900;">${isPos ? '+' : ''}${deltaVal} ${isPos ? 'Score Added to WIN!' : 'Score Deducted!'}</span>`;
+                    }
+                } else {
+                    if (itemNameSpan) {
+                        itemNameSpan.innerHTML = `<span style="color:${actualWinner.color || '#f59e0b'}; font-weight:900;">${actualWinner.label || actualWinner.name || 'Prize'}</span> <span style="font-size:12px; color:#94a3b8;">(x${actualWinner.amount || 1})</span>`;
+                    }
+                }
+                if (banner) banner.style.display = 'flex';
+
+                if (onComplete) onComplete(actualWinner);
+            }, durationMs);
         }
 
         // Real horizontal deceleration reel spin (DOM-measured exact stop)
@@ -968,7 +1148,13 @@
                                     sp = {
                                         id: ev.spinnerId || '1',
                                         name: ev.spinnerName || 'Spinner',
-                                        duration: ev.duration || 2500,
+                                        mode: ev.mode || 'wheel',
+                                        wheelTheme: ev.wheelTheme || 'casino_royale',
+                                        centerFinial: ev.centerFinial || 'turret_3d',
+                                        pointerTheme: ev.pointerTheme || 'brass_chevron',
+                                        wheelRarityStyle: ev.wheelRarityStyle || 'rarity_enamel',
+                                        reelTheme: ev.reelTheme || 'casino_felt',
+                                        duration: ev.duration || 4500,
                                         ticks: ev.ticks || 100,
                                         pointerIcon: ev.pointerIcon || ''
                                     };
@@ -981,9 +1167,15 @@
 
                                 const dynamicSpinner = {
                                     ...sp,
-                                    name: ev.spinnerName || sp.name,
-                                    id: ev.spinnerId || sp.id,
-                                    duration: ev.duration || sp.duration || 2500,
+                                    name: ev.spinnerName || sp.name || 'Spinner',
+                                    id: ev.spinnerId || sp.id || '1',
+                                    mode: ev.mode || sp.mode || 'wheel',
+                                    wheelTheme: ev.wheelTheme || sp.wheelTheme || 'casino_royale',
+                                    centerFinial: ev.centerFinial || sp.centerFinial || 'turret_3d',
+                                    pointerTheme: ev.pointerTheme || sp.pointerTheme || 'brass_chevron',
+                                    wheelRarityStyle: ev.wheelRarityStyle || sp.wheelRarityStyle || 'rarity_enamel',
+                                    reelTheme: ev.reelTheme || sp.reelTheme || 'casino_felt',
+                                    duration: ev.duration || sp.duration || 4500,
                                     ticks: ev.ticks || sp.ticks || 100,
                                     pointerIcon: ev.pointerIcon || sp.pointerIcon,
                                     slices: liveSlices
@@ -1004,6 +1196,44 @@
             }, 450);
         }
 
+        function toggleLivePreview() {
+            const stage = document.getElementById('spinnerStageContainer');
+            if (!stage) return;
+            const isAct = stage.classList.contains('active');
+            if (isAct) {
+                stage.classList.remove('active');
+            } else {
+                previewActiveSpinner();
+            }
+        }
+
+        function previewActiveSpinner() {
+            const rawSpinners = (config && config.spinners) || (config && config.spinner ? [config.spinner] : []);
+            const sp = rawSpinners[0] || { mode: 'wheel', slices: [] };
+            const stage = document.getElementById('spinnerStageContainer');
+            const wheelWrap = document.getElementById('wheelViewportWrap');
+            const reelWrap = document.querySelector('.reel-viewport-wrap');
+
+            const mode = sp.mode || 'wheel';
+            if (mode === 'wheel') {
+                if (reelWrap) reelWrap.style.display = 'none';
+                if (wheelWrap) wheelWrap.style.display = 'flex';
+                const canvas = document.getElementById('wheelCanvas');
+                const ptrContainer = document.getElementById('wheelPointerContainer');
+                if (ptrContainer) {
+                    ptrContainer.innerHTML = getWheelPointerHTML(sp.pointerTheme || 'brass_chevron', sp.pointerIcon || '');
+                }
+                drawRealisticWheel(canvas, sp);
+            } else {
+                if (wheelWrap) wheelWrap.style.display = 'none';
+                if (reelWrap) reelWrap.style.display = 'block';
+                buildReelForSpinner(sp, null);
+            }
+
+            stage.classList.remove('fading-out');
+            stage.classList.add('active');
+        }
+
         // Keyboard hotkeys for testing while overlay is loaded
         window.addEventListener('keydown', (e) => {
             if (e.key === 't' || e.key === 'T') {
@@ -1015,6 +1245,8 @@
                 triggerTestSpin(2);
             } else if (e.key === '3') {
                 triggerTestSpin(3);
+            } else if (e.key === 'p' || e.key === 'P') {
+                toggleLivePreview();
             } else if (e.key === 'c' || e.key === 'C') {
                 document.body.classList.toggle('show-controls');
             }
@@ -1024,6 +1256,9 @@
         window.addEventListener('DOMContentLoaded', async () => {
             await loadConfig();
             initEventsListener();
+            if (urlParams.get('preview') === 'true' || urlParams.get('debug') === 'true') {
+                previewActiveSpinner();
+            }
         });
     </script>
 </body>

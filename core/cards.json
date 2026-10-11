@@ -388,11 +388,11 @@
         "action":  "SelectedGift",
         "giftId":  "5269",
         "giftName":  "TikTok",
-        "funcName":  "Charm all zombies",
-        "funcImg":  "images/game-icons/pvz/charm_all_zombies.webp",
+        "funcName":  "Win Score Numbers (+/-)",
+        "funcImg":  "images/spinner_wheel_icon.svg",
         "trigImg":  "images/tiktok-gifts/5269_tiktok.webp",
         "triggerValue":  "",
-        "commands":  "charm_all_zombies",
+        "commands":  "spinner_1791704329880",
         "repetition":  1
     },
     {
