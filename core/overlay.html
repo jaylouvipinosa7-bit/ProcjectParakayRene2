@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
     <script src="wheel-engine.js"></script>
+    <script src="renearn-command-engine.js"></script>
     <style>
         :root {
             --pvz-green: #10b981;
@@ -723,8 +724,18 @@
             }
         }
 
-        // Real-Time Event Polling
+        // Real-Time Event Polling & BroadcastChannel (Instant 0ms synchronization)
         function startPolling() {
+            // Instant local inter-window / browser source event synchronization
+            try {
+                const bc = new BroadcastChannel('renearn_overlay_events');
+                bc.onmessage = (event) => {
+                    if (event.data) {
+                        handleLiveEvent(event.data);
+                    }
+                };
+            } catch (e) {}
+
             setInterval(async () => {
                 try {
                     const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
@@ -793,6 +804,9 @@
             alert.innerHTML = `
                 <div class="alert-avatar" style="font-size:12px; font-weight:800; background:#3b82f6; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">${alertTag}</div>
                 <div class="alert-text-group">
+                    <div style="font-size:9.5px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:4px;">
+                        <span>✦</span> ${ev.branding || (ev.embedTitle ? ev.embedTitle : 'RENEarn')}
+                    </div>
                     <div class="alert-username">${ev.username || 'Stream Viewer'}</div>
                     <div class="alert-action">Triggered: ${ev.label} (x${ev.amount || 1})</div>
                 </div>

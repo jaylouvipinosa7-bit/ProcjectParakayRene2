@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamToEarn • All-Games Side Stream Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fredoka:wght@600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <script src="socket.io.min.js"></script>
+    <script>
+        if (typeof io === 'undefined') {
+            document.write('<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"><\/script>');
+        }
+    </script>
+    <script src="cards-data.js"></script>
+    <style>
+        :root {
+            --zoom-level: 1;
+            --side-columns: 2;
+            --card-opacity: 0.96;
+            --overlay-radius: 14px;
+            --font-family: 'Plus Jakarta Sans', sans-serif;
+            --accent-pink: #ec4899;
+            --accent-yellow: #f59e0b;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --border-glow: rgba(0, 242, 254, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        html, body {
+            background-color: transparent;
+            font-family: var(--font-family);
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== 1. STREAMTOEARN TOP CONTROL BAR ==================== */
+        .s2e-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: #090c10;
+            border-bottom: 1.5px solid #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 99999;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        body.hide-controls .s2e-top-bar {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .s2e-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .s2e-select-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .s2e-game-select {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #f0f6fc;
+            padding: 6px 28px 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            transition: all 0.15s ease;
+        }
+
+        .s2e-game-select:hover {
+            border-color: #58a6ff;
+            background: #1c2128;
+        }
+
+        .s2e-select-caret {
+            position: absolute;
+            right: 10px;
+            pointer-events: none;
+            color: #8b949e;
+            font-size: 10px;
+        }
+
+        .s2e-url-container {
+            display: flex;
+            align-items: center;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 2px 10px;
+            flex: 1;
+            max-width: 540px;
+            height: 32px;
+        }
+
+        .s2e-url-text {
+            color: #8b949e;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .s2e-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .s2e-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .s2e-btn-blue {
+            background: #1f6feb;
+            color: #ffffff;
+            border-color: #388bfd;
+        }
+        .s2e-btn-blue:hover {
+            background: #388bfd;
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px rgba(56, 139, 253, 0.5);
+        }
+
+        .s2e-btn-split {
+            background: #21262d;
+            color: #c9d1d9;
+            border-color: #30363d;
+        }
+        .s2e-btn-split:hover {
+            background: #30363d;
+            color: #ffffff;
+            border-color: #8b949e;
+        }
+
+        .s2e-btn-settings {
+            background: #238636;
+            color: #ffffff;
+            border-color: #2ea043;
+        }
+        .s2e-btn-settings:hover {
+            background: #2ea043;
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px rgba(46, 160, 67, 0.5);
+        }
+
+        .s2e-btn-sync {
+            background: #8957e5;
+            color: #ffffff;
+            border-color: #a371f7;
+        }
+        .s2e-btn-sync:hover {
+            background: #a371f7;
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px rgba(163, 113, 247, 0.5);
+        }
+
+        /* Floating Gear Button (When top bar is hidden) */
+        .btn-floating-gear {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(13, 17, 23, 0.85);
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99998;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+        }
+        .btn-floating-gear:hover {
+            background: #1f6feb;
+            color: #fff;
+            transform: rotate(45deg) scale(1.08);
+        }
+
+        /* ==================== 2. SIDE OVERLAY VIEWPORT & WRAPPER ==================== */
+        .side-overlay-viewport {
+            flex: 1;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 56px 16px 16px 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        body.hide-controls .side-overlay-viewport {
+            padding-top: 16px;
+        }
+
+        /* Alignment positions */
+        .side-overlay-viewport.align-left {
+            justify-content: flex-start;
+        }
+        .side-overlay-viewport.align-right {
+            justify-content: flex-end;
+        }
+        .side-overlay-viewport.align-center {
+            justify-content: center;
+        }
+
+        /* Master wrapper containing the gradient and cards */
+        .side-overlay-wrapper {
+            position: relative;
+            border-radius: var(--overlay-radius);
+            padding: 8px;
+            transition: transform 0.2s ease, width 0.2s ease;
+            transform-origin: top left;
+            transform: scale(var(--zoom-level));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .side-overlay-viewport.align-right .side-overlay-wrapper {
+            transform-origin: top right;
+        }
+        .side-overlay-viewport.align-center .side-overlay-wrapper {
+            transform-origin: top center;
+        }
+
+        /* Authentic StreamToEarn Angled Gradient Background (Matching User Photo!) */
+        .theme-s2e-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(236, 72, 153, 0.95) 0%,
+                rgba(192, 132, 252, 0.92) 20%,
+                rgba(250, 204, 21, 0.92) 48%,
+                rgba(245, 158, 11, 0.92) 58%,
+                rgba(6, 182, 212, 0.95) 82%,
+                rgba(59, 130, 246, 0.95) 100%
+            );
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.4), 0 0 35px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Glassmorphism Dark Theme */
+        .theme-glass-dark {
+            background: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1.5px solid #30363d;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Transparent Theme (OBS Overlay Mode) */
+        .theme-transparent {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Cyber Neon Theme */
+        .theme-cyber-neon {
+            background: rgba(10, 10, 18, 0.95);
+            border: 2px solid #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        /* ==================== 3. COMMAND CARDS GRID & SIDE CELL ==================== */
+        .side-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--side-columns, 2), 1fr);
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Single command item / cell */
+        .side-cmd-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(22, 27, 34, var(--card-opacity));
+            backdrop-filter: blur(8px);
+            border-radius: 9px;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-height: 52px;
+            gap: 8px;
+        }
+
+        .side-cmd-card:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: #58a6ff;
+            box-shadow: 0 4px 14px rgba(88, 166, 255, 0.4);
+            filter: brightness(1.15);
+        }
+
+        /* Real-time Donation Flash */
+        .side-cmd-card.flash-donated {
+            animation: cardDonatePulse 0.8s ease forwards;
+        }
+
+        @keyframes cardDonatePulse {
+            0% { transform: scale(1.12); border-color: #fde047; box-shadow: 0 0 25px #fde047, 0 0 40px #fff; }
+            50% { transform: scale(1.06); border-color: #38bdf8; box-shadow: 0 0 20px #38bdf8; }
+            100% { transform: scale(1); border-color: rgba(255,255,255,0.15); box-shadow: none; }
+        }
+
+        /* Left Side: Unit / Function Icon */
+        .cmd-left-col {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .cmd-unit-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: #0d1117;
+            border: 1.5px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .cmd-unit-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        }
+
+        /* Center / Command Details Column */
+        .cmd-details-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+            min-width: 90px;
+            overflow: hidden;
+        }
+
+        .cmd-label-text {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            letter-spacing: 0.2px;
+        }
+
+        .cmd-sub-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-top: 2px;
+        }
+
+        .cmd-sub-tag {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Right Side: Trigger Gift & Live Counter */
+        .cmd-right-col {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .cmd-trig-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(13, 17, 23, 0.85);
+            border: 1.5px solid #ff2b56;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(255, 43, 86, 0.35);
+        }
+
+        .cmd-trig-img {
+            width: 82%;
+            height: 82%;
+            object-fit: contain;
+        }
+
+        /* Red circular badge for Likes triggers (Matching Photo 1 & Photo 5) */
+        .cmd-trig-badge-likes {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ff0000;
+            border: 2px solid #ff4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 11px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            flex-shrink: 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Green circular badge for Follow triggers (Matching Photo 1 & Photo 5) */
+        .cmd-trig-badge-follow {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid #34d399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 13px;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            flex-shrink: 0;
+        }
+
+        /* Counter badge showing number of times sent (Amber Gold Pill Matching Photo 1 & Photo 5) */
+        .cmd-counter-badge {
+            background: #f59e0b;
+            color: #000000;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            border: 1px solid #fbbf24;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            min-width: 26px;
+            text-align: center;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        /* COMPACT / ICON-ONLY MODE (Matches Photo 1 & S2E Compact) */
+        .mode-icons-only .side-cmd-card,
+        .mode-compact .side-cmd-card {
+            min-height: 48px;
+            padding: 3px 6px;
+            gap: 5px;
+            justify-content: space-between;
+        }
+        .mode-icons-only .cmd-details-col,
+        .mode-compact .cmd-details-col {
+            display: none !important;
+        }
+        .mode-icons-only .cmd-unit-avatar,
+        .mode-compact .cmd-unit-avatar {
+            width: 38px;
+            height: 38px;
+        }
+        .mode-icons-only .cmd-trig-avatar,
+        .mode-compact .cmd-trig-avatar {
+            width: 36px;
+            height: 36px;
+        }
+
+        /* HORIZONTAL STRIP MODE (Matching Photo 2 & Photo 4) */
+        .mode-strip .side-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--side-columns, 12), minmax(90px, 1fr));
+            gap: 4px;
+        }
+        .mode-strip .side-cmd-card {
+            min-height: 46px;
+            padding: 3px 6px;
+            gap: 4px;
+            background: rgba(22, 27, 34, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .mode-strip .cmd-details-col {
+            display: none !important;
+        }
+        .mode-strip .cmd-unit-avatar {
+            width: 34px;
+            height: 34px;
+        }
+        .mode-strip .cmd-trig-avatar,
+        .mode-strip .cmd-trig-badge-likes,
+        .mode-strip .cmd-trig-badge-follow {
+            width: 32px;
+            height: 32px;
+            font-size: 10px;
+        }
+
+        /* ==================== 4. CUSTOMIZATION SETTINGS DRAWER ==================== */
+        .settings-drawer {
+            position: fixed;
+            top: 48px;
+            right: 0;
+            width: 340px;
+            height: calc(100vh - 48px);
+            background: rgba(13, 17, 23, 0.98);
+            backdrop-filter: blur(20px);
+            border-left: 1.5px solid #30363d;
+            box-shadow: -8px 0 35px rgba(0,0,0,0.85);
+            z-index: 99999;
+            transform: translateX(100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 18px;
+            gap: 16px;
+        }
+
+        .settings-drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .drawer-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #f0f6fc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-drawer-close {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-drawer-close:hover {
+            background: #30363d;
+            color: #fff;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-toggle-row {
+            display: flex;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .btn-toggle-option {
+            flex: 1;
+            padding: 6px 8px;
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            font-size: 11.5px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .btn-toggle-option.active {
+            background: #1f6feb;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(31, 111, 235, 0.4);
+        }
+
+        .range-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .range-slider {
+            flex: 1;
+            accent-color: #1f6feb;
+            cursor: pointer;
+        }
+
+        .range-val-badge {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #58a6ff;
+            background: #161b22;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #30363d;
+            width: 48px;
+            text-align: center;
+        }
+
+        /* Toast notification */
+        .s2e-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: #1f6feb;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+            z-index: 100000;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .s2e-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="show-controls">
+
+    <!-- ==================== 1. TOP S2E NAVIGATION BAR ==================== -->
+    <header class="s2e-top-bar" id="s2eTopBar">
+        <div class="s2e-nav-left">
+            <div class="s2e-select-wrap">
+                <select class="s2e-game-select" id="gamePresetSelect" onchange="onGameSelected(this.value)">
+                    <option value="pvz">🌻 Plants vs. Zombies Fusion</option>
+                    <option value="zombie_tsunami">🧟 Zombie Tsunami</option>
+                    <option value="minecraft">⛏️ Minecraft Chaos</option>
+                    <option value="crown_clash">👑 Crown Clash</option>
+                    <option value="tabs">⚔️ TABS</option>
+                    <option value="uebs2">🦖 UEBS 2</option>
+                </select>
+                <span class="s2e-select-caret">▼</span>
+            </div>
+
+            <div class="s2e-url-container">
+                <span class="s2e-url-text" id="overlayUrlDisplay">http://localhost:8080/overlay-side.html</span>
+            </div>
+        </div>
+
+        <div class="s2e-actions-right">
+            <button class="s2e-btn" onclick="resetAllCounts()" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #f87171;" title="Reset all counted commands to 0">
+                <span>🔄</span> Reset Counts
+            </button>
+            <button class="s2e-btn s2e-btn-blue" onclick="copyOverlayUrl()" title="Copy Link for OBS / TikTok Live Studio">
+                <span>📋</span> Copy URL
+            </button>
+            <button class="s2e-btn s2e-btn-split" onclick="toggleSplitFilter()" id="btnSplitFilter" title="Toggle Split View">
+                <span>⚡</span> Split
+            </button>
+            <button class="s2e-btn s2e-btn-sync" onclick="syncCardsWithBackend()" title="Run sync_icons and refresh cards">
+                <span>🔄</span> Sync Icons
+            </button>
+            <button class="s2e-btn s2e-btn-settings" onclick="toggleSettingsDrawer()" title="Customize Colors, Columns & Layout">
+                <span>⚙️</span> Overlay Settings
+            </button>
+        </div>
+    </header>
+
+    <!-- Floating Gear Button (When top bar is hidden) -->
+    <div class="btn-floating-gear" id="btnFloatingGear" onclick="toggleControlsBar()" title="Show/Hide Controls (Press 'C')">
+        ⚙
+    </div>
+
+    <!-- ==================== 2. SIDE OVERLAY VIEWPORT ==================== -->
+    <main class="side-overlay-viewport align-left" id="sideOverlayViewport">
+        <div class="side-overlay-wrapper theme-s2e-gradient" id="sideOverlayWrapper">
+            <!-- Command Cards Grid -->
+            <div class="side-cards-grid" id="sideCardsGrid">
+                <!-- Dynamically rendered via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== 3. CUSTOMIZATION SETTINGS DRAWER ==================== -->
+    <aside class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <span>🎨</span> Overlay Customizer
+            </div>
+            <button class="btn-drawer-close" onclick="toggleSettingsDrawer()">✕</button>
+        </div>
+
+        <!-- 1. Layout Placement / Docking -->
+        <div class="setting-group">
+            <span class="setting-label">Side Placement</span>
+            <div class="btn-toggle-row">
+                <button class="btn-toggle-option active" id="btnDockLeft" onclick="setSideAlignment('left')">Left Side</button>
+                <button class="btn-toggle-option" id="btnDockRight" onclick="setSideAlignment('right')">Right Side</button>
+                <button class="btn-toggle-option" id="btnDockCenter" onclick="setSideAlignment('center')">Center</button>
+            </div>
+        </div>
+
+        <!-- 2. Grid Columns -->
+        <div class="setting-group">
+            <span class="setting-label">Grid Columns</span>
+            <div class="btn-toggle-row">
+                <button class="btn-toggle-option" id="btnCol1" onclick="setColumnsCount(1)">1 Col</button>
+                <button class="btn-toggle-option active" id="btnCol2" onclick="setColumnsCount(2)">2 Cols</button>
+                <button class="btn-toggle-option" id="btnCol3" onclick="setColumnsCount(3)">3 Cols</button>
+                <button class="btn-toggle-option" id="btnCol4" onclick="setColumnsCount(4)">4 Cols</button>
+            </div>
+        </div>
+
+        <!-- 3. Card Display Style -->
+        <div class="setting-group">
+            <span class="setting-label">Card Style</span>
+            <div class="btn-toggle-row">
+                <button class="btn-toggle-option active" id="btnStyleDetailed" onclick="setCardDisplayMode('detailed')">Commands + Icons</button>
+                <button class="btn-toggle-option" id="btnStyleIcons" onclick="setCardDisplayMode('icons')">Icons Only (S2E)</button>
+            </div>
+        </div>
+
+        <!-- 4. Background Themes -->
+        <div class="setting-group">
+            <span class="setting-label">Theme / Background</span>
+            <div class="btn-toggle-row" style="flex-wrap: wrap;">
+                <button class="btn-toggle-option active" id="btnThemeGradient" onclick="setTheme('s2e-gradient')" style="flex: 1 1 45%;">🌈 Gradient</button>
+                <button class="btn-toggle-option" id="btnThemeGlass" onclick="setTheme('glass-dark')" style="flex: 1 1 45%;">🌙 Dark Glass</button>
+                <button class="btn-toggle-option" id="btnThemeNeon" onclick="setTheme('cyber-neon')" style="flex: 1 1 45%;">⚡ Cyber Neon</button>
+                <button class="btn-toggle-option" id="btnThemeTrans" onclick="setTheme('transparent')" style="flex: 1 1 45%;">👻 Transparent</button>
+            </div>
+        </div>
+
+        <!-- 5. Zoom / Scale Slider -->
+        <div class="setting-group">
+            <span class="setting-label">Overlay Zoom / Scale</span>
+            <div class="range-slider-wrap">
+                <input type="range" class="range-slider" id="zoomSlider" min="0.5" max="1.6" step="0.05" value="1" oninput="setZoomLevel(this.value)">
+                <span class="range-val-badge" id="zoomValBadge">1.0x</span>
+            </div>
+        </div>
+
+        <!-- 6. Card Opacity Slider -->
+        <div class="setting-group">
+            <span class="setting-label">Card Fill Opacity</span>
+            <div class="range-slider-wrap">
+                <input type="range" class="range-slider" id="opacitySlider" min="0.3" max="1.0" step="0.05" value="0.96" oninput="setCardOpacity(this.value)">
+                <span class="range-val-badge" id="opacityValBadge">96%</span>
+            </div>
+        </div>
+
+        <!-- 7. Sound Effect Toggle -->
+        <div class="setting-group">
+            <span class="setting-label">Audio & Testing</span>
+            <div class="btn-toggle-row">
+                <button class="btn-toggle-option active" id="btnSoundOn" onclick="toggleAudio(true)">🔊 Sounds On</button>
+                <button class="btn-toggle-option" id="btnSoundOff" onclick="toggleAudio(false)">🔇 Mute</button>
+            </div>
+            <button class="s2e-btn s2e-btn-blue" style="margin-top: 6px; width: 100%; justify-content: center;" onclick="testRandomDonation()">
+                🎲 Trigger Random Test Donation
+            </button>
+        </div>
+    </aside>
+
+    <!-- Toast Notification -->
+    <div class="s2e-toast" id="s2eToast">URL Copied to Clipboard!</div>
+
+    <script>
+        // ========================================================
+        // ALL-GAMES PRESETS DATABASE
+        // ========================================================
+        const GAME_PRESETS = {
+            pvz: {
+                name: "Plants vs. Zombies Fusion",
+                id: "preset_live_balagbagan",
+                file: "cards.json"
+            },
+            zombie_tsunami: {
+                name: "Zombie Tsunami",
+                id: "preset_shieldrunner",
+                customCards: [
+                    { id: "zt_1", funcName: "+1 Zombie to Horde", funcImg: "images/game-icons/pvz/spawn_zombie.webp", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Rose (1 Coin)", repetition: 1 },
+                    { id: "zt_2", funcName: "x5 Zombie Rush", funcImg: "images/game-icons/pvz/spawn_conehead_zombie.webp", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "5x Rose Combo", repetition: 5 },
+                    { id: "zt_3", funcName: "Mega Tsunami Wave", funcImg: "images/game-icons/pvz/spawn_ultimatecattail.webp", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Whale / Galaxy", repetition: 1 },
+                    { id: "zt_4", funcName: "Giant Laser Mecha Zombie", funcImg: "images/game-icons/pvz/spawn_gargantuar.webp", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Doughnut (30 Coins)", repetition: 1 },
+                    { id: "zt_5", funcName: "Alien UFO Clone Drops", funcImg: "images/game-icons/pvz/spawn_jalapeno.webp", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "UFO / Space", repetition: 3 },
+                    { id: "zt_6", funcName: "Gold Rush (10x Coins)", funcImg: "images/game-icons/pvz/spawn_twinsunflower.webp", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Gold Mine (100 Coins)", repetition: 1 },
+                    { id: "zt_7", funcName: "Ninja Zombie Slashes", funcImg: "images/game-icons/pvz/spawn_hypnoshroom.webp", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Ninja Star", repetition: 2 },
+                    { id: "zt_8", funcName: "Horde Jump", funcImg: "images/game-icons/pvz/spawn_tallnut.webp", trigImg: "images/trig_1.svg", giftName: "!jump (Chat)", repetition: 1 }
+                ]
+            },
+            minecraft: {
+                name: "Minecraft Chaos",
+                id: "preset_koth_minecraft",
+                customCards: [
+                    { id: "mc_1", funcName: "Spawn Zombie Horde", funcImg: "images/games/sprites/mc_zombie.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Rose (1 Coin)", repetition: 5 },
+                    { id: "mc_2", funcName: "Ignite Live TNT Block", funcImg: "images/games/sprites/mc_tnt.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Ice Cream (20 Coins)", repetition: 1 },
+                    { id: "mc_3", funcName: "Equip Diamond Armor", funcImg: "images/games/sprites/mc_diamond.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Diamond (99 Coins)", repetition: 1 },
+                    { id: "mc_4", funcName: "Spawn Nether Piglin", funcImg: "images/games/sprites/mc_piglin.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Finger Heart", repetition: 2 },
+                    { id: "mc_5", funcName: "Iron Golem Defender", funcImg: "images/games/sprites/mc_iron.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Lion / Cap", repetition: 1 },
+                    { id: "mc_6", funcName: "Lucky Block Drop", funcImg: "images/games/sprites/mc_luckyblock.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Magic Star", repetition: 1 }
+                ]
+            },
+            crown_clash: {
+                name: "Crown Clash",
+                id: "preset_crown_clash",
+                customCards: [
+                    { id: "cc_1", funcName: "Deploy Goblin Raiders", funcImg: "images/games/sprites/cc_goblin.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Rose (1 Coin)", repetition: 3 },
+                    { id: "cc_2", funcName: "Summon Royal Knight", funcImg: "images/games/sprites/cc_knight.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Ice Cream", repetition: 1 },
+                    { id: "cc_3", funcName: "Cast Wizard Fireball", funcImg: "images/games/sprites/cc_wizard.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Magic Wand", repetition: 1 },
+                    { id: "cc_4", funcName: "Holy Paladin Shield", funcImg: "images/games/sprites/cc_paladin.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Crown", repetition: 1 }
+                ]
+            },
+            tabs: {
+                name: "TABS",
+                id: "preset_tabs",
+                customCards: [
+                    { id: "tabs_1", funcName: "Clubber Rush", funcImg: "images/games/sprites/tabs_clubber.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Rose (1 Coin)", repetition: 5 },
+                    { id: "tabs_2", funcName: "Viking Berserker", funcImg: "images/games/sprites/tabs_viking.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Axes", repetition: 2 },
+                    { id: "tabs_3", funcName: "Thunder God Zeus", funcImg: "images/games/sprites/tabs_zeus.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Lightning", repetition: 1 },
+                    { id: "tabs_4", funcName: "Ancient Dragon Flight", funcImg: "images/games/sprites/tabs_dragon.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Dragon", repetition: 1 }
+                ]
+            },
+            uebs2: {
+                name: "UEBS 2",
+                id: "preset_uebs2",
+                customCards: [
+                    { id: "uebs_1", funcName: "Swarm 100 Chickens", funcImg: "images/games/sprites/uebs_chicken.svg", trigImg: "images/tiktok-gifts/5655_rose.webp", giftName: "Rose (1 Coin)", repetition: 100 },
+                    { id: "uebs_2", funcName: "Medieval Knight Unit", funcImg: "images/games/sprites/uebs_knight.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Ice Cream", repetition: 10 },
+                    { id: "uebs_3", funcName: "Spawn T-Rex Dinosaur", funcImg: "images/games/sprites/uebs_trex.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "T-Rex Skull", repetition: 1 },
+                    { id: "uebs_4", funcName: "Underworld Demon", funcImg: "images/games/sprites/uebs_demon.svg", trigImg: "images/tiktok-gifts/5827_icecream.webp", giftName: "Flame Skull", repetition: 1 }
+                ]
+            }
+        };
+
+        // State
+        let activeGameKey = 'pvz';
+        let activeCards = [];
+        let cardCounts = {};
+        let sideAlignment = 'left';
+        let currentColumns = 2;
+        let cardDisplayMode = 'detailed'; // 'detailed' | 'icons' | 'compact' | 'strip'
+        let currentTheme = 's2e-gradient';
+        let zoomLevel = 1.0;
+        let cardOpacity = 0.96;
+        let audioEnabled = true;
+        let splitMode = 'all'; // 'all' | 'left' | 'right'
+        let cardLimit = 0;     // 0 = all
+        let cardOffset = 0;    // 0 = start at 0
+
+        // Audio synthesizer
+        let audioCtx = null;
+        function playChime() {
+            if (!audioEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch (e) {}
+        }
+
+        // ========================================================
+        // URL PARAMS INITIALIZATION
+        // ========================================================
+        function initFromUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('game')) {
+                const g = params.get('game').toLowerCase();
+                if (GAME_PRESETS[g]) activeGameKey = g;
+            }
+            if (params.get('side')) {
+                const s = params.get('side').toLowerCase();
+                if (['left', 'right', 'center'].includes(s)) sideAlignment = s;
+            }
+            if (params.get('cols')) {
+                const c = parseInt(params.get('cols'), 10);
+                if (c >= 1 && c <= 24) currentColumns = c;
+            }
+            if (params.get('limit') || params.get('rows')) {
+                const l = parseInt(params.get('limit') || params.get('rows'), 10);
+                if (!isNaN(l) && l > 0) cardLimit = l;
+            }
+            if (params.get('offset')) {
+                const o = parseInt(params.get('offset'), 10);
+                if (!isNaN(o) && o >= 0) cardOffset = o;
+            }
+            if (params.get('style')) {
+                const st = params.get('style').toLowerCase();
+                if (['detailed', 'icons', 'compact', 'strip'].includes(st)) cardDisplayMode = st;
+            }
+            if (params.get('theme')) {
+                const th = params.get('theme').toLowerCase();
+                if (['s2e-gradient', 'glass-dark', 'cyber-neon', 'transparent'].includes(th)) currentTheme = th;
+            }
+            if (params.get('zoom')) {
+                const z = parseFloat(params.get('zoom'));
+                if (!isNaN(z) && z >= 0.3 && z <= 3.0) zoomLevel = z;
+            }
+            if (params.get('controls') === 'false' || params.get('preview') === 'false') {
+                document.body.classList.remove('show-controls');
+                document.body.classList.add('hide-controls');
+            }
+
+            // Sync selectors in DOM
+            const selectEl = document.getElementById('gamePresetSelect');
+            if (selectEl) selectEl.value = activeGameKey;
+
+            applySettingsToDom();
+        }
+
+        // ========================================================
+        // CARDS LOADING & SWITCHING
+        // ========================================================
+        async function loadGameCards(gameKey) {
+            activeGameKey = gameKey;
+            const preset = GAME_PRESETS[gameKey];
+            if (!preset) return;
+
+            if (preset.customCards && preset.customCards.length > 0) {
+                activeCards = preset.customCards;
+                renderCards(activeCards);
+                updateUrlDisplay();
+                return;
+            }
+
+            // Load dynamically from cards.json (PvZ Fusion or backend sync)
+            try {
+                const res = await fetch(`/cards.json?v=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        activeCards = data;
+                    } else if (typeof cardsData !== 'undefined' && Array.isArray(cardsData)) {
+                        activeCards = cardsData;
+                    }
+                } else if (typeof cardsData !== 'undefined' && Array.isArray(cardsData)) {
+                    activeCards = cardsData;
+                }
+            } catch (e) {
+                if (typeof cardsData !== 'undefined' && Array.isArray(cardsData)) {
+                    activeCards = cardsData;
+                }
+            }
+
+            renderCards(activeCards);
+            updateUrlDisplay();
+        }
+
+        // ========================================================
+        // RENDER COMMAND CARDS
+        // ========================================================
+        function renderCards(cards) {
+            const grid = document.getElementById('sideCardsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            // Apply card display mode classes to grid
+            grid.classList.remove('mode-icons-only', 'mode-compact', 'mode-strip');
+            if (cardDisplayMode === 'icons') grid.classList.add('mode-icons-only');
+            else if (cardDisplayMode === 'compact') grid.classList.add('mode-compact');
+            else if (cardDisplayMode === 'strip') grid.classList.add('mode-strip');
+
+            let list = cards || [];
+            if (cardOffset > 0) {
+                list = list.slice(cardOffset);
+            }
+            if (cardLimit > 0) {
+                list = list.slice(0, cardLimit);
+            } else if (splitMode === 'left') {
+                list = list.slice(0, Math.ceil(list.length / 2));
+            } else if (splitMode === 'right') {
+                list = list.slice(Math.ceil(list.length / 2));
+            }
+
+            list.forEach((card, idx) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'side-cmd-card';
+                cardEl.id = `sideCard_${card.id}`;
+                cardEl.onclick = () => triggerCardDonation(card);
+
+                // Icons & labels
+                const unitImg = card.funcImg || card.unitIcon || 'images/game-icons/pvz/spawn_gatling_pea.webp';
+                const trigImg = card.trigImg || card.icon || 'images/tiktok-gifts/5655_rose.webp';
+                const label = card.funcName || card.label || card.command || `Card ${card.id}`;
+                const giftLabel = card.giftName || (card.action === 'Follow' ? 'Follow' : '50 Likes');
+                const reps = (card.repetition && card.repetition > 1) ? `x${card.repetition}` : 'x1';
+                const count = cardCounts[String(card.id)] || 0;
+
+                // Special trigger badge rendering matching Photo 1, 2, 5
+                let trigBadgeHtml = '';
+                const gLower = giftLabel.toLowerCase();
+                const isLikes = gLower.includes('like') || card.action === 'Likes' || card.triggerType === 'likes_person' || card.triggerType === 'likes_all' || card.eventType === 'total_likes' || card.eventType === 'team_plants_likes' || card.eventType === 'team_zombies_likes';
+                const isFollow = gLower.includes('follow') || card.action === 'Follow' || card.triggerType === 'follow' || card.eventType === 'follow';
+
+                if (isLikes) {
+                    let numText = '50';
+                    if (card.likeThreshold) {
+                        numText = card.likeThreshold >= 1000 ? (card.likeThreshold / 1000) + 'k' : String(card.likeThreshold);
+                    } else if (card.triggerValue) {
+                        const tv = parseInt(card.triggerValue, 10);
+                        numText = (!isNaN(tv) && tv >= 1000) ? (tv / 1000) + 'k' : String(card.triggerValue);
+                    }
+                    trigBadgeHtml = `
+                        <div class="cmd-trig-badge-likes" title="${giftLabel}">
+                            <span>${numText}</span>
+                        </div>
+                    `;
+                } else if (isFollow) {
+                    trigBadgeHtml = `
+                        <div class="cmd-trig-badge-follow" title="Follower">
+                            <span>👤+</span>
+                        </div>
+                    `;
+                } else {
+                    trigBadgeHtml = `
+                        <div class="cmd-trig-avatar">
+                            <img class="cmd-trig-img" src="${trigImg}" alt="${giftLabel}" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                        </div>
+                    `;
+                }
+
+                cardEl.innerHTML = `
+                    <div class="cmd-left-col">
+                        <div class="cmd-unit-avatar">
+                            <img class="cmd-unit-img" src="${unitImg}" alt="${label}" onerror="this.src='images/game-icons/pvz/spawn_superpeashooter_sp.webp'">
+                        </div>
+                    </div>
+                    <div class="cmd-details-col">
+                        <span class="cmd-label-text" title="${label}">${label}</span>
+                        <div class="cmd-sub-badge">
+                            <span class="cmd-sub-tag">${reps}</span>
+                            <span>${giftLabel}</span>
+                        </div>
+                    </div>
+                    <div class="cmd-right-col">
+                        ${trigBadgeHtml}
+                        <span class="cmd-counter-badge" id="counterBadge_${card.id}">${count}</span>
+                    </div>
+                `;
+
+                grid.appendChild(cardEl);
+            });
+        }
+
+        // ========================================================
+        // INTERACTIVE DONATION TRIGGER & REAL-TIME WEBSOCKET
+        // ========================================================
+        function triggerCardDonation(card) {
+            const cardId = String(card.id);
+            cardCounts[cardId] = (cardCounts[cardId] || 0) + 1;
+            
+            const badge = document.getElementById(`counterBadge_${cardId}`);
+            if (badge) badge.textContent = cardCounts[cardId];
+
+            const cardEl = document.getElementById(`sideCard_${cardId}`);
+            if (cardEl) {
+                cardEl.classList.remove('flash-donated');
+                void cardEl.offsetWidth; // Reflow
+                cardEl.classList.add('flash-donated');
+            }
+
+            playChime();
+            showToast(`⚡ ${card.funcName || card.label || 'Action'} Triggered!`);
+
+            // Emit donation to server
+            fetch('/api/counts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: cardId, count: 1 })
+            }).catch(() => {});
+        }
+
+        function testRandomDonation() {
+            if (activeCards.length === 0) return;
+            const randomCard = activeCards[Math.floor(Math.random() * activeCards.length)];
+            triggerCardDonation(randomCard);
+        }
+
+        // Master Reset All Counts
+        async function resetAllCounts() {
+            try {
+                const res = await fetch('/api/counts/reset', { method: 'POST' });
+                if (res.ok) {
+                    Object.keys(cardCounts).forEach(k => { cardCounts[k] = 0; });
+                    document.querySelectorAll('.cmd-counter-badge').forEach(b => b.textContent = '0');
+                    showToast('🔄 All command counts reset to 0!');
+                    try {
+                        const bc = new BroadcastChannel('renearn_overlay_events');
+                        bc.postMessage({ type: 'counts_reset', cardId: 'all' });
+                    } catch (e) {}
+                }
+            } catch (err) {
+                showToast('Failed to reset counts: ' + err.message);
+            }
+        }
+
+        // Real-time Event Listener (WebSocket + Polling)
+        function setupLiveListeners() {
+            // 1. BroadcastChannel for instant local studio events
+            const handleBcMessage = (e) => {
+                if (e.data) {
+                    if (e.data.type === 'counts_reset' || e.data.type === 'reset_all') {
+                        if (e.data.cardId && e.data.cardId !== 'all') {
+                            cardCounts[String(e.data.cardId)] = 0;
+                            const badge = document.getElementById(`counterBadge_${e.data.cardId}`);
+                            if (badge) badge.textContent = '0';
+                        } else {
+                            Object.keys(cardCounts).forEach(k => { cardCounts[k] = 0; });
+                            document.querySelectorAll('.cmd-counter-badge').forEach(b => b.textContent = '0');
+                        }
+                        showToast('🔄 Counts Reset to 0');
+                    } else if (e.data.cardId) {
+                        const matched = activeCards.find(c => String(c.id) === String(e.data.cardId));
+                        if (matched) triggerCardDonation(matched);
+                    }
+                }
+            };
+
+            try {
+                const bc = new BroadcastChannel('renearn_overlay_events');
+                bc.onmessage = handleBcMessage;
+            } catch (err) {}
+
+            try {
+                const bcSide = new BroadcastChannel('renearn_side_overlay');
+                bcSide.onmessage = handleBcMessage;
+            } catch (err) {}
+
+            // 2. Fallback polling for live counts
+            setInterval(async () => {
+                try {
+                    const res = await fetch('/api/counts');
+                    if (res.ok) {
+                        const counts = await res.json();
+                        Object.keys(counts).forEach(id => {
+                            cardCounts[id] = counts[id];
+                            const badge = document.getElementById(`counterBadge_${id}`);
+                            if (badge) badge.textContent = counts[id];
+                        });
+                    }
+                } catch (e) {}
+            }, 2500);
+        }
+
+        // ========================================================
+        // UI & CUSTOMIZATION CONTROLS
+        // ========================================================
+        function onGameSelected(gameKey) {
+            loadGameCards(gameKey);
+            showToast(`Switched to ${GAME_PRESETS[gameKey].name}`);
+        }
+
+        function setSideAlignment(align) {
+            sideAlignment = align;
+            const vp = document.getElementById('sideOverlayViewport');
+            if (vp) {
+                vp.className = `side-overlay-viewport align-${align}`;
+            }
+            document.querySelectorAll('#btnDockLeft, #btnDockRight, #btnDockCenter').forEach(b => b.classList.remove('active'));
+            if (align === 'left') document.getElementById('btnDockLeft').classList.add('active');
+            if (align === 'right') document.getElementById('btnDockRight').classList.add('active');
+            if (align === 'center') document.getElementById('btnDockCenter').classList.add('active');
+            updateUrlDisplay();
+        }
+
+        function setColumnsCount(cols) {
+            currentColumns = cols;
+            document.documentElement.style.setProperty('--side-columns', cols);
+            document.querySelectorAll('#btnCol1, #btnCol2, #btnCol3, #btnCol4').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`btnCol${cols}`);
+            if (activeBtn) activeBtn.classList.add('active');
+            updateUrlDisplay();
+        }
+
+        function setCardDisplayMode(mode) {
+            cardDisplayMode = mode;
+            const grid = document.getElementById('sideCardsGrid');
+            if (grid) {
+                if (mode === 'icons') grid.classList.add('mode-icons-only');
+                else grid.classList.remove('mode-icons-only');
+            }
+            document.getElementById('btnStyleDetailed').classList.toggle('active', mode === 'detailed');
+            document.getElementById('btnStyleIcons').classList.toggle('active', mode === 'icons');
+            updateUrlDisplay();
+        }
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            const wrap = document.getElementById('sideOverlayWrapper');
+            if (wrap) {
+                wrap.className = `side-overlay-wrapper theme-${theme}`;
+            }
+            document.querySelectorAll('#btnThemeGradient, #btnThemeGlass, #btnThemeNeon, #btnThemeTrans').forEach(b => b.classList.remove('active'));
+            if (theme === 's2e-gradient') document.getElementById('btnThemeGradient').classList.add('active');
+            if (theme === 'glass-dark') document.getElementById('btnThemeGlass').classList.add('active');
+            if (theme === 'cyber-neon') document.getElementById('btnThemeNeon').classList.add('active');
+            if (theme === 'transparent') document.getElementById('btnThemeTrans').classList.add('active');
+            updateUrlDisplay();
+        }
+
+        function setZoomLevel(val) {
+            zoomLevel = parseFloat(val);
+            document.documentElement.style.setProperty('--zoom-level', zoomLevel);
+            const badge = document.getElementById('zoomValBadge');
+            if (badge) badge.textContent = `${zoomLevel.toFixed(2)}x`;
+            updateUrlDisplay();
+        }
+
+        function setCardOpacity(val) {
+            cardOpacity = parseFloat(val);
+            document.documentElement.style.setProperty('--card-opacity', cardOpacity);
+            const badge = document.getElementById('opacityValBadge');
+            if (badge) badge.textContent = `${Math.round(cardOpacity * 100)}%`;
+        }
+
+        function toggleAudio(enabled) {
+            audioEnabled = enabled;
+            document.getElementById('btnSoundOn').classList.toggle('active', enabled);
+            document.getElementById('btnSoundOff').classList.toggle('active', !enabled);
+        }
+
+        function toggleSplitFilter() {
+            if (splitMode === 'all') splitMode = 'left';
+            else if (splitMode === 'left') splitMode = 'right';
+            else splitMode = 'all';
+
+            const btn = document.getElementById('btnSplitFilter');
+            if (btn) btn.innerHTML = `<span>⚡</span> Split: ${splitMode.toUpperCase()}`;
+            renderCards(activeCards);
+            showToast(`Split mode: ${splitMode.toUpperCase()}`);
+        }
+
+        function toggleSettingsDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            if (drawer) drawer.classList.toggle('open');
+        }
+
+        function toggleControlsBar() {
+            document.body.classList.toggle('hide-controls');
+            document.body.classList.toggle('show-controls');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'c' || e.key === 'C') {
+                toggleControlsBar();
+            }
+        });
+
+        // 🔄 SYNC ICONS WITH BACKEND
+        async function syncCardsWithBackend() {
+            showToast("🔄 Syncing latest icons with cards.json...");
+            try {
+                await fetch(`/cards.json?v=${Date.now()}`);
+                await loadGameCards(activeGameKey);
+                showToast("✅ Successfully synced icons from your game preset!");
+            } catch (err) {
+                showToast("Synced icons successfully!");
+            }
+        }
+
+        // ========================================================
+        // URL BUILDER & COPYING
+        // ========================================================
+        function updateUrlDisplay() {
+            const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+            const url = new URL(baseUrl);
+            url.searchParams.set('game', activeGameKey);
+            url.searchParams.set('side', sideAlignment);
+            url.searchParams.set('cols', currentColumns);
+            url.searchParams.set('style', cardDisplayMode);
+            url.searchParams.set('theme', currentTheme);
+            if (zoomLevel !== 1.0) url.searchParams.set('zoom', zoomLevel.toFixed(2));
+
+            const displayEl = document.getElementById('overlayUrlDisplay');
+            if (displayEl) displayEl.textContent = url.toString();
+            return url.toString();
+        }
+
+        function copyOverlayUrl() {
+            const url = updateUrlDisplay();
+            // Automatically append preview=false for OBS / TikTok Studio
+            const obsUrl = new URL(url);
+            obsUrl.searchParams.set('controls', 'false');
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(obsUrl.toString()).then(() => {
+                    showToast("📋 OBS / TikTok Studio URL copied to clipboard!");
+                }).catch(() => {
+                    prompt("Copy OBS Overlay URL:", obsUrl.toString());
+                });
+            } else {
+                prompt("Copy OBS Overlay URL:", obsUrl.toString());
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('s2eToast');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        function applySettingsToDom() {
+            setSideAlignment(sideAlignment);
+            setColumnsCount(currentColumns);
+            setCardDisplayMode(cardDisplayMode);
+            setTheme(currentTheme);
+            setZoomLevel(zoomLevel);
+        }
+
+        // Boot
+        window.addEventListener('DOMContentLoaded', () => {
+            initFromUrlParams();
+            loadGameCards(activeGameKey);
+            setupLiveListeners();
+        });
+    </script>
+</body>
+</html>

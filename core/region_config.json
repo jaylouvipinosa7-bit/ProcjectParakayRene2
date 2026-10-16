@@ -1,0 +1,97 @@
+﻿{
+    "autoDetect":  false,
+    "selectedRegion":  "MY",
+    "detectedRegion":  {
+                           "countryCode":  "PH",
+                           "countryName":  "Philippines",
+                           "flag":  "🇵🇭",
+                           "timezone":  "Asia/Manila",
+                           "detectedMethod":  "ip_geolocation",
+                           "ip":  "112.203.32.84",
+                           "updatedAt":  "2026-10-11T20:09:00Z"
+                       },
+    "supportedRegions":  [
+                             {
+                                 "code":  "PH",
+                                 "name":  "Philippines",
+                                 "flag":  "🇵🇭",
+                                 "currency":  "PHP"
+                             },
+                             {
+                                 "code":  "US",
+                                 "name":  "United States",
+                                 "flag":  "🇺🇸",
+                                 "currency":  "USD"
+                             },
+                             {
+                                 "code":  "ID",
+                                 "name":  "Indonesia",
+                                 "flag":  "🇮🇩",
+                                 "currency":  "IDR"
+                             },
+                             {
+                                 "code":  "MY",
+                                 "name":  "Malaysia",
+                                 "flag":  "🇲🇾",
+                                 "currency":  "MYR"
+                             },
+                             {
+                                 "code":  "VN",
+                                 "name":  "Vietnam",
+                                 "flag":  "🇻🇳",
+                                 "currency":  "VND"
+                             },
+                             {
+                                 "code":  "TH",
+                                 "name":  "Thailand",
+                                 "flag":  "🇹🇭",
+                                 "currency":  "THB"
+                             },
+                             {
+                                 "code":  "SG",
+                                 "name":  "Singapore",
+                                 "flag":  "🇸🇬",
+                                 "currency":  "SGD"
+                             },
+                             {
+                                 "code":  "GB",
+                                 "name":  "United Kingdom",
+                                 "flag":  "🇬🇧",
+                                 "currency":  "GBP"
+                             },
+                             {
+                                 "code":  "BR",
+                                 "name":  "Brazil",
+                                 "flag":  "🇧🇷",
+                                 "currency":  "BRL"
+                             },
+                             {
+                                 "code":  "GLOBAL",
+                                 "name":  "Global / All Regions",
+                                 "flag":  "🌐",
+                                 "currency":  "USD"
+                             }
+                         ],
+    "regionalGifts":  {
+                          "PH":  [
+                                     {
+                                         "id":  "16757",
+                                         "name":  "Bibingka",
+                                         "coins":  1,
+                                         "icon":  "images/tiktok-gifts/16757_bibingka.webp"
+                                     },
+                                     {
+                                         "id":  "1347195",
+                                         "name":  "SEA Shell",
+                                         "coins":  1,
+                                         "icon":  "images/tiktok-gifts/1347195_sea_shell.webp"
+                                     },
+                                     {
+                                         "id":  "11922",
+                                         "name":  "Jeepney",
+                                         "coins":  1800,
+                                         "icon":  "images/tiktok-gifts/11922_jeepney.webp"
+                                     }
+                                 ]
+                      }
+}

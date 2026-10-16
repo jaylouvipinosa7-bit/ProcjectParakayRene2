@@ -388,35 +388,53 @@ $script:leaderboard = Load-Leaderboard
 $script:leaderboardSettings = Load-LeaderboardSettings
 
 function Update-LeaderboardLikes([string]$username, [int]$likeCount, [string]$avatar) {
-    if (-not $username -or $username -eq "Viewer") { return }
+    if (-not $username) { $username = "Viewer" }
     $cleanUser = $username.Trim()
     if (-not $script:leaderboard.likes) { $script:leaderboard | Add-Member -NotePropertyName likes -NotePropertyValue @{} -Force }
     $current = 0
     if ($script:leaderboard.likes.PSObject -and $script:leaderboard.likes.PSObject.Properties[$cleanUser]) {
         $current = [int]$script:leaderboard.likes.$cleanUser
     }
-    $script:leaderboard.likes | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([int]($current + $likeCount)) -Force
+    $newTotal = [int]($current + $likeCount)
+    $script:leaderboard.likes | Add-Member -NotePropertyName $cleanUser -NotePropertyValue $newTotal -Force
     if ($avatar -and $avatar.Trim()) {
         if (-not $script:leaderboard.avatars) { $script:leaderboard | Add-Member -NotePropertyName avatars -NotePropertyValue @{} -Force }
         $script:leaderboard.avatars | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([string]$avatar.Trim()) -Force
     }
     Save-Leaderboard
+    AddEventLog @{
+        type = "leaderboard_update"
+        updateType = "likes"
+        username = $cleanUser
+        likeCount = $likeCount
+        total = $newTotal
+        avatar = $avatar
+    }
 }
 
 function Update-LeaderboardCoins([string]$username, [int]$coinValue, [string]$avatar) {
-    if (-not $username -or $username -eq "Viewer" -or $username -eq "StreamGoal") { return }
+    if (-not $username -or $username -eq "StreamGoal") { $username = "RENEarn_Viewer" }
     $cleanUser = $username.Trim()
     if (-not $script:leaderboard.coins) { $script:leaderboard | Add-Member -NotePropertyName coins -NotePropertyValue @{} -Force }
     $current = 0
     if ($script:leaderboard.coins.PSObject -and $script:leaderboard.coins.PSObject.Properties[$cleanUser]) {
         $current = [int]$script:leaderboard.coins.$cleanUser
     }
-    $script:leaderboard.coins | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([int]($current + $coinValue)) -Force
+    $newTotal = [int]($current + $coinValue)
+    $script:leaderboard.coins | Add-Member -NotePropertyName $cleanUser -NotePropertyValue $newTotal -Force
     if ($avatar -and $avatar.Trim()) {
         if (-not $script:leaderboard.avatars) { $script:leaderboard | Add-Member -NotePropertyName avatars -NotePropertyValue @{} -Force }
         $script:leaderboard.avatars | Add-Member -NotePropertyName $cleanUser -NotePropertyValue ([string]$avatar.Trim()) -Force
     }
     Save-Leaderboard
+    AddEventLog @{
+        type = "leaderboard_update"
+        updateType = "coins"
+        username = $cleanUser
+        coinValue = $coinValue
+        total = $newTotal
+        avatar = $avatar
+    }
 }
 
 function Get-LeaderboardTop([string]$type, [int]$count = 10) {
@@ -443,6 +461,283 @@ function Get-LeaderboardTop([string]$type, [int]$count = 10) {
     return @($sorted)
 }
 # ==================== END LEADERBOARD TRACKING ====================
+
+# ==================== REGION DETECTION & CONFIG ====================
+$regionConfigFile = Join-Path $folder "region_config.json"
+
+function Load-RegionConfig {
+    if (Test-Path $regionConfigFile) {
+        try {
+            $raw = Get-Content $regionConfigFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        autoDetect = $true
+        selectedRegion = "PH"
+        detectedRegion = [PSCustomObject]@{
+            countryCode = "PH"
+            countryName = "Philippines"
+            flag = "🇵🇭"
+            timezone = "Asia/Manila"
+            detectedMethod = "locale_fallback"
+        }
+    }
+}
+
+function Detect-SystemRegion {
+    # 1. IP Geolocation with timeout 2.5s
+    try {
+        $ipRes = Invoke-RestMethod -Uri "http://ip-api.com/json" -TimeoutSec 2.5 -ErrorAction Stop
+        if ($ipRes -and $ipRes.countryCode) {
+            $flagMap = @{ "PH"="🇵🇭"; "US"="🇺🇸"; "ID"="🇮🇩"; "MY"="🇲🇾"; "VN"="🇻🇳"; "TH"="🇹🇭"; "SG"="🇸🇬"; "GB"="🇬🇧"; "BR"="🇧🇷"; "CA"="🇨🇦"; "AU"="🇦🇺"; "JP"="🇯🇵"; "KR"="🇰🇷"; "DE"="🇩🇪"; "FR"="🇫🇷" }
+            $cCode = [string]$ipRes.countryCode.ToUpper()
+            $fl = if ($flagMap.ContainsKey($cCode)) { $flagMap[$cCode] } else { "🌐" }
+            return [PSCustomObject]@{
+                countryCode = $cCode
+                countryName = [string]$ipRes.country
+                flag = $fl
+                timezone = [string]$ipRes.timezone
+                detectedMethod = "ip_geolocation"
+                ip = [string]$ipRes.query
+                updatedAt = [DateTime]::UtcNow.ToString("o")
+            }
+        }
+    } catch {}
+
+    # 2. Fallback to OS Culture / TimeZone
+    try {
+        $cult = [System.Globalization.CultureInfo]::CurrentCulture.Name
+        $tz = [System.TimeZoneInfo]::Local.Id
+        $cCode = "PH"
+        $cName = "Philippines"
+        $flag = "🇵🇭"
+        if ($cult -match '-([A-Z]{2})$') {
+            $cCode = $matches[1]
+            try { $cName = [System.Globalization.RegionInfo]::new($cCode).DisplayName } catch { $cName = $cCode }
+        } elseif ($tz -match 'Manila|Singapore|Taipei|China') {
+            $cCode = "PH"
+            $cName = "Philippines"
+        }
+        return [PSCustomObject]@{
+            countryCode = $cCode
+            countryName = $cName
+            flag = $flag
+            timezone = $tz
+            detectedMethod = "system_locale"
+            updatedAt = [DateTime]::UtcNow.ToString("o")
+        }
+    } catch {}
+
+    return [PSCustomObject]@{
+        countryCode = "PH"
+        countryName = "Philippines"
+        flag = "🇵🇭"
+        timezone = "Asia/Manila"
+        detectedMethod = "default_fallback"
+        updatedAt = [DateTime]::UtcNow.ToString("o")
+    }
+}
+
+$script:regionConfig = Load-RegionConfig
+
+function Save-RegionConfig($cfg) {
+    try {
+        $json = $cfg | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($regionConfigFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+# ==================== CUSTOM COMMUNITY GIFTS ====================
+$customCommunityGiftsFile = Join-Path $folder "custom_community_gifts.json"
+
+function Load-CustomCommunityGifts {
+    if (Test-Path $customCommunityGiftsFile) {
+        try {
+            $raw = Get-Content $customCommunityGiftsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) {
+                if ($raw -is [System.Array]) { return @($raw) }
+                return @($raw)
+            }
+        } catch {}
+    }
+    return @()
+}
+
+function Save-CustomCommunityGifts($giftsList) {
+    try {
+        $json = $giftsList | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($customCommunityGiftsFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:customCommunityGifts = Load-CustomCommunityGifts
+
+# ==================== ON-SCREEN TRIGGER COUNTER ====================
+$triggerCounterFile = Join-Path $folder "trigger_counter_state.json"
+
+function Load-TriggerCounterState {
+    if (Test-Path $triggerCounterFile) {
+        try {
+            $raw = Get-Content $triggerCounterFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        totalTriggers = 0
+        streak = 0
+        lastTriggerTime = 0
+        goal = 100
+        goalTitle = "Mega Wave Boss"
+        gifts = [PSCustomObject]@{}
+        recentTriggers = @()
+    }
+}
+
+function Save-TriggerCounterState {
+    try {
+        $json = $script:triggerCounterState | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($triggerCounterFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:triggerCounterState = Load-TriggerCounterState
+
+function Record-TriggerEvent([string]$giftName, [string]$giftId, [int]$count, [string]$user, [string]$avatar, [string]$icon, [string]$commandLabel) {
+    if (-not $script:triggerCounterState) {
+        $script:triggerCounterState = Load-TriggerCounterState
+    }
+    $now = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+    $safeCount = [Math]::Max(1, $count)
+    $script:triggerCounterState.totalTriggers = [int]$script:triggerCounterState.totalTriggers + $safeCount
+
+    # Streak combo logic: combo stays alive if within 15 seconds
+    $lastTime = if ($script:triggerCounterState.lastTriggerTime) { [int64]$script:triggerCounterState.lastTriggerTime } else { 0 }
+    if (($now - $lastTime) -lt 15000) {
+        $script:triggerCounterState.streak = [int]$script:triggerCounterState.streak + 1
+    } else {
+        $script:triggerCounterState.streak = 1
+    }
+    $script:triggerCounterState.lastTriggerTime = $now
+
+    # Gift bucket
+    $cleanName = if ($giftName) { $giftName } else { "Gift $giftId" }
+    $gKey = ($cleanName -replace '[^a-zA-Z0-9]', '_').ToLower()
+    if (-not $script:triggerCounterState.gifts) {
+        $script:triggerCounterState | Add-Member -NotePropertyName gifts -NotePropertyValue ([PSCustomObject]@{}) -Force
+    }
+    $curGiftObj = $null
+    if ($script:triggerCounterState.gifts.PSObject -and $script:triggerCounterState.gifts.PSObject.Properties[$gKey]) {
+        $curGiftObj = $script:triggerCounterState.gifts.$gKey
+    }
+    $prevCount = if ($curGiftObj -and $curGiftObj.count) { [int]$curGiftObj.count } else { 0 }
+    $newCount = $prevCount + $safeCount
+    $giftRecord = [PSCustomObject]@{
+        name = $cleanName
+        giftId = [string]$giftId
+        count = $newCount
+        icon = if ($icon) { $icon } else { "images/trig_7.svg" }
+        lastGifter = $user
+    }
+    $script:triggerCounterState.gifts | Add-Member -NotePropertyName $gKey -NotePropertyValue $giftRecord -Force
+
+    # Recent triggers list
+    $recentList = @()
+    if ($script:triggerCounterState.recentTriggers) {
+        $recentList = @($script:triggerCounterState.recentTriggers)
+    }
+    $trigItem = [PSCustomObject]@{
+        id = "$now`_$((Get-Random -Minimum 1000 -Maximum 9999))"
+        username = $user
+        avatar = if ($avatar) { $avatar } else { "images/default_avatar.svg" }
+        giftName = $cleanName
+        giftIcon = if ($icon) { $icon } else { "images/trig_7.svg" }
+        commandLabel = $commandLabel
+        count = $safeCount
+        timestamp = $now
+    }
+    $recentList += $trigItem
+    if ($recentList.Count -gt 12) {
+        $recentList = $recentList | Select-Object -Last 12
+    }
+    $script:triggerCounterState.recentTriggers = $recentList
+
+    Save-TriggerCounterState
+
+    # Broadcast SSE for real-time overlay animation
+    AddEventLog @{
+        type = "trigger_counter"
+        totalTriggers = $script:triggerCounterState.totalTriggers
+        streak = $script:triggerCounterState.streak
+        latest = $trigItem
+    }
+}
+
+# ==================== GIFT JAR OVERLAY TRACKING ====================
+$jarSettingsFile = Join-Path $folder "jar_settings.json"
+$jarStateFile = Join-Path $folder "jar_state.json"
+
+function Load-JarSettings {
+    if (Test-Path $jarSettingsFile) {
+        try {
+            $raw = Get-Content $jarSettingsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        skin = "mason"
+        customSkinUrl = ""
+        jarScale = 1.0
+        maxCapacity = 80
+        countMode = "items"
+        gravity = 1.0
+        bounciness = 0.45
+        friction = 0.1
+        giftScale = 1.0
+        soundEnabled = $true
+        soundVolume = 0.5
+        showGifterBadge = $true
+        showCounterBar = $true
+        resetBehavior = "explosion"
+        triggerGameEventOnFull = $true
+        gameCommandOnFull = "spawn_fire_cattail"
+        jarTitle = "TikTok Gift Jar"
+        themeGlow = "rgba(56, 189, 248, 0.4)"
+    }
+}
+
+function Save-JarSettings($settings) {
+    try {
+        $json = $settings | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($jarSettingsFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+function Load-JarState {
+    if (Test-Path $jarStateFile) {
+        try {
+            $raw = Get-Content $jarStateFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        currentCount = 0
+        totalCoins = 0
+        isFull = $false
+        lastDropTime = 0
+        recentDrops = @()
+    }
+}
+
+function Save-JarState($st) {
+    try {
+        $json = $st | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($jarStateFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+$script:jarSettings = Load-JarSettings
+$script:jarState = Load-JarState
 
 function SaveCounts {
     try {
@@ -508,6 +803,7 @@ function Update-WinWidgetScore([int]$delta, [string]$reason = "spinner", [string
 $script:lastWinAdjustTime = 0
 $script:lastWinAdjustAction = ""
 $script:recentSpins = [System.Collections.Hashtable]::Synchronized(@{})
+$script:recentGiftDeduplication = [System.Collections.Hashtable]::Synchronized(@{})
 $script:heartMeUsersToday = [System.Collections.Hashtable]::Synchronized(@{})
 $script:heartMeUsersDate = [DateTime]::UtcNow.ToString("yyyyMMdd")
 
@@ -746,6 +1042,189 @@ function LoadCards {
         } catch {}
     }
     return @()
+}
+
+function Normalize-PresetEvents($events, $presetName = "") {
+    if (-not $events) { return @() }
+    $normalized = @()
+    $idx = 1
+    foreach ($ev in $events) {
+        $id = if ($ev.id) { [string]$ev.id } elseif ($ev._id) { [string]$ev._id } else { [string]$idx }
+        
+        # Resolve command
+        $cmd = ""
+        if ($ev.command) {
+            $cmd = [string]$ev.command
+        } elseif ($ev.function -and $ev.function.commands -and $ev.function.commands.Count -gt 0) {
+            $rawCmds = @()
+            foreach ($c in $ev.function.commands) {
+                if ($c -is [string]) { $rawCmds += $c.Trim() }
+                elseif ($c.command) { $rawCmds += [string]$c.command.Trim() }
+            }
+            $cmd = $rawCmds -join ";"
+        } elseif ($ev.function -and $ev.function.command) {
+            $cmd = [string]$ev.function.command
+        }
+        
+        $lbl = ""
+        if ($ev.label) { $lbl = [string]$ev.label }
+        elseif ($ev.function -and $ev.function.name) { $lbl = [string]$ev.function.name }
+        elseif ($ev.functionName) { $lbl = [string]$ev.functionName }
+        else { $lbl = $cmd }
+
+        # Resolve correct command for Trident Jugger-nut Gargantuar if it had generic bucket zombie
+        if ($lbl -match 'Trident\s*Jugger.*Gargantuar' -and ($cmd -eq 'spawn_bucket_zombie' -or [string]::IsNullOrWhiteSpace($cmd))) {
+            $cmd = 'spawn_trident_juggernut_gargantuar'
+        }
+        
+        # Resolve actionType
+        $act = if ($ev.actionType) { [string]$ev.actionType } else { "" }
+        if (-not $act) {
+            $cLower = $cmd.ToLower()
+            if ($cLower -match 'plant|sunnut|cattail|pea|sunflower|potato|cherry|melon|nut|squash|chomper') {
+                $act = "plant"
+            } elseif ($cLower -match 'kill_|plant_every|lawnmower|charm_') {
+                $act = "power"
+            } elseif ($cLower -match 'spinner_') {
+                $act = "spinner"
+            } else {
+                $act = "zombie"
+            }
+        }
+        
+        # Resolve repetition, delay, interval
+        $reps = 1
+        if ($ev.repetition -and [int]$ev.repetition -gt 0) { $reps = [int]$ev.repetition }
+        elseif ($ev.function -and $ev.function.repetition -and [int]$ev.function.repetition -gt 0) { $reps = [int]$ev.function.repetition }
+        elseif ($ev.amount -and [int]$ev.amount -gt 0) { $reps = [int]$ev.amount }
+        
+        $delay = 0
+        if ($ev.delay -ne $null) { $delay = [int]$ev.delay }
+        elseif ($ev.function -and $ev.function.delay -ne $null) { $delay = [int]$ev.function.delay }
+        
+        $interval = 100
+        if ($ev.interval -ne $null) { $interval = [int]$ev.interval }
+        elseif ($ev.function -and $ev.function.interval -ne $null) { $interval = [int]$ev.function.interval }
+        
+        $repMult = $true
+        if ($ev.repetitionMultiplier -ne $null) { $repMult = [bool]$ev.repetitionMultiplier }
+        elseif ($ev.function -and $ev.function.repetitionMultiplier -ne $null) { $repMult = [bool]$ev.function.repetitionMultiplier }
+        
+        $hideInOverlay = $false
+        if ($ev.hideInOverlay -ne $null) { $hideInOverlay = [bool]$ev.hideInOverlay }
+        elseif ($ev.function -and $ev.function.hideEventInOverlay -ne $null) { $hideInOverlay = [bool]$ev.function.hideEventInOverlay }
+        
+        # Unit Icon
+        $uIcon = ""
+        if ($ev.unitIcon) { $uIcon = [string]$ev.unitIcon }
+        elseif ($ev.function -and $ev.function.image) { $uIcon = [string]$ev.function.image }
+        else {
+            $firstCmd = ($cmd.Split(';')[0]).Trim()
+            $uIcon = "images/game-icons/pvz/$firstCmd.webp"
+        }
+        
+        # Trigger resolution
+        $trigType = "gift"
+        $gName = "Gift"
+        $gId = ""
+        $coins = 1
+        $tIcon = "images/tiktok-gifts/5655_rose.webp"
+        $likeThresh = 50
+        
+        if ($ev.trigger) {
+            $tAction = [string]$ev.trigger.action
+            if ($tAction -eq "LikeForEach") {
+                $trigType = "likes_person"
+                $likeThresh = if ($ev.trigger.value) { [int]$ev.trigger.value } else { 50 }
+                $gName = if ($ev.giftName) { [string]$ev.giftName } else { "Team likes" }
+                $coins = 0
+                $tIcon = "images/trig_7.svg"
+            } elseif ($tAction -eq "LikeAmount") {
+                $trigType = "likes_all"
+                $likeThresh = if ($ev.trigger.value) { [int64]$ev.trigger.value } else { 50000 }
+                $gName = if ($ev.giftName) { [string]$ev.giftName } else { "Total Likes" }
+                $coins = 0
+                $tIcon = "images/trig_7.svg"
+            } elseif ($tAction -eq "Follow") {
+                $trigType = "follow"
+                $gName = "Follower"
+                $coins = 0
+                $tIcon = "images/trig_1.svg"
+            } elseif ($tAction -eq "Share") {
+                $trigType = "share"
+                $gName = "Share Stream"
+                $coins = 0
+                $tIcon = "images/trig_1.svg"
+            } else {
+                # SelectedGift
+                $trigType = "gift"
+                $gId = if ($ev.trigger.giftId) { [string]$ev.trigger.giftId } else { "" }
+                $gName = if ($ev.trigger.giftData -and $ev.trigger.giftData.name) { [string]$ev.trigger.giftData.name } elseif ($ev.giftName) { [string]$ev.giftName } else { "Gift" }
+                $coins = if ($ev.trigger.giftData -and $ev.trigger.giftData.diamond_count) { [int]$ev.trigger.giftData.diamond_count } elseif ($ev.coins) { [int]$ev.coins } else { 1 }
+                $tIcon = if ($ev.icon) { [string]$ev.icon } else { "images/tiktok-gifts/${gId}.webp" }
+            }
+        } else {
+            $trigType = if ($ev.triggerType) { [string]$ev.triggerType } elseif ($ev.eventType) { [string]$ev.eventType } else { "gift" }
+            $gName = if ($ev.giftName) { [string]$ev.giftName } else { "Gift" }
+            $gId = if ($ev.giftId) { [string]$ev.giftId } else { "" }
+            $coins = if ($ev.coins) { [int]$ev.coins } else { 1 }
+            $tIcon = if ($ev.icon) { [string]$ev.icon } else { "images/tiktok-gifts/5655_rose.webp" }
+            $likeThresh = if ($ev.likeThreshold) { [int64]$ev.likeThreshold } else { 50 }
+        }
+        
+        # Sub-commands array of objects
+        $cmdsList = @()
+        if ($ev.commands -and $ev.commands.Count -gt 0 -and $ev.commands[0].command) {
+            $cmdsList = $ev.commands
+        } else {
+            $parts = $cmd -split ';'
+            $cIdx = 1
+            foreach ($p in $parts) {
+                $trimP = $p.Trim()
+                if ($trimP) {
+                    $cmdsList += [PSCustomObject]@{
+                        name = "Commands #$cIdx"
+                        command = $trimP
+                        label = $lbl
+                        icon = "images/game-icons/pvz/$trimP.webp"
+                        actionType = $act
+                        amount = 1
+                    }
+                    $cIdx++
+                }
+            }
+        }
+        
+        $itemObj = [PSCustomObject]@{
+            id = $id
+            giftName = $gName
+            giftId = $gId
+            coins = $coins
+            icon = $tIcon
+            unitIcon = $uIcon
+            actionType = $act
+            command = $cmd
+            label = $lbl
+            amount = if ($ev.amount) { [int]$ev.amount } else { $reps }
+            enabled = $true
+            likeThreshold = $likeThresh
+            commands = $cmdsList
+            functionName = $lbl
+            repetition = $reps
+            delay = $delay
+            interval = $interval
+            repetitionMultiplier = $repMult
+            hideInOverlay = $hideInOverlay
+            triggerType = $trigType
+            triggerValue = [string]$likeThresh
+            platform = "tiktok"
+            availableFor = "Anyone"
+            allowImport = $true
+        }
+        $normalized += $itemObj
+        $idx++
+    }
+    return $normalized
 }
 
 function Sync-ConfigToCards {
@@ -1199,10 +1678,20 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
 function ReadRequestBody($req) {
     if (-not $req.HasEntityBody) { return "{}" }
     try {
-        $mem = New-Object System.IO.MemoryStream
-        $req.InputStream.CopyTo($mem)
-        $bytes = $mem.ToArray()
-        return [System.Text.Encoding]::UTF8.GetString($bytes)
+        $len = [int]$req.ContentLength64
+        if ($len -gt 0) {
+            $buffer = New-Object byte[] $len
+            $totalRead = 0
+            while ($totalRead -lt $len) {
+                $read = $req.InputStream.Read($buffer, $totalRead, $len - $totalRead)
+                if ($read -le 0) { break }
+                $totalRead += $read
+            }
+            return [System.Text.Encoding]::UTF8.GetString($buffer, 0, $totalRead)
+        } else {
+            $reader = New-Object System.IO.StreamReader($req.InputStream, [System.Text.Encoding]::UTF8)
+            return $reader.ReadToEnd()
+        }
     } catch {
         return "{}"
     }
@@ -2543,6 +3032,9 @@ while ($true) {
                     continue
                 }
 
+                # Normalize preset events to guarantee full standard working schema
+                $normalizedEvents = Normalize-PresetEvents $foundPreset.events $foundPreset.name
+
                 # Update active config
                 $targetPath = Get-UserConfigPath $null
                 $cfgObj = if (Test-Path $targetPath) { Get-Content $targetPath -Raw -Encoding UTF8 | ConvertFrom-Json } else {
@@ -2550,22 +3042,36 @@ while ($true) {
                 }
 
                 $cfgObj | Add-Member -MemberType NoteProperty -Name "activePresetId" -Value $foundKey -Force
-                if ($foundPreset.events -and $foundPreset.events.Count -gt 0) {
-                    $cfgObj.gifts = $foundPreset.events
-                }
+                $cfgObj.gifts = $normalizedEvents
 
                 $updatedJson = $cfgObj | ConvertTo-Json -Depth 10
-                [System.IO.File]::WriteAllText($targetPath, $updatedJson, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $updatedJson, [System.Text.Encoding]::UTF8)
+                if ($targetPath -and (Test-Path $targetPath) -and ($targetPath -ne $configFile)) {
+                    [System.IO.File]::WriteAllText($targetPath, $updatedJson, [System.Text.Encoding]::UTF8)
+                }
+
+                # Update all user configs in user_configs/ so no stale active preset exists anywhere
+                if (Test-Path $userConfigsFolder) {
+                    Get-ChildItem -Path $userConfigsFolder -Filter "*_config.json" -ErrorAction SilentlyContinue | ForEach-Object {
+                        try {
+                            $uCfg = Get-Content $_.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+                            $uCfg | Add-Member -MemberType NoteProperty -Name "activePresetId" -Value $foundKey -Force
+                            $uCfg.gifts = $normalizedEvents
+                            [System.IO.File]::WriteAllText($_.FullName, ($uCfg | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8)
+                        } catch {}
+                    }
+                }
+
+                if ($script:cardMilestones) { $script:cardMilestones.Clear() }
                 Sync-ConfigToCards
-                AddEventLog @{ type = "config_updated"; activePresetId = $foundKey; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+                AddEventLog @{ type = "config_updated"; activePresetId = $foundKey; presetName = $foundPreset.name; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
 
                 Send-JsonResponse $response @{
                     status = "ok"
                     activePresetId = $foundKey
                     presetName = $foundPreset.name
                     game = $foundPreset.game
-                    eventsCount = if ($foundPreset.events) { $foundPreset.events.Count } else { 0 }
+                    eventsCount = if ($normalizedEvents) { $normalizedEvents.Count } else { 0 }
                     message = "Preset '$($foundPreset.name)' is now live!"
                 }
             } catch {
@@ -2678,10 +3184,385 @@ while ($true) {
             continue
         }
 
-        # 3. Units Catalog
+        # 3. Units Catalog (with merged Custom Community Gifts & Regional Metadata)
         if ($reqPath -eq '/api/catalog') {
-            $content = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) } else { "{}" }
-            Send-JsonResponse $response $content
+            try {
+                $rawCatalog = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) | ConvertFrom-Json } else { [PSCustomObject]@{} }
+                
+                # Merge custom community gifts into tiktokGifts array
+                $commGifts = Load-CustomCommunityGifts
+                if ($commGifts -and $commGifts.Count -gt 0 -and $rawCatalog.tiktokGifts) {
+                    $existingIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    foreach ($tg in $rawCatalog.tiktokGifts) {
+                        if ($tg.id) { [void]$existingIds.Add([string]$tg.id) }
+                    }
+                    $mergedList = [System.Collections.ArrayList]::new(@($rawCatalog.tiktokGifts))
+                    foreach ($cg in $commGifts) {
+                        if ($cg.id -and -not $existingIds.Contains([string]$cg.id)) {
+                            [void]$mergedList.Add($cg)
+                            [void]$existingIds.Add([string]$cg.id)
+                        }
+                    }
+                    $rawCatalog.tiktokGifts = @($mergedList)
+                }
+
+                # Attach detected region info
+                $rawCatalog | Add-Member -NotePropertyName region -NotePropertyValue $script:regionConfig -Force
+                $rawCatalog | Add-Member -NotePropertyName communityGifts -NotePropertyValue $commGifts -Force
+
+                Send-JsonResponse $response $rawCatalog
+            } catch {
+                $content = if (Test-Path $catalogFile) { [System.IO.File]::ReadAllText($catalogFile, [System.Text.Encoding]::UTF8) } else { "{}" }
+                Send-JsonResponse $response $content
+            }
+            continue
+        }
+
+        # 3e. Region Detection & Settings API
+        if ($reqPath -eq '/api/region') {
+            if ($request.HttpMethod -eq 'GET') {
+                # Auto-refresh detection if autoDetect is enabled and stale or not yet detected
+                if ($script:regionConfig.autoDetect) {
+                    $needsDetect = $false
+                    if (-not $script:regionConfig.detectedRegion) {
+                        $needsDetect = $true
+                    } elseif ($script:regionConfig.detectedRegion.updatedAt) {
+                        try {
+                            $lastDt = [DateTime]::Parse($script:regionConfig.detectedRegion.updatedAt)
+                            if (([DateTime]::UtcNow - $lastDt).TotalHours -ge 2) { $needsDetect = $true }
+                        } catch { $needsDetect = $true }
+                    }
+                    if ($needsDetect) {
+                        $det = Detect-SystemRegion
+                        $script:regionConfig.detectedRegion = $det
+                        $script:regionConfig.selectedRegion = $det.countryCode
+                        Save-RegionConfig $script:regionConfig
+                    }
+                }
+                Send-JsonResponse $response @{
+                    status = "ok"
+                    region = $script:regionConfig.detectedRegion
+                    config = $script:regionConfig
+                }
+                continue
+            } elseif ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $data = $body | ConvertFrom-Json
+                    if ($data.autoDetect -ne $null) {
+                        $script:regionConfig.autoDetect = [bool]$data.autoDetect
+                    }
+                    if ($data.region -and [string]$data.region.Trim()) {
+                        $script:regionConfig.selectedRegion = [string]$data.region.Trim().ToUpper()
+                    }
+                    if ($data.redetect -eq $true -or $script:regionConfig.autoDetect) {
+                        $det = Detect-SystemRegion
+                        $script:regionConfig.detectedRegion = $det
+                        if ($script:regionConfig.autoDetect) {
+                            $script:regionConfig.selectedRegion = $det.countryCode
+                        }
+                    }
+                    Save-RegionConfig $script:regionConfig
+                    AddEventLog @{ type = "region_update"; region = $script:regionConfig }
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        message = "Region updated"
+                        region = $script:regionConfig.detectedRegion
+                        config = $script:regionConfig
+                    }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/region/report' -and $request.HttpMethod -eq 'POST') {
+            # TikTok Bridge reports streamer's room/account locale discovered from TikTok Webcast API
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                if ($data.countryCode) {
+                    $cCode = [string]$data.countryCode.ToUpper()
+                    $flagMap = @{ "PH"="🇵🇭"; "US"="🇺🇸"; "ID"="🇮🇩"; "MY"="🇲🇾"; "VN"="🇻🇳"; "TH"="🇹🇭"; "SG"="🇸🇬"; "GB"="🇬🇧"; "BR"="🇧🇷" }
+                    $fl = if ($flagMap.ContainsKey($cCode)) { $flagMap[$cCode] } else { "🌐" }
+                    $script:regionConfig.detectedRegion = [PSCustomObject]@{
+                        countryCode = $cCode
+                        countryName = if ($data.countryName) { [string]$data.countryName } else { $cCode }
+                        flag = $fl
+                        detectedMethod = "tiktok_api"
+                        updatedAt = [DateTime]::UtcNow.ToString("o")
+                    }
+                    if ($script:regionConfig.autoDetect) {
+                        $script:regionConfig.selectedRegion = $cCode
+                    }
+                    Save-RegionConfig $script:regionConfig
+                }
+                Send-JsonResponse $response @{ status = "ok"; message = "TikTok region reported" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+            }
+            continue
+        }
+
+        # 3f. Custom Community Gifts API
+        if ($reqPath -eq '/api/gifts/community') {
+            if ($request.HttpMethod -eq 'GET') {
+                $commGifts = Load-CustomCommunityGifts
+                Send-JsonResponse $response @{ status = "ok"; gifts = $commGifts }
+                continue
+            } elseif ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $newGift = $body | ConvertFrom-Json
+                    if (-not $newGift.name) {
+                        Send-JsonResponse $response @{ status = "error"; message = "Gift name is required" } 400
+                        continue
+                    }
+                    $commList = [System.Collections.ArrayList]::new(@(Load-CustomCommunityGifts))
+                    $giftId = if ($newGift.id) { [string]$newGift.id } else { "comm_$([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())" }
+                    $item = [PSCustomObject]@{
+                        id = $giftId
+                        name = [string]$newGift.name
+                        coins = if ($newGift.coins) { [int]$newGift.coins } else { 1 }
+                        icon = if ($newGift.icon) { [string]$newGift.icon } else { "images/tiktok-gifts/5655_rose.webp" }
+                        isCommunity = $true
+                        source = if ($newGift.source) { [string]$newGift.source } else { "custom_manual" }
+                        addedAt = [DateTime]::UtcNow.ToString("o")
+                    }
+                    # Update if exists, else append
+                    $foundIdx = -1
+                    for ($i = 0; $i -lt $commList.Count; $i++) {
+                        if ([string]$commList[$i].id -eq $giftId -or [string]$commList[$i].name.ToLower() -eq [string]$newGift.name.ToLower()) {
+                            $foundIdx = $i; break
+                        }
+                    }
+                    if ($foundIdx -ge 0) {
+                        $commList[$foundIdx] = $item
+                    } else {
+                        [void]$commList.Add($item)
+                    }
+                    $script:customCommunityGifts = @($commList)
+                    Save-CustomCommunityGifts $script:customCommunityGifts
+                    AddEventLog @{ type = "community_gift_added"; gift = $item }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Community gift saved"; gift = $item; total = $commList.Count }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/gifts/community-sync' -and $request.HttpMethod -eq 'POST') {
+            # TikTok Bridge automatically pushes live room gifts discovered via TikTok Webcast API
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                $incoming = if ($data.gifts) { @($data.gifts) } else { @() }
+                $commList = [System.Collections.ArrayList]::new(@(Load-CustomCommunityGifts))
+                $existingIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                foreach ($g in $commList) { if ($g.id) { [void]$existingIds.Add([string]$g.id) } }
+
+                $addedCount = 0
+                foreach ($ig in $incoming) {
+                    if ($ig.id -and -not $existingIds.Contains([string]$ig.id)) {
+                        $item = [PSCustomObject]@{
+                            id = [string]$ig.id
+                            name = [string]$ig.name
+                            coins = if ($ig.coins) { [int]$ig.coins } elseif ($ig.diamond_count) { [int]$ig.diamond_count } else { 1 }
+                            icon = if ($ig.icon) { [string]$ig.icon } else { "" }
+                            isCommunity = $true
+                            source = "tiktok_live_room"
+                            addedAt = [DateTime]::UtcNow.ToString("o")
+                        }
+                        [void]$commList.Add($item)
+                        [void]$existingIds.Add([string]$ig.id)
+                        $addedCount++
+                    }
+                }
+                if ($addedCount -gt 0) {
+                    $script:customCommunityGifts = @($commList)
+                    Save-CustomCommunityGifts $script:customCommunityGifts
+                    AddEventLog @{ type = "community_gifts_synced"; added = $addedCount; total = $commList.Count }
+                }
+                Send-JsonResponse $response @{ status = "ok"; added = $addedCount; total = $commList.Count }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+            }
+            continue
+        }
+
+        # 3g. On-Screen Trigger Counter API
+        if ($reqPath -eq '/api/trigger-counter') {
+            if ($request.HttpMethod -eq 'GET') {
+                $st = if ($script:triggerCounterState) { $script:triggerCounterState } else { Load-TriggerCounterState }
+                Send-JsonResponse $response $st
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/trigger-counter/reset' -and $request.HttpMethod -eq 'POST') {
+            $script:triggerCounterState = [PSCustomObject]@{
+                totalTriggers = 0
+                streak = 0
+                lastTriggerTime = 0
+                goal = if ($script:triggerCounterState -and $script:triggerCounterState.goal) { $script:triggerCounterState.goal } else { 100 }
+                goalTitle = if ($script:triggerCounterState -and $script:triggerCounterState.goalTitle) { $script:triggerCounterState.goalTitle } else { "Mega Wave Boss" }
+                gifts = [PSCustomObject]@{}
+                recentTriggers = @()
+            }
+            Save-TriggerCounterState
+            AddEventLog @{ type = "trigger_counter"; totalTriggers = 0; streak = 0 }
+            Send-JsonResponse $response @{ status = "ok"; message = "Trigger counter reset"; state = $script:triggerCounterState }
+            continue
+        }
+
+        if ($reqPath -eq '/api/trigger-counter/goal' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                if ($data.goal -ne $null) {
+                    $script:triggerCounterState.goal = [int]$data.goal
+                }
+                if ($data.goalTitle) {
+                    $script:triggerCounterState.goalTitle = [string]$data.goalTitle
+                }
+                Save-TriggerCounterState
+                Send-JsonResponse $response @{ status = "ok"; state = $script:triggerCounterState }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/trigger-counter/test' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = try { $body | ConvertFrom-Json } catch { $null }
+            $tUser = if ($data -and $data.username) { [string]$data.username } else { "RENEarn_Supporter" }
+            $tGift = if ($data -and $data.giftName) { [string]$data.giftName } else { "Rose" }
+            $tId = if ($data -and $data.giftId) { [string]$data.giftId } else { "5655" }
+            $tCount = if ($data -and $data.count) { [int]$data.count } else { 5 }
+            $tIcon = if ($data -and $data.icon) { [string]$data.icon } else { "images/tiktok-gifts/5655_rose.webp" }
+            $tLabel = if ($data -and $data.label) { [string]$data.label } else { "Spawn Blazer Snipea (1167)" }
+            Record-TriggerEvent $tGift $tId $tCount $tUser "images/default_avatar.svg" $tIcon $tLabel
+            Send-JsonResponse $response @{ status = "ok"; message = "Test trigger event fired"; state = $script:triggerCounterState }
+            continue
+        }
+
+        # 3h. Interactive Gift Jar Overlay Endpoints
+        if ($reqPath -eq '/api/jar/settings') {
+            if ($request.HttpMethod -eq 'GET') {
+                $st = if ($script:jarSettings) { $script:jarSettings } else { Load-JarSettings }
+                Send-JsonResponse $response $st
+                continue
+            } elseif ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $newSt = $body | ConvertFrom-Json
+                    $script:jarSettings = $newSt
+                    Save-JarSettings $newSt
+                    AddEventLog @{ type = "jar_settings_update"; settings = $newSt }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Jar settings saved"; settings = $newSt }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/jar/state' -and $request.HttpMethod -eq 'GET') {
+            $st = if ($script:jarState) { $script:jarState } else { Load-JarState }
+            Send-JsonResponse $response $st
+            continue
+        }
+
+        if ($reqPath -eq '/api/jar/reset' -and $request.HttpMethod -eq 'POST') {
+            $script:jarState = [PSCustomObject]@{
+                currentCount = 0
+                totalCoins = 0
+                isFull = $false
+                lastDropTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                recentDrops = @()
+            }
+            Save-JarState $script:jarState
+            AddEventLog @{ type = "jar_reset" }
+            Send-JsonResponse $response @{ status = "ok"; message = "Jar reset triggered"; state = $script:jarState }
+            continue
+        }
+
+        if ($reqPath -eq '/api/jar/drop' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = try { $body | ConvertFrom-Json } catch { $null }
+            $gName = if ($data -and $data.giftName) { [string]$data.giftName } else { "Gift" }
+            $gId = if ($data -and $data.giftId) { [string]$data.giftId } else { "" }
+            $gIcon = if ($data -and $data.icon) { [string]$data.icon } else { "" }
+            if (-not $gIcon -and $script:verifiedGiftsCatalog) {
+                $autoGift = Resolve-AutoCorrectGift $gName $gId
+                if ($autoGift -and $autoGift.icon) { $gIcon = [string]$autoGift.icon }
+                elseif ($autoGift -and $autoGift.cdnIcon) { $gIcon = [string]$autoGift.cdnIcon }
+                else {
+                    $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $gId -or [string]$_.name -eq $gName } | Select-Object -First 1
+                    if ($vg -and $vg.icon) { $gIcon = [string]$vg.icon }
+                    elseif ($vg -and $vg.cdnIcon) { $gIcon = [string]$vg.cdnIcon }
+                }
+            }
+            if (-not $gIcon -or $gIcon -eq "images/default_avatar.svg") {
+                if ($gName -match '(?i)heart') { $gIcon = "images/tiktok-gifts/7934_heart_me.webp" }
+                elseif ($gName -match '(?i)ice') { $gIcon = "images/tiktok-gifts/5827_ice_cream_cone.webp" }
+                elseif ($gName -match '(?i)tiktok') { $gIcon = "images/tiktok-gifts/5269_tiktok.webp" }
+                elseif ($gName -match '(?i)cap') { $gIcon = "images/tiktok-gifts/6104_cap.webp" }
+                elseif ($gName -match '(?i)gg') { $gIcon = "images/tiktok-gifts/6064_gg.webp" }
+                elseif ($gName -match '(?i)doughnut|donut') { $gIcon = "images/tiktok-gifts/5879_doughnut.webp" }
+                else { $gIcon = "images/tiktok-gifts/5655_rose.webp" }
+            }
+            if ($gName -eq "Gift" -or -not $gName) {
+                $gName = "Rose"
+            }
+            $dropId = if ($data -and $data.id) { [string]$data.id } else { [System.Guid]::NewGuid().ToString() }
+            $gCount = if ($data -and $data.count) { [int]$data.count } else { 1 }
+            $gCoins = if ($data -and $data.coins) { [int]$data.coins } else { 1 }
+            $uName = if ($data -and $data.username) { [string]$data.username } else { "RENEarn_Viewer" }
+            $uAvatar = if ($data -and $data.avatar) { [string]$data.avatar } else { "images/default_avatar.svg" }
+
+            # 1. Update Leaderboard score for gifter
+            Update-LeaderboardCoins $uName $gCoins $uAvatar
+
+            # 2. Add Event Log for jar drop and leaderboard update
+            AddEventLog @{
+                id = $dropId
+                type = "jar_drop"
+                giftName = $gName
+                giftId = $gId
+                icon = $gIcon
+                count = $gCount
+                coins = $gCoins
+                username = $uName
+                avatar = $uAvatar
+            }
+            AddEventLog @{
+                type = "leaderboard_update"
+                updateType = "coins"
+                username = $uName
+                coins = $gCoins
+                avatar = $uAvatar
+            }
+            if ($script:jarState) {
+                $script:jarState.currentCount += $gCount
+                $script:jarState.totalCoins += $gCoins
+                $script:jarState.lastDropTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                Save-JarState $script:jarState
+            }
+            Send-JsonResponse $response @{ status = "ok"; message = "Gift dropped into jar"; state = $script:jarState; dropId = $dropId }
+            continue
+        }
+
+        if ($reqPath -eq '/api/jar/full-trigger' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = try { $body | ConvertFrom-Json } catch { $null }
+            $cmd = if ($data -and $data.command) { [string]$data.command } else { "spawn_fire_cattail" }
+            SendToPvZGame "plant" $cmd 1 "Gift Jar Celebration" | Out-Null
+            AddEventLog @{ type = "gift"; label = "Jar Full Celebration: $cmd"; command = $cmd; amount = 1; username = "Gift Jar Celebration" }
+            Send-JsonResponse $response @{ status = "ok"; message = "Jar full reward triggered in game" }
             continue
         }
 
@@ -2764,23 +3645,19 @@ while ($true) {
             $body = ReadRequestBody $request
             $data = if ($body) { $body | ConvertFrom-Json } else { @{} }
             $testType = if ($data.type) { $data.type } else { "all" }
-            $sampleNames = @("Wolfich", "Stasie", "ShadowNinja", "SakuraQueen", "GamerPro99", "LuckyStar", "LunaCat", "DragonSlayer", "PixelKing", "MysticRose")
+            $sampleNames = @("Omodox", "Gonta", "Sahavovo", "Wolfich", "Stasie", "jendeRENO", "Top 7", "Top 8", "Top 9", "Top 10")
             $mockAvatars = @(
                 "images/game-icons/pvz/spawn_ultimatecattail.webp",
                 "images/game-icons/pvz/ultimate_gold_gargantuar.webp",
                 "images/game-icons/pvz/spawn_gatlingpea.webp",
                 "images/game-icons/pvz/spawn_cherrybomb.webp",
                 "images/game-icons/pvz/spawn_repeater.webp",
-                "images/game-icons/pvz/spawn_peashooter.webp",
-                "images/game-icons/pvz/spawn_sunflower.webp",
-                "images/game-icons/pvz/spawn_wallnut.webp",
-                "images/game-icons/pvz/spawn_snowpea.webp",
-                "images/game-icons/pvz/spawn_chomper.webp"
+                "images/game-icons/pvz/spawn_peashooter.webp"
             )
 
             if ($testType -eq "single") {
-                $u = if ($data.username) { $data.username } else { "TopSupporter" }
-                $v = if ($data.value) { [int]$data.value } else { 50 }
+                $u = if ($data.username) { $data.username } else { "SuperGifter" }
+                $v = if ($data.value) { [int]$data.value } else { 100 }
                 $av = if ($data.avatar) { $data.avatar } else { $mockAvatars[0] }
                 $t = if ($data.target) { $data.target } else { "coins" }
                 if ($t -eq "likes") {
@@ -2788,10 +3665,18 @@ while ($true) {
                 } else {
                     Update-LeaderboardCoins $u $v $av
                 }
+            } elseif ($testType -eq "overtake") {
+                $u = if ($data.username) { $data.username } else { "👑 NewLeader" }
+                $currentTop = Get-LeaderboardTop "coins" 1
+                $topVal = if ($currentTop -and $currentTop.Count -gt 0 -and $currentTop[0].value) { [int]$currentTop[0].value } else { 2840 }
+                $overtakeVal = $topVal + 250
+                $av = $mockAvatars[1]
+                Update-LeaderboardCoins $u $overtakeVal $av
             } else {
-                $cValues = @(2540, 1820, 1250, 890, 640, 420, 310, 200, 150, 90)
-                $lValues = @(15420, 11200, 8900, 6400, 4800, 3200, 2100, 1500, 950, 500)
-                for ($idx = 0; $idx -lt 10; $idx++) {
+                # Matches Reference Image 1 exactly
+                $cValues = @(2840, 2310, 1750, 1420, 980, 620, 0, 0, 0, 0)
+                $lValues = @(1540, 2210, 960, 480, 320, 96, 0, 0, 0, 0)
+                for ($idx = 0; $idx -lt 6; $idx++) {
                     $nm = $sampleNames[$idx]
                     $av = $mockAvatars[$idx % $mockAvatars.Count]
                     if ($testType -eq "all" -or $testType -eq "coins" -or $testType -eq "donators") {
@@ -2802,8 +3687,8 @@ while ($true) {
                     }
                 }
             }
-            AddEventLog @{ type = "leaderboard_test"; testType = $testType }
-            Send-JsonResponse $response @{ status = "ok"; message = "Leaderboard test data populated" }
+            AddEventLog @{ type = "leaderboard_update"; testType = $testType }
+            Send-JsonResponse $response @{ status = "ok"; message = "Leaderboard updated successfully"; testType = $testType }
             continue
         }
 
@@ -2814,9 +3699,9 @@ while ($true) {
             $data = $body | ConvertFrom-Json
             $actionType = if ($data.actionType) { $data.actionType } else { "custom" }
             $command = $data.command
-            $amount = if ($data.amount) { [int]$data.amount } else { 1 }
+            $repetition = if ($data.repetition) { [int]$data.repetition } elseif ($data.amount) { [int]$data.amount } else { 1 }
+            $amount = if ($data.amount) { [int]$data.amount } else { $repetition }
             $username = if ($data.username) { $data.username } else { "RENEarn" }
-            $repetition = if ($data.repetition) { [int]$data.repetition } else { 1 }
             $delay = if ($data.delay) { [int]$data.delay } else { 0 }
             $interval = if ($data.interval) { [int]$data.interval } else { 100 }
             $hideInOverlay = ($data.hideInOverlay -eq $true -or $data.hideInOverlay -eq "true")
@@ -2957,7 +3842,8 @@ while ($true) {
                     spinnerId = $targetSpId
                     spinnerName = $spName
                     groupId = if ($targetSpinner) { [string]$targetSpinner.groupId } else { "1" }
-                    mode = if ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
+                    $reqMode = if ($request.QueryString['mode']) { $request.QueryString['mode'] } elseif ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
+                mode = $reqMode
                     wheelTheme = if ($targetSpinner -and $targetSpinner.wheelTheme) { $targetSpinner.wheelTheme } else { "casino_royale" }
                     centerFinial = if ($targetSpinner -and $targetSpinner.centerFinial) { $targetSpinner.centerFinial } else { "turret_3d" }
                     pointerTheme = if ($targetSpinner -and $targetSpinner.pointerTheme) { $targetSpinner.pointerTheme } else { "brass_chevron" }
@@ -3073,6 +3959,9 @@ while ($true) {
             $logEntry = @{
                 type = $eventType
                 label = $label
+                branding = "RENEarn"
+                embedTitle = "RENEarn Interactive Stream Engine"
+                gameId = if ($data.gameId) { $data.gameId } else { "pvz_fusion_4" }
                 giftName = if ($data.giftName) { $data.giftName } else { $label }
                 giftId = if ($data.giftId) { $data.giftId } else { $data.cardId }
                 cardId = $data.cardId
@@ -3089,10 +3978,50 @@ while ($true) {
 
             $resObj = @{
                 status = "ok"
+                brand = "RENEarn"
+                embedTitle = "RENEarn Interactive Stream Engine"
                 gameExecuted = $exec.success
                 event = $logEntry
             }
             Send-JsonResponse $response $resObj
+            continue
+        }
+
+        # 6.5. RENEarn Active Game Engine & Universal Presets Endpoints
+        if ($reqPath -eq '/api/games/active') {
+            if ($request.HttpMethod -eq 'GET') {
+                $activeId = if ($script:renearnActiveGameId) { $script:renearnActiveGameId } else { "pvz_fusion_4" }
+                Send-JsonResponse $response @{ brand = "RENEarn"; activeGameId = $activeId; status = "connected" }
+                continue
+            }
+            if ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $d = $body | ConvertFrom-Json
+                    if ($d.gameId) { $script:renearnActiveGameId = [string]$d.gameId }
+                    Send-JsonResponse $response @{ brand = "RENEarn"; activeGameId = $script:renearnActiveGameId; status = "success" }
+                } catch {
+                    Send-JsonResponse $response @{ error = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/presets/apply' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            try {
+                $d = $body | ConvertFrom-Json
+                $script:renearnActivePresetId = if ($d.presetId) { [string]$d.presetId } else { "classic_streamer" }
+                AddEventLog @{
+                    type = "preset_applied"
+                    brand = "RENEarn"
+                    presetId = $script:renearnActivePresetId
+                    timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                }
+                Send-JsonResponse $response @{ brand = "RENEarn"; presetId = $script:renearnActivePresetId; status = "applied" }
+            } catch {
+                Send-JsonResponse $response @{ error = $_.Exception.Message } 400
+            }
             continue
         }
 
@@ -3304,7 +4233,14 @@ while ($true) {
                 } catch {}
             }
             $pickedSlice = $null
-            if ($slices.Count -gt 0) {
+            $sliceId = $request.QueryString['sliceId']
+            if ($sliceId -and $slices.Count -gt 0) {
+                $matched = $slices | Where-Object { [string]$_.id -eq [string]$sliceId } | Select-Object -First 1
+                if ($matched) {
+                    $pickedSlice = $matched
+                }
+            }
+            if (-not $pickedSlice -and $slices.Count -gt 0) {
                 $totalWeight = 0.0
                 foreach ($s in $slices) {
                     $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
@@ -3336,11 +4272,12 @@ while ($true) {
             $spHide = $false
             if ($pickedSlice -and -not $noGame) {
                 if ($pickedSlice.actionType -and $pickedSlice.actionType -ne "score" -and $pickedSlice.command) {
-                    $spReps = if ($pickedSlice.repetition) { [int]$pickedSlice.repetition } else { 1 }
+                    $spReps = if ($pickedSlice.repetition) { [int]$pickedSlice.repetition } elseif ($pickedSlice.amount) { [int]$pickedSlice.amount } else { 1 }
                     $spDelay = if ($pickedSlice.delay) { [int]$pickedSlice.delay } else { 0 }
                     $spInterval = if ($pickedSlice.interval) { [int]$pickedSlice.interval } else { 100 }
                     $spHide = ($pickedSlice.hideInOverlay -eq $true -or $pickedSlice.hideInOverlay -eq "true")
-                    $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $pickedSlice.amount $username "" $spReps $spDelay $spInterval
+                    $spAmount = if ($pickedSlice.amount) { [int]$pickedSlice.amount } else { $spReps }
+                    $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $spAmount $username "" $spReps $spDelay $spInterval
                 }
             }
 
@@ -3382,7 +4319,7 @@ while ($true) {
                 spinnerId = if ($targetSpinner) { [string]$targetSpinner.id } else { "1" }
                 spinnerName = $spName
                 groupId = if ($targetSpinner) { [string]$targetSpinner.groupId } else { "1" }
-                mode = if ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
+                mode = if ($request.QueryString['mode']) { $request.QueryString['mode'] } elseif ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
                 wheelTheme = if ($targetSpinner -and $targetSpinner.wheelTheme) { $targetSpinner.wheelTheme } else { "casino_royale" }
                 centerFinial = if ($targetSpinner -and $targetSpinner.centerFinial) { $targetSpinner.centerFinial } else { "turret_3d" }
                 pointerTheme = if ($targetSpinner -and $targetSpinner.pointerTheme) { $targetSpinner.pointerTheme } else { "brass_chevron" }
@@ -3407,6 +4344,7 @@ while ($true) {
 
             $resObj = @{
                 status = "ok"
+                eventId = $logEntry["id"]
                 winner = $pickedSlice
                 spinner = $targetSpinner
                 username = $username
@@ -3427,6 +4365,38 @@ while ($true) {
             try {
                 $payload = $body | ConvertFrom-Json
                 
+                # Check for community gifts sync event from TikTok bridge
+                if ($payload.event -eq "community_gifts_sync" -or $payload.event -eq "sync_gifts") {
+                    $incoming = if ($payload.gifts) { @($payload.gifts) } else { @() }
+                    $commList = [System.Collections.ArrayList]::new(@(Load-CustomCommunityGifts))
+                    $existingIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                    foreach ($g in $commList) { if ($g.id) { [void]$existingIds.Add([string]$g.id) } }
+
+                    $addedCount = 0
+                    foreach ($ig in $incoming) {
+                        if ($ig.id -and -not $existingIds.Contains([string]$ig.id)) {
+                            $item = [PSCustomObject]@{
+                                id = [string]$ig.id
+                                name = [string]$ig.name
+                                coins = if ($ig.coins) { [int]$ig.coins } elseif ($ig.diamond_count) { [int]$ig.diamond_count } else { 1 }
+                                icon = if ($ig.icon) { [string]$ig.icon } else { "" }
+                                isCommunity = $true
+                                source = "tiktok_live_room"
+                                addedAt = [DateTime]::UtcNow.ToString("o")
+                            }
+                            [void]$commList.Add($item)
+                            [void]$existingIds.Add([string]$ig.id)
+                            $addedCount++
+                        }
+                    }
+                    if ($addedCount -gt 0) {
+                        $script:customCommunityGifts = @($commList)
+                        Save-CustomCommunityGifts $script:customCommunityGifts
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Community gifts synced"; added = $addedCount; total = $commList.Count }
+                    continue
+                }
+
                 # Check if it is a gift event
                 if ($payload.event -eq "gift") {
                     $giftName = $payload.giftName
@@ -3439,6 +4409,21 @@ while ($true) {
                     }
                     $avatar = if ($payload.profilePictureUrl) { $payload.profilePictureUrl } elseif ($payload.avatar) { $payload.avatar } elseif ($payload.avatarUrl) { $payload.avatarUrl } else { "images/default_avatar.svg" }
                     $icon = if ($payload.giftPictureUrl) { $payload.giftPictureUrl } else { "" }
+
+                    # SECONDARY DEDUPLICATION SAFEGUARD:
+                    # Filter out duplicate streak echoes and rapid socket retransmissions
+                    $cleanUserKey = ($user.ToLower() -replace '[^a-z0-9]', '')
+                    $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                    $totReps = if ($payload.totalRepeatCount) { [int]$payload.totalRepeatCount } else { [int]$repeatCount }
+                    $giftStreakKey = "$cleanUserKey`_$giftId`_$totReps"
+                    if ($cleanUserKey -and $script:recentGiftDeduplication.ContainsKey($giftStreakKey)) {
+                        $lastGiftTime = [int64]$script:recentGiftDeduplication[$giftStreakKey]
+                        if (($nowMs - $lastGiftTime) -lt 8000) {
+                            Send-JsonResponse $response @{ status = "ok"; message = "Debounced duplicate streak packet ($user $giftName x$totReps)"; debounced = $true }
+                            continue
+                        }
+                    }
+                    if ($cleanUserKey) { $script:recentGiftDeduplication[$giftStreakKey] = $nowMs }
 
                     # Auto-correct incoming gift against verified catalog & aliases
                     $autoGift = Resolve-AutoCorrectGift $giftName $giftId
@@ -3481,6 +4466,45 @@ while ($true) {
                     }
                     Update-LeaderboardCoins $user $giftCoinValue $avatar
 
+                    # INTERACTIVE GIFT JAR: Physically drop every incoming TikTok gift into the jar!
+                    $dropCount = [Math]::Max(1, $repeatCount)
+                    $jarIcon = if ($icon) { $icon } else { "" }
+                    if (-not $jarIcon -and $script:verifiedGiftsCatalog) {
+                        $autoGift = Resolve-AutoCorrectGift $giftName $giftId
+                        if ($autoGift -and $autoGift.icon) { $jarIcon = [string]$autoGift.icon }
+                        elseif ($autoGift -and $autoGift.cdnIcon) { $jarIcon = [string]$autoGift.cdnIcon }
+                        else {
+                            $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq [string]$giftId -or [string]$_.name -eq [string]$giftName } | Select-Object -First 1
+                            if ($vg -and $vg.icon) { $jarIcon = [string]$vg.icon }
+                            elseif ($vg -and $vg.cdnIcon) { $jarIcon = [string]$vg.cdnIcon }
+                        }
+                    }
+                    if (-not $jarIcon -or $jarIcon -eq "images/default_avatar.svg") {
+                        if ($giftName -match '(?i)heart') { $jarIcon = "images/tiktok-gifts/7934_heart_me.webp" }
+                        elseif ($giftName -match '(?i)ice') { $jarIcon = "images/tiktok-gifts/5827_ice_cream_cone.webp" }
+                        elseif ($giftName -match '(?i)tiktok') { $jarIcon = "images/tiktok-gifts/5269_tiktok.webp" }
+                        elseif ($giftName -match '(?i)cap') { $jarIcon = "images/tiktok-gifts/6104_cap.webp" }
+                        elseif ($giftName -match '(?i)gg') { $jarIcon = "images/tiktok-gifts/6064_gg.webp" }
+                        elseif ($giftName -match '(?i)doughnut|donut') { $jarIcon = "images/tiktok-gifts/5879_doughnut.webp" }
+                        else { $jarIcon = "images/tiktok-gifts/5655_rose.webp" }
+                    }
+                    AddEventLog @{
+                        type = "jar_drop"
+                        giftName = if ($giftName) { $giftName } else { "Gift" }
+                        giftId = if ($giftId) { [string]$giftId } else { "" }
+                        icon = $jarIcon
+                        count = $dropCount
+                        coins = $giftCoinValue
+                        username = $user
+                        avatar = $avatar
+                    }
+                    if ($script:jarState) {
+                        $script:jarState.currentCount += $dropCount
+                        $script:jarState.totalCoins += $giftCoinValue
+                        $script:jarState.lastDropTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                        Save-JarState $script:jarState
+                    }
+
                     # HEART ME & GIFT DEDUPLICATION:
                     # TikTok allows only 1 Heart Me gift per person per day! Enforce strictly 1 spin per person per day!
                     $isHeartMeGift = ($giftId -eq '7934' -or $giftName -match '(?i)heart\s*me')
@@ -3502,11 +4526,11 @@ while ($true) {
                         if ($cleanUserKey) { $script:heartMeUsersToday[$cleanUserKey] = $nowMs }
                     }
 
-                    # General duplicate debounce (1200ms to eliminate socket echo/duplicate packets)
+                    # General duplicate debounce (1200ms to eliminate rapid duplicate webhooks)
                     if ($cleanUserKey -and $script:recentSpins.ContainsKey($cleanUserKey)) {
                         $lastTime = [int64]$script:recentSpins[$cleanUserKey]
-                        if (($nowMs - $lastTime) -lt 1200) {
-                            Send-JsonResponse $response @{ status = "ok"; message = "Debounced duplicate gift packet" }
+                        if (($nowMs - $lastTime) -lt 400) {
+                            Send-JsonResponse $response @{ status = "ok"; message = "Debounced rapid duplicate packet" }
                             continue
                         }
                     }
@@ -3545,66 +4569,77 @@ while ($true) {
                         }
                     }
 
-                    # Priority B: Match by spinner gift settings
+                    # Priority B: Match by spinner gift settings ONLY if gift is configured in active preset
                     if (-not $matchedSpinner -and $config -and $config.spinners) {
-                        foreach ($sp in $config.spinners) {
-                            if (-not $sp.enabled) { continue }
-                            $spGId = if ($sp.giftId) { [string]$sp.giftId.Trim() } else { "" }
-                            $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
-                            $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
-                            if ($reqGId -and $spGId -and ($spGId -eq $reqGId -or ($autoGId -and $spGId -eq $autoGId))) {
-                                $matchedSpinner = $sp; break
+                        $isGiftInActivePreset = $false
+                        if ($config.gifts) {
+                            foreach ($cg in $config.gifts) {
+                                if (-not $cg.enabled) { continue }
+                                $cgId = if ($cg.giftId) { [string]$cg.giftId.Trim() } else { "" }
+                                if ($reqGId -and $cgId -and ($cgId -eq $reqGId -or ($autoGId -and $cgId -eq $autoGId))) { $isGiftInActivePreset = $true; break }
+                                if ($cg.giftName -and $giftName -and (($cg.giftName -replace '[^a-zA-Z0-9]','').ToLower() -eq ($giftName -replace '[^a-zA-Z0-9]','').ToLower())) { $isGiftInActivePreset = $true; break }
                             }
-                            # Check clean alphanumeric ID match
-                            $cleanSpGId = ($spGId -replace '[^a-zA-Z0-9]','').ToLower()
-                            $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
-                            $cleanAutoGId = ($autoGId -replace '[^a-zA-Z0-9]','').ToLower()
-                            if ($cleanSpGId -and (($cleanReqGId -and $cleanSpGId -eq $cleanReqGId) -or ($cleanAutoGId -and $cleanSpGId -eq $cleanAutoGId))) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check Heart Me aliases (Heart Me 7934, Heart 6247, Community Heart 17712)
-                            $heartGIds = @('7934', '6247', '17712', 'heartme', 'heart', 'communityheart')
-                            if (($heartGIds -contains $cleanSpGId) -and ($heartGIds -contains $cleanReqGId)) {
-                                $matchedSpinner = $sp; break
-                            }
-                            if ($sp.id -eq 'spinner_1791698132034' -and ($heartGIds -contains $cleanReqGId -or $cleanReqGId -match 'heart')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            if ($sp.id -eq 'spinner_plusminus' -and ($heartGIds -contains $cleanReqGId -or $cleanReqGId -match 'heart')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check Perfume aliases
-                            if (($cleanSpGId -eq '5658' -or $cleanSpGId -eq '5585' -or $cleanSpGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check Doughnut aliases
-                            if (($cleanSpGId -eq '5879' -or $cleanSpGId -eq 'doughnut' -or $cleanSpGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check Rose aliases
-                            if (($cleanSpGId -eq '5655' -or $cleanSpGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check Ice Cream Cone aliases
-                            if (($cleanSpGId -eq '5827' -or $cleanSpGId -eq 'icecream' -or $cleanSpGId -eq 'icecreamcone') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream' -or $cleanReqGId -eq 'icecreamcone')) {
-                                $matchedSpinner = $sp; break
-                            }
-                            # Check giftName matching
-                            if ($giftName -and $sp.giftName) {
-                                $cleanReq = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                if ($cleanReq -and $cleanSp -and ($cleanReq -eq $cleanSp -or $cleanReq.Contains($cleanSp) -or $cleanSp.Contains($cleanReq))) {
+                        }
+                        if ($isGiftInActivePreset) {
+                            foreach ($sp in $config.spinners) {
+                                if (-not $sp.enabled) { continue }
+                                $spGId = if ($sp.giftId) { [string]$sp.giftId.Trim() } else { "" }
+                                $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
+                                $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
+                                if ($reqGId -and $spGId -and ($spGId -eq $reqGId -or ($autoGId -and $spGId -eq $autoGId))) {
                                     $matchedSpinner = $sp; break
                                 }
-                            }
-                            # Check verified catalog name
-                            if ($script:verifiedGiftsCatalog -and $reqGId) {
-                                $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $reqGId } | Select-Object -First 1
-                                if ($vg -and $vg.name -and $sp.giftName) {
-                                    $cleanVg = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                # Check clean alphanumeric ID match
+                                $cleanSpGId = ($spGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                $cleanAutoGId = ($autoGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                if ($cleanSpGId -and (($cleanReqGId -and $cleanSpGId -eq $cleanReqGId) -or ($cleanAutoGId -and $cleanSpGId -eq $cleanAutoGId))) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check Heart Me aliases (Heart Me 7934, Heart 6247, Community Heart 17712)
+                                $heartGIds = @('7934', '6247', '17712', 'heartme', 'heart', 'communityheart')
+                                if (($heartGIds -contains $cleanSpGId) -and ($heartGIds -contains $cleanReqGId)) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                if ($sp.id -eq 'spinner_1791698132034' -and ($heartGIds -contains $cleanReqGId -or $cleanReqGId -match 'heart')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                if ($sp.id -eq 'spinner_plusminus' -and ($heartGIds -contains $cleanReqGId -or $cleanReqGId -match 'heart')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check Perfume aliases
+                                if (($cleanSpGId -eq '5658' -or $cleanSpGId -eq '5585' -or $cleanSpGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check Doughnut aliases
+                                if (($cleanSpGId -eq '5879' -or $cleanSpGId -eq 'doughnut' -or $cleanSpGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check Rose aliases
+                                if (($cleanSpGId -eq '5655' -or $cleanSpGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check Ice Cream Cone aliases
+                                if (($cleanSpGId -eq '5827' -or $cleanSpGId -eq 'icecream' -or $cleanSpGId -eq 'icecreamcone') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream' -or $cleanReqGId -eq 'icecreamcone')) {
+                                    $matchedSpinner = $sp; break
+                                }
+                                # Check giftName matching
+                                if ($giftName -and $sp.giftName) {
+                                    $cleanReq = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
                                     $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                    if ($cleanVg -and $cleanSp -and ($cleanVg -eq $cleanSp -or $cleanVg.Contains($cleanSp) -or $cleanSp.Contains($cleanVg))) {
+                                    if ($cleanReq -and $cleanSp -and ($cleanReq -eq $cleanSp -or $cleanReq.Contains($cleanSp) -or $cleanSp.Contains($cleanReq))) {
                                         $matchedSpinner = $sp; break
+                                    }
+                                }
+                                # Check verified catalog name
+                                if ($script:verifiedGiftsCatalog -and $reqGId) {
+                                    $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $reqGId } | Select-Object -First 1
+                                    if ($vg -and $vg.name -and $sp.giftName) {
+                                        $cleanVg = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                        $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                        if ($cleanVg -and $cleanSp -and ($cleanVg -eq $cleanSp -or $cleanVg.Contains($cleanSp) -or $cleanSp.Contains($cleanVg))) {
+                                            $matchedSpinner = $sp; break
+                                        }
                                     }
                                 }
                             }
@@ -4001,25 +5036,23 @@ while ($true) {
                                     $scAct = if ($sc.actionType) { $sc.actionType } else { $matchedGift.actionType }
                                     $scFinalAmt = $scAmt * $repeatCount
                                     SendToPvZGame $scAct $sc.command $scFinalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
-                                    AddEventLog @{ type = "gift"; label = if ($sc.label) { $sc.label } else { $matchedGift.label }; command = $sc.command; amount = $scFinalAmt; username = $user; icon = if ($sc.icon) { $sc.icon } else { $icon }; hideInOverlay = $giftHide }
                                 }
+                                # Log EXACTLY 1 overlay gift event per gift send (no duplicate spins)
+                                AddEventLog @{ type = "gift"; label = $matchedGift.label; giftName = $giftName; repeatCount = $repeatCount; command = $matchedGift.command; amount = $totalAmt; username = $user; icon = $icon; hideInOverlay = $giftHide; noSpinnerTrigger = $true }
                             } else {
                                 SendToPvZGame $matchedGift.actionType $matchedGift.command $totalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
-                                AddEventLog @{ type = "gift"; label = $matchedGift.label; command = $matchedGift.command; amount = $totalAmt; username = $user; icon = $icon; hideInOverlay = $giftHide }
+                                AddEventLog @{ type = "gift"; label = $matchedGift.label; giftName = $giftName; repeatCount = $repeatCount; command = $matchedGift.command; amount = $totalAmt; username = $user; icon = $icon; hideInOverlay = $giftHide; noSpinnerTrigger = $true }
                             }
+
+                            # ROUTE TRIGGER EVENT TO DEDICATED ON-SCREEN COUNTER!
+                            $triggerLbl = if ($matchedGift.label) { [string]$matchedGift.label } elseif ($giftName) { [string]$giftName } else { "In-game Event" }
+                            $triggerIcon = if ($matchedGift.unitIcon) { [string]$matchedGift.unitIcon } elseif ($icon) { [string]$icon } else { "images/trig_7.svg" }
+                            Record-TriggerEvent $giftName $giftId $repeatCount $user $avatar $triggerIcon $triggerLbl
                         }
                     } else {
-                        # FALLBACK: Universal unconfigured gift trigger
-                        # MUST NEVER spawn Rose's unit (spawn_ultimate_football_zombie)!
-                        $fallbackCount = if ($repeatCount -gt 0) { $repeatCount } else { 1 }
-                        if ($fallbackCount -ge 10) {
-                            $spawnAmt = [Math]::Min($fallbackCount, 5)
-                            SendToPvZGame "zombie" "ultimate_gold_gargantuar" $spawnAmt $user | Out-Null
-                            AddEventLog @{ type = "gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Gold Gargantuar)" } else { "Gift (Gold Gargantuar)" }; command = "ultimate_gold_gargantuar"; amount = $spawnAmt; username = $user; icon = $icon }
-                        } else {
-                            SendToPvZGame "zombie" "spawn_bucketzombie" $fallbackCount $user | Out-Null
-                            AddEventLog @{ type = "gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Buckethead Zombie)" } else { "Gift (Buckethead Zombie)" }; command = "spawn_bucketzombie"; amount = $fallbackCount; username = $user; icon = $icon }
-                        }
+                        # Gift is not present in the active preset.
+                        # Do NOT trigger unconfigured game commands (ensure ONLY the active preset's commands execute).
+                        AddEventLog @{ type = "unconfigured_gift"; label = if ($giftName -and $giftName -ne "Gift") { "$giftName (Ignored - not in active preset)" } else { "Gift (Ignored)" }; giftName = $giftName; giftId = $giftId; username = $user; coins = $giftCoinValue; icon = $icon; success = $false; noSpinnerTrigger = $true }
                     }
                 }
                 # Chat event: Team Battle selection (!plants vs !zombies)
@@ -4058,66 +5091,103 @@ while ($true) {
                     # LEADERBOARD: Track likes
                     Update-LeaderboardLikes $user $likes $avatar
 
-                    $card1 = $config.gifts | Where-Object { [string]$_.id -eq "1" }
-                    $card2 = $config.gifts | Where-Object { [string]$_.id -eq "2" }
-                    $card3 = $config.gifts | Where-Object { [string]$_.id -eq "3" }
+                    # Likes handling for active preset
+                    $likeCards = @()
+                    if ($config -and $config.gifts) {
+                        $likeCards = @($config.gifts | Where-Object { 
+                            $_.enabled -ne $false -and (
+                                $_.triggerType -eq "likes_person" -or 
+                                $_.eventType -eq "team_plants_likes" -or 
+                                $_.eventType -eq "team_zombies_likes" -or 
+                                [string]$_.id -in @("1", "2")
+                            )
+                        })
+                    }
+
+                    $card1 = $likeCards | Where-Object { [string]$_.id -eq "1" -or $_.eventType -eq "team_plants_likes" -or ($_.giftName -match "team\s*plants") } | Select-Object -First 1
+                    $card2 = $likeCards | Where-Object { [string]$_.id -eq "2" -or $_.eventType -eq "team_zombies_likes" -or ($_.giftName -match "team\s*zombies") } | Select-Object -First 1
 
                     $thresh1 = if ($card1 -and $card1.likeThreshold) { [int]$card1.likeThreshold } else { 50 }
                     $thresh2 = if ($card2 -and $card2.likeThreshold) { [int]$card2.likeThreshold } else { 50 }
-                    $thresh3 = 500
-                    if ($card3) {
-                        if ($card3.likeThreshold -and [int64]$card3.likeThreshold -gt 0) {
-                            $thresh3 = [int64]$card3.likeThreshold
-                        } elseif ($card3.triggerValue -and [int64]$card3.triggerValue -gt 0) {
-                            $thresh3 = [int64]$card3.triggerValue
-                        }
-                    }
 
-                    # If viewer has no team, automatically put them on Team Plants and do NOT summon zombies
-                    if (-not $userTeams.ContainsKey($user) -or [string]::IsNullOrWhiteSpace($userTeams[$user])) {
-                        $userTeams[$user] = "plants"
-                    }
-
-                    $team = $userTeams[$user]
-
-                    # 1. Team Plants Likes (Default for all unassigned users + explicit !plants)
-                    if ($team -eq "plants") {
+                    if ($likeCards.Count -eq 1) {
+                        # Single like card in active preset (e.g. Spawn Trident Jugger-nut Gargantuar 50 Likes)
+                        # All incoming stream likes count towards this active card!
+                        $singleCard = $likeCards[0]
+                        $thresh = if ($singleCard.likeThreshold -and [int]$singleCard.likeThreshold -gt 0) { [int]$singleCard.likeThreshold } else { 50 }
                         $teamPlantsLikes += $likes
-                        while ($teamPlantsLikes -ge $thresh1) {
-                            $teamPlantsLikes -= $thresh1
-                            if ($card1 -and $card1.enabled) {
-                                SendToPvZGame $card1.actionType $card1.command $card1.amount $user | Out-Null
-                                if ($counts.Contains("1")) { $counts["1"] = [int]$counts["1"] + 1; SaveCounts }
+                        while ($teamPlantsLikes -ge $thresh) {
+                            $teamPlantsLikes -= $thresh
+                            if ($singleCard.enabled -ne $false) {
+                                $cReps = if ($singleCard.repetition -and [int]$singleCard.repetition -gt 0) { [int]$singleCard.repetition } else { 1 }
+                                $cAmt = if ($singleCard.amount -and [int]$singleCard.amount -gt 0) { [int]$singleCard.amount } else { 1 }
+                                $cDelay = if ($singleCard.delay) { [int]$singleCard.delay } else { 0 }
+                                $cInt = if ($singleCard.interval) { [int]$singleCard.interval } else { 100 }
+                                SendToPvZGame $singleCard.actionType $singleCard.command $cAmt $user "" $cReps $cDelay $cInt | Out-Null
+                                $sId = [string]$singleCard.id
+                                if ($sId -and $counts.Contains($sId)) { $counts[$sId] = [int]$counts[$sId] + 1; SaveCounts }
                                 AddEventLog @{
-                                    type = "team_battle_spawn"
-                                    label = "Team Plants ($thresh1 Likes) -> $($card1.label)"
-                                    team = "plants"
-                                    command = $card1.command
-                                    amount = $card1.amount
+                                    type = "likes_spawn"
+                                    label = "$($singleCard.label) ($thresh Likes)"
+                                    command = $singleCard.command
+                                    amount = $cAmt
                                     username = $user
-                                    icon = $card1.unitIcon
+                                    icon = $singleCard.unitIcon
                                     success = $true
                                 }
                             }
                         }
-                    }
-                    # 2. Team Zombies Likes (ONLY for users who explicitly joined Team Zombies with !zombies)
-                    elseif ($team -eq "zombies") {
-                        $teamZombiesLikes += $likes
-                        while ($teamZombiesLikes -ge $thresh2) {
-                            $teamZombiesLikes -= $thresh2
-                            if ($card2 -and $card2.enabled) {
-                                SendToPvZGame $card2.actionType $card2.command $card2.amount $user | Out-Null
-                                if ($counts.Contains("2")) { $counts["2"] = [int]$counts["2"] + 1; SaveCounts }
-                                AddEventLog @{
-                                    type = "team_battle_spawn"
-                                    label = "Team Zombies ($thresh2 Likes) -> $($card2.label)"
-                                    team = "zombies"
-                                    command = $card2.command
-                                    amount = $card2.amount
-                                    username = $user
-                                    icon = $card2.unitIcon
-                                    success = $true
+                    } elseif ($likeCards.Count -gt 1) {
+                        # Multi-team battle (Team Plants vs Team Zombies)
+                        if (-not $userTeams.ContainsKey($user) -or [string]::IsNullOrWhiteSpace($userTeams[$user])) {
+                            $userTeams[$user] = "plants"
+                        }
+                        $team = $userTeams[$user]
+
+                        if ($team -eq "plants" -and $card1) {
+                            $teamPlantsLikes += $likes
+                            while ($teamPlantsLikes -ge $thresh1) {
+                                $teamPlantsLikes -= $thresh1
+                                if ($card1.enabled -ne $false) {
+                                    $cReps = if ($card1.repetition -and [int]$card1.repetition -gt 0) { [int]$card1.repetition } else { 1 }
+                                    $cAmt = if ($card1.amount -and [int]$card1.amount -gt 0) { [int]$card1.amount } else { 1 }
+                                    $cDelay = if ($card1.delay) { [int]$card1.delay } else { 0 }
+                                    $cInt = if ($card1.interval) { [int]$card1.interval } else { 100 }
+                                    SendToPvZGame $card1.actionType $card1.command $cAmt $user "" $cReps $cDelay $cInt | Out-Null
+                                    if ($counts.Contains("1")) { $counts["1"] = [int]$counts["1"] + 1; SaveCounts }
+                                    AddEventLog @{
+                                        type = "team_battle_spawn"
+                                        label = "Team Plants ($thresh1 Likes) -> $($card1.label)"
+                                        team = "plants"
+                                        command = $card1.command
+                                        amount = $cAmt
+                                        username = $user
+                                        icon = $card1.unitIcon
+                                        success = $true
+                                    }
+                                }
+                            }
+                        } elseif ($team -eq "zombies" -and $card2) {
+                            $teamZombiesLikes += $likes
+                            while ($teamZombiesLikes -ge $thresh2) {
+                                $teamZombiesLikes -= $thresh2
+                                if ($card2.enabled -ne $false) {
+                                    $cReps = if ($card2.repetition -and [int]$card2.repetition -gt 0) { [int]$card2.repetition } else { 1 }
+                                    $cAmt = if ($card2.amount -and [int]$card2.amount -gt 0) { [int]$card2.amount } else { 1 }
+                                    $cDelay = if ($card2.delay) { [int]$card2.delay } else { 0 }
+                                    $cInt = if ($card2.interval) { [int]$card2.interval } else { 100 }
+                                    SendToPvZGame $card2.actionType $card2.command $cAmt $user "" $cReps $cDelay $cInt | Out-Null
+                                    if ($counts.Contains("2")) { $counts["2"] = [int]$counts["2"] + 1; SaveCounts }
+                                    AddEventLog @{
+                                        type = "team_battle_spawn"
+                                        label = "Team Zombies ($thresh2 Likes) -> $($card2.label)"
+                                        team = "zombies"
+                                        command = $card2.command
+                                        amount = $cAmt
+                                        username = $user
+                                        icon = $card2.unitIcon
+                                        success = $true
+                                    }
                                 }
                             }
                         }
@@ -4334,13 +5404,39 @@ while ($true) {
             continue
         }
 
-        # 11. Reset API
-        if ($reqPath -eq '/api/reset') {
-            foreach ($k in @($counts.Keys)) {
-                $counts[$k] = 0
+        # 11. Reset API (All counts or single command count)
+        if ($reqPath -eq '/api/reset' -or $reqPath -eq '/api/counts/reset') {
+            $singleId = $request.QueryString['id']
+            if (-not $singleId -and $request.HttpMethod -eq 'POST') {
+                try {
+                    $resetBody = Get-RequestBody $request
+                    if ($resetBody -and $resetBody.id) { $singleId = [string]$resetBody.id }
+                } catch {}
             }
-            SaveCounts
-            Send-JsonResponse $response @{ status = "ok" }
+
+            if ($singleId) {
+                $sIdStr = [string]$singleId
+                if ($counts.ContainsKey($sIdStr)) {
+                    $counts[$sIdStr] = 0
+                }
+                SaveCounts
+                AddEventLog @{ type = "counts_reset"; cardId = $sIdStr; message = "Command $sIdStr count reset to 0" }
+                Send-JsonResponse $response @{ status = "ok"; cardId = $sIdStr; count = 0 }
+            } else {
+                foreach ($k in @($counts.Keys)) {
+                    $counts[$k] = 0
+                }
+                SaveCounts
+                if ($script:triggerCounterState) {
+                    $script:triggerCounterState.totalTriggers = 0
+                    $script:triggerCounterState.streak = 0
+                    $script:triggerCounterState.gifts = [PSCustomObject]@{}
+                    $script:triggerCounterState.recentTriggers = @()
+                    Save-TriggerCounterState
+                }
+                AddEventLog @{ type = "counts_reset"; cardId = "all"; message = "All command counts reset to 0" }
+                Send-JsonResponse $response @{ status = "ok"; message = "All counts reset to 0" }
+            }
             continue
         }
 

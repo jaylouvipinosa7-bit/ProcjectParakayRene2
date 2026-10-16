@@ -82,27 +82,29 @@
         /* ==========================================================================
            STYLE 1: CLASSIC RANKING CARD (Matching Screenshot 1 StreamToEarn)
            ========================================================================== */
+        /* ==========================================================================
+           STYLE 1: CLASSIC RANKING CARD (Matching Screenshot 1 StreamToEarn)
+           ========================================================================== */
         .ranking-card {
             width: 320px;
-            background: rgba(13, 17, 24, 0.94);
-            border-radius: 16px;
-            border: 1.5px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: #11151e;
+            border-radius: 18px;
+            border: 1.5px solid #1e293b;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: all 0.3s ease;
+            padding: 14px 14px 10px;
         }
 
         .ranking-header {
-            padding: 12px 16px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .ranking-title-wrap {
@@ -111,62 +113,131 @@
             gap: 8px;
         }
 
-        .ranking-header-icon {
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-        }
-
         .ranking-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 15px;
+            font-size: 20px;
             font-weight: 800;
             color: #ffffff;
             letter-spacing: -0.2px;
         }
 
-        .ranking-badge-type {
-            font-size: 10px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
+        .help-circle-badge {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #2b3544;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        .badge-coins {
-            background: rgba(245, 158, 11, 0.18);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            color: #fbbf24;
+        .header-url-container {
+            width: 100%;
         }
 
-        .badge-likes {
-            background: rgba(244, 63, 94, 0.18);
-            border: 1px solid rgba(244, 63, 94, 0.4);
-            color: #fb7185;
+        .header-url-input {
+            width: 100%;
+            background: #090d14;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: #94a3b8;
+            outline: none;
+        }
+
+        .header-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-copy-link {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1.5px solid #2563eb;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-copy-link:hover {
+            background: #2563eb;
+        }
+
+        .btn-refresh-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            padding: 5px 12px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-refresh-card:hover {
+            color: #fff;
+            border-color: #64748b;
+        }
+
+        .header-dropdowns-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .hdr-sel-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .hdr-sel-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .hdr-sel-group select {
+            background: #090d14;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            outline: none;
         }
 
         /* List Rows */
         .ranking-list {
-            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .ranking-row {
-            height: 38px;
+            height: 46px;
             padding: 0 10px;
             border-radius: 10px;
-            background: rgba(22, 27, 34, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: #171d26;
+            background-image: repeating-conic-gradient(rgba(255, 255, 255, 0.04) 0% 25%, transparent 0% 50%) 50% / 12px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
             position: relative;
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s;
         }
@@ -176,61 +247,30 @@
         }
 
         @keyframes rowFlash {
-            0% { transform: scale(1.03); background: rgba(245, 158, 11, 0.35); border-color: #f59e0b; }
+            0% { transform: scale(1.03); background-color: rgba(245, 158, 11, 0.35); border-color: #f59e0b; }
             100% { transform: scale(1); }
         }
 
-        /* Rank Badge */
-        .rank-num-badge {
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Outfit', sans-serif;
-            font-size: 11px;
-            font-weight: 800;
-            color: #ffffff;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Podium highlights for Screenshot 1 */
+        /* Ranks 1, 2, 3 in Screenshot 1 */
         .ranking-row.rank-1 {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(22, 27, 34, 0.85) 100%);
-            border-color: rgba(245, 158, 11, 0.5);
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
-        }
-        .ranking-row.rank-1 .rank-num-badge {
-            background: var(--gold-grad);
-            color: #000000;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+            border: 2px solid #facc15;
+            box-shadow: 0 0 12px rgba(250, 204, 21, 0.35);
         }
 
         .ranking-row.rank-2 {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(22, 27, 34, 0.85) 100%);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-        .ranking-row.rank-2 .rank-num-badge {
-            background: var(--silver-grad);
-            color: #0f172a;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
         }
 
         .ranking-row.rank-3 {
-            background: linear-gradient(90deg, rgba(234, 88, 12, 0.15) 0%, rgba(22, 27, 34, 0.85) 100%);
-            border-color: rgba(234, 88, 12, 0.4);
-        }
-        .ranking-row.rank-3 .rank-num-badge {
-            background: var(--bronze-grad);
-            color: #ffffff;
+            border: 2px solid #d97706;
+            box-shadow: 0 0 12px rgba(217, 119, 6, 0.35);
         }
 
-        /* Avatar Container & Shapes */
+        /* Avatar Container */
         .avatar-wrap {
-            width: 26px;
-            height: 26px;
+            width: 36px;
+            height: 36px;
             flex-shrink: 0;
             position: relative;
             display: flex;
@@ -239,11 +279,105 @@
         }
 
         .avatar-img {
-            width: 100%;
-            height: 100%;
+            width: 36px;
+            height: 36px;
             object-fit: cover;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            background: #1e293b;
+            display: block;
+        }
+
+        .avatar-silhouette {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #242c38;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-silhouette svg {
+            width: 20px;
+            height: 20px;
+            fill: #475569;
+        }
+
+        .row-user-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .ranking-row.empty .user-name {
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .user-metric-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            line-height: 1.2;
+        }
+
+        .ranking-row.empty .user-metric-val {
+            color: #64748b;
+        }
+
+        .metric-coin-token {
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .metric-like-token {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #ef4444;
+        }
+
+        /* Avatar Container & Shapes */
+        .avatar-wrap {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-img {
+            width: 36px;
+            height: 36px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
             background: #1e293b;
             display: block;
         }
@@ -870,7 +1004,7 @@
             const isCoins = type === 'coins';
             const title = customTitle || (isCoins ? `Top ${maxCount} Coins` : `Top ${maxCount} Likes`);
             const themeClass = cardStyle === 'neon' ? 'neon-card' : (cardStyle === 'luxury' ? 'luxury-card' : 'ranking-card');
-            const shapeClass = `shape-${settings.avatarStyle || 'circle'}`;
+            const cardUrl = `${window.location.origin}/overlay-leaderboard.html?type=${type}&style=classic`;
 
             let rowsHtml = '';
             for (let i = 1; i <= maxCount; i++) {
@@ -883,35 +1017,69 @@
                 const isRank2 = i === 2;
                 const isRank3 = i === 3;
                 const rankClass = isRank1 ? 'rank-1' : (isRank2 ? 'rank-2' : (isRank3 ? 'rank-3' : ''));
-                const frameClass = isRank1 ? 'frame-crown' : 'frame-normal';
+
+                const coinIconHtml = `<span class="metric-coin-token" title="Coins">🪙</span>`;
+                const heartIconHtml = `<span class="metric-like-token" title="Likes">❤️</span>`;
+                const metricIcon = isCoins ? coinIconHtml : heartIconHtml;
+
+                const avatarHtml = hasUser ? `
+                    <div class="avatar-wrap">
+                        <img src="${avatarUrl}" class="avatar-img" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                    </div>
+                ` : `
+                    <div class="avatar-wrap">
+                        <div class="avatar-silhouette">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                    </div>
+                `;
 
                 rowsHtml += `
-                    <li class="ranking-row ${rankClass} ${hasUser ? '' : 'empty'} ${shapeClass}">
-                        <div class="rank-num-badge">${i}</div>
-                        ${settings.showAvatars ? `
-                            <div class="avatar-wrap ${frameClass}">
-                                <img src="${avatarUrl}" class="avatar-img" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                    <li class="ranking-row ${rankClass} ${hasUser ? '' : 'empty'}">
+                        ${avatarHtml}
+                        <div class="row-user-details">
+                            <div class="user-name" title="${username}">${username}</div>
+                            <div class="user-metric-val">
+                                <span class="metric-num">${valFormatted}</span>
+                                ${metricIcon}
                             </div>
-                        ` : ''}
-                        <span class="user-name" title="${username}">${username}</span>
-                        <div class="metric-pill ${isCoins ? 'coin-metric' : 'like-metric'}">
-                            ${isCoins ? ICONS.coin : ICONS.heart}
-                            <span>${valFormatted}</span>
                         </div>
                     </li>
                 `;
             }
 
+            const showControls = params.get('clean') !== 'true' && params.get('controls') !== 'false';
+
             return `
                 <div class="${themeClass}">
                     <div class="ranking-header">
                         <div class="ranking-title-wrap">
-                            <span class="ranking-header-icon">${isCoins ? ICONS.coin : ICONS.heart}</span>
                             <span class="ranking-title">${title}</span>
+                            <span class="help-circle-badge" title="Live stream overlay ranking">?</span>
                         </div>
-                        <span class="ranking-badge-type ${isCoins ? 'badge-coins' : 'badge-likes'}">
-                            ${isCoins ? 'Coins' : 'Likes'}
-                        </span>
+                        ${showControls ? `
+                            <div class="header-url-container">
+                                <input type="text" class="header-url-input" value="${cardUrl}" readonly onclick="this.select()">
+                            </div>
+                            <div class="header-actions-row">
+                                <button type="button" class="btn-copy-link" onclick="copyCardUrl('${cardUrl}')">
+                                    <span>📋</span> Copy
+                                </button>
+                                <button type="button" class="btn-refresh-card" onclick="fetchLeaderboard()" title="Refresh rankings">
+                                    ↻
+                                </button>
+                            </div>
+                            <div class="header-dropdowns-row">
+                                <div class="hdr-sel-group">
+                                    <label>Position</label>
+                                    <select disabled><option selected>${overlayPos === 'right' ? 'Right' : 'Left'}</option></select>
+                                </div>
+                                <div class="hdr-sel-group">
+                                    <label>Style</label>
+                                    <select disabled><option selected>Classic</option></select>
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                     <ul class="ranking-list">
                         ${rowsHtml}
@@ -1118,8 +1286,23 @@
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
+        function copyCardUrl(url) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast("📋 Copied Overlay Link to Clipboard!");
+                }).catch(() => {
+                    prompt("Copy this overlay link:", url);
+                });
+            } else {
+                prompt("Copy this overlay link:", url);
+            }
+        }
+
         // Fetch Leaderboard from server
+        let isFetchingLeaderboard = false;
         async function fetchLeaderboard() {
+            if (isFetchingLeaderboard) return;
+            isFetchingLeaderboard = true;
             try {
                 const res = await fetch('/api/leaderboard?type=all&count=20&t=' + Date.now());
                 if (!res.ok) return;
@@ -1140,13 +1323,56 @@
                     lastLeaderboard.donators = json.coins || [];
                     renderOverlay();
                 }
-            } catch (err) {}
+            } catch (err) {
+            } finally {
+                isFetchingLeaderboard = false;
+            }
         }
 
-        // Initialize polling
+        // Real-Time Event Sync: BroadcastChannel (0ms latency between tabs & host app)
+        try {
+            const bc = new BroadcastChannel('renearn_leaderboard_events');
+            bc.onmessage = function(e) {
+                fetchLeaderboard();
+            };
+        } catch (e) {}
+
+        // Cross-window storage listener
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'renearn_leaderboard_update' || e.key === 'renearn_jar_drop_event') {
+                fetchLeaderboard();
+            }
+        });
+
+        // Fast Server Event Polling (250ms interval)
+        let lastEventTimestamp = Date.now() - 5000;
+        setInterval(async () => {
+            try {
+                const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTimestamp = data.serverTime;
+                    if (data.events && Array.isArray(data.events) && data.events.length > 0) {
+                        const hasRelevantEvent = data.events.some(ev => 
+                            ev.type === 'leaderboard_update' || 
+                            ev.type === 'jar_drop' || 
+                            ev.type === 'gift' || 
+                            ev.type === 'like' || 
+                            ev.event === 'like' || 
+                            ev.event === 'gift'
+                        );
+                        if (hasRelevantEvent) {
+                            fetchLeaderboard();
+                        }
+                    }
+                }
+            } catch (e) {}
+        }, 250);
+
+        // Fallback heartbeat poll
         applyLayoutStyles();
         fetchLeaderboard();
-        setInterval(fetchLeaderboard, 1000);
+        setInterval(fetchLeaderboard, 2000);
     </script>
 </body>
 </html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENEarn - Live Trigger Counter Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-glass: rgba(13, 17, 23, 0.88);
+            --bg-card: rgba(22, 27, 34, 0.9);
+            --accent-green: #10b981;
+            --accent-cyan: #06b6d4;
+            --accent-yellow: #facc15;
+            --accent-red: #ef4444;
+            --accent-glow: rgba(16, 185, 129, 0.4);
+            --border-glow: rgba(56, 189, 248, 0.35);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: transparent;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        /* OVERLAY CONTAINER */
+        .counter-widget {
+            width: 440px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(16, 185, 129, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* HEADER */
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        .header-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 12px #ef4444;
+            animation: pulse-live 1.5s infinite;
+        }
+
+        @keyframes pulse-live {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+        }
+
+        .widget-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #38bdf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .streamer-pill {
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 9999px;
+            color: #cbd5e1;
+        }
+
+        .region-pill {
+            font-size: 11px;
+            font-weight: 800;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* MAIN HERO METRIC */
+        .hero-metric-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85));
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-metric-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 140px;
+            height: 100%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .metric-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-sub);
+        }
+
+        .metric-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+            transition: transform 0.15s ease-out;
+        }
+
+        .metric-counter.bump {
+            transform: scale(1.12);
+            color: #34d399;
+        }
+
+        .streak-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(245, 158, 11, 0.25));
+            border: 1.5px solid #f97316;
+            color: #fef08a;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.35);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .streak-badge.streak-bump {
+            transform: scale(1.18);
+            border-color: #fde047;
+            box-shadow: 0 0 24px rgba(253, 224, 71, 0.6);
+        }
+
+        .streak-subtext {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* MILESTONE GOAL BAR */
+        .goal-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .goal-name {
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .goal-numbers {
+            font-family: 'JetBrains Mono', monospace;
+            color: #f8fafc;
+        }
+
+        .goal-track {
+            height: 9px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .goal-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #38bdf8, #10b981, #facc15);
+            border-radius: 9999px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+        }
+
+        /* ACTIVE TRIGGER GIFTS GRID */
+        .section-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .trigger-gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .trigger-gifts-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .trigger-gift-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .trigger-gift-card.bump {
+            transform: scale(1.08);
+            border-color: #34d399;
+            box-shadow: 0 0 16px rgba(52, 211, 153, 0.4);
+        }
+
+        .gift-img-wrap {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .gift-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .gift-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: #cbd5e1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .gift-count-pill {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 9999px;
+        }
+
+        /* LATEST TRIGGER ALERT POPUP */
+        .trigger-alert-banner {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+            border: 1.5px solid #38bdf8;
+            border-radius: 14px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.25);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .trigger-alert-banner.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid #38bdf8;
+            object-fit: cover;
+        }
+
+        .alert-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .alert-user {
+            font-size: 11px;
+            font-weight: 800;
+            color: #fde047;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .alert-action {
+            font-size: 11px;
+            font-weight: 700;
+            color: #e2e8f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .alert-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        /* COMPACT / MINI MODE */
+        body.compact-mode .counter-widget {
+            width: 340px;
+            padding: 12px 14px;
+            gap: 10px;
+        }
+
+        body.compact-mode .metric-counter {
+            font-size: 32px;
+        }
+
+        body.compact-mode .trigger-gifts-grid {
+            max-height: 140px;
+            grid-template-columns: repeat(3, 1fr);
+        }
+    </style>
+</head>
+<body>
+    <div class="counter-widget" id="widgetRoot">
+        <!-- HEADER -->
+        <div class="widget-header">
+            <div class="header-title-wrap">
+                <span class="live-dot"></span>
+                <span class="widget-title">Trigger Counter</span>
+            </div>
+            <div class="header-badges">
+                <span class="streamer-pill" id="badgeStreamer">@gohanmalunggay</span>
+                <span class="region-pill" id="badgeRegion">🇵🇭 PH</span>
+            </div>
+        </div>
+
+        <!-- MAIN HERO METRIC -->
+        <div class="hero-metric-box">
+            <div class="metric-info">
+                <span class="metric-label">Total Triggers</span>
+                <div class="metric-counter" id="txtTotalTriggers">0</div>
+            </div>
+            <div class="streak-container">
+                <div class="streak-badge" id="badgeStreak">
+                    <span>🔥</span>
+                    <span id="txtStreak">COMBO x0</span>
+                </div>
+                <span class="streak-subtext">Live Streak</span>
+            </div>
+        </div>
+
+        <!-- MILESTONE GOAL BAR -->
+        <div class="goal-bar-wrap" id="goalBarWrap">
+            <div class="goal-header">
+                <span class="goal-name" id="txtGoalName">Next Mega Wave</span>
+                <span class="goal-numbers" id="txtGoalNumbers">0 / 100</span>
+            </div>
+            <div class="goal-track">
+                <div class="goal-fill" id="goalFillBar"></div>
+            </div>
+        </div>
+
+        <!-- ACTIVE TRIGGER GIFTS -->
+        <div>
+            <div class="section-title">
+                <span>Active Trigger Gifts</span>
+                <span id="txtGiftTypesCount" style="color: #38bdf8; font-size: 10px;">0 Active</span>
+            </div>
+            <div class="trigger-gifts-grid" id="triggerGiftsGrid" style="margin-top: 8px;">
+                <div style="grid-column: 1/-1; color: #64748b; font-size: 11px; text-align: center; padding: 16px;">
+                    Awaiting incoming trigger gifts...
+                </div>
+            </div>
+        </div>
+
+        <!-- LATEST TRIGGER ALERT POPUP -->
+        <div class="trigger-alert-banner" id="triggerAlertBanner">
+            <img src="images/default_avatar.svg" id="alertAvatar" class="alert-avatar" alt="Gifter">
+            <div class="alert-content">
+                <span class="alert-user" id="alertUsername">@Viewer</span>
+                <span class="alert-action" id="alertActionText">Triggered In-game Event</span>
+            </div>
+            <img src="images/trig_7.svg" id="alertGiftIcon" class="alert-icon" alt="Gift">
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('compact') === 'true') {
+            document.body.classList.add('compact-mode');
+        }
+        const customScale = parseFloat(urlParams.get('scale') || '1');
+        if (customScale && customScale !== 1) {
+            document.getElementById('widgetRoot').style.transform = `scale(${customScale})`;
+            document.getElementById('widgetRoot').style.transformOrigin = 'top left';
+        }
+
+        let state = {
+            totalTriggers: 0,
+            streak: 0,
+            goal: 100,
+            goalTitle: 'Mega Wave Boss',
+            gifts: {},
+            recentTriggers: []
+        };
+
+        let lastSeenTotal = 0;
+        let lastSeenStreak = 0;
+        let alertTimeout = null;
+
+        async function fetchRegion() {
+            try {
+                const res = await fetch('/api/region');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.region) {
+                        const r = data.region;
+                        const flag = r.flag || '🇵🇭';
+                        const code = r.countryCode || 'PH';
+                        document.getElementById('badgeRegion').innerText = `${flag} ${code}`;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch('/api/tiktok/status');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.username) {
+                        document.getElementById('badgeStreamer').innerText = `@${data.username}`;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        async function syncTriggerCounter() {
+            try {
+                const res = await fetch('/api/trigger-counter');
+                if (!res.ok) return;
+                const data = await res.json();
+                renderState(data);
+            } catch (e) {}
+        }
+
+        function renderState(newData) {
+            if (!newData) return;
+
+            const total = parseInt(newData.totalTriggers || 0, 10);
+            const streak = parseInt(newData.streak || 0, 10);
+            const goal = parseInt(newData.goal || 100, 10);
+            const goalTitle = newData.goalTitle || 'Mega Wave Boss';
+            const gifts = newData.gifts || {};
+            const recent = newData.recentTriggers || [];
+
+            const totalEl = document.getElementById('txtTotalTriggers');
+            if (total !== lastSeenTotal) {
+                totalEl.innerText = total.toLocaleString();
+                totalEl.classList.add('bump');
+                setTimeout(() => totalEl.classList.remove('bump'), 300);
+                lastSeenTotal = total;
+            }
+
+            const streakEl = document.getElementById('txtStreak');
+            const streakBadge = document.getElementById('badgeStreak');
+            streakEl.innerText = `COMBO x${streak}`;
+            if (streak > lastSeenStreak && streak > 1) {
+                streakBadge.classList.add('streak-bump');
+                setTimeout(() => streakBadge.classList.remove('streak-bump'), 300);
+            }
+            lastSeenStreak = streak;
+
+            // Goal bar
+            document.getElementById('txtGoalName').innerText = goalTitle;
+            document.getElementById('txtGoalNumbers').innerText = `${total} / ${goal}`;
+            const pct = Math.min(100, Math.round((total / (goal || 1)) * 100));
+            document.getElementById('goalFillBar').style.width = `${pct}%`;
+
+            // Active gifts grid
+            const grid = document.getElementById('triggerGiftsGrid');
+            const giftKeys = Object.keys(gifts);
+            document.getElementById('txtGiftTypesCount').innerText = `${giftKeys.length} Active`;
+
+            if (giftKeys.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; color: #64748b; font-size: 11px; text-align: center; padding: 16px;">Awaiting incoming trigger gifts...</div>';
+            } else {
+                // Sort by count descending
+                giftKeys.sort((a, b) => (gifts[b].count || 0) - (gifts[a].count || 0));
+                
+                grid.innerHTML = giftKeys.map(k => {
+                    const g = gifts[k];
+                    const icon = g.icon || 'images/trig_7.svg';
+                    const name = g.name || k;
+                    const count = g.count || 1;
+                    return `
+                        <div class="trigger-gift-card" id="card_gift_${k}">
+                            <div class="gift-img-wrap">
+                                <img src="${icon}" class="gift-img" alt="${name}" onerror="this.src='images/trig_7.svg'">
+                            </div>
+                            <div class="gift-name" title="${name}">${name}</div>
+                            <div class="gift-count-pill">x${count}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Latest alert banner
+            if (recent && recent.length > 0) {
+                const latest = recent[recent.length - 1];
+                if (latest && (!state.lastAlertId || state.lastAlertId !== latest.id)) {
+                    state.lastAlertId = latest.id;
+                    showAlertBanner(latest);
+                }
+            }
+
+            state = { ...newData, lastAlertId: state.lastAlertId };
+        }
+
+        function showAlertBanner(item) {
+            const banner = document.getElementById('triggerAlertBanner');
+            const userEl = document.getElementById('alertUsername');
+            const actEl = document.getElementById('alertActionText');
+            const avEl = document.getElementById('alertAvatar');
+            const icEl = document.getElementById('alertGiftIcon');
+
+            userEl.innerText = item.username ? `@${item.username}` : '@Viewer';
+            actEl.innerText = `Sent ${item.count || 1}x ${item.giftName || 'Gift'} ➔ ${item.commandLabel || 'In-game Event'}`;
+            if (item.avatar) avEl.src = item.avatar;
+            if (item.giftIcon) icEl.src = item.giftIcon;
+
+            banner.classList.add('active');
+            if (alertTimeout) clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                banner.classList.remove('active');
+            }, 3600);
+        }
+
+        // Live BroadcastChannel & EventSource integration for instant triggers
+        function setupEventStream() {
+            try {
+                const bc = new BroadcastChannel('renearn_overlay_events');
+                bc.onmessage = function(e) {
+                    if (e.data && (e.data.type === 'trigger_counter' || e.data.type === 'gift' || e.data.type === 'spin_result')) {
+                        syncTriggerCounter();
+                    }
+                };
+            } catch (err) {}
+
+            try {
+                const evtSource = new EventSource('/api/events');
+                evtSource.onmessage = function(e) {
+                    try {
+                        const payload = JSON.parse(e.data);
+                        if (payload.type === 'trigger_counter' || payload.type === 'gift' || payload.type === 'spin_result') {
+                            syncTriggerCounter();
+                        }
+                    } catch (err) {}
+                };
+                evtSource.onerror = function() {
+                    evtSource.close();
+                    setTimeout(setupEventStream, 3000);
+                };
+            } catch (e) {
+                setTimeout(setupEventStream, 3000);
+            }
+        }
+
+        fetchRegion();
+        fetchStatus();
+        syncTriggerCounter();
+        setupEventStream();
+        setInterval(syncTriggerCounter, 2000);
+        setInterval(fetchStatus, 5000);
+    </script>
+</body>
+</html>

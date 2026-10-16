@@ -38,9 +38,10 @@ Add these **Browser Sources** in OBS Studio to show interactive visuals on your 
 
 | Overlay Feature | Browser Source URL | Recommended Size | Notes |
 |---|---|---|---|
+| **All-Games Side Dock** | `http://localhost:8080/overlay-side.html` | 420 × 820 | StreamToEarn side dock showing all commands & gifts |
 | **Gift Reel Spinner** | `http://localhost:8080/overlay-spinner.html` | 1920 × 1080 | 100% transparent when idle; slides in dynamically on gifts |
 | **Win Fraction Trophy** | `http://localhost:8080/overlay-win.html` | 500 × 500 | Shows score fraction (e.g. `-3 / 5`) and trophy cup |
-| **Full Gift Card Grid** | `http://localhost:8080/overlay-grid.html` | 1920 × 1080 | Interactive TikTok gift catalog for your stream |
+| **Full Gift Card Grid** | `http://localhost:8080/stream-overlay.html` | 1920 × 1080 | Interactive TikTok gift catalog for your stream |
 | **Classic Gift Bar** | `http://localhost:8080/overlay.html` | 1920 × 300 | Stream bottom bar displaying gift cards |
 
 ### OBS Browser Source Configuration Tips:

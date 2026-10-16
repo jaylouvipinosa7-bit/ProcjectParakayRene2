@@ -20,9 +20,9 @@
       "giftId": "",
       "coins": 0,
       "icon": "images/trig_7.svg",
-      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_fire_cattail.webp",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatecattail.webp",
       "actionType": "plant",
-      "command": "spawn_fire_cattail;spawn_ice_cattail",
+      "command": "spawn_ultimatecattail",
       "label": "Spawn Blazer Snipea (1167)",
       "amount": 1,
       "enabled": true,
@@ -30,17 +30,9 @@
       "commands": [
         {
           "name": "Commands #1",
-          "command": "spawn_fire_cattail",
-          "label": "Spawn Flame Cattail (1069)",
-          "icon": "images/game-icons/pvz/spawn_fire_cattail.webp",
-          "actionType": "plant",
-          "amount": 1
-        },
-        {
-          "name": "Commands #2",
-          "command": "spawn_ice_cattail",
-          "label": "Spawn Frost Cattail (1068)",
-          "icon": "images/game-icons/pvz/spawn_ice_cattail.webp",
+          "command": "spawn_ultimatecattail",
+          "label": "Spawn UltimateCattail",
+          "icon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
           "actionType": "plant",
           "amount": 1
         }
@@ -63,9 +55,9 @@
       "giftId": "",
       "coins": 0,
       "icon": "images/trig_7.svg",
-      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_gargantuar.webp",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp",
       "actionType": "zombie",
-      "command": "spawn_gargantuar",
+      "command": "spawn_trident_juggernut_gargantuar",
       "label": "Spawn Trident Jugger-nut Gargantuar (240)",
       "amount": 1,
       "enabled": true,
@@ -73,9 +65,9 @@
       "commands": [
         {
           "name": "Commands #1",
-          "command": "spawn_gargantuar",
-          "label": "Spawn Gargantuar (35)",
-          "icon": "images/game-icons/pvz/spawn_gargantuar.webp",
+          "command": "spawn_trident_juggernut_gargantuar",
+          "label": "Trident Juggernut Gargantuar",
+          "icon": "images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp",
           "actionType": "zombie",
           "amount": 1
         }
@@ -96,7 +88,7 @@
       "id": "3",
       "giftName": "Total Likes",
       "giftId": "",
-      "coins": 0,
+      "coins": 1,
       "icon": "images/trig_7.svg",
       "unitIcon": "images/game-icons/pvz/spawn_ultimatehorse.webp",
       "actionType": "zombie",
@@ -115,7 +107,7 @@
           "amount": 1
         }
       ],
-      "functionName": "spawn summon horse",
+      "functionName": "Spawn UltimateHorse",
       "repetition": 20,
       "delay": 0,
       "interval": 100,
@@ -124,7 +116,8 @@
       "triggerType": "likes_all",
       "triggerValue": "50000",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "4",
@@ -137,7 +130,29 @@
       "command": "spawn_summonedhorse",
       "label": "Spawn SummonedHorse",
       "amount": 20,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_summonedhorse",
+          "label": "Spawn SummonedHorse",
+          "icon": "images/game-icons/pvz/spawn_summonedhorse.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn SummonedHorse",
+      "repetition": 20,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "5",
@@ -169,9 +184,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "6",
@@ -184,7 +200,34 @@
       "command": "spawn_summonedhorse",
       "label": "Spawn SummonedHorse",
       "amount": 5,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_summonedhorse",
+          "label": "Spawn SummonedHorse",
+          "icon": "images/game-icons/pvz/spawn_summonedhorse.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn SummonedHorse",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/roulette_spin.mp3",
+        "duration": "00:03",
+        "volume": 0.8
+      }
     },
     {
       "id": "7",
@@ -216,9 +259,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "8",
@@ -231,7 +275,29 @@
       "command": "spawn_eternalzombie_c",
       "label": "Spawn EternalZombie_c",
       "amount": 2,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_eternalzombie_c",
+          "label": "Spawn EternalZombie_c",
+          "icon": "images/game-icons/pvz/spawn_eternalzombie_c.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn EternalZombie_c",
+      "repetition": 2,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "9",
@@ -244,7 +310,29 @@
       "command": "spawn_lost_penguin",
       "label": "Spawn Lost Penguin",
       "amount": 4,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_lost_penguin",
+          "label": "Spawn Lost Penguin",
+          "icon": "images/game-icons/pvz/spawn_lost_penguin.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Lost Penguin",
+      "repetition": 4,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "10",
@@ -276,9 +364,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "11",
@@ -291,7 +380,29 @@
       "command": "spawn_jackson_c",
       "label": "Spawn Jackson_c",
       "amount": 2,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_jackson_c",
+          "label": "Spawn Jackson_c",
+          "icon": "images/game-icons/pvz/spawn_jackson_c.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Jackson_c",
+      "repetition": 2,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "12",
@@ -304,7 +415,29 @@
       "command": "spawn_lost_snow_monster",
       "label": "Spawn Lost Snow Monster",
       "amount": 5,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_lost_snow_monster",
+          "label": "Spawn Lost Snow Monster",
+          "icon": "images/game-icons/pvz/spawn_lost_snow_monster.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Lost Snow Monster",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "13",
@@ -317,7 +450,29 @@
       "command": "spawn_lost_machine_iv",
       "label": "Spawn Lost Machine IV",
       "amount": 5,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_lost_machine_iv",
+          "label": "Spawn Lost Machine IV",
+          "icon": "images/game-icons/pvz/spawn_lost_machine_iv.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Lost Machine IV",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "14",
@@ -349,9 +504,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "5",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "15",
@@ -364,7 +520,29 @@
       "command": "spawn_ultimatedolphin",
       "label": "Spawn UltimateDolphin",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatedolphin",
+          "label": "Spawn UltimateDolphin",
+          "icon": "images/game-icons/pvz/spawn_ultimatedolphin.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateDolphin",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "16",
@@ -377,7 +555,29 @@
       "command": "spawn_ultimate_jackbox_zombie",
       "label": "Spawn Ultimate Jackbox Zombie",
       "amount": 2,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_jackbox_zombie",
+          "label": "Spawn Ultimate Jackbox Zombie",
+          "icon": "images/game-icons/pvz/spawn_ultimate_jackbox_zombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Jackbox Zombie",
+      "repetition": 2,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "17",
@@ -390,7 +590,29 @@
       "command": "spawn_horseboss",
       "label": "Spawn HorseBoss",
       "amount": 5,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_horseboss",
+          "label": "Spawn HorseBoss",
+          "icon": "images/game-icons/pvz/spawn_horseboss.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn HorseBoss",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "18",
@@ -403,7 +625,29 @@
       "command": "spawn_ultimate_paper_zombie",
       "label": "Spawn Ultimate Paper Zombie",
       "amount": 3,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_paper_zombie",
+          "label": "Spawn Ultimate Paper Zombie",
+          "icon": "images/game-icons/pvz/spawn_ultimate_paper_zombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Paper Zombie",
+      "repetition": 3,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "19",
@@ -416,7 +660,29 @@
       "command": "spawn_ultimateswordzombie",
       "label": "Spawn UltimateSwordZombie",
       "amount": 10,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimateswordzombie",
+          "label": "Spawn UltimateSwordZombie",
+          "icon": "images/game-icons/pvz/spawn_ultimateswordzombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSwordZombie",
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "20",
@@ -429,7 +695,29 @@
       "command": "spawn_jackson_driver_boss",
       "label": "Spawn Jackson Driver Boss",
       "amount": 10,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_jackson_driver_boss",
+          "label": "Spawn Jackson Driver Boss",
+          "icon": "images/game-icons/pvz/spawn_jackson_driver_boss.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Jackson Driver Boss",
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "21",
@@ -442,7 +730,29 @@
       "command": "spawn_ultimateendoflamezombie",
       "label": "Spawn UltimateEndoflameZombie",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimateendoflamezombie",
+          "label": "Spawn UltimateEndoflameZombie",
+          "icon": "images/game-icons/pvz/spawn_ultimateendoflamezombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateEndoflameZombie",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "22",
@@ -482,9 +792,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "15",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "23",
@@ -497,7 +808,29 @@
       "command": "spawn_kirov_c",
       "label": "Spawn Kirov_c",
       "amount": 30,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_kirov_c",
+          "label": "Spawn Kirov_c",
+          "icon": "images/game-icons/pvz/spawn_kirov_c.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Kirov_c",
+      "repetition": 30,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "24",
@@ -510,7 +843,29 @@
       "command": "spawn_ultimatesnowzombie",
       "label": "Spawn UltimateSnowZombie",
       "amount": 30,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatesnowzombie",
+          "label": "Spawn UltimateSnowZombie",
+          "icon": "images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSnowZombie",
+      "repetition": 30,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "25",
@@ -523,7 +878,29 @@
       "command": "spawn_ultimate_machine_nut_zombie",
       "label": "Spawn Ultimate Machine Nut Zombie",
       "amount": 50,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_machine_nut_zombie",
+          "label": "Spawn Ultimate Machine Nut Zombie",
+          "icon": "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Machine Nut Zombie",
+      "repetition": 50,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "26",
@@ -536,7 +913,29 @@
       "command": "spawn_zombie_boss2",
       "label": "Spawn Golden Zomboss",
       "amount": 30,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_zombie_boss2",
+          "label": "Spawn Golden Zomboss",
+          "icon": "images/game-icons/pvz/spawn_zombie_boss2.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Golden Zomboss",
+      "repetition": 30,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "27",
@@ -549,7 +948,29 @@
       "command": "kill_all_plants",
       "label": "Kill all Plants",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "kill_all_plants",
+          "label": "Kill all Plants",
+          "icon": "images/game-icons/pvz/kill_all_plants.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Kill all Plants",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "28",
@@ -562,7 +983,29 @@
       "command": "spawn_ultimatehorse",
       "label": "Spawn UltimateHorse",
       "amount": 50,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatehorse",
+          "label": "Spawn UltimateHorse",
+          "icon": "images/game-icons/pvz/spawn_ultimatehorse.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateHorse",
+      "repetition": 50,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "29",
@@ -575,7 +1018,29 @@
       "command": "spawn_ultimateimpking",
       "label": "Spawn UltimateImpKing",
       "amount": 100,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimateimpking",
+          "label": "Spawn UltimateImpKing",
+          "icon": "images/game-icons/pvz/spawn_ultimateimpking.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateImpKing",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "30",
@@ -588,7 +1053,29 @@
       "command": "spawn_ultimatehorse",
       "label": "Spawn UltimateHorse",
       "amount": 100,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatehorse",
+          "label": "Spawn UltimateHorse",
+          "icon": "images/game-icons/pvz/spawn_ultimatehorse.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateHorse",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "31",
@@ -601,7 +1088,29 @@
       "command": "spawn_ultimateimpking",
       "label": "Spawn UltimateImpKing",
       "amount": 500,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimateimpking",
+          "label": "Spawn UltimateImpKing",
+          "icon": "images/game-icons/pvz/spawn_ultimateimpking.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateImpKing",
+      "repetition": 500,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "32",
@@ -633,10 +1142,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "spinnerId": "spinner_1791698132034"
+      "allowImport": true
     },
     {
       "id": "33",
@@ -644,14 +1153,34 @@
       "giftId": "5269",
       "coins": 1,
       "icon": "images/tiktok-gifts/5269_tiktok.webp",
-      "unitIcon": "images/spinner_wheel_icon.svg",
-      "actionType": "spinner",
-      "command": "spinner_1791704329880",
-      "label": "Win Score Numbers (+/-)",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/charm_all_zombies.webp",
+      "actionType": "zombie",
+      "command": "charm_all_zombies",
+      "label": "nambabaliw",
       "amount": 1,
       "enabled": true,
-      "spinnerId": "spinner_1791704329880",
-      "functionName": "Win Score Numbers (+/-)"
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "charm_all_zombies",
+          "label": "Charm all zombies",
+          "icon": "images/game-icons/pvz/charm_all_zombies.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "nambabaliw",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "34",
@@ -664,7 +1193,29 @@
       "command": "spawn_superthreepeater",
       "label": "Spawn Super Threepeater",
       "amount": 5,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_superthreepeater",
+          "label": "Spawn Super Threepeater",
+          "icon": "images/game-icons/pvz/spawn_superthreepeater.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Super Threepeater",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "35",
@@ -677,7 +1228,29 @@
       "command": "spawn_dragon_pot",
       "label": "Spawn Dragon Pot",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_dragon_pot",
+          "label": "Spawn Dragon Pot",
+          "icon": "images/game-icons/pvz/spawn_dragon_pot.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Dragon Pot",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "36",
@@ -690,7 +1263,29 @@
       "command": "spawn_ultimate_spruce",
       "label": "Spawn Ultimate Spruce",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_spruce",
+          "label": "Spawn Ultimate Spruce",
+          "icon": "images/game-icons/pvz/spawn_ultimate_spruce.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Spruce",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "37",
@@ -703,7 +1298,29 @@
       "command": "spawn_ultimate_corn",
       "label": "Spawn Ultimate Corn",
       "amount": 2,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_corn",
+          "label": "Spawn Ultimate Corn",
+          "icon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Corn",
+      "repetition": 2,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "38",
@@ -716,7 +1333,29 @@
       "command": "spawn_ultimate_gloom",
       "label": "Spawn Ultimate Gloom",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_gloom",
+          "label": "Spawn Ultimate Gloom",
+          "icon": "images/game-icons/pvz/spawn_ultimate_gloom.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Gloom",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "39",
@@ -729,7 +1368,29 @@
       "command": "spawn_ultimatecabbagecannon",
       "label": "Spawn UltimateCabbageCannon",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatecabbagecannon",
+          "label": "Spawn UltimateCabbageCannon",
+          "icon": "images/game-icons/pvz/spawn_ultimatecabbagecannon.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateCabbageCannon",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "40",
@@ -761,9 +1422,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "41",
@@ -795,9 +1457,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50000",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "42",
@@ -829,9 +1492,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "43",
@@ -844,7 +1508,29 @@
       "command": "spawn_magic_snow_pea2",
       "label": "Spawn Magic Snow Pea2",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_magic_snow_pea2",
+          "label": "Spawn Magic Snow Pea2",
+          "icon": "images/game-icons/pvz/spawn_magic_snow_pea2.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Magic Snow Pea2",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "44",
@@ -857,7 +1543,29 @@
       "command": "spawn_supernutshooter",
       "label": "Spawn SuperNutShooter",
       "amount": 2,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_supernutshooter",
+          "label": "Spawn SuperNutShooter",
+          "icon": "images/game-icons/pvz/spawn_supernutshooter.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn SuperNutShooter",
+      "repetition": 2,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "45",
@@ -870,7 +1578,29 @@
       "command": "spawn_bedrocktallnut",
       "label": "Spawn Bedrock Tall Nut",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_bedrocktallnut",
+          "label": "Spawn Bedrock Tall Nut",
+          "icon": "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Bedrock Tall Nut",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "46",
@@ -883,7 +1613,29 @@
       "command": "spawn_ultimatebamboo",
       "label": "Spawn UltimateBamboo",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatebamboo",
+          "label": "Spawn UltimateBamboo",
+          "icon": "images/game-icons/pvz/spawn_ultimatebamboo.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateBamboo",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "47",
@@ -896,7 +1648,29 @@
       "command": "spawn_ultimateseashroom",
       "label": "Spawn UltimateSeaShroom",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimateseashroom",
+          "label": "Spawn UltimateSeaShroom",
+          "icon": "images/game-icons/pvz/spawn_ultimateseashroom.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSeaShroom",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "48",
@@ -909,7 +1683,29 @@
       "command": "spawn_superthreepeater_sp",
       "label": "Spawn Super Threepeater SP (Phoenix)",
       "amount": 6,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_superthreepeater_sp",
+          "label": "Spawn Super Threepeater SP (Phoenix)",
+          "icon": "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Super Threepeater SP (Phoenix)",
+      "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "49",
@@ -949,9 +1745,10 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "10",
+      "triggerValue": "50",
       "platform": "tiktok",
-      "availableFor": "Anyone"
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "50",
@@ -959,12 +1756,34 @@
       "giftId": "15328",
       "coins": 10,
       "icon": "images/tiktok-gifts/15328_fried_chicken.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimate_spring.webp",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
       "actionType": "plant",
-      "command": "spawn_ultimate_spring",
+      "command": "spawn_ultimate_machine_nut",
       "label": "Spawn Ultimate Spring",
       "amount": 10,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_machine_nut",
+          "label": "Spawn Ultra Mecha-nut (310)",
+          "icon": "images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Ultimate Spring",
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "51",
@@ -977,7 +1796,29 @@
       "command": "spawn_ultimatejalanut",
       "label": "Spawn UltimateJalaNut",
       "amount": 100,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatejalanut",
+          "label": "Spawn UltimateJalaNut",
+          "icon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateJalaNut",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "52",
@@ -990,7 +1831,29 @@
       "command": "spawn_ultimatesunnut",
       "label": "Spawn UltimateSunNut",
       "amount": 100,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatesunnut",
+          "label": "Spawn UltimateSunNut",
+          "icon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSunNut",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "53",
@@ -1003,7 +1866,34 @@
       "command": "spawn_cherry_jalapeno",
       "label": "Spawn Cherry Jalapeno",
       "amount": 500,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_cherry_jalapeno",
+          "label": "Spawn Cherry Jalapeno",
+          "icon": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Cherry Jalapeno",
+      "repetition": 500,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/alert.mp3",
+        "duration": "00:01",
+        "volume": 1
+      }
     },
     {
       "id": "54",
@@ -1016,7 +1906,34 @@
       "command": "spawn_nucleardoomcherry",
       "label": "Spawn NuclearDoomCherry",
       "amount": 500,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_nucleardoomcherry",
+          "label": "Spawn NuclearDoomCherry",
+          "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn NuclearDoomCherry",
+      "repetition": 500,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/streak_alert.mp3",
+        "duration": "00:01",
+        "volume": 1
+      }
     },
     {
       "id": "55",
@@ -1029,7 +1946,29 @@
       "command": "kill_all_zombies",
       "label": "Kill all Zombies",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "kill_all_zombies",
+          "label": "Kill all Zombies",
+          "icon": "images/game-icons/pvz/kill_all_zombies.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Kill all Zombies",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "56",
@@ -1042,7 +1981,29 @@
       "command": "start_lawnmower",
       "label": "Start LawnMower",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "start_lawnmower",
+          "label": "Start LawnMower",
+          "icon": "images/game-icons/pvz/start_lawnmower.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Start LawnMower",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "57",
@@ -1055,7 +2016,29 @@
       "command": "restart_lawnmower",
       "label": "Restart LawnMower",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "restart_lawnmower",
+          "label": "Restart LawnMower",
+          "icon": "images/game-icons/pvz/restart_lawnmower.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Restart LawnMower",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "58",
@@ -1068,7 +2051,29 @@
       "command": "delete_lawnmower",
       "label": "Delete LawnMower",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "delete_lawnmower",
+          "label": "Delete LawnMower",
+          "icon": "images/game-icons/pvz/delete_lawnmower.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Delete LawnMower",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "59",
@@ -1100,7 +2105,7 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "custom",
-      "triggerValue": "1",
+      "triggerValue": "50000",
       "platform": "tiktok",
       "availableFor": "Anyone",
       "allowImport": true
@@ -1116,7 +2121,29 @@
       "command": "spawn_ultimatesnipergatling",
       "label": "Spawn UltimateSniperGatling",
       "amount": 10,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatesnipergatling",
+          "label": "Spawn UltimateSniperGatling",
+          "icon": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSniperGatling",
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "64",
@@ -1129,16 +2156,43 @@
       "command": "spawn_horsezombie",
       "label": "Spawn HorseZombie",
       "amount": 1,
-      "enabled": true
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_horsezombie",
+          "label": "Spawn HorseZombie",
+          "icon": "images/game-icons/pvz/spawn_horsezombie.webp",
+          "actionType": "zombie",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn HorseZombie",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "1791627008321",
       "giftName": "hatdog",
-      "coins": 1,
-      "likeThreshold": 50000,
       "giftId": "",
+      "coins": 1,
+      "icon": "images/tiktok-gifts/5655_rose.webp",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
       "actionType": "zombie",
       "command": "spawn_ultimatehorse",
+      "label": "baliw",
+      "amount": 20,
+      "enabled": true,
+      "likeThreshold": 50000,
       "commands": [
         {
           "name": "Commands #1",
@@ -1150,9 +2204,6 @@
         }
       ],
       "functionName": "baliw",
-      "label": "baliw",
-      "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
-      "amount": 20,
       "repetition": 20,
       "delay": 0,
       "interval": 100,
@@ -1162,8 +2213,7 @@
       "triggerValue": "50000",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "enabled": true,
-      "icon": "images/tiktok-gifts/5655_rose.webp"
+      "allowImport": true
     },
     {
       "id": "1791698411759",
@@ -1173,15 +2223,33 @@
       "icon": "images/tiktok-gifts/13087_bubble_gum.webp",
       "unitIcon": "images/spinner_wheel_icon.svg",
       "actionType": "spinner",
-      "command": "spinner_1791698132034",
-      "spinnerId": "spinner_1791698132034",
+      "command": "spinner_1791886127198",
       "label": "Win Score Numbers (+/-)",
-      "functionName": "Win Score Numbers (+/-)",
       "amount": 1,
       "enabled": true,
-      "platform": "tiktok",
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spinner_1791698132034",
+          "label": "Win Score Numbers (+/-)",
+          "icon": "images/game-icons/pvz/spinner_1791698132034.webp",
+          "actionType": "spinner",
+          "amount": 1
+        }
+      ],
+      "functionName": "Win Score Numbers (+/-)",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
       "triggerType": "gift",
-      "availableFor": "Anyone"
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "spinnerId": "spinner_1791886127198"
     },
     {
       "id": "1791698134030",
@@ -1192,14 +2260,31 @@
       "unitIcon": "images/spinner_wheel_icon.svg",
       "actionType": "spinner",
       "command": "spinner_1791698134030",
-      "spinnerId": "spinner_1791698134030",
       "label": "Plants Lucky Wheel",
-      "functionName": "Plants Lucky Wheel",
       "amount": 1,
       "enabled": true,
-      "platform": "tiktok",
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spinner_1791698134030",
+          "label": "Plants Lucky Wheel",
+          "icon": "images/game-icons/pvz/spinner_1791698134030.webp",
+          "actionType": "spinner",
+          "amount": 1
+        }
+      ],
+      "functionName": "Plants Lucky Wheel",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
       "triggerType": "gift",
-      "availableFor": "Anyone"
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "1791698133182",
@@ -1210,23 +2295,45 @@
       "unitIcon": "images/spinner_wheel_icon.svg",
       "actionType": "spinner",
       "command": "spinner_1791698133182",
-      "spinnerId": "spinner_1791698133182",
       "label": "Zombies Lucky Wheel",
-      "functionName": "Zombies Lucky Wheel",
       "amount": 1,
       "enabled": true,
-      "platform": "tiktok",
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spinner_1791698133182",
+          "label": "Zombies Lucky Wheel",
+          "icon": "images/game-icons/pvz/spinner_1791698133182.webp",
+          "actionType": "spinner",
+          "amount": 1
+        }
+      ],
+      "functionName": "Zombies Lucky Wheel",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
       "triggerType": "gift",
-      "availableFor": "Anyone"
+      "triggerValue": "50",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
     },
     {
       "id": "1791715811937",
       "giftName": "Ice Cream Cone",
-      "coins": 1,
-      "likeThreshold": 50,
       "giftId": "5827",
+      "coins": 1,
+      "icon": "images/tiktok-gifts/5827_ice_cream_cone.webp",
+      "unitIcon": "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
       "actionType": "zombie",
       "command": "ultimate_gold_gargantuar",
+      "label": "Ultimate Gold Gargantuar",
+      "amount": 3,
+      "enabled": true,
+      "likeThreshold": 50,
       "commands": [
         {
           "name": "Commands #1",
@@ -1238,21 +2345,16 @@
         }
       ],
       "functionName": "Ultimate Gold Gargantuar",
-      "label": "Ultimate Gold Gargantuar",
-      "unitIcon": "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
-      "amount": 3,
       "repetition": 3,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
-      "allowImport": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "1",
+      "triggerValue": "50",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "enabled": true,
-      "icon": "images/tiktok-gifts/5827_ice_cream_cone.webp"
+      "allowImport": true
     }
   ],
   "socialTriggers": {
@@ -1280,118 +2382,197 @@
     }
   },
   "spinner": {
-    "id": "spinner_1791698132034",
-    "groupId": 10,
-    "name": "Win Score Numbers (+/-)",
-    "duration": 2500,
-    "ticks": 100,
-    "giftName": "Bubble Gum",
-    "giftId": "13087",
-    "giftIcon": "images/tiktok-gifts/13087_bubble_gum.webp",
+    "id": "spinner_hat",
+    "name": "Win Streak Penalty (-)",
+    "giftName": "Hat and Mustache",
     "coins": 99,
-    "audience": "Anyone",
+    "giftId": "6427",
+    "giftIcon": "images/tiktok-gifts/6427_hat_and_mustache.webp",
+    "mode": "slots",
+    "style": "",
+    "groupId": "8",
     "enabled": true,
-    "mode": "reel",
-    "style": "neon",
-    "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
+    "duration": 4000,
+    "ticks": true,
     "slices": [
       {
-        "id": "num_1791698132034_0",
-        "label": "+1",
+        "id": "h1",
+        "label": "-1",
         "actionType": "score",
-        "delta": 1,
-        "command": "score_add_1",
+        "delta": -1,
+        "command": "score_sub_1",
         "amount": 1,
-        "weight": 18,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_1.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_1.svg"
       },
       {
-        "id": "num_1791698132034_1",
-        "label": "+2",
+        "id": "h2",
+        "label": "-2",
         "actionType": "score",
-        "delta": 2,
-        "command": "score_add_2",
+        "delta": -2,
+        "command": "score_sub_2",
         "amount": 2,
-        "weight": 15,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_2.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_2.svg"
       },
       {
-        "id": "num_1791698132034_2",
-        "label": "+5",
+        "id": "h3",
+        "label": "-5",
         "actionType": "score",
-        "delta": 5,
-        "command": "score_add_5",
+        "delta": -5,
+        "command": "score_sub_5",
         "amount": 5,
-        "weight": 12,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_5.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_5.svg"
       },
       {
-        "id": "num_1791698132034_3",
-        "label": "+10",
+        "id": "h4",
+        "label": "-15",
         "actionType": "score",
-        "delta": 10,
-        "command": "score_add_10",
-        "amount": 10,
-        "weight": 9,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_10.svg",
-        "isNumber": true
+        "delta": -15,
+        "command": "score_sub_15",
+        "amount": 15,
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_15.svg"
       },
       {
-        "id": "num_1791698132034_4",
-        "label": "+20",
+        "id": "h5",
+        "label": "-20",
         "actionType": "score",
-        "delta": 20,
-        "command": "score_add_20",
+        "delta": -20,
+        "command": "score_sub_20",
         "amount": 20,
-        "weight": 6,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_20.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_20.svg"
       },
       {
-        "id": "num_1791698132034_5",
-        "label": "+50",
+        "id": "h6",
+        "label": "-25",
         "actionType": "score",
-        "delta": 50,
-        "command": "score_add_50",
+        "delta": -25,
+        "command": "score_sub_25",
+        "amount": 25,
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_25.svg"
+      },
+      {
+        "id": "h7",
+        "label": "-30",
+        "actionType": "score",
+        "delta": -30,
+        "command": "score_sub_30",
+        "amount": 30,
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_30.svg"
+      },
+      {
+        "id": "h8",
+        "label": "-50",
+        "actionType": "score",
+        "delta": -50,
+        "command": "score_sub_50",
         "amount": 50,
-        "weight": 3,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_50.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_50.svg",
+        "isNumber": true,
+        "value": -50,
+        "functionName": "-50",
+        "rarity": "Normal",
+        "icon": "images/numbers/num_neg_50.svg",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false
       },
       {
-        "id": "num_1791698132034_6",
-        "label": "+100",
+        "id": "h9",
+        "label": "-100",
         "actionType": "score",
-        "delta": 100,
-        "command": "score_add_100",
+        "delta": -100,
+        "command": "score_sub_100",
         "amount": 100,
-        "weight": 2,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_100.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_100.svg",
+        "isNumber": true,
+        "value": -100,
+        "functionName": "-100",
+        "rarity": "Normal",
+        "icon": "images/numbers/num_neg_100.svg",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false
       },
       {
-        "id": "num_1791698132034_7",
-        "label": "+500",
+        "id": "h10",
+        "label": "-200",
         "actionType": "score",
-        "delta": 500,
-        "command": "score_add_500",
+        "delta": -200,
+        "command": "score_sub_200",
+        "amount": 200,
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_200.svg",
+        "isNumber": true,
+        "value": -200,
+        "functionName": "-200",
+        "rarity": "Normal",
+        "icon": "images/numbers/num_neg_200.svg",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false
+      },
+      {
+        "id": "h11",
+        "label": "-500",
+        "actionType": "score",
+        "delta": -500,
+        "command": "score_sub_500",
         "amount": 500,
-        "weight": 2,
-        "color": "#10b981",
-        "unitIcon": "images/numbers/num_pos_500.svg",
-        "isNumber": true
+        "weight": 50,
+        "color": "#ef4444",
+        "unitIcon": "images/numbers/num_neg_500.svg",
+        "isNumber": true,
+        "value": -500,
+        "functionName": "-500",
+        "rarity": "Normal",
+        "icon": "images/numbers/num_neg_500.svg",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false
       }
-    ]
+    ],
+    "wheelTheme": "casino_royale",
+    "centerFinial": "turret_3d",
+    "pointerTheme": "brass_chevron",
+    "wheelRarityStyle": "rarity_enamel",
+    "reelTheme": "casino_felt",
+    "hideEventInOverlay": false,
+    "ticksCount": 35,
+    "visibleCardsCount": "9",
+    "imagesOutline": "shadow",
+    "textDisplay": "name_amount",
+    "imageToDisplay": "unit",
+    "tickSound": "V3",
+    "selectSound": "V1",
+    "showGifterAvatar": true,
+    "alsoUseEditsVideo": true,
+    "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp"
   },
   "spinners": [
     {
@@ -1401,8 +2582,8 @@
       "coins": 20,
       "giftId": "perfume",
       "giftIcon": "images/tiktok-gifts/perfume.webp",
-      "mode": "reel",
-      "style": "modern",
+      "mode": "gacha",
+      "style": "neon",
       "groupId": "5",
       "enabled": true,
       "duration": 4000,
@@ -1412,11 +2593,38 @@
           "id": "p1",
           "label": "Nuclear Doom Cherry",
           "actionType": "plant",
-          "command": "spawn_supergargantuar;spawn_ultimatecattail",
-          "amount": 3,
-          "weight": 5,
+          "command": "spawn_nucleardoomcherry;spawn_nuclearsquash",
+          "amount": 1,
+          "weight": 1,
           "rarity": "Mythic",
-          "unitIcon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "functionName": "Nuclear Doom Cherry",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_nucleardoomcherry",
+              "label": "Spawn NuclearDoomCherry",
+              "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+              "actionType": "plant",
+              "amount": 3
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_nuclearsquash",
+              "label": "Spawn NuclearSquash",
+              "icon": "images/game-icons/pvz/spawn_nuclearsquash.webp",
+              "actionType": "plant",
+              "amount": 3
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#ef4444"
         },
         {
           "id": "p2",
@@ -1424,7 +2632,7 @@
           "actionType": "plant",
           "command": "spawn_superthreepeater_sp",
           "amount": 6,
-          "weight": 8,
+          "weight": 2,
           "rarity": "Legendary",
           "unitIcon": "images/game-icons/pvz/spawn_superthreepeater_sp.webp"
         },
@@ -1432,61 +2640,247 @@
           "id": "p3",
           "label": "Ultimate Cattail",
           "actionType": "plant",
-          "command": "spawn_ultimatecattail",
+          "command": "spawn_nucleardoomcherry;spawn_superthreepeater",
           "amount": 1,
-          "weight": 10,
+          "weight": 2,
           "rarity": "Legendary",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "functionName": "Ultimate Cattail",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_nucleardoomcherry",
+              "label": "Spawn NuclearDoomCherry",
+              "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_superthreepeater",
+              "label": "Spawn Super Threepeater",
+              "icon": "images/game-icons/pvz/spawn_superthreepeater.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#f59e0b"
         },
         {
           "id": "p4",
           "label": "Ultimate Sniper Gatling",
           "actionType": "plant",
-          "command": "spawn_ultimatesnipergatling",
-          "amount": 10,
-          "weight": 10,
-          "rarity": "Legendary",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp"
+          "command": "spawn_bedrocktallnut;spawn_ultimate_tall_nut;spawn_ultimate_chomper;spawn_garlic_ultimate_chomper",
+          "amount": 1,
+          "weight": 12,
+          "rarity": "Rare",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_bedrocktallnut.webp",
+          "functionName": "Ultimate Sniper Gatling",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_bedrocktallnut",
+              "label": "Spawn Bedrock Tall Nut",
+              "icon": "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+              "actionType": "plant",
+              "amount": 10
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_ultimate_tall_nut",
+              "label": "Spawn Ultimate Tall Nut",
+              "icon": "images/game-icons/pvz/spawn_ultimate_tall_nut.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #3",
+              "command": "spawn_ultimate_chomper",
+              "label": "Spawn Ultimate Chomper",
+              "icon": "images/game-icons/pvz/spawn_ultimate_chomper.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #4",
+              "command": "spawn_garlic_ultimate_chomper",
+              "label": "Spawn Garlic Ultimate Chomper",
+              "icon": "images/game-icons/pvz/spawn_garlic_ultimate_chomper.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_bedrocktallnut.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#3b82f6"
         },
         {
           "id": "p5",
           "label": "Ultimate Big Sniper",
           "actionType": "plant",
-          "command": "spawn_ultimate_big_sniper",
+          "command": "spawn_firecracker;spawn_firecracker",
           "amount": 1,
-          "weight": 12,
+          "weight": 6,
           "rarity": "Epic",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimate_big_sniper.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_firecracker.webp",
+          "functionName": "Ultimate Big Sniper",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_firecracker",
+              "label": "Spawn Bamboom (222)",
+              "icon": "images/game-icons/pvz/spawn_firecracker.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_firecracker",
+              "label": "Spawn Bamboom (222)",
+              "icon": "images/game-icons/pvz/spawn_firecracker.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_firecracker.webp",
+          "isNumber": false,
+          "repetition": 100,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#a855f7"
         },
         {
           "id": "p6",
           "label": "Charm All Zombies",
-          "actionType": "power",
-          "command": "charmallzombies",
+          "actionType": "plant",
+          "command": "spawn_ultimatejalanut;spawn_superthreepeater",
           "amount": 1,
-          "weight": 15,
-          "rarity": "Epic",
-          "unitIcon": "images/game-icons/pvz/charm_all_zombies.webp"
+          "weight": 1,
+          "rarity": "Mythic",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatejalanut.webp",
+          "functionName": "Charm All Zombies",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimatejalanut",
+              "label": "Spawn UltimateJalaNut",
+              "icon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_superthreepeater",
+              "label": "Spawn Super Threepeater",
+              "icon": "images/game-icons/pvz/spawn_superthreepeater.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatejalanut.webp",
+          "isNumber": false,
+          "repetition": 30,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#ef4444"
         },
         {
           "id": "p7",
           "label": "Launch Lawnmowers",
-          "actionType": "power",
-          "command": "startlawnmowers",
+          "actionType": "plant",
+          "command": "spawn_ultimatesunnut;spawn_big_wall_nut;spawn_solarsunflower",
           "amount": 1,
-          "weight": 15,
+          "weight": 6,
           "rarity": "Epic",
-          "unitIcon": "images/game-icons/pvz/lawnmower.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatesunnut.webp",
+          "functionName": "Launch Lawnmowers",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimatesunnut",
+              "label": "Spawn UltimateSunNut",
+              "icon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_big_wall_nut",
+              "label": "Spawn Big Wall Nut",
+              "icon": "images/game-icons/pvz/spawn_big_wall_nut.webp",
+              "actionType": "plant",
+              "amount": 1
+            },
+            {
+              "name": "Commands #3",
+              "command": "spawn_solarsunflower",
+              "label": "Spawn SolarSunflower",
+              "icon": "images/game-icons/pvz/spawn_solarsunflower.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatesunnut.webp",
+          "isNumber": false,
+          "repetition": 40,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#a855f7"
         },
         {
           "id": "p8",
           "label": "Big Sun Nut",
           "actionType": "plant",
-          "command": "spawn_big_sun_nut",
-          "amount": 50,
-          "weight": 20,
-          "rarity": "Rare",
-          "unitIcon": "images/game-icons/pvz/spawn_big_sun_nut.webp"
+          "command": "spawn_big_sun_nut;spawn_big_wall_nut",
+          "amount": 1,
+          "weight": 1,
+          "rarity": "Mythic",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_big_sun_nut.webp",
+          "functionName": "Big Sun Nut",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_big_sun_nut",
+              "label": "Spawn Big Sun Nut",
+              "icon": "images/game-icons/pvz/spawn_big_sun_nut.webp",
+              "actionType": "plant",
+              "amount": 50
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_big_wall_nut",
+              "label": "Spawn Big Wall Nut",
+              "icon": "images/game-icons/pvz/spawn_big_wall_nut.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_big_sun_nut.webp",
+          "isNumber": false,
+          "repetition": 500,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#ef4444"
         },
         {
           "id": "p9",
@@ -1494,7 +2888,7 @@
           "actionType": "plant",
           "command": "spawn_bedrocktallnut",
           "amount": 6,
-          "weight": 20,
+          "weight": 12,
           "rarity": "Rare",
           "unitIcon": "images/game-icons/pvz/spawn_bedrocktallnut.webp"
         },
@@ -1502,13 +2896,56 @@
           "id": "p10",
           "label": "Ultimate Corn",
           "actionType": "plant",
-          "command": "spawn_ultimate_corn",
-          "amount": 2,
-          "weight": 25,
-          "rarity": "Normal",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimate_corn.webp"
+          "command": "spawn_superthreepeater;spawn_dragon_pot",
+          "amount": 1,
+          "weight": 12,
+          "rarity": "Rare",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_superthreepeater.webp",
+          "functionName": "Ultimate Corn",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_superthreepeater",
+              "label": "Spawn Super Threepeater",
+              "icon": "images/game-icons/pvz/spawn_superthreepeater.webp",
+              "actionType": "plant",
+              "amount": 2
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_dragon_pot",
+              "label": "Spawn Dragon Pot",
+              "icon": "images/game-icons/pvz/spawn_dragon_pot.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_superthreepeater.webp",
+          "isNumber": false,
+          "repetition": 50,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#3b82f6"
         }
-      ]
+      ],
+      "wheelTheme": "casino_royale",
+      "centerFinial": "turret_3d",
+      "pointerTheme": "brass_chevron",
+      "wheelRarityStyle": "rarity_enamel",
+      "reelTheme": "neon_cyber",
+      "hideEventInOverlay": false,
+      "ticksCount": 35,
+      "visibleCardsCount": "9",
+      "imagesOutline": "shadow",
+      "textDisplay": "name_amount",
+      "imageToDisplay": "unit",
+      "tickSound": "V3",
+      "selectSound": "V3",
+      "showGifterAvatar": true,
+      "alsoUseEditsVideo": true,
+      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp"
     },
     {
       "id": "spinner_2",
@@ -1517,7 +2954,7 @@
       "coins": 30,
       "giftId": "5879",
       "giftIcon": "images/tiktok-gifts/5879_doughnut.webp",
-      "mode": "reel",
+      "mode": "gacha",
       "style": "modern",
       "groupId": "6",
       "enabled": true,
@@ -1530,9 +2967,36 @@
           "actionType": "zombie",
           "command": "spawn_zombie_boss2;spawn_kirov_b",
           "amount": 1,
-          "weight": 3,
-          "rarity": "Mythic",
-          "unitIcon": "images/game-icons/pvz/spawn_zombie_boss2.webp"
+          "weight": 2,
+          "rarity": "Legendary",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_zombie_boss2.webp",
+          "functionName": "Golden Zomboss",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_zombie_boss2",
+              "label": "Spawn Golden Zomboss",
+              "icon": "images/game-icons/pvz/spawn_zombie_boss2.webp",
+              "actionType": "zombie",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_kirov_b",
+              "label": "Spawn Kirov Mothership (328)",
+              "icon": "images/game-icons/pvz/spawn_kirov_b.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_zombie_boss2.webp",
+          "isNumber": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#f59e0b"
         },
         {
           "id": "z2",
@@ -1540,7 +3004,7 @@
           "actionType": "zombie",
           "command": "spawn_black_football_c2;spawn_horseboss;spawn_ultimatedolphin;spawn_submarine_c2",
           "amount": 1,
-          "weight": 8,
+          "weight": 2,
           "rarity": "Legendary",
           "unitIcon": "images/game-icons/pvz/spawn_blackfootball_c2.webp"
         },
@@ -1548,61 +3012,260 @@
           "id": "z3",
           "label": "Trident Jugger-nut Gargantuar",
           "actionType": "zombie",
-          "command": "spawn_ulti_water_gargantuar",
+          "command": "spawn_ultimate_machine_nut_zombie;spawn_submarine_c2",
           "amount": 1,
-          "weight": 10,
+          "weight": 2,
           "rarity": "Legendary",
-          "unitIcon": "images/game-icons/pvz/spawn_ulti_water_gargantuar.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
+          "functionName": "Trident Jugger-nut Gargantuar",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimate_machine_nut_zombie",
+              "label": "Spawn Ultimate Machine Nut Zombie",
+              "icon": "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
+              "actionType": "zombie",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_submarine_c2",
+              "label": "Spawn Submarine_c2",
+              "icon": "images/game-icons/pvz/spawn_submarine_c2.webp",
+              "actionType": "plant",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#f59e0b"
         },
         {
           "id": "z4",
           "label": "Hydrofowl Zombie",
           "actionType": "zombie",
-          "command": "spawn_boat_imp",
-          "amount": 2,
-          "weight": 15,
+          "command": "spawn_ultimatesnowzombie;spawn_ultimate_gargantuar",
+          "amount": 1,
+          "weight": 6,
           "rarity": "Epic",
-          "unitIcon": "images/game-icons/pvz/spawn_boat_imp.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
+          "functionName": "Hydrofowl Zombie",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimatesnowzombie",
+              "label": "Spawn UltimateSnowZombie",
+              "icon": "images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
+              "actionType": "zombie",
+              "amount": 2
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_ultimate_gargantuar",
+              "label": "Spawn <u>Abyssal Gargantuar</u> (212)",
+              "icon": "images/game-icons/pvz/spawn_ultimate_gargantuar.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#a855f7"
         },
         {
           "id": "z5",
           "label": "Kirov Airship",
           "actionType": "zombie",
-          "command": "spawn_kirov_c",
-          "amount": 30,
-          "weight": 15,
+          "command": "spawn_summonedhorse",
+          "amount": 1,
+          "weight": 6,
           "rarity": "Epic",
-          "unitIcon": "images/game-icons/pvz/spawn_kirov_c.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_summonedhorse.webp",
+          "functionName": "Kirov Airship",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_summonedhorse",
+              "label": "Spawn SummonedHorse",
+              "icon": "images/game-icons/pvz/spawn_summonedhorse.webp",
+              "actionType": "zombie",
+              "amount": 30
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_summonedhorse.webp",
+          "isNumber": false,
+          "repetition": 100,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#a855f7"
         },
         {
           "id": "z6",
           "label": "Ultimate Machine Nut Zombie",
           "actionType": "zombie",
-          "command": "spawn_ultimate_machine_nut_zombie",
-          "amount": 50,
-          "weight": 20,
-          "rarity": "Rare",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp"
+          "command": "spawn_ultimate_sword_zombie;spawn_ultimate_dolphin",
+          "amount": 1,
+          "weight": 2,
+          "rarity": "Legendary",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimateswordzombie.webp",
+          "functionName": "Ultimate Machine Nut Zombie",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimate_sword_zombie",
+              "label": "Spawn <u>Millennium Dragon & Warden</u> (244)",
+              "icon": "images/game-icons/pvz/spawn_ultimateswordzombie.webp",
+              "actionType": "zombie",
+              "amount": 50
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_ultimate_dolphin",
+              "label": "Spawn <u>Cerasocetus Rider</u> (249)",
+              "icon": "images/game-icons/pvz/spawn_ultimatedolphin.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimateswordzombie.webp",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#f59e0b"
         },
         {
           "id": "z7",
           "label": "Ultimate Horse",
           "actionType": "zombie",
-          "command": "spawn_ultimatehorse",
-          "amount": 5,
-          "weight": 20,
-          "rarity": "Rare",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimatehorse.webp"
+          "command": "spawn_ultimatehorse;spawn_ultimate_imp_king",
+          "amount": 1,
+          "weight": 1,
+          "rarity": "Mythic",
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
+          "functionName": "Ultimate Horse",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_ultimatehorse",
+              "label": "Spawn UltimateHorse",
+              "icon": "images/game-icons/pvz/spawn_ultimatehorse.webp",
+              "actionType": "zombie",
+              "amount": 5
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_ultimate_imp_king",
+              "label": "Spawn <u>Imperor's Ark of the Duck</u> (234)",
+              "icon": "images/game-icons/pvz/spawn_ultimateimpking.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
+          "isNumber": false,
+          "repetition": 10,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#ef4444"
         },
         {
           "id": "z8",
           "label": "Ultimate Football Zombie",
           "actionType": "zombie",
-          "command": "spawn_ultimate_football_zombie",
+          "command": "spawn_jackson_driver_boss;spawn_jackson_c;spawn_ultimate_jackson_driver",
           "amount": 1,
-          "weight": 25,
+          "weight": 50,
           "rarity": "Normal",
-          "unitIcon": "images/game-icons/pvz/spawn_ultimate_football_zombie.webp"
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_jackson_driver_boss.webp",
+          "functionName": "Ultimate Football Zombie",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_jackson_driver_boss",
+              "label": "Spawn Jackson Driver Boss",
+              "icon": "images/game-icons/pvz/spawn_jackson_driver_boss.webp",
+              "actionType": "zombie",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_jackson_c",
+              "label": "Spawn Jackson_c",
+              "icon": "images/game-icons/pvz/spawn_jackson_c.webp",
+              "actionType": "zombie",
+              "amount": 1
+            },
+            {
+              "name": "Commands #3",
+              "command": "spawn_ultimate_jackson_driver",
+              "label": "Spawn <u>Jackson Worldwide</u> (222)",
+              "icon": "images/game-icons/pvz/spawn_ultimate_jackson_driver.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_jackson_driver_boss.webp",
+          "isNumber": false,
+          "repetition": 10,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#94a3b8"
+        },
+        {
+          "id": "1792131497335",
+          "label": "Ultimate Cattail",
+          "functionName": "Ultimate Cattail",
+          "amount": 1,
+          "rarity": "Legendary",
+          "weight": 2,
+          "command": "spawn_football_boss;spawn_horseboss",
+          "commands": [
+            {
+              "name": "Commands #1",
+              "command": "spawn_football_boss",
+              "label": "Spawn <u><i>Last Striker</i></u> (260)",
+              "icon": "images/game-icons/pvz/spawn_football_boss.webp",
+              "actionType": "zombie",
+              "amount": 1
+            },
+            {
+              "name": "Commands #2",
+              "command": "spawn_horseboss",
+              "label": "Spawn HorseBoss",
+              "icon": "images/game-icons/pvz/spawn_horseboss.webp",
+              "actionType": "zombie",
+              "amount": 1
+            }
+          ],
+          "unitIcon": "http://localhost:8080/images/game-icons/pvz/spawn_football_boss.webp",
+          "icon": "http://localhost:8080/images/game-icons/pvz/spawn_football_boss.webp",
+          "actionType": "zombie",
+          "isNumber": false,
+          "repetition": 20,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "hideInOverlay": false,
+          "color": "#f59e0b"
         }
       ]
     },
@@ -1613,8 +3276,8 @@
       "coins": 99,
       "giftId": "6427",
       "giftIcon": "images/tiktok-gifts/6427_hat_and_mustache.webp",
-      "mode": "reel",
-      "style": "modern",
+      "mode": "slots",
+      "style": "",
       "groupId": "8",
       "enabled": true,
       "duration": 4000,
@@ -1627,7 +3290,7 @@
           "delta": -1,
           "command": "score_sub_1",
           "amount": 1,
-          "weight": 15,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_1.svg"
         },
@@ -1638,7 +3301,7 @@
           "delta": -2,
           "command": "score_sub_2",
           "amount": 2,
-          "weight": 15,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_2.svg"
         },
@@ -1649,7 +3312,7 @@
           "delta": -5,
           "command": "score_sub_5",
           "amount": 5,
-          "weight": 15,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_5.svg"
         },
@@ -1660,7 +3323,7 @@
           "delta": -15,
           "command": "score_sub_15",
           "amount": 15,
-          "weight": 10,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_15.svg"
         },
@@ -1671,7 +3334,7 @@
           "delta": -20,
           "command": "score_sub_20",
           "amount": 20,
-          "weight": 10,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_20.svg"
         },
@@ -1682,7 +3345,7 @@
           "delta": -25,
           "command": "score_sub_25",
           "amount": 25,
-          "weight": 10,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_25.svg"
         },
@@ -1693,7 +3356,7 @@
           "delta": -30,
           "command": "score_sub_30",
           "amount": 30,
-          "weight": 6,
+          "weight": 50,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_30.svg"
         },
@@ -1704,9 +3367,19 @@
           "delta": -50,
           "command": "score_sub_50",
           "amount": 50,
-          "weight": 5,
+          "weight": 50,
           "color": "#ef4444",
-          "unitIcon": "images/numbers/num_neg_50.svg"
+          "unitIcon": "images/numbers/num_neg_50.svg",
+          "isNumber": true,
+          "value": -50,
+          "functionName": "-50",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_neg_50.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "h9",
@@ -1715,9 +3388,19 @@
           "delta": -100,
           "command": "score_sub_100",
           "amount": 100,
-          "weight": 3,
+          "weight": 50,
           "color": "#ef4444",
-          "unitIcon": "images/numbers/num_neg_100.svg"
+          "unitIcon": "images/numbers/num_neg_100.svg",
+          "isNumber": true,
+          "value": -100,
+          "functionName": "-100",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_neg_100.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "h10",
@@ -1726,9 +3409,19 @@
           "delta": -200,
           "command": "score_sub_200",
           "amount": 200,
-          "weight": 2,
+          "weight": 50,
           "color": "#ef4444",
-          "unitIcon": "images/numbers/num_neg_200.svg"
+          "unitIcon": "images/numbers/num_neg_200.svg",
+          "isNumber": true,
+          "value": -200,
+          "functionName": "-200",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_neg_200.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "h11",
@@ -1737,125 +3430,37 @@
           "delta": -500,
           "command": "score_sub_500",
           "amount": 500,
-          "weight": 2,
+          "weight": 50,
           "color": "#ef4444",
-          "unitIcon": "images/numbers/num_neg_500.svg"
+          "unitIcon": "images/numbers/num_neg_500.svg",
+          "isNumber": true,
+          "value": -500,
+          "functionName": "-500",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_neg_500.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         }
-      ]
-    },
-    {
-      "id": "spinner_1791698132034",
-      "groupId": 10,
-      "name": "Win Score Numbers (+/-)",
-      "duration": 2500,
-      "ticks": 100,
-      "giftName": "Bubble Gum",
-      "giftId": "13087",
-      "giftIcon": "images/tiktok-gifts/13087_bubble_gum.webp",
-      "coins": 99,
-      "audience": "Anyone",
-      "enabled": true,
-      "mode": "reel",
-      "style": "neon",
-      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
-      "slices": [
-        {
-          "id": "num_1791698132034_0",
-          "label": "+1",
-          "actionType": "score",
-          "delta": 1,
-          "command": "score_add_1",
-          "amount": 1,
-          "weight": 18,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_1.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_1",
-          "label": "+2",
-          "actionType": "score",
-          "delta": 2,
-          "command": "score_add_2",
-          "amount": 2,
-          "weight": 15,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_2.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_2",
-          "label": "+5",
-          "actionType": "score",
-          "delta": 5,
-          "command": "score_add_5",
-          "amount": 5,
-          "weight": 12,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_5.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_3",
-          "label": "+10",
-          "actionType": "score",
-          "delta": 10,
-          "command": "score_add_10",
-          "amount": 10,
-          "weight": 9,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_10.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_4",
-          "label": "+20",
-          "actionType": "score",
-          "delta": 20,
-          "command": "score_add_20",
-          "amount": 20,
-          "weight": 6,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_20.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_5",
-          "label": "+50",
-          "actionType": "score",
-          "delta": 50,
-          "command": "score_add_50",
-          "amount": 50,
-          "weight": 3,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_50.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_6",
-          "label": "+100",
-          "actionType": "score",
-          "delta": 100,
-          "command": "score_add_100",
-          "amount": 100,
-          "weight": 2,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_100.svg",
-          "isNumber": true
-        },
-        {
-          "id": "num_1791698132034_7",
-          "label": "+500",
-          "actionType": "score",
-          "delta": 500,
-          "command": "score_add_500",
-          "amount": 500,
-          "weight": 2,
-          "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_500.svg",
-          "isNumber": true
-        }
-      ]
+      ],
+      "wheelTheme": "casino_royale",
+      "centerFinial": "turret_3d",
+      "pointerTheme": "brass_chevron",
+      "wheelRarityStyle": "rarity_enamel",
+      "reelTheme": "casino_felt",
+      "hideEventInOverlay": false,
+      "ticksCount": 35,
+      "visibleCardsCount": "9",
+      "imagesOutline": "shadow",
+      "textDisplay": "name_amount",
+      "imageToDisplay": "unit",
+      "tickSound": "V3",
+      "selectSound": "V1",
+      "showGifterAvatar": true,
+      "alsoUseEditsVideo": true,
+      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp"
     },
     {
       "id": "spinner_plusminus",
@@ -1864,8 +3469,8 @@
       "coins": 1,
       "giftId": "7934",
       "giftIcon": "images/tiktok-gifts/7934_heart_me.webp",
-      "mode": "reel",
-      "style": "modern",
+      "mode": "slots",
+      "style": "",
       "groupId": "7",
       "enabled": true,
       "duration": 4000,
@@ -1878,9 +3483,19 @@
           "delta": 1,
           "command": "score_add_1",
           "amount": 1,
-          "weight": 18,
+          "weight": 50,
           "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_1.svg"
+          "unitIcon": "images/numbers/num_pos_1.svg",
+          "isNumber": true,
+          "value": 1,
+          "functionName": "+1",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_pos_1.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "s2",
@@ -1889,9 +3504,19 @@
           "delta": 2,
           "command": "score_add_2",
           "amount": 2,
-          "weight": 15,
+          "weight": 50,
           "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_2.svg"
+          "unitIcon": "images/numbers/num_pos_2.svg",
+          "isNumber": true,
+          "value": 2,
+          "functionName": "+2",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_pos_2.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "s3",
@@ -1900,9 +3525,19 @@
           "delta": 5,
           "command": "score_add_5",
           "amount": 5,
-          "weight": 12,
+          "weight": 50,
           "color": "#10b981",
-          "unitIcon": "images/numbers/num_pos_5.svg"
+          "unitIcon": "images/numbers/num_pos_5.svg",
+          "isNumber": true,
+          "value": 5,
+          "functionName": "+5",
+          "rarity": "Normal",
+          "icon": "images/numbers/num_pos_5.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
         },
         {
           "id": "s4",
@@ -1911,7 +3546,7 @@
           "delta": 10,
           "command": "score_add_10",
           "amount": 10,
-          "weight": 9,
+          "weight": 12,
           "color": "#10b981",
           "unitIcon": "images/numbers/num_pos_10.svg",
           "isNumber": true,
@@ -1953,7 +3588,7 @@
           "delta": 50,
           "command": "score_add_50",
           "amount": 50,
-          "weight": 3,
+          "weight": 2,
           "color": "#10b981",
           "unitIcon": "images/numbers/num_pos_50.svg",
           "isNumber": true,
@@ -1974,7 +3609,7 @@
           "delta": 100,
           "command": "score_add_100",
           "amount": 100,
-          "weight": 1,
+          "weight": 2,
           "color": "#10b981",
           "unitIcon": "images/numbers/num_pos_100.svg",
           "isNumber": true,
@@ -2018,7 +3653,7 @@
           "functionName": "-1",
           "amount": 1,
           "rarity": "Normal",
-          "weight": 10,
+          "weight": 50,
           "color": "#f97316",
           "unitIcon": "images/numbers/num_neg_1.svg",
           "icon": "images/numbers/num_neg_1.svg",
@@ -2039,7 +3674,7 @@
           "functionName": "-2",
           "amount": 2,
           "rarity": "Normal",
-          "weight": 10,
+          "weight": 50,
           "color": "#f97316",
           "unitIcon": "images/numbers/num_neg_2.svg",
           "icon": "images/numbers/num_neg_2.svg",
@@ -2060,7 +3695,7 @@
           "functionName": "-5",
           "amount": 5,
           "rarity": "Rare",
-          "weight": 10,
+          "weight": 12,
           "color": "#d946ef",
           "unitIcon": "images/numbers/num_neg_5.svg",
           "icon": "images/numbers/num_neg_5.svg",
@@ -2081,7 +3716,7 @@
           "functionName": "-10",
           "amount": 10,
           "rarity": "Epic",
-          "weight": 10,
+          "weight": 6,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_10.svg",
           "icon": "images/numbers/num_neg_10.svg",
@@ -2102,7 +3737,7 @@
           "functionName": "-15",
           "amount": 15,
           "rarity": "Epic",
-          "weight": 5,
+          "weight": 6,
           "color": "#ef4444",
           "unitIcon": "images/numbers/num_neg_15.svg",
           "icon": "images/numbers/num_neg_15.svg",
@@ -2123,7 +3758,7 @@
           "functionName": "-20",
           "amount": 20,
           "rarity": "Epic",
-          "weight": 4,
+          "weight": 6,
           "color": "#f59e0b",
           "unitIcon": "images/numbers/num_neg_20.svg",
           "icon": "images/numbers/num_neg_20.svg",
@@ -2144,7 +3779,7 @@
           "functionName": "-25",
           "amount": 25,
           "rarity": "Epic",
-          "weight": 3,
+          "weight": 6,
           "color": "#f59e0b",
           "unitIcon": "images/numbers/num_neg_25.svg",
           "icon": "images/numbers/num_neg_25.svg",
@@ -2165,7 +3800,7 @@
           "functionName": "-30",
           "amount": 30,
           "rarity": "Epic",
-          "weight": 10,
+          "weight": 6,
           "color": "#ec4899",
           "unitIcon": "images/numbers/num_neg_30.svg",
           "icon": "images/numbers/num_neg_30.svg",
@@ -2186,7 +3821,7 @@
           "functionName": "-50",
           "amount": 50,
           "rarity": "Legendary",
-          "weight": 10,
+          "weight": 2,
           "color": "#06b6d4",
           "unitIcon": "images/numbers/num_neg_50.svg",
           "icon": "images/numbers/num_neg_50.svg",
@@ -2270,7 +3905,7 @@
           "functionName": "+25",
           "amount": 25,
           "rarity": "Epic",
-          "weight": 3,
+          "weight": 6,
           "color": "#10b981",
           "unitIcon": "images/numbers/num_pos_25.svg",
           "icon": "images/numbers/num_pos_25.svg",
@@ -2291,7 +3926,7 @@
           "functionName": "+30",
           "amount": 30,
           "rarity": "Epic",
-          "weight": 3,
+          "weight": 6,
           "color": "#06b6d4",
           "unitIcon": "images/numbers/num_pos_30.svg",
           "icon": "images/numbers/num_pos_30.svg",
@@ -2324,6 +3959,245 @@
           "repetitionMultiplier": false,
           "id": "pm_1791700071745"
         }
+      ],
+      "wheelTheme": "casino_royale",
+      "centerFinial": "turret_3d",
+      "pointerTheme": "brass_chevron",
+      "wheelRarityStyle": "rarity_enamel",
+      "reelTheme": "casino_felt",
+      "hideEventInOverlay": false,
+      "ticksCount": 35,
+      "visibleCardsCount": "9",
+      "imagesOutline": "shadow",
+      "textDisplay": "name_amount",
+      "imageToDisplay": "unit",
+      "tickSound": "V3",
+      "selectSound": "V3",
+      "showGifterAvatar": true,
+      "alsoUseEditsVideo": true,
+      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp"
+    },
+    {
+      "id": "spinner_1791886127198",
+      "category": "numbers",
+      "groupId": 9,
+      "name": "Win Score Numbers (+/-)",
+      "duration": 2500,
+      "ticks": 100,
+      "giftName": "Bubble Gum",
+      "giftId": "13087",
+      "giftIcon": "images/tiktok-gifts/13087_bubble_gum.webp",
+      "coins": 99,
+      "audience": "Anyone",
+      "enabled": true,
+      "mode": "slots",
+      "style": "neon",
+      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
+      "slices": [
+        {
+          "id": "num_1791886127198_0",
+          "label": "+1",
+          "actionType": "score",
+          "delta": 1,
+          "command": "score_add_1",
+          "amount": 1,
+          "weight": 50,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_1.svg",
+          "isNumber": true
+        },
+        {
+          "id": "num_1791886127198_1",
+          "label": "+2",
+          "actionType": "score",
+          "delta": 2,
+          "command": "score_add_2",
+          "amount": 2,
+          "weight": 50,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_2.svg",
+          "isNumber": true
+        },
+        {
+          "id": "num_1791886127198_2",
+          "label": "+5",
+          "actionType": "score",
+          "delta": 5,
+          "command": "score_add_5",
+          "amount": 5,
+          "weight": 50,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_5.svg",
+          "isNumber": true
+        },
+        {
+          "id": "num_1791886127198_3",
+          "label": "+10",
+          "actionType": "score",
+          "delta": 10,
+          "command": "score_add_10",
+          "amount": 10,
+          "weight": 12,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_10.svg",
+          "isNumber": true,
+          "value": 10,
+          "functionName": "+10",
+          "rarity": "Rare",
+          "icon": "images/numbers/num_pos_10.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
+        },
+        {
+          "id": "num_1791886127198_4",
+          "label": "+20",
+          "actionType": "score",
+          "delta": 20,
+          "command": "score_add_20",
+          "amount": 20,
+          "weight": 6,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_20.svg",
+          "isNumber": true,
+          "value": 20,
+          "functionName": "+20",
+          "rarity": "Epic",
+          "icon": "images/numbers/num_pos_20.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
+        },
+        {
+          "id": "num_1791886127198_5",
+          "label": "+50",
+          "actionType": "score",
+          "delta": 50,
+          "command": "score_add_50",
+          "amount": 50,
+          "weight": 2,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_50.svg",
+          "isNumber": true,
+          "value": 50,
+          "functionName": "+50",
+          "rarity": "Legendary",
+          "icon": "images/numbers/num_pos_50.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
+        },
+        {
+          "id": "num_1791886127198_6",
+          "label": "+100",
+          "actionType": "score",
+          "delta": 100,
+          "command": "score_add_100",
+          "amount": 100,
+          "weight": 2,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_100.svg",
+          "isNumber": true,
+          "value": 100,
+          "functionName": "+100",
+          "rarity": "Legendary",
+          "icon": "images/numbers/num_pos_100.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
+        },
+        {
+          "id": "num_1791886127198_7",
+          "label": "+500",
+          "actionType": "score",
+          "delta": 500,
+          "command": "score_add_500",
+          "amount": 500,
+          "weight": 1,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_500.svg",
+          "isNumber": true,
+          "value": 500,
+          "functionName": "+500",
+          "rarity": "Mythic",
+          "icon": "images/numbers/num_pos_500.svg",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 25,
+          "value": 25,
+          "label": "+25",
+          "functionName": "+25",
+          "amount": 25,
+          "rarity": "Epic",
+          "weight": 6,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_25.svg",
+          "icon": "images/numbers/num_pos_25.svg",
+          "command": "score_add_25",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "num_1791886127198_20"
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 30,
+          "value": 30,
+          "label": "+30",
+          "functionName": "+30",
+          "amount": 30,
+          "rarity": "Epic",
+          "weight": 6,
+          "color": "#06b6d4",
+          "unitIcon": "images/numbers/num_pos_30.svg",
+          "icon": "images/numbers/num_pos_30.svg",
+          "command": "score_add_30",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "num_1791886127198_21"
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 200,
+          "value": 200,
+          "label": "+200",
+          "functionName": "+200",
+          "amount": 200,
+          "rarity": "Mythic",
+          "weight": 1,
+          "color": "#ef4444",
+          "unitIcon": "images/numbers/num_pos_200.svg",
+          "icon": "images/numbers/num_pos_200.svg",
+          "command": "score_add_200",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "num_1791886127198_22"
+        }
       ]
     }
   ],
@@ -2337,5 +4211,6 @@
     "enabled": true,
     "score": -4
   },
-  "activePresetId": "preset_live_balagbagan"
+  "activePresetId": "preset_live_balagbagan",
+  "activeSpinnerId": "spinner_hat"
 }

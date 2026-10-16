@@ -1271,21 +1271,45 @@
                                             "id":  "p1",
                                             "label":  "Nuclear Doom Cherry",
                                             "actionType":  "plant",
-                                            "command":  "spawn_supergargantuar;spawn_ultimatecattail",
-                                            "amount":  3,
-                                            "weight":  5,
+                                            "command":  "spawn_nucleardoomcherry",
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                            "color":  "#ef4444",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_nucleardoomcherry",
+                                                                 "label":  "Spawn NuclearDoomCherry",
+                                                                 "icon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Mythic",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp"
+                                            "weight":  1
                                         },
                                         {
                                             "id":  "p2",
                                             "label":  "Super Threepeater SP",
                                             "actionType":  "plant",
                                             "command":  "spawn_superthreepeater_sp",
-                                            "amount":  6,
-                                            "weight":  8,
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                            "color":  "#f59e0b",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_superthreepeater_sp",
+                                                                 "label":  "Spawn Super Threepeater SP",
+                                                                 "icon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Legendary",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp"
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "p3",
@@ -1293,19 +1317,43 @@
                                             "actionType":  "plant",
                                             "command":  "spawn_ultimatecattail",
                                             "amount":  1,
-                                            "weight":  10,
-                                            "rarity":  "Legendary",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatecattail.webp"
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                            "color":  "#a855f7",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_ultimatecattail",
+                                                                 "label":  "Spawn Ultimate Cattail",
+                                                                 "icon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
+                                            "rarity":  "Mythic",
+                                            "weight":  1
                                         },
                                         {
                                             "id":  "p4",
                                             "label":  "Ultimate Sniper Gatling",
                                             "actionType":  "plant",
                                             "command":  "spawn_ultimatesnipergatling",
-                                            "amount":  10,
-                                            "weight":  10,
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                            "color":  "#10b981",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_ultimatesnipergatling",
+                                                                 "label":  "Spawn Ultimate Sniper Gatling",
+                                                                 "icon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Legendary",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp"
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "p5",
@@ -1313,61 +1361,134 @@
                                             "actionType":  "plant",
                                             "command":  "spawn_ultimate_big_sniper",
                                             "amount":  1,
-                                            "weight":  12,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                            "color":  "#3b82f6",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_ultimate_big_sniper",
+                                                                 "label":  "Spawn Ultimate Big Sniper",
+                                                                 "icon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Epic",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp"
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "p6",
                                             "label":  "Charm All Zombies",
-                                            "actionType":  "power",
-                                            "command":  "charmallzombies",
+                                            "actionType":  "plant",
+                                            "command":  "charm_all_zombies",
                                             "amount":  1,
-                                            "weight":  15,
-                                            "rarity":  "Epic",
-                                            "unitIcon":  "images/game-icons/pvz/charm_all_zombies.webp"
+                                            "unitIcon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                            "icon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                            "color":  "#ec4899",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "charm_all_zombies",
+                                                                 "label":  "Charm All Zombies",
+                                                                 "icon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
+                                            "rarity":  "Mythic",
+                                            "weight":  1
                                         },
                                         {
                                             "id":  "p7",
                                             "label":  "Launch Lawnmowers",
-                                            "actionType":  "power",
-                                            "command":  "startlawnmowers",
+                                            "actionType":  "plant",
+                                            "command":  "start_lawnmowers",
                                             "amount":  1,
-                                            "weight":  15,
+                                            "unitIcon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                            "icon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                            "color":  "#14b8a6",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "start_lawnmowers",
+                                                                 "label":  "Launch Lawnmowers",
+                                                                 "icon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Epic",
-                                            "unitIcon":  "images/game-icons/pvz/lawnmower.webp"
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "p8",
                                             "label":  "Big Sun Nut",
                                             "actionType":  "plant",
                                             "command":  "spawn_big_sun_nut",
-                                            "amount":  50,
-                                            "weight":  20,
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                            "color":  "#facc15",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_big_sun_nut",
+                                                                 "label":  "Spawn Big Sun Nut",
+                                                                 "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Rare",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp"
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "p9",
                                             "label":  "Bedrock Tall Nut",
                                             "actionType":  "plant",
                                             "command":  "spawn_bedrocktallnut",
-                                            "amount":  6,
-                                            "weight":  20,
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                            "color":  "#64748b",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_bedrocktallnut",
+                                                                 "label":  "Spawn Bedrock Tall Nut",
+                                                                 "icon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
                                             "rarity":  "Rare",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp"
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "p10",
                                             "label":  "Ultimate Corn",
                                             "actionType":  "plant",
                                             "command":  "spawn_ultimate_corn",
-                                            "amount":  2,
-                                            "weight":  25,
-                                            "rarity":  "Normal",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_corn.webp"
+                                            "amount":  1,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                            "icon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                            "color":  "#eab308",
+                                            "commands":  [
+                                                             {
+                                                                 "name":  "Commands #1",
+                                                                 "command":  "spawn_ultimate_corn",
+                                                                 "label":  "Spawn Ultimate Corn",
+                                                                 "icon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                                                 "actionType":  "plant",
+                                                                 "amount":  1
+                                                             }
+                                                         ],
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         }
-                                    ]
+                                    ],
+                         "category":  "plants_zombies"
                      },
                      {
                          "id":  "spinner_2",
@@ -1389,9 +1510,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_zombie_boss2;spawn_kirov_b",
                                             "amount":  1,
-                                            "weight":  3,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_zombie_boss2.webp",
                                             "rarity":  "Mythic",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_zombie_boss2.webp"
+                                            "weight":  1
                                         },
                                         {
                                             "id":  "z2",
@@ -1399,9 +1520,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_black_football_c2;spawn_horseboss;spawn_ultimatedolphin;spawn_submarine_c2",
                                             "amount":  1,
-                                            "weight":  8,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_blackfootball_c2.webp",
                                             "rarity":  "Legendary",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_blackfootball_c2.webp"
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "z3",
@@ -1409,9 +1530,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_ulti_water_gargantuar",
                                             "amount":  1,
-                                            "weight":  10,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ulti_water_gargantuar.webp",
                                             "rarity":  "Legendary",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ulti_water_gargantuar.webp"
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "z4",
@@ -1419,9 +1540,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_boat_imp",
                                             "amount":  2,
-                                            "weight":  15,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_boat_imp.webp",
                                             "rarity":  "Epic",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_boat_imp.webp"
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "z5",
@@ -1429,9 +1550,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_kirov_c",
                                             "amount":  30,
-                                            "weight":  15,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_kirov_c.webp",
                                             "rarity":  "Epic",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_kirov_c.webp"
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "z6",
@@ -1439,9 +1560,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_ultimate_machine_nut_zombie",
                                             "amount":  50,
-                                            "weight":  20,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
                                             "rarity":  "Rare",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp"
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "z7",
@@ -1449,9 +1570,9 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_ultimatehorse",
                                             "amount":  5,
-                                            "weight":  20,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
                                             "rarity":  "Rare",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "z8",
@@ -1459,11 +1580,12 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_ultimate_football_zombie",
                                             "amount":  1,
-                                            "weight":  25,
+                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
                                             "rarity":  "Normal",
-                                            "unitIcon":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp"
+                                            "weight":  50
                                         }
-                                    ]
+                                    ],
+                         "category":  "plants_zombies"
                      },
                      {
                          "id":  "spinner_plusminus",
@@ -1486,9 +1608,10 @@
                                             "delta":  1,
                                             "command":  "score_add_1",
                                             "amount":  1,
-                                            "weight":  18,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_1.svg"
+                                            "unitIcon":  "images/numbers/num_pos_1.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "s2",
@@ -1497,9 +1620,10 @@
                                             "delta":  2,
                                             "command":  "score_add_2",
                                             "amount":  2,
-                                            "weight":  15,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_2.svg"
+                                            "unitIcon":  "images/numbers/num_pos_2.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "s3",
@@ -1508,9 +1632,10 @@
                                             "delta":  5,
                                             "command":  "score_add_5",
                                             "amount":  5,
-                                            "weight":  12,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_5.svg"
+                                            "unitIcon":  "images/numbers/num_pos_5.svg",
+                                            "rarity":  "Uncommon",
+                                            "weight":  25
                                         },
                                         {
                                             "id":  "s4",
@@ -1519,9 +1644,10 @@
                                             "delta":  10,
                                             "command":  "score_add_10",
                                             "amount":  10,
-                                            "weight":  9,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_10.svg"
+                                            "unitIcon":  "images/numbers/num_pos_10.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "s5",
@@ -1530,9 +1656,10 @@
                                             "delta":  20,
                                             "command":  "score_add_20",
                                             "amount":  20,
-                                            "weight":  6,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_20.svg"
+                                            "unitIcon":  "images/numbers/num_pos_20.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "s6",
@@ -1541,9 +1668,10 @@
                                             "delta":  50,
                                             "command":  "score_add_50",
                                             "amount":  50,
-                                            "weight":  3,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_50.svg"
+                                            "unitIcon":  "images/numbers/num_pos_50.svg",
+                                            "rarity":  "Epic",
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "s7",
@@ -1552,9 +1680,10 @@
                                             "delta":  100,
                                             "command":  "score_add_100",
                                             "amount":  100,
-                                            "weight":  2,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_100.svg"
+                                            "unitIcon":  "images/numbers/num_pos_100.svg",
+                                            "rarity":  "Legendary",
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "s8",
@@ -1563,9 +1692,10 @@
                                             "delta":  500,
                                             "command":  "score_add_500",
                                             "amount":  500,
-                                            "weight":  2,
                                             "color":  "#10b981",
-                                            "unitIcon":  "images/numbers/num_pos_500.svg"
+                                            "unitIcon":  "images/numbers/num_pos_500.svg",
+                                            "rarity":  "Mythic",
+                                            "weight":  1
                                         },
                                         {
                                             "id":  "s9",
@@ -1574,9 +1704,10 @@
                                             "delta":  -1,
                                             "command":  "score_sub_1",
                                             "amount":  1,
-                                            "weight":  18,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_1.svg"
+                                            "unitIcon":  "images/numbers/num_neg_1.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "s10",
@@ -1585,9 +1716,10 @@
                                             "delta":  -2,
                                             "command":  "score_sub_2",
                                             "amount":  2,
-                                            "weight":  15,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_2.svg"
+                                            "unitIcon":  "images/numbers/num_neg_2.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "s11",
@@ -1596,9 +1728,10 @@
                                             "delta":  -5,
                                             "command":  "score_sub_5",
                                             "amount":  5,
-                                            "weight":  12,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_5.svg"
+                                            "unitIcon":  "images/numbers/num_neg_5.svg",
+                                            "rarity":  "Uncommon",
+                                            "weight":  25
                                         },
                                         {
                                             "id":  "s12",
@@ -1607,9 +1740,10 @@
                                             "delta":  -10,
                                             "command":  "score_sub_10",
                                             "amount":  10,
-                                            "weight":  8,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_10.svg"
+                                            "unitIcon":  "images/numbers/num_neg_10.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "s13",
@@ -1618,9 +1752,10 @@
                                             "delta":  -20,
                                             "command":  "score_sub_20",
                                             "amount":  20,
-                                            "weight":  5,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_20.svg"
+                                            "unitIcon":  "images/numbers/num_neg_20.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "s14",
@@ -1629,9 +1764,10 @@
                                             "delta":  -50,
                                             "command":  "score_sub_50",
                                             "amount":  50,
-                                            "weight":  3,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_50.svg"
+                                            "unitIcon":  "images/numbers/num_neg_50.svg",
+                                            "rarity":  "Epic",
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "s15",
@@ -1640,9 +1776,10 @@
                                             "delta":  -100,
                                             "command":  "score_sub_100",
                                             "amount":  100,
-                                            "weight":  2,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_100.svg"
+                                            "unitIcon":  "images/numbers/num_neg_100.svg",
+                                            "rarity":  "Legendary",
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "s16",
@@ -1651,11 +1788,13 @@
                                             "delta":  -500,
                                             "command":  "score_sub_500",
                                             "amount":  500,
-                                            "weight":  2,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_500.svg"
+                                            "unitIcon":  "images/numbers/num_neg_500.svg",
+                                            "rarity":  "Mythic",
+                                            "weight":  1
                                         }
-                                    ]
+                                    ],
+                         "category":  "numbers"
                      },
                      {
                          "id":  "spinner_hat",
@@ -1678,9 +1817,10 @@
                                             "delta":  -1,
                                             "command":  "score_sub_1",
                                             "amount":  1,
-                                            "weight":  15,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_1.svg"
+                                            "unitIcon":  "images/numbers/num_neg_1.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "h2",
@@ -1689,9 +1829,10 @@
                                             "delta":  -2,
                                             "command":  "score_sub_2",
                                             "amount":  2,
-                                            "weight":  15,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_2.svg"
+                                            "unitIcon":  "images/numbers/num_neg_2.svg",
+                                            "rarity":  "Normal",
+                                            "weight":  50
                                         },
                                         {
                                             "id":  "h3",
@@ -1700,9 +1841,10 @@
                                             "delta":  -5,
                                             "command":  "score_sub_5",
                                             "amount":  5,
-                                            "weight":  15,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_5.svg"
+                                            "unitIcon":  "images/numbers/num_neg_5.svg",
+                                            "rarity":  "Uncommon",
+                                            "weight":  25
                                         },
                                         {
                                             "id":  "h4",
@@ -1711,9 +1853,10 @@
                                             "delta":  -15,
                                             "command":  "score_sub_15",
                                             "amount":  15,
-                                            "weight":  10,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_15.svg"
+                                            "unitIcon":  "images/numbers/num_neg_15.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "h5",
@@ -1722,9 +1865,10 @@
                                             "delta":  -20,
                                             "command":  "score_sub_20",
                                             "amount":  20,
-                                            "weight":  10,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_20.svg"
+                                            "unitIcon":  "images/numbers/num_neg_20.svg",
+                                            "rarity":  "Rare",
+                                            "weight":  12
                                         },
                                         {
                                             "id":  "h6",
@@ -1733,9 +1877,10 @@
                                             "delta":  -25,
                                             "command":  "score_sub_25",
                                             "amount":  25,
-                                            "weight":  10,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_25.svg"
+                                            "unitIcon":  "images/numbers/num_neg_25.svg",
+                                            "rarity":  "Epic",
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "h7",
@@ -1744,9 +1889,10 @@
                                             "delta":  -30,
                                             "command":  "score_sub_30",
                                             "amount":  30,
-                                            "weight":  6,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_30.svg"
+                                            "unitIcon":  "images/numbers/num_neg_30.svg",
+                                            "rarity":  "Epic",
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "h8",
@@ -1755,9 +1901,10 @@
                                             "delta":  -50,
                                             "command":  "score_sub_50",
                                             "amount":  50,
-                                            "weight":  5,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_50.svg"
+                                            "unitIcon":  "images/numbers/num_neg_50.svg",
+                                            "rarity":  "Epic",
+                                            "weight":  6
                                         },
                                         {
                                             "id":  "h9",
@@ -1766,9 +1913,10 @@
                                             "delta":  -100,
                                             "command":  "score_sub_100",
                                             "amount":  100,
-                                            "weight":  3,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_100.svg"
+                                            "unitIcon":  "images/numbers/num_neg_100.svg",
+                                            "rarity":  "Legendary",
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "h10",
@@ -1777,9 +1925,10 @@
                                             "delta":  -200,
                                             "command":  "score_sub_200",
                                             "amount":  200,
-                                            "weight":  2,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_200.svg"
+                                            "unitIcon":  "images/numbers/num_neg_200.svg",
+                                            "rarity":  "Legendary",
+                                            "weight":  2
                                         },
                                         {
                                             "id":  "h11",
@@ -1788,11 +1937,13 @@
                                             "delta":  -500,
                                             "command":  "score_sub_500",
                                             "amount":  500,
-                                            "weight":  2,
                                             "color":  "#ef4444",
-                                            "unitIcon":  "images/numbers/num_neg_500.svg"
+                                            "unitIcon":  "images/numbers/num_neg_500.svg",
+                                            "rarity":  "Mythic",
+                                            "weight":  1
                                         }
-                                    ]
+                                    ],
+                         "category":  "numbers"
                      }
                  ],
     "spinner":  {
@@ -1813,21 +1964,45 @@
                                        "id":  "p1",
                                        "label":  "Nuclear Doom Cherry",
                                        "actionType":  "plant",
-                                       "command":  "spawn_supergargantuar;spawn_ultimatecattail",
-                                       "amount":  3,
+                                       "command":  "spawn_nucleardoomcherry",
+                                       "amount":  1,
                                        "weight":  5,
                                        "rarity":  "Mythic",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                       "color":  "#ef4444",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_nucleardoomcherry",
+                                                            "label":  "Spawn NuclearDoomCherry",
+                                                            "icon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p2",
                                        "label":  "Super Threepeater SP",
                                        "actionType":  "plant",
                                        "command":  "spawn_superthreepeater_sp",
-                                       "amount":  6,
+                                       "amount":  1,
                                        "weight":  8,
                                        "rarity":  "Legendary",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                       "color":  "#f59e0b",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_superthreepeater_sp",
+                                                            "label":  "Spawn Super Threepeater SP",
+                                                            "icon":  "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p3",
@@ -1835,19 +2010,43 @@
                                        "actionType":  "plant",
                                        "command":  "spawn_ultimatecattail",
                                        "amount":  1,
-                                       "weight":  10,
-                                       "rarity":  "Legendary",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimatecattail.webp"
+                                       "weight":  6,
+                                       "rarity":  "Mythic",
+                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                       "color":  "#a855f7",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_ultimatecattail",
+                                                            "label":  "Spawn Ultimate Cattail",
+                                                            "icon":  "images/game-icons/pvz/spawn_ultimatecattail.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p4",
                                        "label":  "Ultimate Sniper Gatling",
                                        "actionType":  "plant",
                                        "command":  "spawn_ultimatesnipergatling",
-                                       "amount":  10,
-                                       "weight":  10,
+                                       "amount":  1,
+                                       "weight":  7,
                                        "rarity":  "Legendary",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                       "color":  "#10b981",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_ultimatesnipergatling",
+                                                            "label":  "Spawn Ultimate Sniper Gatling",
+                                                            "icon":  "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p5",
@@ -1857,57 +2056,129 @@
                                        "amount":  1,
                                        "weight":  12,
                                        "rarity":  "Epic",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                       "color":  "#3b82f6",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_ultimate_big_sniper",
+                                                            "label":  "Spawn Ultimate Big Sniper",
+                                                            "icon":  "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p6",
                                        "label":  "Charm All Zombies",
-                                       "actionType":  "power",
-                                       "command":  "charmallzombies",
+                                       "actionType":  "plant",
+                                       "command":  "charm_all_zombies",
                                        "amount":  1,
-                                       "weight":  15,
-                                       "rarity":  "Epic",
-                                       "unitIcon":  "images/game-icons/pvz/charm_all_zombies.webp"
+                                       "weight":  4,
+                                       "rarity":  "Mythic",
+                                       "unitIcon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                       "icon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                       "color":  "#ec4899",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "charm_all_zombies",
+                                                            "label":  "Charm All Zombies",
+                                                            "icon":  "images/game-icons/pvz/charm_all_zombies.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p7",
                                        "label":  "Launch Lawnmowers",
-                                       "actionType":  "power",
-                                       "command":  "startlawnmowers",
+                                       "actionType":  "plant",
+                                       "command":  "start_lawnmowers",
                                        "amount":  1,
                                        "weight":  15,
                                        "rarity":  "Epic",
-                                       "unitIcon":  "images/game-icons/pvz/lawnmower.webp"
+                                       "unitIcon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                       "icon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                       "color":  "#14b8a6",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "start_lawnmowers",
+                                                            "label":  "Launch Lawnmowers",
+                                                            "icon":  "images/game-icons/pvz/start_lawnmowers.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p8",
                                        "label":  "Big Sun Nut",
                                        "actionType":  "plant",
                                        "command":  "spawn_big_sun_nut",
-                                       "amount":  50,
-                                       "weight":  20,
+                                       "amount":  1,
+                                       "weight":  18,
                                        "rarity":  "Rare",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                       "color":  "#facc15",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_big_sun_nut",
+                                                            "label":  "Spawn Big Sun Nut",
+                                                            "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p9",
                                        "label":  "Bedrock Tall Nut",
                                        "actionType":  "plant",
                                        "command":  "spawn_bedrocktallnut",
-                                       "amount":  6,
+                                       "amount":  1,
                                        "weight":  20,
                                        "rarity":  "Rare",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp"
+                                       "unitIcon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                       "color":  "#64748b",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_bedrocktallnut",
+                                                            "label":  "Spawn Bedrock Tall Nut",
+                                                            "icon":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    },
                                    {
                                        "id":  "p10",
                                        "label":  "Ultimate Corn",
                                        "actionType":  "plant",
                                        "command":  "spawn_ultimate_corn",
-                                       "amount":  2,
-                                       "weight":  25,
-                                       "rarity":  "Normal",
-                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimate_corn.webp"
+                                       "amount":  1,
+                                       "weight":  10,
+                                       "rarity":  "Rare",
+                                       "unitIcon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                       "icon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                       "color":  "#eab308",
+                                       "commands":  [
+                                                        {
+                                                            "name":  "Commands #1",
+                                                            "command":  "spawn_ultimate_corn",
+                                                            "label":  "Spawn Ultimate Corn",
+                                                            "icon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                                                            "actionType":  "plant",
+                                                            "amount":  1
+                                                        }
+                                                    ]
                                    }
                                ]
                 }

@@ -43,6 +43,8 @@ ping 127.0.0.1 -n 2 >nul
 echo  [3/3] Starting Live Stream Studio Services...
 if exist "%~dp0core\server.ps1" (
     start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0core\server.ps1"
+) else if exist "%~dp0..\core\server.ps1" (
+    start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0..\core\server.ps1"
 ) else (
     start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0server.ps1"
 )
@@ -52,6 +54,12 @@ ping 127.0.0.1 -n 3 >nul
 echo  Launching PvZ Fusion Studio Application...
 if exist "%~dp0RENEarn_Studio.exe" (
     start "" "%~dp0RENEarn_Studio.exe"
+) else if exist "%~dp0..\RENEarn_Studio.exe" (
+    start "" "%~dp0..\RENEarn_Studio.exe"
+) else if exist "%~dp0PvZ_Fusion_Studio.exe" (
+    start "" "%~dp0PvZ_Fusion_Studio.exe"
+) else if exist "%~dp0..\PvZ_Fusion_Studio.exe" (
+    start "" "%~dp0..\PvZ_Fusion_Studio.exe"
 ) else (
     start msedge.exe --app=http://localhost:8080/app.html
 )

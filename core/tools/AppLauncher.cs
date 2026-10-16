@@ -143,11 +143,15 @@ namespace RENEarnStudio
 
             string appDir = AppDomain.CurrentDomain.BaseDirectory;
             string serverScript = Path.Combine(appDir, "core", "server.ps1");
+            if (!File.Exists(serverScript)) serverScript = Path.Combine(appDir, "..", "core", "server.ps1");
             if (!File.Exists(serverScript)) serverScript = Path.Combine(appDir, "server.ps1");
 
             string iconPath = Path.Combine(appDir, "renearn.ico");
             if (!File.Exists(iconPath)) iconPath = Path.Combine(appDir, "app_icon.ico");
+            if (!File.Exists(iconPath)) iconPath = Path.Combine(appDir, "..", "renearn.ico");
+            if (!File.Exists(iconPath)) iconPath = Path.Combine(appDir, "..", "app_icon.ico");
             if (!File.Exists(iconPath)) iconPath = Path.Combine(appDir, "core", "app_icon.ico");
+            if (!File.Exists(iconPath)) iconPath = Path.Combine(appDir, "..", "core", "app_icon.ico");
 
             string dashboardUrl = "http://localhost:8080/app.html";
 

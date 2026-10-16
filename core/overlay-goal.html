@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Goal Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --goal-accent: #10b981;
+            --goal-accent-light: #6ee7b7;
+            --goal-accent-glow: rgba(16, 185, 129, 0.55);
+        }
+
+        html, body {
+            background: transparent !important;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Oxanium", sans-serif;
+            user-select: none;
+        }
+
+        .cyber-style-view {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 440px;
+            max-width: 90vw;
+            padding: 18px 24px;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            background: linear-gradient(115deg, rgba(16, 185, 129, 0.08), #0d131d 70%);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 20px var(--goal-accent-glow);
+            border-radius: 4px 18px 18px 4px;
+            border-left: 4px solid var(--goal-accent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: cyberFrameBreathe 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes cyberFrameBreathe {
+            0% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 14px rgba(16, 185, 129, 0.2); }
+            100% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 28px var(--goal-accent-glow); }
+        }
+
+        .cyber-style-view::after {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            width: 32px;
+            height: 3px;
+            background: repeating-linear-gradient(90deg, var(--goal-accent) 0 6px, transparent 6px 10px);
+            opacity: 0.8;
+            content: "";
+            animation: scanDashes 1.8s linear infinite;
+        }
+
+        @keyframes scanDashes {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .hud-top-content-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .hud-header-label {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            line-height: 1.2;
+            color: #b5c3d3;
+            text-transform: uppercase;
+        }
+
+        .hud-numbers-main {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            white-space: nowrap;
+            font-size: 30px;
+            font-weight: 900;
+            color: #f3f7ff;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .hud-current-num {
+            color: #ffffff;
+            text-shadow: 0 0 12px var(--goal-accent-glow);
+            transition: transform 0.2s ease;
+        }
+
+        .anim-pts-punch {
+            animation: ptsPunch 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+
+        @keyframes ptsPunch {
+            0% { transform: scale(0.85); }
+            50% { transform: scale(1.22); color: var(--goal-accent-light); }
+            100% { transform: scale(1); color: #ffffff; }
+        }
+
+        .hud-slash-divider {
+            font-size: 16px;
+            font-weight: 600;
+            color: #5e7187;
+        }
+
+        .hud-target-num {
+            font-size: 18px;
+            font-weight: 600;
+            color: #91a3b8;
+        }
+
+        /* ─── Progress Bar Track & Laser Sweep ─── */
+        .hud-baseline-track {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hud-baseline-fill {
+            height: 100%;
+            width: 3.6%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--goal-accent), var(--goal-accent-light));
+            box-shadow: 0 0 14px var(--goal-accent-glow);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-baseline-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+            animation: cyberLaserSweep 2s linear infinite;
+        }
+
+        @keyframes cyberLaserSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(500%); }
+        }
+
+        /* ─── Cyber Dots Track ─── */
+        .hud-dots-track {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .hud-dot-segment {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hud-dot-segment.active {
+            background: var(--goal-accent);
+            box-shadow: 0 0 8px var(--goal-accent-glow);
+            animation: dotGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes dotGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; filter: brightness(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-style-view" id="goalView">
+        <div class="hud-top-content-row">
+            <span class="hud-header-label" id="goalLabel">LIKES</span>
+            <div class="hud-numbers-main">
+                <span class="hud-current-num" id="currentPoints">36</span>
+                <span class="hud-slash-divider">/</span>
+                <span class="hud-target-num" id="targetPoints">1,000</span>
+            </div>
+        </div>
+
+        <div class="hud-baseline-track">
+            <div class="hud-baseline-fill" id="progressFill" style="width: 3.6%;"></div>
+        </div>
+
+        <!-- Cyber Segmented Dots Track -->
+        <div class="hud-dots-track" id="dotsTrack">
+            <div class="hud-dot-segment active"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+            <div class="hud-dot-segment"></div>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const goalType = (params.get('type') || params.get('kind') || 'likes').toLowerCase();
+        let targetVal = parseInt(params.get('goal') || (goalType.includes('like') ? '1000' : '500'), 10);
+        let currentVal = parseInt(params.get('current') || (goalType.includes('like') ? '36' : '0'), 10);
+        const customTitle = params.get('title');
+        const customAccent = params.get('accent');
+
+        // Apply custom color if requested
+        if (customAccent) {
+            document.documentElement.style.setProperty('--goal-accent', customAccent);
+            document.documentElement.style.setProperty('--goal-accent-light', customAccent);
+            document.documentElement.style.setProperty('--goal-accent-glow', customAccent + '88');
+        } else if (goalType.includes('heart')) {
+            document.documentElement.style.setProperty('--goal-accent', '#ec4899');
+            document.documentElement.style.setProperty('--goal-accent-light', '#f472b6');
+            document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(236, 72, 153, 0.6)');
+        } else if (goalType.includes('coin')) {
+            document.documentElement.style.setProperty('--goal-accent', '#f59e0b');
+            document.documentElement.style.setProperty('--goal-accent-light', '#fbbf24');
+            document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(245, 158, 11, 0.6)');
+        }
+
+        // Apply label
+        let displayLabel = 'LIKES';
+        if (customTitle) displayLabel = customTitle;
+        else if (goalType.includes('heart')) displayLabel = 'HEART ME GOAL';
+        else if (goalType.includes('coin')) displayLabel = 'COINS GOAL';
+        else if (goalType.includes('follow')) displayLabel = 'FOLLOWERS GOAL';
+        else if (goalType.includes('share')) displayLabel = 'SHARES GOAL';
+        document.getElementById('goalLabel').textContent = displayLabel.toUpperCase();
+
+        function renderGoal() {
+            const numEl = document.getElementById('currentPoints');
+            numEl.textContent = currentVal.toLocaleString();
+            numEl.classList.remove('anim-pts-punch');
+            void numEl.offsetWidth;
+            numEl.classList.add('anim-pts-punch');
+
+            document.getElementById('targetPoints').textContent = targetVal.toLocaleString();
+            const pct = Math.min(100, Math.max(1, (currentVal / targetVal) * 100));
+            document.getElementById('progressFill').style.width = pct + '%';
+
+            // Update dot segments
+            const dots = document.querySelectorAll('.hud-dot-segment');
+            const activeCount = Math.round((pct / 100) * dots.length);
+            dots.forEach((dot, idx) => {
+                if (idx < activeCount) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        renderGoal();
+
+        // Event polling
+        let lastEventTimestamp = Date.now() - 5000;
+        setInterval(async () => {
+            try {
+                const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTimestamp = data.serverTime;
+                    if (data.events && Array.isArray(data.events)) {
+                        for (const ev of data.events) {
+                            if (goalType.includes('like') && (ev.type === 'like' || ev.event === 'like')) {
+                                currentVal += (ev.likes || ev.count || 1);
+                                renderGoal();
+                            } else if (goalType.includes('heart') && (ev.type === 'gift' || ev.type === 'jar_drop')) {
+                                if ((ev.giftName || '').toLowerCase().includes('heart')) {
+                                    currentVal += (ev.count || 1);
+                                    renderGoal();
+                                }
+                            } else if (goalType.includes('coin') && (ev.type === 'gift' || ev.type === 'jar_drop')) {
+                                currentVal += (ev.coins || 1);
+                                renderGoal();
+                            } else if (goalType.includes('follow') && (ev.type === 'follow' || ev.event === 'follow')) {
+                                currentVal += 1;
+                                renderGoal();
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+        }, 350);
+
+        // BroadcastChannel
+        try {
+            const bc = new BroadcastChannel('renearn_overlay_events');
+            bc.onmessage = (e) => {
+                if (e.data) {
+                    if (goalType.includes('like') && e.data.type === 'like') {
+                        currentVal += (e.data.count || 1);
+                        renderGoal();
+                    } else if (goalType.includes('coin') && (e.data.type === 'gift' || e.data.type === 'jar_drop')) {
+                        currentVal += (e.data.coins || 1);
+                        renderGoal();
+                    }
+                }
+            };
+        } catch (e) {}
+    </script>
+</body>
+</html>

@@ -1,0 +1,4041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvZ Fusion - High-End Gacha & Spinner Stream Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fredoka:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="wheel-engine.js"></script>
+    <script src="three.min.js"></script>
+    <style>
+        :root {
+            --card-width: 120px;
+            --card-height: 140px;
+            --card-gap: 14px;
+            --accent-yellow: #f59e0b;
+            --accent-blue: #38bdf8;
+            --accent-pink: #f43f5e;
+            --accent-purple: #a855f7;
+            --border-color: #30363d;
+            --rarity-mythic: #ef4444;
+            --rarity-legendary: #f59e0b;
+            --rarity-epic: #a855f7;
+            --rarity-rare: #3b82f6;
+            --rarity-normal: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* 
+           OBS / TIKTOK STUDIO STREAM OVERLAY:
+           100% TRANSPARENT BY DEFAULT.
+           Zero elements visible when idle.
+        */
+        html, body {
+            background: transparent !important;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* ==================== OPTIONAL DEBUG / CONTROLS BAR ==================== */
+        /* HIDDEN BY DEFAULT: only shows if ?controls=true or user presses 'C' or 'Tab' */
+        .debug-controls-bar {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(14px);
+            border: 1px solid #30363d;
+            border-radius: 9999px;
+            padding: 6px 18px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        body.show-controls .debug-controls-bar {
+            display: flex;
+        }
+
+        .btn-debug {
+            background: #21262d;
+            border: 1px solid #363b42;
+            color: #ffffff;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-debug:hover {
+            background: #388bfd;
+            border-color: #58a6ff;
+        }
+
+        /* Floating Gear Button (Visible in preview or on hover) */
+        .btn-gear-toggle {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            color: #94a3b8;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9000;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+            opacity: 0.35;
+        }
+        .btn-gear-toggle:hover {
+            opacity: 1;
+            transform: rotate(45deg) scale(1.1);
+            color: #facc15;
+            border-color: #facc15;
+            box-shadow: 0 0 16px rgba(250, 204, 21, 0.5);
+        }
+
+        /* ==================== DYNAMIC SPINNER STAGE ==================== */
+        .spinner-stage-container {
+            width: max-content;
+            max-width: 100vw;
+            max-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+            
+            /* Hidden idle state */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-20px) scale(calc(var(--fit-scale, 1) * 0.95));
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        visibility 0.35s;
+            z-index: 100;
+        }
+
+        /* ACTIVE: Shows up dynamically when someone gifts! */
+        .spinner-stage-container.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(var(--fit-scale, 1));
+        }
+
+        /* FADING OUT: Smooth exit after win celebration */
+        .spinner-stage-container.fading-out {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px) scale(calc(var(--fit-scale, 1) * 0.96));
+            transition: opacity 0.45s ease-out, transform 0.45s ease-out, visibility 0.45s;
+        }
+
+        /* ==================== GIFTER ANNOUNCEMENT BADGE ==================== */
+        .gifter-banner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.96), rgba(30, 41, 59, 0.96));
+            backdrop-filter: blur(14px);
+            border: 1.5px solid #388bfd;
+            border-radius: 9999px;
+            padding: 8px 24px 8px 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 139, 253, 0.4);
+            animation: bounceIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .gifter-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .gifter-icon-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gifter-text-col {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .gifter-headline {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.2px;
+        }
+
+        .gifter-subtext {
+            font-size: 11.5px;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        /* Real-Time Queue Badge */
+        .queue-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid #f59e0b;
+            color: #facc15;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: 8px;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            display: none;
+        }
+        .queue-badge-pill.visible {
+            display: inline-flex;
+        }
+
+        /* ==========================================================================
+           VISUALIZER MODE 1: HORIZONTAL ROULETTE (CS:GO / CRATE OPENER)
+           ========================================================================== */
+        .reel-viewport-wrap {
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .reel-viewport {
+            width: 100%;
+            height: 168px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: rgba(10, 14, 20, 0.94);
+            backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(56, 139, 253, 0.18);
+        }
+
+        /* Vignette gradient edges */
+        .reel-viewport::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 130px;
+            background: linear-gradient(90deg, rgba(10, 14, 20, 0.98) 0%, transparent 100%);
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .reel-viewport::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 130px;
+            background: linear-gradient(270deg, rgba(10, 14, 20, 0.98) 0%, transparent 100%);
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* Indicator Needle with Flapper */
+        .reel-center-pointer {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 35;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 14px rgba(245, 158, 11, 0.95));
+        }
+
+        .pointer-arrow {
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 24px solid #f59e0b;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+            transition: transform 0.08s ease;
+        }
+
+        .pointer-arrow.tick {
+            transform: translateY(-4px) rotate(-8deg);
+        }
+
+        .reel-track {
+            position: absolute;
+            top: 14px;
+            left: 0;
+            height: 140px;
+            display: flex;
+            gap: var(--card-gap);
+            padding: 0;
+            will-change: transform;
+            align-items: center;
+        }
+
+        /* Item Cards */
+        .spinner-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: #161b22;
+            border: 1.5px solid #30363d;
+            border-radius: 12px;
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
+            overflow: hidden;
+        }
+
+        .spinner-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #3b82f6;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .spinner-card.rarity-mythic::after { background: var(--rarity-mythic); box-shadow: 0 0 8px var(--rarity-mythic); }
+        .spinner-card.rarity-legendary::after { background: var(--rarity-legendary); box-shadow: 0 0 8px var(--rarity-legendary); }
+        .spinner-card.rarity-epic::after { background: var(--rarity-epic); box-shadow: 0 0 8px var(--rarity-epic); }
+        .spinner-card.rarity-rare::after { background: var(--rarity-rare); box-shadow: 0 0 8px var(--rarity-rare); }
+        .spinner-card.rarity-normal::after { background: var(--rarity-normal); box-shadow: 0 0 8px var(--rarity-normal); }
+
+        .spinner-card.winner {
+            transform: scale(1.12);
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.95), 0 0 10px #ffffff !important;
+            z-index: 20;
+            animation: winnerPulse 1.2s infinite alternate;
+        }
+
+        @keyframes winnerPulse {
+            0% { transform: scale(1.08); filter: brightness(1); }
+            100% { transform: scale(1.14); filter: brightness(1.25); }
+        }
+
+        .card-img-wrap {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .card-img-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+        }
+
+        .card-title {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            padding: 0 2px;
+            margin-bottom: 4px;
+        }
+
+        .card-rarity-pill {
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Dual-Outcome Multiplier Badge on Cards */
+        .card-multiplier-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            border: 1px solid #fef08a;
+            display: none;
+        }
+        .card-multiplier-badge.active {
+            display: block;
+        }
+
+        /* ==========================================================================
+           VISUALIZER MODE 2: CLASSIC WHEEL OF FORTUNE
+           ========================================================================== */
+        .wheel-viewport-wrap {
+            position: relative;
+            width: 520px;
+            height: 520px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
+        }
+
+        #wheelCanvas {
+            width: 500px;
+            height: 500px;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .wheel-pointer-container {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            pointer-events: none;
+            transition: transform 0.08s ease;
+        }
+        .wheel-pointer-container.tick {
+            transform: translateX(-50%) rotate(-12deg) scale(1.08);
+        }
+
+        /* Concentric Inner Multiplier Disc for Dual Outcome */
+        .wheel-inner-multiplier-disc {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1e293b 0%, #090d16 100%);
+            border: 3px solid #f59e0b;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            text-align: center;
+        }
+        .wheel-inner-multiplier-disc.active {
+            display: flex;
+        }
+        .wheel-mult-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .wheel-mult-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #facc15;
+            text-shadow: 0 2px 8px rgba(250, 204, 21, 0.7);
+        }
+
+        /* ==========================================================================
+           VISUALIZER MODE 3: ANIMATED GACHA CAPSULE MACHINE & SUMMON CARD
+           (Matching Reference Images 2, 3, 4, 5)
+           ========================================================================== */
+        .gacha-viewport-wrap {
+            position: relative;
+            width: 500px;
+            min-height: 580px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3D Photorealistic Gacha Machine Container */
+        .gacha-machine-body {
+            position: relative;
+            width: 360px;
+            height: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
+            transition: transform 0.3s ease;
+            perspective: 1000px;
+        }
+
+        /* 3D Realistic Anticipation Rattle */
+        .gacha-machine-body.rattling {
+            animation: gacha3DRattle 0.09s infinite;
+        }
+
+        @keyframes gacha3DRattle {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(-3px, 2px) rotate(-1deg) scale(1.01); }
+            50% { transform: translate(3px, -2px) rotate(1deg) scale(0.99); }
+            75% { transform: translate(-2px, -1px) rotate(-0.5deg) scale(1.01); }
+            100% { transform: translate(2px, 1px) rotate(0.5deg) scale(1); }
+        }
+
+        .gacha-3d-render {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 20px rgba(236, 72, 153, 0.3));
+            pointer-events: none;
+            user-select: none;
+            z-index: 2;
+        }
+
+        /* Internal 3D Capsule Chamber behind glass */
+        .gacha-dome-3d-chamber {
+            position: absolute;
+            top: 36px;
+            width: 220px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .gacha-capsules-group {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 24px;
+            gap: 4px;
+        }
+
+        .cap-3d {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+            animation: capsuleFloat 3s ease-in-out infinite alternate;
+        }
+        .cap-item-1 { animation-delay: 0s; transform: rotate(-15deg); }
+        .cap-item-2 { animation-delay: 0.4s; transform: rotate(25deg); }
+        .cap-item-3 { animation-delay: 0.8s; transform: rotate(-35deg); }
+        .cap-item-4 { animation-delay: 1.2s; transform: rotate(10deg); }
+        .cap-item-5 { animation-delay: 1.6s; transform: rotate(45deg); }
+        .cap-item-6 { animation-delay: 2.0s; transform: rotate(-20deg); }
+
+        @keyframes capsuleFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-7px) rotate(12deg); }
+        }
+
+        /* 3D Lathe-Turned Metal Crank Mechanism */
+        .gacha-crank-3d-wrap {
+            position: absolute;
+            bottom: 175px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            cursor: pointer;
+        }
+
+        .gacha-crank-3d-handle {
+            width: 52px;
+            height: 16px;
+            border-radius: 8px;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .gacha-crank-wrap.turning .gacha-crank-3d-handle {
+            transform: rotate(360deg);
+        }
+
+        /* 3D Dispensing Chute */
+        .gacha-chute-3d {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95px;
+            height: 80px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Photorealistic 3D Dispensed Capsule */
+        .gacha-capsule-3d-dispensed {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+            filter: drop-shadow(0 14px 28px rgba(0,0,0,0.85)) drop-shadow(0 0 20px rgba(250, 204, 21, 0.8));
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            z-index: 30;
+            display: none;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gacha-capsule-3d-dispensed.dropped {
+            display: block;
+            animation: capsule3DDrop 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes capsule3DDrop {
+            0% { transform: translateX(-50%) translateY(-50px) scale(0.3) rotate(0deg); opacity: 0; }
+            40% { opacity: 1; }
+            65% { transform: translateX(-50%) translateY(35px) scale(1.15) rotate(180deg); }
+            80% { transform: translateX(-50%) translateY(22px) scale(0.95) rotate(270deg); }
+            100% { transform: translateX(-50%) translateY(28px) scale(1.05) rotate(360deg); opacity: 1; }
+        }
+
+        /* PvZ Mystery Pack Trading Card Specific Styles (Picture 2 Match) */
+        .crimp-foil-edge {
+            width: 100%;
+            height: 18px;
+            background: repeating-linear-gradient(90deg, #64748b 0px, #94a3b8 2px, #e2e8f0 4px, #ffffff 6px, #94a3b8 8px, #475569 10px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.8);
+            position: relative;
+            z-index: 15;
+            flex-shrink: 0;
+        }
+        .crimp-foil-edge.crimp-top {
+            border-bottom: 1.5px solid rgba(0,0,0,0.5);
+        }
+        .crimp-foil-edge.crimp-bottom {
+            border-top: 1.5px solid rgba(0,0,0,0.5);
+        }
+
+        .card-pvz-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 6px;
+            z-index: 12;
+            width: 100%;
+        }
+
+        .pvz-logo-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 17px;
+            font-weight: 900;
+            color: #4ade80;
+            text-shadow: 0 2px 4px #000, 0 0 12px rgba(74,222,128,0.8);
+            letter-spacing: 1px;
+        }
+
+        .pvz-vs-text {
+            font-size: 11px;
+            color: #facc15;
+            text-shadow: 0 1px 3px #000;
+        }
+
+        .mystery-portal-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px dashed rgba(250, 204, 21, 0.7);
+            animation: rotatePortal 14s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotatePortal {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-details-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 12;
+        }
+
+        .mystery-pack-emblem {
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.05;
+            margin: 6px 0 4px;
+            z-index: 12;
+        }
+
+        .mystery-pack-emblem .text-mystery {
+            font-size: 18px;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #4ade80 0%, #22d3ee 60%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.95));
+        }
+
+        .mystery-pack-emblem .text-pack {
+            font-size: 20px;
+            letter-spacing: 3px;
+            background: linear-gradient(180deg, #fef08a 0%, #facc15 60%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.95));
+        }
+
+        .card-holo-glare {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.2) 55%, transparent 70%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 20;
+            animation: cardHoloGlaze 5s ease-in-out infinite;
+        }
+
+        @keyframes cardHoloGlaze {
+            0% { transform: translateX(-100%); }
+            40%, 100% { transform: translateX(100%); }
+        }
+
+        /* ==================== CARD SUMMON REVEAL (MATCHING PHOTO 5) ==================== */
+        .gacha-summon-overlay {
+            position: fixed !important;
+            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 100000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            box-sizing: border-box;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+            overflow: visible;
+        }
+
+        /* Animated Sender Nameplate positioned CLEANLY ABOVE card with ample margin */
+        .card-sender-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.94);
+            border: 2px solid #fbbf24;
+            border-radius: 9999px;
+            padding: 7px 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(245, 158, 11, 0.55);
+            backdrop-filter: blur(8px);
+            z-index: 20;
+            animation: senderPillPulse 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes senderPillPulse {
+            0% { transform: translateY(0); box-shadow: 0 8px 30px rgba(0,0,0,0.85), 0 0 15px rgba(245,158,11,0.4); }
+            100% { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 25px rgba(245,158,11,0.7); }
+        }
+
+        .gacha-summon-overlay.revealed {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Radiant Sunburst Ray Particles */
+        .summon-sunburst-rays {
+            position: absolute;
+            width: min(720px, 92vw);
+            height: min(720px, 92vw);
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.35) 0%, rgba(244, 114, 182, 0.25) 40%, transparent 70%);
+            border-radius: 50%;
+            animation: rotateSunburst 18s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes rotateSunburst {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating 1-5 Star Summon Card with Responsive Bounds */
+        .summon-card-box {
+            position: relative;
+            width: min(340px, 88vw);
+            max-height: min(490px, 78vh);
+            aspect-ratio: 330 / 490;
+            transform: scale(var(--card-fit-scale, 1));
+            transform-origin: center center;
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            border: 4px solid #ffffff;
+            border-radius: 26px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 85, 247, 0.5), inset 0 2px 0 #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 18px 20px;
+            z-index: 10;
+            box-sizing: border-box;
+            overflow: visible;
+            animation: cardFloat 3s ease-in-out infinite alternate;
+            transition: all 0.35s ease;
+        }
+
+        /* Tiered Rarity Themes for Gacha Cards */
+        .summon-card-box.tier-legendary {
+            border-color: #fbbf24 !important;
+            background: linear-gradient(145deg, #1e1b4b 0%, #3b132a 50%, #451a03 100%) !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 50px rgba(245, 158, 11, 0.8), 0 0 100px rgba(239, 68, 68, 0.4), inset 0 2px 0 rgba(255,255,255,0.6) !important;
+            animation: cardFloat 3s ease-in-out infinite alternate, legendaryPulse 2s ease-in-out infinite alternate !important;
+        }
+        @keyframes legendaryPulse {
+            0% { box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 40px rgba(245, 158, 11, 0.7); }
+            100% { box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 80px rgba(245, 158, 11, 1), 0 0 120px rgba(249, 115, 22, 0.6); }
+        }
+
+        .summon-card-box.tier-epic {
+            border-color: #c084fc !important;
+            background: linear-gradient(145deg, #1e1b4b 0%, #2e1065 100%) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 45px rgba(168, 85, 247, 0.7), inset 0 2px 0 rgba(255,255,255,0.4) !important;
+        }
+
+        .summon-card-box.tier-rare {
+            border-color: #38bdf8 !important;
+            background: linear-gradient(145deg, #0c4a6e 0%, #1e293b 100%) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.65), inset 0 2px 0 rgba(255,255,255,0.4) !important;
+        }
+
+        .summon-card-box.tier-uncommon {
+            border-color: #34d399 !important;
+            background: linear-gradient(145deg, #064e3b 0%, #0f172a 100%) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(16, 185, 129, 0.6), inset 0 2px 0 rgba(255,255,255,0.3) !important;
+        }
+
+        .summon-card-box.tier-common {
+            border-color: #cbd5e1 !important;
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(148, 163, 184, 0.4), inset 0 2px 0 rgba(255,255,255,0.2) !important;
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        /* 1-5 Golden Stars Banner */
+        .summon-stars-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 36px;
+            z-index: 5;
+        }
+
+        .card-star {
+            display: inline-block;
+            font-size: 26px;
+            color: #facc15;
+            text-shadow: 0 3px 12px rgba(234, 179, 8, 0.9), 0 0 8px #ffffff;
+            animation: starBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+        }
+        @keyframes starBounce {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Center Entity Character Graphic */
+        .summon-entity-display {
+            width: 210px;
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .summon-entity-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,0.5));
+            animation: entityPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes entityPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Name Badge Plaque (Screenshot 5: e.g. [6] GROOT) */
+        .summon-name-badge {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 2px solid #c4b5fd;
+            border-radius: 14px;
+            padding: 8px 18px;
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: #4c1d95;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 14px rgba(76, 29, 149, 0.2);
+            text-align: center;
+            z-index: 5;
+        }
+
+        /* Dual-Outcome Multiplier Tag on Card */
+        .summon-mult-banner {
+            margin-top: 6px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 4px 14px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+            border: 1.5px solid #fef08a;
+            display: none;
+            z-index: 5;
+        }
+        .summon-mult-banner.active {
+            display: inline-block;
+        }
+
+        /* ==========================================================================
+           VISUALIZER MODE 4: CLASSIC SLOT MACHINE (3-REEL VEGAS SLOTS)
+           ========================================================================== */
+        .slot-viewport-wrap {
+            position: relative;
+            width: 560px;
+            max-width: 96vw;
+            height: auto;
+            background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+            border: 4px solid #f59e0b;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(245, 158, 11, 0.4), inset 0 2px 0 rgba(255,255,255,0.4);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 18px;
+            box-sizing: border-box;
+        }
+
+        .slot-marquee-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .slot-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: #fef08a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+        }
+
+        .slot-reels-container {
+            width: 100%;
+            height: 200px;
+            background: #090d16;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 8px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            overflow: hidden;
+        }
+
+        /* Center Payline Highlight */
+        .slot-payline-bar {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+            transform: translateY(-50%);
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .slot-reel-col {
+            position: relative;
+            height: 100%;
+            background: #111827;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slot-reel-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            will-change: transform;
+        }
+
+        .slot-reel-strip.spinning {
+            filter: blur(3px);
+        }
+
+        .slot-symbol-box {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .slot-symbol-box img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8));
+        }
+
+        .slot-symbol-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        /* ==================== WINNER BANNER (PERSISTENT & ACCESSIBLE) ==================== */
+        .winner-banner-wrap {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 80;
+        }
+
+        .winner-banner-wrap.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .winner-pill {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.98), rgba(30, 41, 59, 0.98));
+            border: 2px solid #f59e0b;
+            border-radius: 9999px;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .winner-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .winner-text-content {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .winner-text-highlight {
+            color: #facc15;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+        }
+
+        /* ==========================================================================
+           STREAMER CONTROL PANEL / SETTINGS MODAL (MATCHING PHOTO 1)
+           ========================================================================== */
+        .settings-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .settings-modal-backdrop.open {
+            display: flex;
+        }
+
+        .settings-modal-window {
+            width: 100%;
+            max-width: 840px;
+            max-height: 90vh;
+            background: #0f172a;
+            border: 1.5px solid #334155;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(59, 130, 246, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalPop 0.25s ease-out;
+            color: #f8fafc;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .settings-header {
+            padding: 16px 24px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .settings-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+        .btn-close-modal:hover {
+            color: #ffffff;
+        }
+
+        .settings-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Mode Selector Pill Switch (Matching Photo 1) */
+        .mode-switch-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mode-switch-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-pill-bar {
+            display: inline-flex;
+            background: #090d16;
+            border: 1.5px solid #1e293b;
+            border-radius: 9999px;
+            padding: 4px;
+            gap: 4px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+            width: fit-content;
+        }
+
+        .mode-pill-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-pill-btn:hover {
+            color: #ffffff;
+        }
+
+        /* Active Pill Match to Photo 1 */
+        .mode-pill-btn.active {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        /* Dual-Outcome Switch Row */
+        .settings-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 12px 18px;
+        }
+
+        .toggle-label-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .toggle-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .toggle-desc {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Checkbox Switch */
+        .switch-control {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+        .switch-control input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #334155;
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 9999px;
+            border: 1px solid #475569;
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+        }
+        input:checked + .slider-round {
+            background-color: #f59e0b;
+            border-color: #facc15;
+        }
+        input:checked + .slider-round:before {
+            transform: translateX(22px);
+        }
+
+        /* Items & Odds Table */
+        .items-editor-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-item {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-add-item:hover {
+            background: #1d4ed8;
+        }
+
+        .items-table-wrap {
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #090d16;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .items-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 800;
+            padding: 10px 12px;
+            border-bottom: 1px solid #334155;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .items-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            color: #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .table-input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #ffffff;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 12px;
+            width: 100%;
+            outline: none;
+        }
+        .table-input:focus {
+            border-color: #38bdf8;
+        }
+
+        .table-select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #ffffff;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .btn-del-row {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #f87171;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .btn-del-row:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        /* Test Action Buttons Bar */
+        .test-actions-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #334155;
+        }
+
+        .btn-pill-test {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: 1px solid #60a5fa;
+            color: #ffffff;
+            padding: 7px 16px;
+            border-radius: 9999px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-pill-test:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-pill-mythic {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            border: 1px solid #f87171;
+            color: #ffffff;
+            padding: 7px 16px;
+            border-radius: 9999px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .settings-footer {
+            padding: 14px 24px;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-save-settings {
+            background: #10b981;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .btn-save-settings:hover {
+            background: #059669;
+        }
+
+        .btn-reset-settings {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 7px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-reset-settings:hover {
+            color: #ffffff;
+            border-color: #64748b;
+        }
+    
+        /* 3D Slot Machine Canvas & Frame in Overlay */
+        .slot-3d-canvas-wrap {
+            position: relative;
+            width: 520px;
+            height: 340px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #030712;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), inset 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+        .slot-payline-laser {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent 0%, #f59e0b 20%, #ffffff 50%, #f59e0b 80%, transparent 100%);
+            box-shadow: 0 0 16px #f59e0b, 0 0 30px rgba(245, 158, 11, 0.6);
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 3D Gacha Machine Shaking & Ball Drop Physics */
+        @keyframes gachaStudioShake {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            15% { transform: translate(-6px, 3px) rotate(-2deg) scale(1.02); }
+            30% { transform: translate(6px, -4px) rotate(2deg) scale(0.98); }
+            45% { transform: translate(-5px, -3px) rotate(-1.5deg) scale(1.02); }
+            60% { transform: translate(5px, 3px) rotate(1.5deg) scale(0.98); }
+            75% { transform: translate(-3px, 4px) rotate(-1deg) scale(1.01); }
+            90% { transform: translate(4px, -2px) rotate(1deg) scale(0.99); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        .gacha-shaking-active {
+            animation: gachaStudioShake 0.08s infinite !important;
+        }
+
+        @keyframes domeCapsuleBounce {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(10deg) translateY(-8px); }
+            100% { transform: scale(1.05) rotate(-10deg) translateY(4px); }
+        }
+        .dome-bouncing-active {
+            animation: domeCapsuleBounce 0.1s infinite alternate !important;
+        }
+
+        @keyframes gachaBallDropPhysics {
+            0% {
+                transform: translateX(-50%) translateY(-100px) scale(0.4) rotate(0deg);
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-20px) scale(0.8) rotate(120deg);
+            }
+            60% {
+                transform: translateX(-50%) translateY(40px) scale(1.18) rotate(240deg);
+            }
+            75% {
+                transform: translateX(-50%) translateY(15px) scale(0.94) rotate(300deg);
+            }
+            90% {
+                transform: translateX(-50%) translateY(32px) scale(1.06) rotate(350deg);
+            }
+            100% {
+                transform: translateX(-50%) translateY(28px) scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes packHoverAnim {
+            0% { transform: translate(-50%, -50%) translateY(0px) rotateY(-4deg) rotateZ(-1deg); }
+            100% { transform: translate(-50%, -50%) translateY(-10px) rotateY(6deg) rotateZ(1.5deg); }
+        }
+
+        /* Yu-Gi-Oh & Pokemon Rainbow Rare 3D Trading Card Studio */
+        @keyframes sunburstRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        @keyframes holoShimmerMove {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        @keyframes tcgCardEmerge3D {
+            0% {
+                transform: translate(-50%, -50%) scale(0.2) rotateX(25deg) rotateY(-18deg) translateZ(-60px);
+                opacity: 0;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.08) rotateX(-5deg) rotateY(6deg) translateZ(40px);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotateX(0deg) rotateY(0deg) translateZ(0px);
+                opacity: 1;
+            }
+        }
+        .tcg-card-3d-active {
+            animation: tcgCardEmerge3D 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+        }
+        .ygo-star-orb {
+            width: 26px;
+            height: 26px;
+            filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9));
+            transition: transform 0.2s ease;
+        }
+        .ygo-star-orb:hover {
+            transform: scale(1.25);
+        }
+
+
+        /* 3D Transparent Foil Pack Swiping & Tearing Physics */
+        @keyframes foilTearSwipe3D {
+            0% {
+                transform: translate3d(0, 0, 0) rotateZ(0deg) rotateX(0deg) rotateY(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translate3d(-35px, -18px, 40px) rotateZ(-18deg) rotateX(25deg) rotateY(-12deg);
+            }
+            60% {
+                transform: translate3d(-100px, -70px, 90px) rotateZ(-45deg) rotateX(55deg) rotateY(-22deg);
+                opacity: 0.95;
+            }
+            100% {
+                transform: translate3d(-220px, -160px, 160px) rotateZ(-75deg) rotateX(85deg) rotateY(-35deg);
+                opacity: 0;
+            }
+        }
+        .foil-tearing-active {
+            animation: foilTearSwipe3D 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+        }
+
+        @keyframes packBodyOpen3D {
+            0% {
+                transform: scale(1) translateZ(0);
+                opacity: 1;
+            }
+            35% {
+                transform: scale(1.06) translateZ(25px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(60px) scale(0.95) rotateX(25deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(160px) scale(0.85) rotateX(45deg);
+                opacity: 0;
+            }
+        }
+        .pack-body-open-active {
+            animation: packBodyOpen3D 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+        }
+
+        @keyframes foilSparksBurst {
+            0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+        }
+        .sparks-burst-active {
+            animation: foilSparksBurst 0.65s ease-out forwards !important;
+        }
+
+</style>
+</head>
+<body>
+
+    <!-- ==================== OPTIONAL DEBUG BAR ==================== -->
+    <div class="debug-controls-bar" id="debugControlsBar">
+        <span style="font-weight: 800; color: #fff;">⚡ Stream Gacha Overlay</span>
+        <button type="button" class="btn-debug" onclick="triggerTestSpin()">Test Roll</button>
+        <button type="button" class="btn-debug" onclick="openSettingsModal()">⚙️ Settings</button>
+        <button type="button" class="btn-debug" onclick="toggleOverlayPreview()">Toggle Preview</button>
+        <span style="font-size: 10px; opacity: 0.7;">Press [Tab] for settings</span>
+    </div>
+
+    <!-- Floating Gear Button (Visible in preview / hover) -->
+    <button type="button" class="btn-gear-toggle" id="btnGearToggle" onclick="openSettingsModal()" title="Open Gacha / Spinner Settings (Hotkey: Tab)">
+        ⚙️
+    </button>
+
+    <!-- ==================== MAIN SPINNER STAGE CONTAINER ==================== -->
+    <div class="spinner-stage-container" id="spinnerStageContainer">
+        
+        <!-- GIFTER BANNER -->
+        <div class="gifter-banner" id="gifterBanner">
+            <div class="gifter-icon-wrap" id="gifterIconWrap">
+                <img src="images/default_avatar.svg" id="gifterAvatarImg" alt="Avatar">
+            </div>
+            <div class="gifter-text-col">
+                <div class="gifter-headline">
+                    <span id="gifterUsername">Gifter</span>
+                    <span>triggered</span>
+                    <span style="color: #facc15;" id="gifterGiftName">Gift</span>
+                    <span class="queue-badge-pill" id="queueBadgePill">⚡ Queue: 1</span>
+                </div>
+                <div class="gifter-subtext" id="gifterSubtext">Summoning live prize into the game!</div>
+            </div>
+        </div>
+
+        <!-- ==================== MODE 1: HORIZONTAL REEL ==================== -->
+        <div class="reel-viewport-wrap" id="horizontalReelWrap">
+            <div class="reel-viewport">
+                <div class="reel-center-pointer">
+                    <div class="pointer-arrow" id="reelPointerArrow"></div>
+                </div>
+                <div class="reel-track" id="reelTrack"></div>
+            </div>
+        </div>
+
+        <!-- ==================== MODE 2: CLASSIC WHEEL ==================== -->
+        <div class="wheel-viewport-wrap" id="classicWheelWrap">
+            <div class="wheel-pointer-container" id="wheelPointerContainer">
+                <svg viewBox="0 0 34 44" width="36" height="46" fill="none">
+                    <polygon points="17,43 3,13 9,3 25,3 31,13" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="17" cy="15" r="7" fill="#dc2626" stroke="#fef08a" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <canvas id="wheelCanvas" width="500" height="500"></canvas>
+            <!-- Concentric Inner Disc for Dual Outcome -->
+            <div class="wheel-inner-multiplier-disc" id="wheelInnerMultDisc">
+                <span class="wheel-mult-label">Multiplier</span>
+                <span class="wheel-mult-value" id="wheelInnerMultVal">x1</span>
+            </div>
+        </div>
+
+        <!-- ==================== MODE 3: 3D GACHA CAPSULE MACHINE & PVZ MYSTERY PACK CARD ==================== -->
+        <div class="gacha-viewport-wrap" id="gachaMachineWrap">
+            <div class="gacha-machine-body" id="gachaMachineBody">
+                <!-- 3D Rendered Japanese Gacha Machine Base & Glass -->
+                <img src="images/gacha_machine_3d.png" class="gacha-3d-render" id="overlayGachaMachineImg" alt="3D Gacha Machine">
+
+                <!-- 3D Internal Capsule Chamber -->
+                <div class="gacha-dome-3d-chamber">
+                    <div class="gacha-capsules-group" id="gachaCapsulesGroup">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-1" alt="Capsule">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-2" alt="Capsule">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-3" alt="Capsule">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-4" alt="Capsule">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-5" alt="Capsule">
+                        <img src="images/gacha_capsule_3d.png" class="cap-3d cap-item-6" alt="Capsule">
+                    </div>
+                </div>
+
+                <!-- 3D Turning Crank Knob Layer -->
+                <div class="gacha-crank-wrap gacha-crank-3d-wrap" id="gachaCrankWrap">
+                    <div class="gacha-crank-handle gacha-crank-3d-handle" id="gachaCrankHandle"></div>
+                </div>
+
+                <!-- 3D Dispensing Chute & Dropped Capsule -->
+                <div class="gacha-chute-door gacha-chute-3d">
+                    <div id="overlayDroppedCapsuleWrap" style="position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%) scale(0); opacity: 0; width: 76px; height: 76px; z-index: 30;">
+                        <!-- Capsule Light Burst on open -->
+                        <div id="overlayCapsuleBurst" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle, #fef08a 0%, #f59e0b 45%, transparent 70%); filter: blur(8px); opacity: 0; z-index: 5; transition: all 0.4s ease;"></div>
+                        <!-- Top Half of Capsule (Flips open) -->
+                        <div id="overlayCapTop" style="position: absolute; top: 0; left: 0; width: 100%; height: 50%; overflow: hidden; transform-origin: bottom right; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 4;">
+                            <img src="images/gacha_capsule_3d.png" style="width: 76px; height: 76px; object-fit: cover; object-position: top; display: block;" alt="Capsule Top">
+                        </div>
+                        <!-- Bottom Half of Capsule -->
+                        <div id="overlayCapBottom" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; overflow: hidden; z-index: 3;">
+                            <img src="images/gacha_capsule_3d.png" style="width: 76px; height: 76px; object-fit: cover; object-position: bottom; margin-top: -38px; display: block;" alt="Capsule Bottom">
+                        </div>
+                    </div>
+                    <!-- Hidden reference element for legacy compatibility -->
+                    <img src="images/gacha_capsule_3d.png" class="gacha-dispensed-capsule gacha-capsule-3d-dispensed" id="gachaDispensedCapsule" alt="Dispensed Capsule" style="display: none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MODE 4: 3D THREE.JS SLOT MACHINE (MATCHING APP) ==================== -->
+        <div class="slot-viewport-wrap" id="slotMachineWrap">
+            <div class="slot-marquee-header">
+                <span class="slot-title">🎰 LIVE LUCKY SLOTS</span>
+                <span style="font-size: 11px; font-weight: 800; color: #38bdf8;">3D DRUM REEL</span>
+            </div>
+            <div class="slot-3d-canvas-wrap">
+                <canvas id="overlaySlots3DCanvas" width="520" height="340" style="width: 520px; height: 340px; display: block;"></canvas>
+                <div class="slot-payline-laser"></div>
+                <!-- Hidden fallback strip elements for legacy verifiers if needed -->
+                <div style="display: none;">
+                    <div id="slotStrip1"></div><div id="slotStrip2"></div><div id="slotStrip3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WINNER BANNER (ACCESSIBLE TO ALL MODES) -->
+        <div class="winner-banner-wrap" id="winnerBanner">
+            <div class="winner-pill">
+                <img src="images/game-icons/pvz/spawn_ultimatecattail.webp" id="winnerIcon" class="winner-icon" alt="Winner">
+                <div class="winner-text-content">
+                    <span>WON: </span>
+                    <span class="winner-text-highlight" id="winnerText">Ultimate Gold Gargantuar</span>
+                    <span style="color: #38bdf8; font-size: 15px; margin-left: 6px;" id="winnerMultText"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== TOP-LEVEL UNCONSTRAINED SCREEN OVERLAYS (DEAD CENTER) ==================== -->
+    <!-- Emerging 3D Plants vs Zombies Mystery Pack in Overlay (100% Transparent PNG, NO Black Background) -->
+    <div id="overlayPackWrapper" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; width: 260px; height: 386px; z-index: 99998; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; filter: drop-shadow(0 20px 45px rgba(0,0,0,0.95)); pointer-events: none; background: transparent !important; border: none !important; perspective: 1200px; transform-style: preserve-3d;">
+        <div id="overlayPackAura" style="position: absolute; inset: -35px; border-radius: 50%; background: radial-gradient(circle, rgba(245,158,11,0.55) 0%, rgba(168,85,247,0.35) 45%, transparent 70%); filter: blur(25px); z-index: 1;"></div>
+        
+        <!-- Top Foil Strip: Tears & curls open in 3D -->
+        <div id="overlayPackTop" style="position: absolute; top: 0; left: 0; width: 100%; height: 62px; z-index: 10; transform-origin: top right; transition: all 0.5s ease; background: transparent;">
+            <img src="images/pvz_pack_top_strip.png" style="width: 100%; height: 100%; object-fit: fill; display: block; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));" alt="Pack Top Strip">
+            <!-- Glowing Tear Seam Laser Line -->
+            <div id="overlayTearSeam" style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, transparent 0%, #fef08a 20%, #ffffff 50%, #fef08a 80%, transparent 100%); box-shadow: 0 0 12px #fde047; opacity: 0; transition: opacity 0.3s ease;"></div>
+        </div>
+        
+        <!-- Main Foil Pouch Body: Transparent PNG, NO black background -->
+        <div id="overlayPackBody" style="position: absolute; top: 60px; left: 0; width: 100%; height: 326px; z-index: 6; transform-origin: bottom center; transition: all 0.5s ease; background: transparent;">
+            <img src="images/pvz_pack_body.png" style="width: 100%; height: 100%; object-fit: fill; display: block; filter: drop-shadow(0 15px 35px rgba(0,0,0,0.8));" alt="Pack Body">
+            <div style="position: absolute; inset: 0; background: linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.3) 55%, transparent 80%); mix-blend-mode: overlay; pointer-events: none;"></div>
+        </div>
+        
+        <div id="overlaySparks" style="position: absolute; top: 62px; left: 50%; transform: translate(-50%, -50%) scale(0); width: 240px; height: 100px; background: radial-gradient(ellipse, #ffffff 0%, #facc15 35%, #f97316 65%, transparent 75%); filter: blur(5px); opacity: 0; pointer-events: none; z-index: 25;"></div>
+    </div>
+
+    <!-- Gacha Card Summon Overlay (Authentic PvZ Mystery Pack Trading Card - Dead Center) -->
+    <div class="gacha-summon-overlay" id="gachaSummonOverlay">
+        <div class="summon-sunburst-rays"></div>
+
+        <!-- Sender Nameplate Badge positioned CLEANLY ABOVE card with ample vertical margin -->
+        <div class="card-sender-badge" id="cardSenderBadge">
+            <img src="images/default_avatar.svg" id="cardSenderAvatar" style="width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid #fbbf24; object-fit: cover;" alt="Avatar">
+            <span id="cardSenderUsername" style="font-size: 15px; font-weight: 900; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.6);">Viewer</span>
+            <span style="font-size: 13px; font-weight: 700; color: #facc15;">summoned</span>
+        </div>
+
+        <div class="summon-card-box pvz-mystery-pack-card" id="summonCardBox" style="position: relative; width: min(340px, 90vw); min-height: 490px; border-radius: 20px; box-shadow: 0 25px 70px rgba(0,0,0,0.95), 0 0 50px rgba(245,158,11,0.8); overflow: hidden; perspective: 1200px; transform-style: preserve-3d; border: 3.5px solid #fbbf24; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 0; box-sizing: border-box;">
+            
+            <!-- Rainbow Holographic Card Background (Image 4 & 5) -->
+            <div style="position: absolute; inset: 0; background: url('images/pvz_rainbow_card_frame.jpg') center/cover no-repeat, linear-gradient(135deg, rgba(244,114,182,0.6) 0%, rgba(251,191,36,0.6) 25%, rgba(52,211,153,0.6) 50%, rgba(56,189,248,0.6) 75%, rgba(168,85,247,0.6) 100%); background-blend-mode: overlay; z-index: 2;"></div>
+
+            <!-- Holographic Iridescent Glare Sheen -->
+            <div style="position: absolute; inset: 0; background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,0.45) 45%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.45) 55%, transparent 75%); background-size: 200% 200%; animation: holoShimmerMove 4s ease infinite; mix-blend-mode: overlay; pointer-events: none; z-index: 3;"></div>
+
+            <!-- Card Header Bar: PvZ Logo, Card Name & HP/Sun Cost -->
+            <div style="position: relative; width: 100%; padding: 10px 14px 6px; display: flex; justify-content: space-between; align-items: center; z-index: 10; box-sizing: border-box; background: linear-gradient(180deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.7) 100%); border-bottom: 1.5px solid rgba(251,191,36,0.6);">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 15px;">🌻</span>
+                    <span style="font-size: 12px; font-weight: 900; letter-spacing: 0.5px; color: #fde047; text-shadow: 0 0 8px rgba(253,224,71,0.8);">PVZ FUSION TCG</span>
+                </div>
+                <div id="summonCardSunCost" style="font-size: 13px; font-weight: 900; color: #ffffff; text-shadow: 0 0 10px #fbbf24; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 9999px; border: 1px solid #fbbf24;">
+                    ☀️ 500 SUN
+                </div>
+            </div>
+
+            <!-- Dynamic Unit Title Banner - Covers the static Aurora Star with the REAL Unit Name in Real Time -->
+            <div style="position: absolute; top: 44px; left: 14px; right: 14px; height: 38px; background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%); border: 2px solid #fbbf24; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; z-index: 5; box-shadow: 0 4px 15px rgba(0,0,0,0.85);">
+                <span id="summonCardUnitName" style="font-size: 13.5px; font-weight: 900; color: #fde047; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(251,191,36,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">CHARM ALL ZOMBIES</span>
+                <span id="summonCardHeaderStars" style="font-size: 13px; color: #fbbf24; flex-shrink: 0; letter-spacing: 1px;">★★★★★</span>
+            </div>
+
+            <!-- Center Unit Character Portal Window (Exact Middle of the Card) -->
+            <div style="position: relative; width: 195px; height: 195px; display: flex; justify-content: center; align-items: center; z-index: 10; margin-top: 48px;">
+                <!-- Portal Outer Magic Rings -->
+                <div style="position: absolute; inset: 0; border-radius: 50%; border: 3px solid #fbbf24; box-shadow: 0 0 25px #fbbf24, inset 0 0 20px rgba(251,191,36,0.5); background: radial-gradient(circle, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.95) 70%);"></div>
+                <!-- Character Unit Icon (Crystal Clear, High-Contrast) -->
+                <img src="images/game-icons/pvz/spawn_ultimatecattail.webp" id="summonEntityImg" class="summon-entity-img" style="width: 145px; height: 145px; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.9)); position: relative; z-index: 12;" alt="Unit">
+            </div>
+
+            <!-- Yu-Gi-Oh Level Stars Row (Neatly centered under portal, NO overlap with Aurora Star banner) -->
+            <div style="position: relative; width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 10px 0 4px; z-index: 10;" id="summonStarsRow">
+                <!-- Dynamic Yu-Gi-Oh Star Orbs -->
+            </div>
+
+            <!-- Centered Command Title Badge (Right below stars in the middle - Clean and readable) -->
+            <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; margin-top: 4px;">
+                <div id="summonNameBadge" style="font-size: 15px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 10px #fbbf24; background: rgba(15,23,42,0.92); border: 1.5px solid #fbbf24; border-radius: 9999px; padding: 6px 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.7);">
+                    [MYTHIC] CHARM ALL ZOMBIES
+                </div>
+            </div>
+
+            <!-- Clean Authentic PvZ Card Footer - Covers the fake Pokemon stats with real-time command -->
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 74px; background: linear-gradient(180deg, rgba(15,23,42,0.9) 0%, #0a0e17 100%); border-top: 1.5px solid rgba(251,191,36,0.6); z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 12px; box-sizing: border-box;">
+                <div id="summonCardRealCmd" style="font-size: 11.5px; font-family: monospace; font-weight: 800; color: #38bdf8; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;">
+                    !cmd: charm_all_zombies
+                </div>
+                <div style="font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;">
+                    PVZ FUSION LIVE REWARD • REALTIME
+                </div>
+            </div>
+
+            <!-- Hidden data anchors for JS compatibility -->
+            <div style="display: none;">
+                <div id="summonMultBanner"></div>
+                <div id="summonCmdCode"></div>
+            </div>
+            <!-- Bottom Crimped Silver Foil -->
+            <div class="crimp-foil-edge crimp-bottom"></div>
+
+            <!-- Holographic Shimmer Sheen -->
+            <div class="card-holo-glare"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       SETTINGS & ODDS EDITING MODAL (STREAMER CONTROL PANEL)
+       ========================================================================== -->
+    <div class="settings-modal-backdrop" id="settingsModalBackdrop">
+        <div class="settings-modal-window">
+            
+            <div class="settings-header">
+                <h2><span>🎮</span> Gacha & Spinner Live Control Center</h2>
+                <button type="button" class="btn-close-modal" onclick="closeSettingsModal()">&times;</button>
+            </div>
+
+            <div class="settings-body">
+                
+                <!-- 1. MODE SELECTOR (MATCHING PHOTO 1) -->
+                <div class="mode-switch-container">
+                    <label class="mode-switch-label">Select Active Visualizer Mode</label>
+                    <div class="mode-pill-bar" id="modePillBar">
+                        <button type="button" class="mode-pill-btn active" data-mode="horizontal" onclick="switchVisualizerMode('horizontal')">
+                            <span>🎰</span> Horizontal Reel
+                        </button>
+                        <button type="button" class="mode-pill-btn" data-mode="wheel" onclick="switchVisualizerMode('wheel')">
+                            <span>🎡</span> Classic Wheel
+                        </button>
+                        <button type="button" class="mode-pill-btn" data-mode="gacha" onclick="switchVisualizerMode('gacha')">
+                            <span>🔮</span> Gacha Capsule Box
+                        </button>
+                        <button type="button" class="mode-pill-btn" data-mode="slot" onclick="switchVisualizerMode('slot')">
+                            <span>🍒</span> Slot Machine
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. DUAL-OUTCOME ROLL TOGGLE -->
+                <div class="settings-toggle-row">
+                    <div class="toggle-label-wrap">
+                        <span class="toggle-title">Dual-Outcome Roll (Entity + Quantity Multiplier)</span>
+                        <span class="toggle-desc">Rolls an Entity (e.g. Zombie / Groot) AND a Quantity Multiplier (e.g. x5, x10) simultaneously!</span>
+                    </div>
+                    <label class="switch-control">
+                        <input type="checkbox" id="chkDualOutcome" onchange="toggleDualOutcome(this.checked)">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+
+                <!-- 3. TEST ACTIONS BAR -->
+                <div class="test-actions-bar">
+                    <span style="font-size: 13px; font-weight: 800; color: #fff;">⚡ Live Test:</span>
+                    <button type="button" class="btn-pill-test" onclick="triggerTestSpin()">
+                        <span>🎲</span> Test Roll Active Mode
+                    </button>
+                    <button type="button" class="btn-pill-mythic" onclick="triggerTestSpin(true)">
+                        <span>⭐</span> Test Mythic / Rare Win
+                    </button>
+                    <button type="button" class="btn-pill-test" style="background: #334155; border-color: #475569;" onclick="testQueueHypeTrain()">
+                        <span>🔥</span> Test Hype Train (3 Queue)
+                    </button>
+                </div>
+
+                <!-- 4. ITEMS & ODDS TABLE (POOL A) -->
+                <div class="items-editor-section">
+                    <div class="section-header-row">
+                        <span class="section-title">
+                            <span>📦</span> Prize Items & Drop Odds (Pool A: Entities / Mobs)
+                        </span>
+                        <button type="button" class="btn-add-item" onclick="addNewItemRow()">+ Add Item</button>
+                    </div>
+                    <div class="items-table-wrap">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 32%;">Item Name</th>
+                                    <th style="width: 28%;">Icon Path / Preset</th>
+                                    <th style="width: 18%;">Rarity</th>
+                                    <th style="width: 12%;">Weight</th>
+                                    <th style="width: 10%;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 5. MULTIPLIERS TABLE (POOL B - FOR DUAL OUTCOME) -->
+                <div class="items-editor-section" id="multipliersEditorSection" style="display: none;">
+                    <div class="section-header-row">
+                        <span class="section-title">
+                            <span>✖️</span> Multiplier & Quantity Multipliers (Pool B)
+                        </span>
+                        <button type="button" class="btn-add-item" onclick="addNewMultiplierRow()">+ Add Multiplier</button>
+                    </div>
+                    <div class="items-table-wrap">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%;">Label (e.g. x5, +10)</th>
+                                    <th style="width: 30%;">Multiplier Value</th>
+                                    <th style="width: 20%;">Weight</th>
+                                    <th style="width: 10%;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="multipliersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 6. TIMING & AUDIO SETTINGS -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div style="background: #1e293b; border-radius: 12px; padding: 12px; border: 1px solid #334155;">
+                        <label style="font-size: 12px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 6px;">Spin Duration: <span id="lblSpinDuration" style="color: #38bdf8;">4.0s</span></label>
+                        <input type="range" id="rngSpinDuration" min="2000" max="7000" step="500" value="4000" style="width: 100%; accent-color: #38bdf8;" oninput="document.getElementById('lblSpinDuration').textContent = (this.value/1000).toFixed(1) + 's'">
+                    </div>
+                    <div style="background: #1e293b; border-radius: 12px; padding: 12px; border: 1px solid #334155;">
+                        <label style="font-size: 12px; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 6px;">Sound Volume: <span id="lblSoundVolume" style="color: #facc15;">60%</span></label>
+                        <input type="range" id="rngSoundVolume" min="0" max="100" step="5" value="60" style="width: 100%; accent-color: #facc15;" oninput="document.getElementById('lblSoundVolume').textContent = this.value + '%'">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="settings-footer">
+                <button type="button" class="btn-reset-settings" onclick="resetToDefaultConfig()">Reset Defaults</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn-reset-settings" onclick="closeSettingsModal()">Close</button>
+                    <button type="button" class="btn-save-settings" onclick="saveSettingsFromModal()">Save & Apply</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==================== LOGIC / JS ENGINE ==================== -->
+    <script>
+        // ========================================================
+        // 1. DEFAULT DATA & CONFIGURATION
+        // ========================================================
+        const DEFAULT_ITEMS_POOL = [
+            { id: 'item_1', label: 'Super Threepeater SP', icon: 'images/game-icons/pvz/spawn_superthreepeater_sp.webp', rarity: 'Legendary', weight: 8, actionType: 'plant', command: 'spawn_superthreepeater_sp', amount: 1 },
+            { id: 'item_2', label: 'Ultimate Cattail', icon: 'images/game-icons/pvz/spawn_ultimatecattail.webp', rarity: 'Legendary', weight: 8, actionType: 'plant', command: 'spawn_ultimatecattail', amount: 1 },
+            { id: 'item_3', label: 'Nuclear Doom Cherry', icon: 'images/game-icons/pvz/spawn_nucleardoomcherry.webp', rarity: 'Mythic', weight: 4, actionType: 'plant', command: 'spawn_nucleardoomcherry', amount: 1 },
+            { id: 'item_4', label: 'Golden Gargantuar Titan', icon: 'images/game-icons/pvz/ultimate_gold_gargantuar.webp', rarity: 'Mythic', weight: 4, actionType: 'zombie', command: 'spawn_goldgargantuar', amount: 1 },
+            { id: 'item_5', label: 'Super Gargantuar Prime', icon: 'images/game-icons/pvz/spawn_super_gargantuar.webp', rarity: 'Mythic', weight: 6, actionType: 'zombie', command: 'spawn_super_gargantuar', amount: 1 },
+            { id: 'item_6', label: 'Charm All Zombies', icon: 'images/game-icons/pvz/charm_all_zombies.webp', rarity: 'Epic', weight: 12, actionType: 'custom', command: 'charm_all_zombies', amount: 1 },
+            { id: 'item_7', label: 'Launch Lawnmowers', icon: 'images/game-icons/pvz/lawnmower.webp', rarity: 'Epic', weight: 14, actionType: 'custom', command: 'launch_lawnmowers', amount: 1 },
+            { id: 'item_8', label: 'Ultimate Ice Doom', icon: 'images/game-icons/pvz/spawn_ultimateicedoom.webp', rarity: 'Epic', weight: 14, actionType: 'plant', command: 'spawn_ultimateicedoom', amount: 1 },
+            { id: 'item_9', label: 'Bedrock Tall-Nut', icon: 'images/game-icons/pvz/spawn_acientsunnut.webp', rarity: 'Rare', weight: 18, actionType: 'plant', command: 'spawn_bedrocktallnut', amount: 2 },
+            { id: 'item_10', label: 'Big Sun Nut', icon: 'images/game-icons/pvz/spawn_sungod.webp', rarity: 'Rare', weight: 20, actionType: 'plant', command: 'spawn_bigsunnut', amount: 2 },
+            { id: 'item_11', label: 'Cherry Threepeater', icon: 'images/game-icons/pvz/spawn_cherrythreepeater.webp', rarity: 'Legendary', weight: 10, actionType: 'plant', command: 'spawn_cherrythreepeater', amount: 1 },
+            { id: 'item_12', label: 'Doom Threepeater', icon: 'images/game-icons/pvz/spawn_doomthreepeater.webp', rarity: 'Legendary', weight: 10, actionType: 'plant', command: 'spawn_doomthreepeater', amount: 1 }
+        ];
+
+        const DEFAULT_MULTIPLIERS_POOL = [
+            { id: 'm1', label: 'x1', value: 1, weight: 45 },
+            { id: 'm2', label: 'x2', value: 2, weight: 25 },
+            { id: 'm3', label: 'x5', value: 5, weight: 15 },
+            { id: 'm4', label: 'x10', value: 10, weight: 10 },
+            { id: 'm5', label: 'x50', value: 50, weight: 5 }
+        ];
+
+        let state = {
+            activeMode: 'horizontal', // 'horizontal' | 'wheel' | 'gacha' | 'slot'
+            dualOutcome: false,
+            items: JSON.parse(JSON.stringify(DEFAULT_ITEMS_POOL)),
+            multipliers: JSON.parse(JSON.stringify(DEFAULT_MULTIPLIERS_POOL)),
+            spinDuration: 4000,
+            soundVolume: 0.6,
+            holdDuration: 5000
+        };
+
+        // Queue & Spin Management
+        const spinQueue = [];
+        let isSpinning = false;
+        let lastEventTimestamp = Date.now();
+        const processedEventIds = new Set();
+        let dismissTimer = null;
+
+        // URL Parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode')) state.activeMode = urlParams.get('mode');
+        if (urlParams.get('dual') === 'true') state.dualOutcome = true;
+        if (urlParams.get('controls') === 'true' || urlParams.get('debug') === 'true') {
+            document.body.classList.add('show-controls');
+        }
+
+        // ========================================================
+        // 2. SYNTHESIZED WEB AUDIO API SOUND ENGINE (ZERO MP3 DEPS)
+        // ========================================================
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playTickSound(pitch = 1.0) {
+            if (state.soundVolume <= 0) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200 * pitch, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.04);
+                gain.gain.setValueAtTime(0.18 * state.soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } catch (e) {}
+        }
+
+        function playFlapperClick() {
+            if (state.soundVolume <= 0) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800 + Math.random() * 200, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.05);
+                gain.gain.setValueAtTime(0.25 * state.soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            } catch (e) {}
+        }
+
+        function playCrankRatchet() {
+            if (state.soundVolume <= 0) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
+                gain.gain.setValueAtTime(0.22 * state.soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.09);
+            } catch (e) {}
+        }
+
+        function playCapsulePop() {
+            if (state.soundVolume <= 0) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(950, now + 0.12);
+                gain.gain.setValueAtTime(0.3 * state.soundVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.22);
+            } catch (e) {}
+        }
+
+        function playWinFanfare(rarity = 'Normal') {
+            if (state.soundVolume <= 0) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const isGrand = (rarity === 'Mythic' || rarity === 'Legendary');
+                const notes = isGrand ? [523.25, 659.25, 783.99, 1046.50] : [440, 554.37, 659.25];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = isGrand ? 'triangle' : 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                    gain.gain.setValueAtTime(0.25 * state.soundVolume, now + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.45);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.09);
+                    osc.stop(now + idx * 0.09 + 0.48);
+                });
+            } catch (e) {}
+        }
+
+        // ========================================================
+        // 3. PERSISTENT STORAGE & CONFIG LOAD
+        // ========================================================
+        function loadSavedState() {
+            try {
+                const raw = localStorage.getItem('renearn_gacha_settings');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed.activeMode) state.activeMode = parsed.activeMode;
+                    if (typeof parsed.dualOutcome === 'boolean') state.dualOutcome = parsed.dualOutcome;
+                    if (Array.isArray(parsed.items) && parsed.items.length > 0) state.items = parsed.items;
+                    if (Array.isArray(parsed.multipliers) && parsed.multipliers.length > 0) state.multipliers = parsed.multipliers;
+                    if (parsed.spinDuration) state.spinDuration = parsed.spinDuration;
+                    if (parsed.soundVolume !== undefined) state.soundVolume = parsed.soundVolume;
+                }
+            } catch (e) {}
+        }
+
+        function saveStateToLocal() {
+            try {
+                localStorage.setItem('renearn_gacha_settings', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        let cachedServerConfig = null;
+
+        // Load configuration from backend if present
+        async function syncConfigWithServer() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedId = urlParams.get('spinnerId') || urlParams.get('spinner');
+                const requestedMode = urlParams.get('mode');
+
+                const res = await fetch('/api/config');
+                if (res.ok) {
+                    const cfg = await res.json();
+                    cachedServerConfig = cfg;
+                    if (cfg && cfg.spinners && cfg.spinners.length > 0) {
+                        // Priority: 1) URL param, 2) activeSpinnerId from config, 3) first spinner
+                        const targetId = requestedId || cfg.activeSpinnerId || localStorage.getItem('activeSpinnerId');
+                        let sp = null;
+                        if (targetId) {
+                            sp = cfg.spinners.find(s => s.id === targetId);
+                        }
+                        if (!sp) sp = cfg.spinners[0];
+
+                        if (sp && sp.slices && sp.slices.length > 0) {
+                            state.items = sp.slices.map((sl, idx) => ({
+                                id: sl.id || `item_${idx+1}`,
+                                label: sl.label || `Prize ${idx+1}`,
+                                icon: sl.unitIcon || sl.icon || '',
+                                unitIcon: sl.unitIcon || sl.icon || '',
+                                rarity: sl.rarity || 'Normal',
+                                weight: sl.weight || sl.chance || 10,
+                                actionType: sl.actionType || (sl.isZombie ? 'zombie' : 'plant') || (sl.delta !== undefined ? 'score' : 'plant'),
+                                command: sl.command || sl.cmd || '',
+                                amount: parseInt(sl.amount) || 1,
+                                delta: sl.delta,
+                                isNumber: sl.isNumber || (sl.delta !== undefined && sl.delta !== 0),
+                                color: sl.color || '#10b981'
+                            }));
+                            initOrUpdateOverlay3DSlots();
+                        }
+
+                        // Sync active mode
+                        const targetMode = requestedMode || (sp && sp.mode) || state.activeMode;
+                        if (targetMode) {
+                            state.activeMode = targetMode;
+                            setVisualizerDisplayMode(targetMode);
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // ========================================================
+        // 4. WEIGHTED SELECTION & DUAL-OUTCOME ROLL
+        // ========================================================
+        function pickWeightedItem(pool) {
+            if (!pool || pool.length === 0) return null;
+            const total = pool.reduce((acc, cur) => acc + (parseFloat(cur.weight) || 1), 0);
+            let rnd = Math.random() * total;
+            for (const item of pool) {
+                const w = parseFloat(item.weight) || 1;
+                if (rnd <= w) return item;
+                rnd -= w;
+            }
+            return pool[0];
+        }
+
+        function rollOutcome(forceMythic = false) {
+            let itemWinner = null;
+            if (forceMythic) {
+                const mythics = state.items.filter(i => i.rarity === 'Mythic' || i.rarity === 'Legendary');
+                itemWinner = mythics.length > 0 ? mythics[Math.floor(Math.random() * mythics.length)] : state.items[0];
+            } else {
+                itemWinner = pickWeightedItem(state.items);
+            }
+
+            const multiplierWinner = state.dualOutcome ? pickWeightedItem(state.multipliers) : null;
+            return {
+                item: itemWinner,
+                multiplier: multiplierWinner
+            };
+        }
+
+        // ========================================================
+        // 5. VISUALIZER MODE 1: HORIZONTAL REEL ENGINE
+        // ========================================================
+        function buildHorizontalReel(targetWinner) {
+            const track = document.getElementById('reelTrack');
+            if (!track) return;
+            track.innerHTML = '';
+
+            const CARD_TOTAL = 54;
+            const WINNER_INDEX = 40; // Center stopping position
+            const cardW = 120;
+            const cardGap = 14;
+            const stepW = cardW + cardGap;
+
+            const cards = [];
+            for (let i = 0; i < CARD_TOTAL; i++) {
+                let cardData;
+                if (i === WINNER_INDEX) {
+                    cardData = targetWinner.item;
+                } else {
+                    cardData = state.items[Math.floor(Math.random() * state.items.length)];
+                }
+                cards.push(cardData);
+
+                const cardEl = document.createElement('div');
+                cardEl.className = `spinner-card rarity-${(cardData.rarity || 'normal').toLowerCase()}`;
+                cardEl.id = `reelCard_${i}`;
+                
+                const multBadge = (state.dualOutcome && targetWinner.multiplier && i === WINNER_INDEX) 
+                    ? `<span class="card-multiplier-badge active">${targetWinner.multiplier.label}</span>`
+                    : '';
+
+                const repCount = (cardData.repetition !== undefined && cardData.repetition !== null && cardData.repetition > 0) ? cardData.repetition : (cardData.amount || 1);
+                const repTag = repCount > 1 ? ` <span style="font-size:11px; color:#38bdf8; font-weight:800;">x${repCount}</span>` : '';
+
+                cardEl.innerHTML = `
+                    ${multBadge}
+                    <div class="card-img-wrap">
+                        <img src="${cardData.icon}" alt="${cardData.label}" onerror="this.src='images/game-icons/pvz/spawn_ultimatecattail.webp'">
+                    </div>
+                    <div class="card-title" title="${cardData.label}">${cardData.label}${repTag}</div>
+                    <span class="card-rarity-pill">${cardData.rarity || 'Normal'}</span>
+                `;
+                track.appendChild(cardEl);
+            }
+
+            // Reset position
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0px)';
+
+            return {
+                winnerIndex: WINNER_INDEX,
+                stepWidth: stepW
+            };
+        }
+
+        function spinHorizontalReel(targetWinner, onComplete) {
+            const reelInfo = buildHorizontalReel(targetWinner);
+            const track = document.getElementById('reelTrack');
+            const pointer = document.getElementById('reelPointerArrow');
+            const viewport = document.querySelector('.reel-viewport');
+            if (!track || !viewport) return;
+
+            const vpWidth = viewport.offsetWidth;
+            const centerOffset = vpWidth / 2 - (120 / 2);
+            // Slight randomized sub-pixel jitter inside winning card
+            const jitter = (Math.random() * 40) - 20;
+            const targetX = -(reelInfo.winnerIndex * reelInfo.stepWidth - centerOffset + jitter);
+
+            const durationMs = state.spinDuration;
+            const startTime = performance.now();
+            let lastTickCard = -1;
+            let animRunning = true;
+            let animRaf = null;
+            let animInterval = null;
+            let lastRenderTime = 0;
+
+            track.style.transition = 'none';
+
+            function anim(timestamp) {
+                if (!animRunning) return;
+                const now = (typeof timestamp === 'number' && timestamp > 0) ? timestamp : performance.now();
+                if (now - lastRenderTime < 10) return;
+                lastRenderTime = now;
+
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / durationMs);
+                
+                // Authentic CS:GO cubic-bezier easing (fast glide then dramatic slow crawl)
+                const eased = 1 - Math.pow(1 - progress, 4.2);
+                const currentX = targetX * eased;
+                track.style.transform = `translateX(${currentX}px)`;
+
+                // Pointer tick flapper sound on every card passing
+                const currentCardIdx = Math.floor((-currentX + centerOffset) / reelInfo.stepWidth);
+                if (currentCardIdx !== lastTickCard && currentCardIdx >= 0) {
+                    lastTickCard = currentCardIdx;
+                    playTickSound(1.0 + (progress * 0.3));
+                    if (pointer) {
+                        pointer.classList.add('tick');
+                        setTimeout(() => pointer.classList.remove('tick'), 60);
+                    }
+                }
+
+                if (progress < 1) {
+                    animRaf = requestAnimationFrame(anim);
+                } else {
+                    animRunning = false;
+                    if (animInterval) clearInterval(animInterval);
+                    if (animRaf) cancelAnimationFrame(animRaf);
+                    track.style.transform = `translateX(${targetX}px)`;
+                    const winCard = document.getElementById(`reelCard_${reelInfo.winnerIndex}`);
+                    if (winCard) winCard.classList.add('winner');
+                    if (onComplete) onComplete();
+                }
+            }
+
+            animRaf = requestAnimationFrame(anim);
+            animInterval = setInterval(() => {
+                if (animRunning) anim();
+            }, 16);
+        }
+
+        // ========================================================
+        // 6. VISUALIZER MODE 2: CLASSIC WHEEL OF FORTUNE
+        // ========================================================
+        let currentWheelAngle = 0;
+        function drawClassicWheelCanvas(targetSlice) {
+            const canvas = document.getElementById('wheelCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = (w / 2) - 10;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const slices = state.items;
+            const num = slices.length || 8;
+            const arc = (2 * Math.PI) / num;
+
+            // 1. Mahogany & Brass Outer Frame
+            ctx.save();
+            const outerGrad = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R);
+            outerGrad.addColorStop(0, '#78350f');
+            outerGrad.addColorStop(0.5, '#b45309');
+            outerGrad.addColorStop(0.8, '#fef08a');
+            outerGrad.addColorStop(1, '#451a03');
+            ctx.fillStyle = outerGrad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, R, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#fef08a';
+            ctx.stroke();
+            ctx.restore();
+
+            // 2. Wheel Slices
+            const sliceR = R * 0.85;
+            const colors = ['#1e293b', '#0f172a', '#1e1b4b', '#090d16', '#161e2e', '#1e293b', '#0f172a', '#1e1b4b'];
+            const rarityGlows = {
+                'Mythic': '#ef4444',
+                'Legendary': '#f59e0b',
+                'Epic': '#a855f7',
+                'Rare': '#3b82f6',
+                'Normal': '#10b981'
+            };
+
+            for (let i = 0; i < num; i++) {
+                const angle = i * arc;
+                const sl = slices[i];
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, sliceR, angle, angle + arc);
+                ctx.closePath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                
+                // Edge border with rarity accent
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = rarityGlows[sl.rarity] || 'rgba(255,255,255,0.2)';
+                ctx.stroke();
+
+                // Slice Text
+                ctx.translate(cx, cy);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 13px Outfit, sans-serif';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 4;
+                ctx.fillText(sl.label || `Item ${i+1}`, sliceR - 24, 5);
+
+                ctx.restore();
+            }
+
+            // 3. Peg Pins along perimeter
+            for (let i = 0; i < num; i++) {
+                const angle = i * arc;
+                const pegX = cx + Math.cos(angle) * (sliceR + 10);
+                const pegY = cy + Math.sin(angle) * (sliceR + 10);
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(pegX, pegY, 4.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#facc15';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // 4. Center Brass Cap
+            ctx.save();
+            const capGrad = ctx.createRadialGradient(cx, cy, 5, cx, cy, 32);
+            capGrad.addColorStop(0, '#fef08a');
+            capGrad.addColorStop(0.6, '#eab308');
+            capGrad.addColorStop(1, '#854d0e');
+            ctx.fillStyle = capGrad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function spinClassicWheel(targetWinner, onComplete) {
+            const canvas = document.getElementById('wheelCanvas');
+            const ptr = document.getElementById('wheelPointerContainer');
+            if (!canvas) return;
+
+            const slices = state.items;
+            const num = slices.length || 8;
+            const arc = (2 * Math.PI) / num;
+            
+            // Find target slice index
+            let targetIdx = slices.findIndex(s => s.id === targetWinner.item.id);
+            if (targetIdx === -1) targetIdx = 0;
+
+            // Wheel pointer is at top (-PI/2). To align target slice with top pointer:
+            // Top angle = 3*PI / 2.
+            const sliceCenter = (targetIdx * arc) + (arc / 2);
+            const targetRotation = (Math.PI * 2 * 6) + ((Math.PI * 1.5) - sliceCenter) + ((Math.random() * 0.4) - 0.2);
+
+            const durationMs = state.spinDuration;
+            const startTime = performance.now();
+            const startAngle = currentWheelAngle;
+            let lastSliceTick = -1;
+
+            // Concentric Multiplier Disc update
+            const multDisc = document.getElementById('wheelInnerMultDisc');
+            const multVal = document.getElementById('wheelInnerMultVal');
+            if (state.dualOutcome && targetWinner.multiplier) {
+                multDisc.classList.add('active');
+                multVal.textContent = targetWinner.multiplier.label;
+            } else {
+                multDisc.classList.remove('active');
+            }
+
+            let animRunning = true;
+            let animRaf = null;
+            let animInterval = null;
+            let lastRenderTime = 0;
+
+            function anim(timestamp) {
+                if (!animRunning) return;
+                const now = (typeof timestamp === 'number' && timestamp > 0) ? timestamp : performance.now();
+                if (now - lastRenderTime < 10) return;
+                lastRenderTime = now;
+
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / durationMs);
+                
+                // Deceleration curve
+                const eased = 1 - Math.pow(1 - progress, 3.8);
+                const currentRot = startAngle + (targetRotation * eased);
+                currentWheelAngle = currentRot;
+
+                canvas.style.transform = `rotate(${currentRot}rad)`;
+
+                // Flapper clicker calculation
+                const currentPeg = Math.floor((currentRot / arc));
+                if (currentPeg !== lastSliceTick) {
+                    lastSliceTick = currentPeg;
+                    playFlapperClick();
+                    if (ptr) {
+                        ptr.classList.add('tick');
+                        setTimeout(() => ptr.classList.remove('tick'), 60);
+                    }
+                }
+
+                if (progress < 1) {
+                    animRaf = requestAnimationFrame(anim);
+                } else {
+                    animRunning = false;
+                    if (animInterval) clearInterval(animInterval);
+                    if (animRaf) cancelAnimationFrame(animRaf);
+                    if (onComplete) onComplete();
+                }
+            }
+
+            animRaf = requestAnimationFrame(anim);
+            animInterval = setInterval(() => {
+                if (animRunning) anim();
+            }, 16);
+        }
+
+        // ========================================================
+        // 7. VISUALIZER MODE 3: 3D PVZ FUSION BOOSTER PACK UNBOXING
+        // ========================================================
+        // ========================================================
+        // 7. VISUALIZER MODE 3: 3D GACHA CAPSULE MACHINE & PACK UNBOXING
+        // ========================================================
+        
+        function renderOverlayYugiohStarsHtml(count) {
+            let html = '';
+            const safeCount = Math.min(Math.max(count || 1, 1), 12);
+            for (let i = 0; i < safeCount; i++) {
+                html += `<svg class="ygo-star-orb" viewBox="0 0 32 32">
+                    <defs>
+                        <radialGradient id="overlayYgoStarGrad${i}" cx="35%" cy="35%" r="65%">
+                            <stop offset="0%" stop-color="#fef08a"/>
+                            <stop offset="30%" stop-color="#f59e0b"/>
+                            <stop offset="70%" stop-color="#dc2626"/>
+                            <stop offset="100%" stop-color="#7f1d1d"/>
+                        </radialGradient>
+                        <linearGradient id="overlayYgoGoldRim${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fde047"/>
+                            <stop offset="50%" stop-color="#d97706"/>
+                            <stop offset="100%" stop-color="#78350f"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="16" cy="16" r="13.5" fill="url(#overlayYgoStarGrad${i})" stroke="url(#overlayYgoGoldRim${i})" stroke-width="2.4"/>
+                    <polygon points="16,5 19,12 26.5,12.5 20.5,17.5 22.5,25 16,21 9.5,25 11.5,17.5 5.5,12.5 13,12" fill="#fef08a" stroke="#b45309" stroke-width="0.7"/>
+                </svg>`;
+            }
+            return html;
+        }
+
+        function playGachaCapsuleDrop(targetWinner, onComplete) {
+            const machine = document.getElementById('gachaMachineBody');
+            const machineImg = document.getElementById('overlayGachaMachineImg');
+            const dome = document.getElementById('gachaCapsulesGroup');
+            const crank = document.getElementById('gachaCrankWrap');
+            const droppedWrap = document.getElementById('overlayDroppedCapsuleWrap');
+            const capTop = document.getElementById('overlayCapTop');
+            const capBurst = document.getElementById('overlayCapsuleBurst');
+            const packWrap = document.getElementById('overlayPackWrapper');
+            const packTop = document.getElementById('overlayPackTop');
+            const packBody = document.getElementById('overlayPackBody');
+            const sparks = document.getElementById('overlaySparks');
+
+            const summonOverlay = document.getElementById('gachaSummonOverlay');
+            const summonImg = document.getElementById('summonEntityImg');
+            const summonName = document.getElementById('summonNameBadge');
+            const summonMult = document.getElementById('summonMultBanner');
+
+            // 0. PRE-POPULATE & LOCK OUTCOME DATA IMMEDIATELY (t = 0.0s)
+            // Guarantees zero delay, no stale images (e.g. Football Zombie), and pre-decoded WebP unit icon
+            const rawItem = (targetWinner && targetWinner.item) ? targetWinner.item : (targetWinner || {});
+            const rarity = (rawItem.rarity || 'Normal').toLowerCase();
+            let starCount = 1;
+            let tierClass = 'tier-common';
+
+            if (rarity === 'mythic' || rarity === 'legendary') {
+                starCount = 5;
+                tierClass = 'tier-legendary';
+            } else if (rarity === 'epic') {
+                starCount = 4;
+                tierClass = 'tier-epic';
+            } else if (rarity === 'rare') {
+                starCount = 3;
+                tierClass = 'tier-rare';
+            } else if (rarity === 'uncommon') {
+                starCount = 2;
+                tierClass = 'tier-uncommon';
+            } else {
+                starCount = 1;
+                tierClass = 'tier-common';
+            }
+
+            const unitLabel = rawItem.label || 'Reward';
+            const unitIcon = rawItem.unitIcon || rawItem.icon || 'images/game-icons/pvz/spawn_superpeashooter_sp.webp';
+            const commandStr = rawItem.command || rawItem.cmd || unitLabel.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const sunCostStr = (rarity === 'mythic' || rarity === 'legendary') ? '☀️ 800 SUN' : (rarity === 'epic' ? '☀️ 500 SUN' : '☀️ 350 SUN');
+
+            const lockedSnapshot = {
+                unitName: unitLabel,
+                title: `[${starCount}★] ${unitLabel}`,
+                icon: unitIcon,
+                rarity: rawItem.rarity || 'Normal',
+                stars: starCount,
+                amount: (rawItem.repetition !== undefined && rawItem.repetition !== null && rawItem.repetition > 0) ? rawItem.repetition : (rawItem.amount || 1),
+                command: commandStr,
+                sunCost: sunCostStr,
+                tierClass: tierClass,
+                username: (window._currentSpinData && window._currentSpinData.username) || 'Viewer',
+                avatar: (window._currentSpinData && window._currentSpinData.avatar) || 'images/default_avatar.svg'
+            };
+
+            // Preload unit icon and apply values to the DOM immediately
+            if (summonImg) summonImg.src = lockedSnapshot.icon;
+            const unitTitleEl = document.getElementById('summonCardUnitName');
+            if (unitTitleEl) unitTitleEl.textContent = lockedSnapshot.unitName;
+            const headerStarsEl = document.getElementById('summonCardHeaderStars');
+            if (headerStarsEl) headerStarsEl.textContent = '★'.repeat(starCount);
+            const realCmdEl = document.getElementById('summonCardRealCmd');
+            if (realCmdEl) realCmdEl.textContent = `!cmd: ${lockedSnapshot.command}`;
+            const cardBox = document.getElementById('summonCardBox');
+            if (cardBox) cardBox.className = `summon-card-box pvz-mystery-pack-card ${tierClass}`;
+            const starsEl = document.getElementById('summonStarsRow');
+            if (starsEl) starsEl.innerHTML = renderOverlayYugiohStarsHtml(starCount);
+            const sunCostEl = document.getElementById('summonCardSunCost');
+            if (sunCostEl) sunCostEl.innerText = lockedSnapshot.sunCost;
+            if (summonName) summonName.textContent = lockedSnapshot.title;
+            const senderUser = document.getElementById('cardSenderUsername');
+            if (senderUser) senderUser.textContent = lockedSnapshot.username;
+            const senderAva = document.getElementById('cardSenderAvatar');
+            if (senderAva) senderAva.src = lockedSnapshot.avatar;
+            const cmdCodeEl = document.getElementById('summonCmdCode');
+            if (cmdCodeEl) cmdCodeEl.innerText = `/summon ${lockedSnapshot.command} (x${lockedSnapshot.amount})`;
+
+            // 1. Reset all animation states
+            if (summonOverlay) summonOverlay.classList.remove('revealed');
+            if (droppedWrap) {
+                droppedWrap.style.display = 'none';
+                droppedWrap.style.animation = 'none';
+                droppedWrap.style.opacity = '0';
+            }
+            if (capTop) {
+                capTop.style.transform = 'none';
+                capTop.style.opacity = '1';
+            }
+            if (capBurst) {
+                capBurst.style.transform = 'translate(-50%, -50%) scale(0)';
+                capBurst.style.opacity = '0';
+            }
+            if (packWrap) {
+                packWrap.style.display = 'block';
+                packWrap.style.transform = 'translate(-50%, -50%) scale(0)';
+                packWrap.style.opacity = '0';
+                packWrap.style.animation = 'none';
+            }
+            if (packTop) {
+                packTop.className = 'pack-top-foil';
+                packTop.style.transform = 'none';
+                packTop.style.opacity = '1';
+            }
+            if (packBody) {
+                packBody.className = 'pack-main-body';
+                packBody.style.transform = 'none';
+                packBody.style.opacity = '1';
+            }
+            if (sparks) {
+                sparks.className = 'pack-tear-sparks';
+                sparks.style.transform = 'translate(-50%, -50%) scale(0)';
+                sparks.style.opacity = '0';
+            }
+            const seam = document.getElementById('overlayTearSeam');
+            if (seam) seam.style.opacity = '0';
+
+            // Backlog acceleration: speed up animations if queue has items waiting
+            const isBacklogged = spinQueue.length > 0;
+            const t1 = isBacklogged ? 450 : 850;
+            const t2 = isBacklogged ? 350 : 650;
+            const t3 = isBacklogged ? 200 : 400;
+            const t4 = isBacklogged ? 450 : 900;
+            const t5 = isBacklogged ? 300 : 550;
+
+            // 1. PHASE 1: Crank rotates 720° & Machine Rattles intensely
+            if (machine) machine.classList.add('rattling');
+            if (machineImg) machineImg.classList.add('gacha-shaking-active');
+            if (dome) dome.classList.add('dome-bouncing-active');
+            if (crank) crank.classList.add('turning');
+
+            playCrankRatchet();
+            setTimeout(playCrankRatchet, Math.floor(t1 * 0.35));
+            setTimeout(playCrankRatchet, Math.floor(t1 * 0.7));
+
+            // 2. PHASE 2: Drop 3D Capsule from Chute with Physics Bounce
+            setTimeout(() => {
+                if (machine) machine.classList.remove('rattling');
+                if (machineImg) machineImg.classList.remove('gacha-shaking-active');
+                if (dome) dome.classList.remove('dome-bouncing-active');
+                if (crank) crank.classList.remove('turning');
+
+                if (droppedWrap) {
+                    droppedWrap.style.display = 'block';
+                    droppedWrap.style.animation = 'gachaBallDropPhysics 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+                }
+                playCapsulePop();
+
+                // 3. PHASE 3: Capsule Pops Open with Radiant Golden Light
+                setTimeout(() => {
+                    if (capTop) {
+                        capTop.style.transform = 'translateY(-48px) rotate(-42deg) scale(0.85)';
+                        capTop.style.opacity = '0';
+                    }
+                    if (capBurst) {
+                        capBurst.style.transform = 'translate(-50%, -50%) scale(2.2)';
+                        capBurst.style.opacity = '1';
+                    }
+                    playTickSound(2.4);
+
+                    // 4. PHASE 4: 3D PvZ Mystery Pack Emerges into View
+                    setTimeout(() => {
+                        if (packWrap) {
+                            packWrap.style.transform = 'translate(-50%, -50%) scale(1) rotateY(0deg)';
+                            packWrap.style.opacity = '1';
+                            packWrap.style.animation = 'packHoverAnim 2.5s ease-in-out infinite alternate';
+                        }
+                        if (droppedWrap) {
+                            droppedWrap.style.opacity = '0';
+                            droppedWrap.style.transition = 'opacity 0.3s ease';
+                        }
+
+                        // 5. PHASE 5: 3D Foil Pack Tears & Peels Open with 3D Swipe Animation
+                        setTimeout(() => {
+                            const seam = document.getElementById('overlayTearSeam');
+                            if (seam) seam.style.opacity = '1';
+
+                            if (packTop) {
+                                packTop.classList.add('foil-tearing-active');
+                            }
+                            if (packBody) {
+                                packBody.classList.add('pack-body-open-active');
+                            }
+                            if (sparks) {
+                                sparks.classList.add('sparks-burst-active');
+                            }
+                            playTickSound(2.2);
+
+                            // 6. PHASE 6: Winning Reward Card Emerges (Pack vanishes, card displayed)
+                            setTimeout(() => {
+                                if (packWrap) packWrap.style.display = 'none';
+
+                                if (cardBox) cardBox.className = `summon-card-box pvz-mystery-pack-card ${lockedSnapshot.tierClass}`;
+                                if (starsEl) starsEl.innerHTML = renderOverlayYugiohStarsHtml(lockedSnapshot.stars);
+                                if (sunCostEl) sunCostEl.innerText = lockedSnapshot.sunCost;
+                                if (senderUser) senderUser.textContent = lockedSnapshot.username;
+                                if (senderAva) senderAva.src = lockedSnapshot.avatar;
+                                if (unitTitleEl) unitTitleEl.textContent = lockedSnapshot.unitName;
+                                if (headerStarsEl) headerStarsEl.textContent = '★'.repeat(lockedSnapshot.stars);
+                                if (realCmdEl) realCmdEl.textContent = `!cmd: ${lockedSnapshot.command}`;
+                                if (cmdCodeEl) cmdCodeEl.innerText = `/summon ${lockedSnapshot.command} (x${lockedSnapshot.amount})`;
+                                if (summonImg) summonImg.src = lockedSnapshot.icon;
+                                if (summonName) summonName.textContent = lockedSnapshot.title;
+
+                                if (state.dualOutcome && targetWinner.multiplier) {
+                                    if (summonMult) {
+                                        summonMult.classList.add('active');
+                                        summonMult.textContent = `${targetWinner.multiplier.label} MULTIPLIER`;
+                                    }
+                                } else {
+                                    if (summonMult) {
+                                        summonMult.classList.add('active');
+                                        summonMult.textContent = `x${lockedSnapshot.amount} Summon`;
+                                    }
+                                }
+
+                                if (summonOverlay) summonOverlay.classList.add('revealed');
+                                playWinFanfare(lockedSnapshot.rarity);
+
+                                if (onComplete) onComplete();
+                            }, t5);
+
+                        }, t4);
+
+                    }, t3);
+
+                }, t2);
+
+            }, t1);
+        }
+
+        // ========================================================
+        // 8. VISUALIZER MODE 4: 3D THREE.JS SLOT MACHINE ENGINE (MATCHING APP)
+        // ========================================================
+        let overlay3DSlotsState = {
+            renderer: null,
+            scene: null,
+            camera: null,
+            reels: [],
+            slices: [],
+            imgCache: {},
+            stripTex: null,
+            neonGold: null
+        };
+
+        function getOverlaySlotCachedImage(url, onLoaded) {
+            if (!url) return null;
+            if (overlay3DSlotsState.imgCache[url]) {
+                return overlay3DSlotsState.imgCache[url];
+            }
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = url;
+            img.onload = () => {
+                if (overlay3DSlotsState.stripTex) overlay3DSlotsState.stripTex.needsUpdate = true;
+                if (onLoaded) onLoaded();
+            };
+            overlay3DSlotsState.imgCache[url] = img;
+            return img;
+        }
+
+        function playReelTick() {
+            try {
+                if (typeof playTickSound === 'function') {
+                    playTickSound(1.4);
+                }
+            } catch (e) {}
+        }
+
+        function initOrUpdateOverlay3DSlots() {
+            const canvas = document.getElementById('overlaySlots3DCanvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            if (!overlay3DSlotsState.renderer) {
+                const renderer = new THREE.WebGLRenderer({ 
+                    canvas: canvas, 
+                    antialias: true, 
+                    alpha: true,
+                    powerPreference: 'high-performance',
+                    precision: 'mediump'
+                });
+                renderer.setSize(520, 340);
+                renderer.setPixelRatio(1.0); // 1.0 eliminates GPU high-DPI scaling overhead in CEF
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(36, 520 / 340, 0.1, 100);
+                camera.position.set(0, 0, 4.2);
+
+                const ambLight = new THREE.AmbientLight(0xffffff, 1.6);
+                scene.add(ambLight);
+
+                const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                dirLight.position.set(0, 4, 3.5);
+                scene.add(dirLight);
+
+                overlay3DSlotsState.renderer = renderer;
+                overlay3DSlotsState.scene = scene;
+                overlay3DSlotsState.camera = camera;
+            }
+
+            // Remove old reels
+            overlay3DSlotsState.reels.forEach(r => overlay3DSlotsState.scene.remove(r.mesh));
+            overlay3DSlotsState.reels = [];
+
+            const rawSlices = (state.items && state.items.length > 0) ? state.items : [
+                { label: 'Super Threepeater SP', icon: 'images/game-icons/pvz/spawn_superthreepeater_sp.webp', color: '#f59e0b' },
+                { label: 'Nuclear Doom Cherry', icon: 'images/game-icons/pvz/spawn_nucleardoomcherry.webp', color: '#ef4444' },
+                { label: 'Ultimate Cattail', icon: 'images/game-icons/pvz/spawn_ultimatecattail.webp', color: '#a855f7' },
+                { label: 'Golden Gargantuar', icon: 'images/game-icons/pvz/ultimate_gold_gargantuar.webp', color: '#eab308' },
+                { label: 'Super Gargantuar', icon: 'images/game-icons/pvz/spawn_super_gargantuar.webp', color: '#ef4444' },
+                { label: 'Charm All Zombies', icon: 'images/game-icons/pvz/charm_all_zombies.webp', color: '#ec4899' },
+                { label: 'Launch Lawnmowers', icon: 'images/game-icons/pvz/lawnmower.webp', color: '#38bdf8' },
+                { label: 'Ultimate Ice Doom', icon: 'images/game-icons/pvz/spawn_ultimateicedoom.webp', color: '#06b6d4' }
+            ];
+
+            overlay3DSlotsState.slices = rawSlices;
+            const numItems = rawSlices.length;
+
+            // Build ultra-high resolution vertical strip canvas (1024 x 4096) for crisp 3D numbers and units
+            const tCanvas = document.createElement('canvas');
+            tCanvas.width = 1024;
+            tCanvas.height = 4096;
+            const ctx = tCanvas.getContext('2d');
+            const itemH = 4096 / numItems;
+
+            function renderStripCanvas() {
+                ctx.clearRect(0, 0, 1024, 4096);
+                for (let i = 0; i < numItems; i++) {
+                    const item = rawSlices[i];
+                    const yTop = i * itemH;
+                    const centerY = yTop + (itemH / 2);
+
+                    // Detect if slice is a number score item
+                    const rawLabel = (item.label || '').trim();
+                    const isNum = item.isNumber || item.actionType === 'score' || (item.delta !== undefined && item.delta !== 0) || /^[\s]*[+-]?\s*\d+[\s]*$/.test(rawLabel);
+
+                    if (isNum) {
+                        let numStr = rawLabel;
+                        if (!numStr.startsWith('+') && !numStr.startsWith('-')) {
+                            if (item.delta !== undefined) {
+                                numStr = (item.delta >= 0 ? '+' : '') + item.delta;
+                            } else {
+                                numStr = '+' + numStr;
+                            }
+                        }
+                        const isPositive = !numStr.startsWith('-');
+                        const themeColor = isPositive ? '#10b981' : '#ef4444';
+                        const darkBg = isPositive ? '#061e16' : '#20070a';
+
+                        // High-contrast clean metallic slice chassis
+                        ctx.fillStyle = darkBg;
+                        ctx.fillRect(10, yTop + 3, 1004, itemH - 6);
+
+                        // Soft metallic inner gradient reflection
+                        const grad = ctx.createLinearGradient(0, yTop, 0, yTop + itemH);
+                        grad.addColorStop(0, 'rgba(255,255,255,0.16)');
+                        grad.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+                        grad.addColorStop(1, 'rgba(0,0,0,0.7)');
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(10, yTop + 3, 1004, itemH - 6);
+
+                        // Radiant neon glowing border
+                        ctx.lineWidth = 5;
+                        ctx.strokeStyle = themeColor;
+                        ctx.strokeRect(10, yTop + 3, 1004, itemH - 6);
+
+                        // Ambient radial center spotlight so numbers POP boldly
+                        const radSpot = ctx.createRadialGradient(512, centerY, 15, 512, centerY, itemH * 0.65);
+                        radSpot.addColorStop(0, isPositive ? 'rgba(16,185,129,0.38)' : 'rgba(239,68,68,0.38)');
+                        radSpot.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.fillStyle = radSpot;
+                        ctx.beginPath();
+                        ctx.arc(512, centerY, itemH * 0.65, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // ULTRA-BOLD HIGH-VISIBILITY 3D EXTRUDED NUMBER (No unreadable clutter)
+                        const maxFont = numStr.length >= 5 ? 105 : (numStr.length >= 4 ? 125 : (numStr.length >= 3 ? 145 : 165));
+                        const fontSize = Math.min(itemH * 0.72, maxFont);
+                        ctx.font = `900 ${fontSize}px "Outfit", "Plus Jakarta Sans", sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+
+                        const textX = 512;
+                        const textY = centerY;
+
+                        // 3D Extrusion Shadow Layers (Multi-pass depth)
+                        ctx.fillStyle = '#000000';
+                        ctx.fillText(numStr, textX, textY + 12);
+
+                        const extDark = isPositive ? '#044e36' : '#4c0519';
+                        const extMid = isPositive ? '#065f46' : '#881337';
+
+                        ctx.fillStyle = extDark;
+                        ctx.fillText(numStr, textX, textY + 9);
+                        ctx.fillText(numStr, textX, textY + 7);
+
+                        ctx.fillStyle = extMid;
+                        ctx.fillText(numStr, textX, textY + 5);
+                        ctx.fillText(numStr, textX, textY + 3);
+
+                        // Crisp Chrome Bevel Outline
+                        ctx.lineWidth = Math.max(6, fontSize * 0.08);
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.strokeText(numStr, textX, textY);
+
+                        // Radiant 3D Gradient Face Fill
+                        const faceGrad = ctx.createLinearGradient(0, textY - (fontSize * 0.5), 0, textY + (fontSize * 0.5));
+                        if (isPositive) {
+                            faceGrad.addColorStop(0, '#fef08a');
+                            faceGrad.addColorStop(0.35, '#6ee7b7');
+                            faceGrad.addColorStop(0.7, '#10b981');
+                            faceGrad.addColorStop(1, '#047857');
+                        } else {
+                            faceGrad.addColorStop(0, '#fecdd3');
+                            faceGrad.addColorStop(0.35, '#fb7185');
+                            faceGrad.addColorStop(0.7, '#ef4444');
+                            faceGrad.addColorStop(1, '#9f1239');
+                        }
+                        ctx.fillStyle = faceGrad;
+                        ctx.fillText(numStr, textX, textY);
+
+                    } else {
+                        // Unit item (Plant or Zombie)
+                        ctx.fillStyle = (i % 2 === 0) ? '#0a0f1d' : '#111827';
+                        ctx.fillRect(10, yTop + 3, 1004, itemH - 6);
+
+                        const grad = ctx.createLinearGradient(0, yTop, 0, yTop + itemH);
+                        grad.addColorStop(0, 'rgba(255,255,255,0.08)');
+                        grad.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+                        grad.addColorStop(1, 'rgba(0,0,0,0.7)');
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(10, yTop + 3, 1004, itemH - 6);
+
+                        ctx.lineWidth = 5;
+                        ctx.strokeStyle = item.color || '#38bdf8';
+                        ctx.strokeRect(10, yTop + 3, 1004, itemH - 6);
+
+                        const radSpot = ctx.createRadialGradient(512, centerY - 25, 20, 512, centerY - 25, itemH * 0.5);
+                        radSpot.addColorStop(0, 'rgba(255,255,255,0.25)');
+                        radSpot.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.fillStyle = radSpot;
+                        ctx.beginPath();
+                        ctx.arc(512, centerY - 25, itemH * 0.5, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        const iconUrl = item.unitIcon || item.icon;
+                        const imgObj = getOverlaySlotCachedImage(iconUrl, () => {
+                            renderStripCanvas();
+                        });
+
+                        if (imgObj && imgObj.complete && imgObj.naturalWidth > 0) {
+                            const imgH = Math.min(itemH * 0.58, 240);
+                            const imgW = imgH;
+                            ctx.drawImage(imgObj, 512 - (imgW / 2), centerY - (imgH / 2) - 30, imgW, imgH);
+                        } else {
+                            ctx.font = '72px Fredoka, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText('🌻', 512, centerY - 30);
+                        }
+
+                        const plateH = Math.min(itemH * 0.22, 54);
+                        const plateY = centerY + (itemH * 0.22);
+                        ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                        ctx.fillRect(60, plateY, 904, plateH);
+                        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(60, plateY, 904, plateH);
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = `bold ${Math.min(plateH * 0.6, 32)}px "Plus Jakarta Sans", sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = item.color || '#f59e0b';
+                        ctx.shadowBlur = 10;
+                        ctx.fillText((item.label || 'Prize').substring(0, 24), 512, plateY + (plateH / 2));
+                        ctx.shadowBlur = 0;
+                    }
+                }
+                if (overlay3DSlotsState.stripTex) {
+                    overlay3DSlotsState.stripTex.needsUpdate = true;
+                }
+            }
+            renderStripCanvas();
+
+            const stripTex = new THREE.CanvasTexture(tCanvas);
+            stripTex.wrapS = THREE.RepeatWrapping;
+            stripTex.wrapT = THREE.RepeatWrapping;
+            stripTex.minFilter = THREE.LinearFilter;
+            stripTex.magFilter = THREE.LinearFilter;
+            stripTex.generateMipmaps = false;
+            overlay3DSlotsState.stripTex = stripTex;
+
+            // DRUM GEOMETRY: Cylinder rolled so horizontal axis is X
+            const drumGeo = new THREE.CylinderGeometry(0.96, 0.96, 1.15, 48, 1, false);
+            drumGeo.rotateZ(Math.PI / 2);
+
+            // MATHEMATICALLY VERIFIED NATIVE SEAM-SAFE UV MAPPING:
+            const uvAttr = drumGeo.attributes.uv;
+            for (let i = 0; i < uvAttr.count; i++) {
+                const origU = uvAttr.getX(i);
+                const origV = uvAttr.getY(i);
+                // 1.0 - origV un-mirrors the horizontal texture coordinate so numbers read naturally left-to-right!
+                uvAttr.setXY(i, 1.0 - origV, origU);
+            }
+            uvAttr.needsUpdate = true;
+
+            const drumMat = [
+                new THREE.MeshLambertMaterial({
+                    map: stripTex
+                }),
+                new THREE.MeshLambertMaterial({ color: 0x0f172a }),
+                new THREE.MeshLambertMaterial({ color: 0x0f172a })
+            ];
+
+            const xPositions = [-1.36, 0, 1.36];
+            for (let i = 0; i < 3; i++) {
+                const mesh = new THREE.Mesh(drumGeo, drumMat);
+                mesh.position.set(xPositions[i], 0, 0);
+                overlay3DSlotsState.scene.add(mesh);
+                overlay3DSlotsState.reels.push({ mesh, currentRot: 0 });
+            }
+
+            if (overlay3DSlotsState.renderer && overlay3DSlotsState.scene && overlay3DSlotsState.camera) {
+                overlay3DSlotsState.renderer.render(overlay3DSlotsState.scene, overlay3DSlotsState.camera);
+            }
+        }
+
+        function spinSlotMachine(targetWinner, onComplete) {
+            if (!overlay3DSlotsState.renderer || overlay3DSlotsState.reels.length === 0) {
+                initOrUpdateOverlay3DSlots();
+            }
+
+            const slices = overlay3DSlotsState.slices || [];
+            const numItems = Math.max(slices.length, 1);
+            const winnerItem = (targetWinner && targetWinner.item) ? targetWinner.item : (targetWinner || {});
+            const wId = winnerItem.id || '';
+            const wLabel = (winnerItem.label || '').trim().toLowerCase();
+
+            let winnerIdx = slices.findIndex(s => {
+                if (wId && s.id && s.id === wId) return true;
+                if (wLabel && s.label && s.label.trim().toLowerCase() === wLabel) return true;
+                return false;
+            });
+
+            if (winnerIdx === -1) {
+                slices.push(winnerItem);
+                winnerIdx = slices.length - 1;
+                initOrUpdateOverlay3DSlots();
+            }
+
+            // 100% ACCURATE TARGET ANGLE CALCULATION:
+            const targetAngle = 2 * Math.PI * (1.0 - (winnerIdx + 0.5) / numItems);
+
+            const reels = overlay3DSlotsState.reels;
+            if (!reels || reels.length === 0) {
+                if (onComplete) onComplete();
+                return;
+            }
+
+            // SYNCHRONIZED 3-REEL LOCK:
+            // All 3 reels share the exact same base forward distance to guarantee 100% identical landing on winnerIdx!
+            const reelMultipliers = [6, 9, 12];
+            const baseCurrent = (reels[0].mesh.rotation.x % (2 * Math.PI) + (2 * Math.PI)) % (2 * Math.PI);
+            const baseDesired = (targetAngle % (2 * Math.PI) + (2 * Math.PI)) % (2 * Math.PI);
+            let forwardDist = baseDesired - baseCurrent;
+            if (forwardDist <= 0.001) forwardDist += (2 * Math.PI);
+
+            const startRots = reels.map(r => r.mesh.rotation.x);
+            const targetDeltas = reelMultipliers.map((mult, idx) => {
+                return (mult * (2 * Math.PI)) + forwardDist;
+            });
+
+            const reelStopDurations = [1400, 2200, 3000];
+            const animStartTime = performance.now();
+            const sliceAngle = (2 * Math.PI) / numItems;
+            let lastTicks = [-1, -1, -1];
+            let animRunning = true;
+            let animRaf = null;
+            let animInterval = null;
+            let lastRenderTime = 0;
+
+            function animStep(timestamp) {
+                if (!animRunning) return;
+                const now = (typeof timestamp === 'number' && timestamp > 0) ? timestamp : performance.now();
+                if (now - lastRenderTime < 10) return; // Dual-tick throttle: eliminates micro-stutters between rAF and setInterval fallback
+                lastRenderTime = now;
+
+                const elapsed = now - animStartTime;
+                let allStopped = true;
+
+                reels.forEach((r, idx) => {
+                    const duration = reelStopDurations[idx];
+                    if (elapsed < duration) {
+                        allStopped = false;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const ease = 1 - Math.pow(1 - progress, 3);
+                        r.mesh.rotation.x = startRots[idx] + (targetDeltas[idx] * ease);
+
+                        const currentPeg = Math.floor(r.mesh.rotation.x / sliceAngle);
+                        if (currentPeg !== lastTicks[idx]) {
+                            lastTicks[idx] = currentPeg;
+                            if (idx === 0) playReelTick();
+                        }
+                    } else {
+                        r.mesh.rotation.x = startRots[idx] + targetDeltas[idx];
+                    }
+                });
+
+                // DIRECT SYNCHRONOUS WEBGL RENDER: Guarantees active rolling in OBS / TikTok Studio CEF
+                if (overlay3DSlotsState.renderer && overlay3DSlotsState.scene && overlay3DSlotsState.camera) {
+                    overlay3DSlotsState.renderer.render(overlay3DSlotsState.scene, overlay3DSlotsState.camera);
+                }
+
+                if (allStopped) {
+                    animRunning = false;
+                    if (animInterval) clearInterval(animInterval);
+                    if (animRaf) cancelAnimationFrame(animRaf);
+                    if (typeof playWinFanfare === 'function') {
+                        playWinFanfare(winnerItem.rarity || 'Legendary');
+                    }
+                    if (onComplete) onComplete();
+                } else {
+                    animRaf = requestAnimationFrame(animStep);
+                }
+            }
+
+            animRaf = requestAnimationFrame(animStep);
+            // Bulletproof CEF fallback: if rAF is paused or delayed by TikTok Live Studio, setInterval ensures continuous 60 FPS animation!
+            animInterval = setInterval(() => {
+                if (animRunning) animStep();
+            }, 16);
+        }
+
+        // ========================================================
+        // 10. TIKTOK STUDIO & EVENT LISTENER INTEGRATION
+        // ========================================================
+        
+        function setVisualizerDisplayMode(mode) {
+            const isReel = (mode === 'horizontal' || mode === 'reel');
+            const isWheel = (mode === 'wheel' || mode === 'wheel3d');
+            const isGacha = (mode === 'gacha');
+            const isSlots = (mode === 'slot' || mode === 'slots' || mode === 'slots3d');
+
+            const hReel = document.getElementById('horizontalReelWrap');
+            if (hReel) hReel.style.display = isReel ? 'flex' : 'none';
+
+            const cWheel = document.getElementById('classicWheelWrap');
+            if (cWheel) cWheel.style.display = isWheel ? 'flex' : 'none';
+
+            const gMach = document.getElementById('gachaMachineWrap');
+            if (gMach) gMach.style.display = isGacha ? 'flex' : 'none';
+
+            const sMach = document.getElementById('slotMachineWrap');
+            if (sMach) sMach.style.display = isSlots ? 'flex' : 'none';
+
+            if (isSlots) {
+                if (!overlay3DSlotsState.renderer || !overlay3DSlotsState.reels || overlay3DSlotsState.reels.length === 0) {
+                    initOrUpdateOverlay3DSlots();
+                }
+                if (overlay3DSlotsState.renderer && overlay3DSlotsState.scene && overlay3DSlotsState.camera) {
+                    overlay3DSlotsState.renderer.setSize(520, 340);
+                    overlay3DSlotsState.camera.aspect = 520 / 340;
+                    overlay3DSlotsState.camera.updateProjectionMatrix();
+                    if (overlay3DSlotsState.stripTex) overlay3DSlotsState.stripTex.needsUpdate = true;
+                    overlay3DSlotsState.renderer.render(overlay3DSlotsState.scene, overlay3DSlotsState.camera);
+                }
+            }
+        }
+
+        function executeVisualizerSpin(spinData, onFinishedCallback) {
+            window._currentSpinData = spinData;
+            const stage = document.getElementById('spinnerStageContainer');
+            const banner = document.getElementById('winnerBanner');
+            const gBanner = document.getElementById('gifterBanner');
+            const uName = document.getElementById('gifterUsername');
+            const gName = document.getElementById('gifterGiftName');
+            const gAvatar = document.getElementById('gifterAvatarImg');
+            
+            if (uName) uName.textContent = spinData.username || 'RENEarn Gifter';
+            if (gName) gName.textContent = spinData.giftName || 'Lucky Gift';
+            if (gAvatar) gAvatar.src = spinData.avatar || 'images/default_avatar.svg';
+
+            if (banner) banner.classList.remove('visible');
+            if (stage) {
+                stage.classList.remove('fading-out');
+                stage.classList.add('active');
+            }
+
+            const mode = spinData.mode || (spinData.spinner && spinData.spinner.mode) || (typeof state !== 'undefined' ? state.activeMode : 'reel');
+            setVisualizerDisplayMode(mode);
+
+            if ((mode === 'wheel' || mode === 'wheel3d') && typeof drawClassicWheelCanvas === 'function') {
+                drawClassicWheelCanvas(spinData.winner.item);
+            }
+
+            let hasResolved = false;
+            const watchdogTimer = setTimeout(() => {
+                if (!hasResolved) {
+                    console.warn('[Overlay Watchdog] Animation timed out, auto-resolving.');
+                    afterSpinResolved();
+                }
+            }, 7500);
+
+            const afterSpinResolved = () => {
+                if (hasResolved) return;
+                hasResolved = true;
+                clearTimeout(watchdogTimer);
+
+                const wIcon = document.getElementById('winnerIcon');
+                const wText = document.getElementById('winnerText');
+                const wMult = document.getElementById('winnerMultText');
+                const wObj = (spinData.winner && spinData.winner.item) ? spinData.winner.item : (spinData.winner || {});
+
+                if (wIcon && (wObj.unitIcon || wObj.icon)) wIcon.src = wObj.unitIcon || wObj.icon;
+                if (wText && wObj.label) wText.textContent = wObj.label;
+                if (wMult) {
+                    const repCount = (wObj.repetition !== undefined && wObj.repetition !== null && wObj.repetition > 0) ? wObj.repetition : (wObj.amount || 1);
+                    if (typeof state !== 'undefined' && state.dualOutcome && spinData.winner && spinData.winner.multiplier) {
+                        wMult.textContent = `(${spinData.winner.multiplier.label})`;
+                    } else if (repCount > 1) {
+                        wMult.textContent = `(x${repCount})`;
+                    } else {
+                        wMult.textContent = '';
+                    }
+                }
+
+                if (banner) banner.classList.add('visible');
+                if (wObj && (wObj.command || wObj.label)) {
+                    if (typeof playWinFanfare === 'function') playWinFanfare(wObj.rarity || 'Legendary');
+                    if (typeof dispatchPvZCommand === 'function') dispatchPvZCommand(wObj, spinData.username);
+                }
+
+                // DYNAMIC DISPLAY HOLD TIME: Speed up when queue has backlogged gifts so spamming works smoothly!
+                clearTimeout(dismissTimer);
+                isHoldingDismiss = true;
+
+                const finishDismiss = () => {
+                    if (!isHoldingDismiss && !dismissTimer) return;
+                    isHoldingDismiss = false;
+                    clearTimeout(dismissTimer);
+                    dismissTimer = null;
+                    dismissInterruptFn = null;
+
+                    if (stage) stage.classList.add('fading-out');
+                    const gachaSummon = document.getElementById('gachaSummonOverlay');
+                    if (gachaSummon) {
+                        gachaSummon.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                        gachaSummon.style.opacity = '0';
+                    }
+
+                    setTimeout(() => {
+                        if (stage) {
+                            stage.classList.remove('active');
+                            stage.classList.remove('fading-out');
+                        }
+                        if (banner) banner.classList.remove('visible');
+                        if (gachaSummon) {
+                            gachaSummon.classList.remove('revealed');
+                            gachaSummon.style.opacity = '';
+                            gachaSummon.style.transition = '';
+                        }
+                        const strips = [document.getElementById('slotStrip1'), document.getElementById('slotStrip2'), document.getElementById('slotStrip3')];
+                        strips.forEach(s => { if (s) s.classList.remove('spinning'); });
+                        if (onFinishedCallback) onFinishedCallback();
+                    }, 250);
+                };
+
+                dismissInterruptFn = finishDismiss;
+
+                const isBacklogged = spinQueue.length > 0;
+                const dynamicHold = spinQueue.length > 2 ? 600 : (isBacklogged ? 1000 : ((mode === 'gacha' ? 2500 : 3500) || 3000));
+                dismissTimer = setTimeout(finishDismiss, dynamicHold || 5000); // 5 seconds display hold time
+            };
+
+            try {
+                if (mode === 'horizontal' || mode === 'reel') {
+                    spinHorizontalReel(spinData.winner, afterSpinResolved);
+                } else if (mode === 'wheel' || mode === 'wheel3d') {
+                    spinClassicWheel(spinData.winner, afterSpinResolved);
+                } else if (mode === 'gacha') {
+                    playGachaCapsuleDrop(spinData.winner, afterSpinResolved);
+                } else if (mode === 'slot' || mode === 'slots' || mode === 'slots3d') {
+                    spinSlotMachine(spinData.winner, afterSpinResolved);
+                } else {
+                    spinHorizontalReel(spinData.winner, afterSpinResolved);
+                }
+            } catch (err) {
+                console.error('[Overlay Spin Error]', err);
+                afterSpinResolved();
+            }
+        }
+
+        // Queue Engine: Spammable & Deduplicated by exact event ID & rapid signature
+        const processedSpinEventIds = new Set();
+        let lastEnqueuedSignature = '';
+        let lastEnqueuedTime = 0;
+        let isHoldingDismiss = false;
+        let dismissInterruptFn = null;
+
+        function enqueueSpin(data) {
+            // Deduplicate exact same event delivery across BroadcastChannel and /api/events
+            if (data.eventId) {
+                if (processedSpinEventIds.has(data.eventId)) {
+                    console.log('[Overlay] Ignored duplicate event delivery:', data.eventId);
+                    return;
+                }
+                processedSpinEventIds.add(data.eventId);
+                if (processedSpinEventIds.size > 200) {
+                    const first = processedSpinEventIds.values().next().value;
+                    processedSpinEventIds.delete(first);
+                }
+            }
+
+            // Also deduplicate if same winner & user rolled within 1.5 seconds without unique ID
+            const wLabel = (data.winner && (data.winner.item ? data.winner.item.label : data.winner.label)) || '';
+            const sig = `${data.username || ''}_${wLabel}_${data.mode || ''}`;
+            const now = Date.now();
+            if (!data.eventId && sig === lastEnqueuedSignature && (now - lastEnqueuedTime) < 1500) {
+                console.log('[Overlay] Ignored duplicate rapid spin delivery:', sig);
+                return;
+            }
+            lastEnqueuedSignature = sig;
+            lastEnqueuedTime = now;
+
+            // If we are currently holding/displaying a completed card and a new spin arrives,
+            // immediately dismiss and start the next spin with ZERO lag!
+            if (isHoldingDismiss && typeof dismissInterruptFn === 'function') {
+                const fn = dismissInterruptFn;
+                dismissInterruptFn = null;
+                isHoldingDismiss = false;
+                fn();
+            }
+
+            spinQueue.push(data);
+            updateQueueBadge();
+            if (!isSpinning) {
+                processNextQueue();
+            }
+        }
+
+        function processNextQueue() {
+            if (spinQueue.length === 0) {
+                isSpinning = false;
+                updateQueueBadge();
+                return;
+            }
+            isSpinning = true;
+            const nextSpin = spinQueue.shift();
+            updateQueueBadge();
+            executeVisualizerSpin(nextSpin, () => {
+                const queueDrainDelay = spinQueue.length > 2 ? 150 : (spinQueue.length > 0 ? 300 : 500);
+                setTimeout(processNextQueue, queueDrainDelay);
+            });
+        }
+
+        function updateQueueBadge() {
+            const badge = document.getElementById('queueBadgePill');
+            if (!badge) return;
+            if (spinQueue.length > 0) {
+                badge.textContent = `⚡ Queue: ${spinQueue.length}`;
+                badge.classList.add('visible');
+            } else {
+                badge.classList.remove('visible');
+            }
+        }
+
+
+        // Public API functions required by tests and hooks
+        function showAndSpin(payload) {
+            const rawWinner = payload.winner || {};
+            const winnerObj = rawWinner.item || rawWinner;
+            const winner = {
+                item: {
+                    ...winnerObj,
+                    id: winnerObj.id || 'w1',
+                    label: winnerObj.label || 'Reward',
+                    icon: winnerObj.unitIcon || winnerObj.icon || '',
+                    unitIcon: winnerObj.unitIcon || winnerObj.icon || '',
+                    rarity: winnerObj.rarity || 'Legendary',
+                    delta: winnerObj.delta,
+                    isNumber: winnerObj.isNumber || (winnerObj.delta !== undefined && winnerObj.delta !== 0),
+                    color: winnerObj.color || '#10b981'
+                },
+                multiplier: (typeof state !== 'undefined' && state.dualOutcome) ? pickWeightedItem(state.multipliers) : null
+            };
+
+            const targetMode = payload.mode || (payload.winner && payload.winner.mode) || (payload.spinner && payload.spinner.mode) || (typeof state !== 'undefined' ? state.activeMode : 'reel');
+
+            enqueueSpin({
+                eventId: payload.eventId || payload.id || null,
+                winner: winner,
+                username: payload.username || 'Viewer',
+                avatar: payload.avatar || 'images/default_avatar.svg',
+                giftName: payload.giftName || 'Gift',
+                giftIcon: payload.giftIcon || '',
+                mode: targetMode
+            });
+        }
+
+        function findSpinnerForGift(giftName, giftId) {
+            const cleanId = (giftId !== undefined && giftId !== null ? String(giftId).trim().toLowerCase() : '');
+            const cleanName = (giftName ? String(giftName).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : '');
+            if (!cleanId && !cleanName) return null;
+
+            // 1. Check against loaded server configuration
+            if (cachedServerConfig) {
+                // Check spinners array
+                if (Array.isArray(cachedServerConfig.spinners)) {
+                    for (const sp of cachedServerConfig.spinners) {
+                        if (sp.enabled === false) continue;
+                        const spGId = (sp.giftId !== undefined && sp.giftId !== null ? String(sp.giftId).trim().toLowerCase() : '');
+                        const spGName = (sp.giftName ? String(sp.giftName).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : '');
+                        if (cleanId && spGId && (cleanId === spGId || cleanId.replace(/[^a-zA-Z0-9]/g, '') === spGId.replace(/[^a-zA-Z0-9]/g, ''))) {
+                            return sp;
+                        }
+                        if (cleanName && spGName && (cleanName === spGName || cleanName.includes(spGName) || spGName.includes(cleanName))) {
+                            return sp;
+                        }
+                    }
+                }
+                // Check gifts array for cards mapped to spinners
+                if (Array.isArray(cachedServerConfig.gifts)) {
+                    for (const g of cachedServerConfig.gifts) {
+                        if (g.enabled === false) continue;
+                        const isSpinnerCard = (g.command === 'spin_wheel' || g.actionType === 'spinner' || (g.command && String(g.command).startsWith('spinner_')) || g.spinnerId);
+                        if (!isSpinnerCard) continue;
+                        const gId = (g.giftId !== undefined && g.giftId !== null ? String(g.giftId).trim().toLowerCase() : '');
+                        const gName = (g.giftName ? String(g.giftName).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : '');
+                        if (cleanId && gId && (cleanId === gId || cleanId.replace(/[^a-zA-Z0-9]/g, '') === gId.replace(/[^a-zA-Z0-9]/g, ''))) {
+                            const bSpId = g.spinnerId || (String(g.command).startsWith('spinner_') ? g.command : null);
+                            const matchedSp = bSpId && Array.isArray(cachedServerConfig.spinners) ? cachedServerConfig.spinners.find(s => s.id === bSpId) : null;
+                            return matchedSp || { id: g.id || 'spinner', name: g.label || g.giftName, mode: state.activeMode };
+                        }
+                        if (cleanName && gName && (cleanName === gName || cleanName.includes(gName) || gName.includes(cleanName))) {
+                            const bSpId = g.spinnerId || (String(g.command).startsWith('spinner_') ? g.command : null);
+                            const matchedSp = bSpId && Array.isArray(cachedServerConfig.spinners) ? cachedServerConfig.spinners.find(s => s.id === bSpId) : null;
+                            return matchedSp || { id: g.id || 'spinner', name: g.label || g.giftName, mode: state.activeMode };
+                        }
+                    }
+                }
+            }
+
+            // 2. Verified fallback check for standard spinner gift IDs / names
+            const knownSpinnerGifts = [
+                { id: '13087', name: 'bubblegum', spId: 'spinner_1791886127198', mode: 'slots' },
+                { id: '7934', name: 'heartme', spId: 'spinner_plusminus', mode: 'slots' },
+                { id: '6427', name: 'hatandmustache', spId: 'spinner_hat', mode: 'slots' },
+                { id: '5879', name: 'doughnut', spId: 'spinner_2', mode: 'wheel' },
+                { id: '5658', name: 'perfume', spId: 'spinner_1', mode: 'wheel' },
+                { id: 'perfume', name: 'perfume', spId: 'spinner_1', mode: 'wheel' }
+            ];
+
+            for (const kg of knownSpinnerGifts) {
+                if (cleanId && cleanId === kg.id) return { id: kg.spId, name: kg.name, mode: kg.mode };
+                if (cleanName && (cleanName === kg.name || cleanName.includes(kg.name))) return { id: kg.spId, name: kg.name, mode: kg.mode };
+            }
+
+            // NOT a spinner gift! Return null so non-spinner gifts NEVER spin!
+            return null;
+        }
+
+        function buildReelForSpinner(sp, winner) {
+            return buildHorizontalReel({ item: winner || (typeof state !== 'undefined' ? state.items[0] : null) });
+        }
+    
+
+        function initEventsListener() {
+            // Initial server time sync so overlay only captures new incoming gifts and tests
+            fetch('/api/events')
+                .then(r => r.json())
+                .then(d => { if (d.serverTime) lastEventTimestamp = d.serverTime; })
+                .catch(() => {});
+
+            // 1. Polling from /api/events (every 250ms for instant real-time sync)
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTimestamp = data.serverTime;
+
+                    if (Array.isArray(data.events) && data.events.length > 0) {
+                        for (const ev of data.events) {
+                            if (ev.id && processedEventIds.has(ev.id)) continue;
+                            if (ev.id) processedEventIds.add(ev.id);
+
+                            // TikTok live gift event - ONLY spin if gift is mapped to a spinner!
+                            if ((ev.type === 'gift' || ev.event === 'gift') && !ev.noSpinnerTrigger) {
+                                const giftSpinner = findSpinnerForGift(ev.giftName, ev.giftId);
+                                if (!giftSpinner) {
+                                    // Not a spinner gift! Do NOT spin!
+                                    continue;
+                                }
+                                const outcome = rollOutcome();
+                                enqueueSpin({
+                                    eventId: ev.id,
+                                    winner: outcome,
+                                    username: ev.user || ev.username || 'Live Gifter',
+                                    avatar: ev.avatar || 'images/default_avatar.svg',
+                                    giftName: ev.giftName || giftSpinner.name || 'TikTok Gift',
+                                    giftIcon: ev.giftPictureUrl || ev.icon,
+                                    mode: ev.mode || (giftSpinner && giftSpinner.mode) || state.activeMode
+                                });
+                            }
+
+                            // Spin result event from backend /api/spin
+                            if (ev.type === 'spin_result') {
+                                if (Array.isArray(ev.slices) && ev.slices.length > 0) {
+                                    state.items = ev.slices.map((sl, idx) => ({
+                                        id: sl.id || `item_${idx+1}`,
+                                        label: sl.label || `Prize ${idx+1}`,
+                                        icon: sl.unitIcon || sl.icon || '',
+                                        unitIcon: sl.unitIcon || sl.icon || '',
+                                        rarity: sl.rarity || 'Normal',
+                                        weight: sl.weight || sl.chance || 10,
+                                        actionType: sl.actionType || (sl.isZombie ? 'zombie' : 'plant') || (sl.delta !== undefined ? 'score' : 'plant'),
+                                        command: sl.command || sl.cmd || '',
+                                        amount: parseInt(sl.amount) || 1,
+                                        delta: sl.delta,
+                                        isNumber: sl.isNumber || (sl.delta !== undefined && sl.delta !== 0),
+                                        color: sl.color || '#10b981'
+                                    }));
+                                    initOrUpdateOverlay3DSlots();
+                                }
+                                showAndSpin({
+                                    eventId: ev.id,
+                                    winner: ev.slice,
+                                    slices: ev.slices,
+                                    username: ev.username,
+                                    avatar: ev.avatar,
+                                    giftName: ev.spinnerName || 'Gacha',
+                                    mode: ev.mode || ev.spinnerMode || state.activeMode
+                                });
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }, 250);
+
+            // 2. Cross-window BroadcastChannel
+            try {
+                const bc = new BroadcastChannel('renearn_spinner_events');
+                bc.onmessage = (msg) => {
+                    if (msg.data && msg.data.action === 'spin') {
+                        if (Array.isArray(msg.data.slices) && msg.data.slices.length > 0) {
+                            state.items = msg.data.slices.map((sl, idx) => ({
+                                id: sl.id || `item_${idx+1}`,
+                                label: sl.label || `Prize ${idx+1}`,
+                                icon: sl.unitIcon || sl.icon || '',
+                                unitIcon: sl.unitIcon || sl.icon || '',
+                                rarity: sl.rarity || 'Normal',
+                                weight: sl.weight || sl.chance || 10,
+                                actionType: sl.actionType || (sl.isZombie ? 'zombie' : 'plant') || (sl.delta !== undefined ? 'score' : 'plant'),
+                                command: sl.command || sl.cmd || '',
+                                amount: parseInt(sl.amount) || 1,
+                                delta: sl.delta,
+                                isNumber: sl.isNumber || (sl.delta !== undefined && sl.delta !== 0),
+                                color: sl.color || '#10b981'
+                            }));
+                            initOrUpdateOverlay3DSlots();
+                        }
+                        showAndSpin(msg.data);
+                    } else if (msg.data && msg.data.action === 'sync_pool' && msg.data.spinner) {
+                        const sp = msg.data.spinner;
+                        if (sp.slices && sp.slices.length > 0) {
+                            state.items = sp.slices.map((sl, idx) => ({
+                                id: sl.id || `item_${idx+1}`,
+                                label: sl.label || `Prize ${idx+1}`,
+                                icon: sl.unitIcon || sl.icon || '',
+                                unitIcon: sl.unitIcon || sl.icon || '',
+                                rarity: sl.rarity || 'Normal',
+                                weight: sl.weight || sl.chance || 10,
+                                actionType: sl.actionType || (sl.isZombie ? 'zombie' : 'plant') || (sl.delta !== undefined ? 'score' : 'plant'),
+                                command: sl.command || sl.cmd || '',
+                                amount: parseInt(sl.amount) || 1,
+                                delta: sl.delta,
+                                isNumber: sl.isNumber || (sl.delta !== undefined && sl.delta !== 0),
+                                color: sl.color || '#10b981'
+                            }));
+                        }
+                        if (sp.mode) {
+                            state.activeMode = sp.mode;
+                            setVisualizerDisplayMode(sp.mode);
+                        }
+                        initOrUpdateOverlay3DSlots();
+                    }
+                };
+            } catch (e) {}
+        }
+
+        // ========================================================
+        // 11. STREAMER CONTROL PANEL & SETTINGS UI
+        // ========================================================
+        function switchVisualizerMode(mode) {
+            state.activeMode = mode;
+            document.querySelectorAll('.mode-pill-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+            });
+            setVisualizerDisplayMode(mode);
+            saveStateToLocal();
+        }
+
+        function toggleDualOutcome(enabled) {
+            state.dualOutcome = enabled;
+            const multSection = document.getElementById('multipliersEditorSection');
+            if (multSection) multSection.style.display = enabled ? 'flex' : 'none';
+            saveStateToLocal();
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModalBackdrop').classList.add('open');
+            renderItemsTable();
+            renderMultipliersTable();
+            document.getElementById('chkDualOutcome').checked = state.dualOutcome;
+            document.getElementById('multipliersEditorSection').style.display = state.dualOutcome ? 'flex' : 'none';
+            document.querySelectorAll('.mode-pill-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-mode') === state.activeMode);
+            });
+            document.getElementById('rngSpinDuration').value = state.spinDuration;
+            document.getElementById('lblSpinDuration').textContent = (state.spinDuration/1000).toFixed(1) + 's';
+            document.getElementById('rngSoundVolume').value = state.soundVolume * 100;
+            document.getElementById('lblSoundVolume').textContent = (state.soundVolume * 100).toFixed(0) + '%';
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModalBackdrop').classList.remove('open');
+        }
+
+        function renderItemsTable() {
+            const tbody = document.getElementById('itemsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            state.items.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="table-input" value="${item.label}" onchange="updateItemField(${idx}, 'label', this.value)"></td>
+                    <td><input type="text" class="table-input" value="${item.icon}" onchange="updateItemField(${idx}, 'icon', this.value)"></td>
+                    <td>
+                        <select class="table-select" onchange="updateItemField(${idx}, 'rarity', this.value)">
+                            <option value="Normal" ${item.rarity === 'Normal' ? 'selected' : ''}>Normal</option>
+                            <option value="Rare" ${item.rarity === 'Rare' ? 'selected' : ''}>Rare</option>
+                            <option value="Epic" ${item.rarity === 'Epic' ? 'selected' : ''}>Epic</option>
+                            <option value="Legendary" ${item.rarity === 'Legendary' ? 'selected' : ''}>Legendary</option>
+                            <option value="Mythic" ${item.rarity === 'Mythic' ? 'selected' : ''}>Mythic</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="table-input" style="width: 60px;" value="${item.weight}" min="1" max="100" onchange="updateItemField(${idx}, 'weight', parseFloat(this.value)||1)"></td>
+                    <td><button type="button" class="btn-del-row" onclick="deleteItemRow(${idx})">&times;</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderMultipliersTable() {
+            const tbody = document.getElementById('multipliersTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            state.multipliers.forEach((m, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="table-input" value="${m.label}" onchange="updateMultiplierField(${idx}, 'label', this.value)"></td>
+                    <td><input type="number" class="table-input" value="${m.value}" onchange="updateMultiplierField(${idx}, 'value', parseFloat(this.value)||1)"></td>
+                    <td><input type="number" class="table-input" style="width: 60px;" value="${m.weight}" min="1" max="100" onchange="updateMultiplierField(${idx}, 'weight', parseFloat(this.value)||1)"></td>
+                    <td><button type="button" class="btn-del-row" onclick="deleteMultiplierRow(${idx})">&times;</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateItemField(idx, field, val) {
+            if (state.items[idx]) state.items[idx][field] = val;
+        }
+
+        function updateMultiplierField(idx, field, val) {
+            if (state.multipliers[idx]) state.multipliers[idx][field] = val;
+        }
+
+        function addNewItemRow() {
+            state.items.push({
+                id: `item_${Date.now()}`,
+                label: 'New Prize',
+                icon: 'images/game-icons/pvz/spawn_gatlingpea.webp',
+                rarity: 'Rare',
+                weight: 10
+            });
+            renderItemsTable();
+        }
+
+        function deleteItemRow(idx) {
+            if (state.items.length <= 2) {
+                alert('At least 2 items required!');
+                return;
+            }
+            state.items.splice(idx, 1);
+            renderItemsTable();
+        }
+
+        function addNewMultiplierRow() {
+            state.multipliers.push({
+                id: `m_${Date.now()}`,
+                label: 'x20',
+                value: 20,
+                weight: 5
+            });
+            renderMultipliersTable();
+        }
+
+        function deleteMultiplierRow(idx) {
+            if (state.multipliers.length <= 1) return;
+            state.multipliers.splice(idx, 1);
+            renderMultipliersTable();
+        }
+
+        function saveSettingsFromModal() {
+            state.spinDuration = parseInt(document.getElementById('rngSpinDuration').value, 10);
+            state.soundVolume = parseFloat(document.getElementById('rngSoundVolume').value) / 100;
+            saveStateToLocal();
+            closeSettingsModal();
+        }
+
+        function resetToDefaultConfig() {
+            state.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS_POOL));
+            state.multipliers = JSON.parse(JSON.stringify(DEFAULT_MULTIPLIERS_POOL));
+            state.activeMode = 'horizontal';
+            state.dualOutcome = false;
+            saveStateToLocal();
+            renderItemsTable();
+            renderMultipliersTable();
+            document.getElementById('chkDualOutcome').checked = false;
+            switchVisualizerMode('horizontal');
+        }
+
+        function triggerTestSpin(forceMythic = false) {
+            const outcome = rollOutcome(forceMythic);
+            enqueueSpin({
+                winner: outcome,
+                username: 'TestGifter',
+                avatar: 'images/default_avatar.svg',
+                giftName: 'Rose (Test)',
+                giftIcon: 'images/tiktok-gifts/5655_rose.webp'
+            });
+        }
+
+        function testQueueHypeTrain() {
+            for (let i = 1; i <= 3; i++) {
+                enqueueSpin({
+                    winner: rollOutcome(),
+                    username: `Viewer_${i}`,
+                    avatar: 'images/default_avatar.svg',
+                    giftName: `Gift x${i}`,
+                    giftIcon: 'images/tiktok-gifts/5655_rose.webp'
+                });
+            }
+        }
+
+        function toggleOverlayPreview() {
+            const stage = document.getElementById('spinnerStageContainer');
+            if (stage.classList.contains('active')) {
+                stage.classList.remove('active');
+            } else {
+                triggerTestSpin();
+            }
+        }
+
+        // Keyboard Hotkeys
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const m = document.getElementById('settingsModalBackdrop');
+                if (m.classList.contains('open')) closeSettingsModal();
+                else openSettingsModal();
+            } else if (e.key === 'c' || e.key === 'C') {
+                document.body.classList.toggle('show-controls');
+            } else if (e.key === 't' || e.key === 'T') {
+                triggerTestSpin();
+            } else if (e.key === '1') {
+                switchVisualizerMode('horizontal');
+            } else if (e.key === '2') {
+                switchVisualizerMode('wheel');
+            } else if (e.key === '3') {
+                switchVisualizerMode('gacha');
+            } else if (e.key === '4') {
+                switchVisualizerMode('slot');
+            }
+        });
+
+        // Dynamic Responsive Auto-Scaling (Fit 100% inside any TikTok Live Studio browser source window)
+        function updateOverlayResponsiveFit() {
+            const vw = window.innerWidth || document.documentElement.clientWidth || 800;
+            const vh = window.innerHeight || document.documentElement.clientHeight || 600;
+            const stageFit = Math.min(1, Math.max(0.35, Math.min((vw - 20) / 560, (vh - 20) / 440)));
+            document.documentElement.style.setProperty('--fit-scale', stageFit.toFixed(3));
+            const cardFit = Math.min(1, Math.max(0.35, Math.min((vw - 20) / 360, (vh - 20) / 540)));
+            document.documentElement.style.setProperty('--card-fit-scale', cardFit.toFixed(3));
+        }
+        window.addEventListener('resize', updateOverlayResponsiveFit);
+        updateOverlayResponsiveFit();
+
+        // Initialize Engine on Boot
+        window.addEventListener('DOMContentLoaded', async () => {
+            updateOverlayResponsiveFit();
+            loadSavedState();
+            await syncConfigWithServer();
+            setVisualizerDisplayMode(state.activeMode);
+            initOrUpdateOverlay3DSlots();
+            initEventsListener();
+            if (urlParams.get('admin') === 'true' || urlParams.get('settings') === 'true') {
+                openSettingsModal();
+            }
+            if (urlParams.get('preview') === 'true') {
+                triggerTestSpin();
+            }
+        });
+    </script>
+</body>
+</html>

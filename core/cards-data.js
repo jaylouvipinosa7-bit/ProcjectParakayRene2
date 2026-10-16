@@ -5,10 +5,10 @@
         "giftId":  "",
         "giftName":  "Team plants likes",
         "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_fire_cattail.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatecattail.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_fire_cattail;spawn_ice_cattail",
+        "commands":  "spawn_ultimatecattail",
         "repetition":  1
     },
     {
@@ -17,10 +17,10 @@
         "giftId":  "",
         "giftName":  "Team zombies likes",
         "funcName":  "Spawn Trident Jugger-nut Gargantuar (240)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_gargantuar.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp",
         "trigImg":  "images/trig_7.svg",
         "triggerValue":  "50",
-        "commands":  "spawn_gargantuar",
+        "commands":  "spawn_trident_juggernut_gargantuar",
         "repetition":  1
     },
     {
@@ -388,11 +388,11 @@
         "action":  "SelectedGift",
         "giftId":  "5269",
         "giftName":  "TikTok",
-        "funcName":  "Win Score Numbers (+/-)",
-        "funcImg":  "images/spinner_wheel_icon.svg",
+        "funcName":  "nambabaliw",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/charm_all_zombies.webp",
         "trigImg":  "images/tiktok-gifts/5269_tiktok.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791704329880",
+        "commands":  "charm_all_zombies",
         "repetition":  1
     },
     {
@@ -593,10 +593,10 @@
         "giftId":  "15328",
         "giftName":  "Fried Chicken",
         "funcName":  "Spawn Ultimate Spring",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_spring.webp",
+        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
         "trigImg":  "images/tiktok-gifts/15328_fried_chicken.webp",
         "triggerValue":  "",
-        "commands":  "spawn_ultimate_spring",
+        "commands":  "spawn_ultimate_machine_nut",
         "repetition":  10
     },
     {
@@ -752,7 +752,7 @@
         "funcImg":  "images/spinner_wheel_icon.svg",
         "trigImg":  "images/tiktok-gifts/13087_bubble_gum.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791698132034",
+        "commands":  "spinner_1791886127198",
         "repetition":  1
     },
     {

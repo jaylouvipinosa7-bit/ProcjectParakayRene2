@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Top Gift Spotlight Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #c084fc;
+            --accent-light: #e9d5ff;
+            --accent-deep: #9333ea;
+            --halo: 192, 132, 252;
+            --gold-hi: #fff6d0;
+            --gold: #ffd35c;
+            --gold-deep: #f0990e;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Oxanium", sans-serif;
+            user-select: none;
+        }
+
+        .widget-stage {
+            position: relative;
+            width: 320px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6px 10px;
+        }
+
+        /* ─── Top Graphic Stage with Runetify Glowing Rays & Ring ─── */
+        .icon-stage {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            flex-shrink: 0;
+        }
+
+        /* Spinning Sunburst Rays */
+        .sunburst-bg {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: spinRays 20s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(var(--halo), 0.45) 0%, rgba(147, 51, 234, 0.2) 55%, transparent 72%),
+                        repeating-conic-gradient(from 0deg, rgba(216, 180, 254, 0.5) 0deg 12deg, transparent 12deg 30deg);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.65);
+        }
+
+        @keyframes spinRays {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Radial Aura Breathing */
+        .gift-hero_aura {
+            position: absolute;
+            inset: -8%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, rgba(var(--halo), 0.55), rgba(147, 51, 234, 0.2) 42%, transparent 70%);
+            animation: giftHeroAuraBreathe 3.2s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes giftHeroAuraBreathe {
+            0%, 100% { transform: scale(0.93); opacity: 0.7; }
+            50% { transform: scale(1.07); opacity: 1; }
+        }
+
+        /* Glowing Shockwave Ring */
+        .gift-hero_ring {
+            position: absolute;
+            inset: 18px;
+            border-radius: 50%;
+            border: 2.5px solid rgba(255, 214, 92, 0.9);
+            box-shadow: 0 0 24px rgba(255, 178, 62, 0.6), inset 0 0 16px rgba(255, 178, 62, 0.4);
+            animation: giftHeroRingWave 5s ease-out infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes giftHeroRingWave {
+            0%, 60%, 100% { transform: scale(0.55); opacity: 0; }
+            65% { opacity: 0.95; }
+            82% { transform: scale(1.28); opacity: 0; }
+        }
+
+        /* Glowing Outer Ring */
+        .ray-ring {
+            position: absolute;
+            width: 176px;
+            height: 176px;
+            border-radius: 50%;
+            z-index: 2;
+            pointer-events: none;
+            border: 2.5px solid rgba(216, 180, 254, 0.85);
+            box-shadow: 0 0 24px rgba(168, 85, 247, 0.85), inset 0 0 16px rgba(147, 51, 234, 0.5);
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            z-index: 4;
+            pointer-events: none;
+            animation: pulseSparkle 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseSparkle {
+            0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
+            100% { transform: scale(1.2) rotate(45deg); opacity: 1; filter: drop-shadow(0 0 8px #ffeb3b); }
+        }
+
+        /* ─── 3D Flipping Disc (Gift <-> Profile) ─── */
+        .flip-wrapper {
+            position: relative;
+            width: 154px;
+            height: 154px;
+            border-radius: 50%;
+            z-index: 3;
+            perspective: 1000px;
+        }
+
+        .flip-disc {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .flip-disc.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .face-front {
+            transform: rotateY(0deg) translateZ(1px);
+            background: rgba(18, 12, 28, 0.92);
+            border: 2.5px solid rgba(216, 180, 254, 0.5);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+        }
+
+        .face-back {
+            transform: rotateY(180deg) translateZ(1px);
+            background: radial-gradient(circle, #3b0764 0%, #1e0338 100%);
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 24px rgba(192, 132, 252, 0.95), inset 0 0 16px rgba(0,0,0,0.5);
+        }
+
+        .gift-img-spotlight {
+            width: 112px;
+            height: 112px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.85));
+            animation: giftHeroFloat 4.2s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes giftHeroFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-6%) rotate(-2.4deg) scale(1.03); }
+            50% { transform: translateY(-1.5%) rotate(0deg) scale(1); }
+            75% { transform: translateY(-6%) rotate(2.4deg) scale(1.03); }
+        }
+
+        /* Punch Pop on New Event */
+        .anim-punch {
+            animation: giftHeroPunch 0.7s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+
+        @keyframes giftHeroPunch {
+            0% { transform: scale(0.75) translateY(8%); filter: brightness(1); }
+            50% { transform: scale(1.18) translateY(-4%); filter: brightness(1.4); }
+            100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        }
+
+        /* Shine Sweep Beam */
+        .gift-shine-sweep {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .gift-shine-sweep::after {
+            content: "";
+            position: absolute;
+            top: -40%;
+            bottom: -40%;
+            left: 0;
+            width: 45%;
+            background: linear-gradient(104deg, transparent 15%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 246, 208, 0.6) 62%, transparent 85%);
+            transform: translateX(-180%) skewX(-14deg);
+            animation: giftHeroShineSweep 5s linear infinite;
+        }
+
+        @keyframes giftHeroShineSweep {
+            0%, 58% { transform: translateX(-180%) skewX(-14deg); opacity: 0; }
+            62% { opacity: 1; }
+            72% { transform: translateX(300%) skewX(-14deg); opacity: 0; }
+            100% { transform: translateX(300%) skewX(-14deg); opacity: 0; }
+        }
+
+        .avatar-img-back {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ─── Bottom Info Plaque & 3D Extruded Shimmer ─── */
+        .info-pill {
+            z-index: 5;
+            background: linear-gradient(135deg, rgba(28, 18, 40, 0.96), rgba(16, 10, 24, 0.98));
+            border: 1.5px solid rgba(192, 132, 252, 0.55);
+            border-radius: 16px;
+            padding: 8px 22px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 18px rgba(168, 85, 247, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: transform 0.25s ease;
+        }
+
+        .info-top-tag {
+            font-size: 11px;
+            font-weight: 900;
+            color: #d8b4fe;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(216, 180, 254, 0.5);
+        }
+
+        .info-main-title {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: -0.2px;
+            background: linear-gradient(96deg, #ffffff, #f3e8ff 50%, #d8b4fe 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .info-sub-value {
+            font-size: 13px;
+            font-weight: 800;
+            background: linear-gradient(96deg, #f0990e, #fff6d0 22%, #ffd35c 44%, #ffffff 57%, #ffd35c 66%, #f0990e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 260% 100%;
+            animation: extrudedTextShift 6s linear infinite;
+        }
+
+        @keyframes extrudedTextShift {
+            0% { background-position: 0 50%; }
+            100% { background-position: 260% 50%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-stage" id="widgetStage">
+        <div class="icon-stage">
+            <div class="sunburst-bg"></div>
+            <div class="gift-hero_aura"></div>
+            <div class="gift-hero_ring"></div>
+            <div class="ray-ring"></div>
+
+            <!-- Floating Sparkles -->
+            <svg class="sparkle" style="top: 14px; left: 16px;" width="18" height="18" viewBox="0 0 24 24" fill="#ffeb3b">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
+            </svg>
+            <svg class="sparkle" style="bottom: 18px; right: 16px; animation-delay: 1s;" width="16" height="16" viewBox="0 0 24 24" fill="#ffeb3b">
+                <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
+            </svg>
+
+            <!-- 3D Flipping Disc (Front: Gift, Back: Gifter Avatar) -->
+            <div class="flip-wrapper">
+                <div class="flip-disc" id="flipDisc">
+                    <!-- Front Face: Gift -->
+                    <div class="flip-face face-front">
+                        <div class="gift-shine-sweep"></div>
+                        <img id="spotlightGiftImg" src="images/tiktok-gifts/7934_heart_me.webp" alt="Top Gift" class="gift-img-spotlight" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                    </div>
+                    <!-- Back Face: Gifter Avatar -->
+                    <div class="flip-face face-back">
+                        <img id="spotlightAvatarImg" src="images/renearn_icon.png" alt="Gifter Avatar" class="avatar-img-back" onerror="this.src='images/renearn_icon.png'">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-pill" id="infoPill">
+            <span class="info-top-tag" id="topTag">TOP GIFT</span>
+            <span class="info-main-title" id="giftNameText">Heart Me</span>
+            <span class="info-sub-value" id="gifterSubText">Stream viewer • 1 Coins</span>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let currentGift = 'Heart Me';
+        let currentGifter = 'Stream viewer';
+        let highestCoins = 1;
+        let isFlipped = false;
+
+        function triggerHeroPunch() {
+            const img = document.getElementById('spotlightGiftImg');
+            const pill = document.getElementById('infoPill');
+            img.classList.remove('anim-punch');
+            void img.offsetWidth;
+            img.classList.add('anim-punch');
+            pill.style.transform = 'scale(1.08)';
+            setTimeout(() => { pill.style.transform = 'scale(1)'; }, 350);
+        }
+
+        function updateTopGift(name, giftName, icon, coins, avatar) {
+            currentGifter = name || currentGifter;
+            currentGift = giftName || currentGift;
+            highestCoins = coins || highestCoins;
+
+            document.getElementById('giftNameText').textContent = currentGift;
+            document.getElementById('gifterSubText').textContent = `${currentGifter} • ${highestCoins} Coins`;
+
+            if (icon) {
+                document.getElementById('spotlightGiftImg').src = icon;
+            }
+            if (avatar) {
+                document.getElementById('spotlightAvatarImg').src = avatar;
+            }
+
+            triggerHeroPunch();
+
+            // Quick flip celebration
+            const disc = document.getElementById('flipDisc');
+            disc.classList.add('flipped');
+            setTimeout(() => { disc.classList.remove('flipped'); }, 2200);
+        }
+
+        // Periodic auto-flip disc every 6 seconds (Runetify authentic behavior)
+        setInterval(() => {
+            const disc = document.getElementById('flipDisc');
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                disc.classList.add('flipped');
+            } else {
+                disc.classList.remove('flipped');
+            }
+        }, 6000);
+
+        // Real-time Event polling from local TikTok bridge
+        let lastEventTimestamp = Date.now() - 5000;
+        setInterval(async () => {
+            try {
+                const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.serverTime) lastEventTimestamp = data.serverTime;
+                    if (data.events && Array.isArray(data.events)) {
+                        for (const ev of data.events) {
+                            if (ev.type === 'gift' || ev.type === 'jar_drop') {
+                                const coins = ev.coins || 1;
+                                if (coins >= highestCoins) {
+                                    updateTopGift(ev.username || 'RENEarn', ev.giftName || 'Gift', ev.icon || '', coins, ev.avatar || '');
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+        }, 350);
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+﻿{
+    "skin":  "piggy",
+    "customSkinUrl":  "",
+    "capacityMode":  "price",
+    "coinGoal":  3000,
+    "maxCapacity":  80,
+    "gravity":  0.2,
+    "bounciness":  0.1,
+    "friction":  0.1,
+    "giftScale":  0.4,
+    "soundEnabled":  true,
+    "soundVolume":  0.5,
+    "showGifterBadge":  true,
+    "showCounterBar":  true,
+    "showGiftBorder":  false,
+    "resetBehavior":  "explosion",
+    "triggerGameEventOnFull":  false,
+    "gameCommandOnFull":  "",
+    "jarTitle":  "TikTok Gift Jar",
+    "themeGlow":  "rgba(56, 189, 248, 0.4)"
+}

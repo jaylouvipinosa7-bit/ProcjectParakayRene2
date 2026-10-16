@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zombie Tsunami - Authentic Edition</title>
+    <link rel="icon" type="image/png" href="images/renearn_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Bungee&family=Luckiest+Guy&family=Titan+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-green: #22c55e;
+            --brand-gold: #f59e0b;
+            --brand-blue: #0284c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000000;
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            overflow: hidden;
+        }
+
+        canvas#gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: pointer;
+        }
+
+        /* --- AUTHENTIC IN-GAME HUD (MATCHING USER SCREENSHOTS) --- */
+        .hud-top-left {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .hud-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-icon-badge {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
+        }
+
+        .hud-stat-num {
+            font-family: 'Luckiest Guy', 'Bungee', cursive;
+            font-size: 26px;
+            line-height: 1;
+            color: #ffb703;
+            -webkit-text-stroke: 1.5px #000000;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.8);
+        }
+
+        .hud-stat-num.brain-num {
+            color: #fb8500;
+        }
+
+        /* LOTTERY TICKET (SCREENSHOT 1) */
+        .lottery-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .lottery-seven {
+            font-family: 'Titan One', 'Bungee', cursive;
+            font-size: 32px;
+            color: #ffffff;
+            -webkit-text-stroke: 2px #d90429;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8));
+            line-height: 1;
+        }
+
+        .lottery-progress {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 20px;
+            color: #ffb703;
+            -webkit-text-stroke: 1px #000;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* TOP CENTER HORDE COUNTER (MATCHING SCREENSHOT 1 & 2) */
+        .hud-horde-counter {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 4px 18px 4px 12px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .hud-horde-zombie-head {
+            width: 48px;
+            height: 44px;
+            position: relative;
+            background: url('images/zombie_tsunami_icon.png') center/contain no-repeat;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+        }
+
+        .hud-horde-multiplier {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 34px;
+            color: #ffb703;
+            -webkit-text-stroke: 1.5px #b02a00;
+            text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+            line-height: 1;
+        }
+
+        /* PAUSE BUTTON (TOP RIGHT) */
+        .hud-pause-btn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            width: 42px;
+            height: 42px;
+            background: #111827;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            z-index: 25;
+            transition: all 0.15s ease;
+        }
+
+        .hud-pause-btn:hover {
+            transform: scale(1.06);
+            background: #1f2937;
+        }
+
+        .pause-bar {
+            width: 5px;
+            height: 18px;
+            background: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* LIVE STREAM GIFTER / COMMAND TOAST (TOP RIGHT BELOW PAUSE) */
+        .live-stream-toast {
+            position: absolute;
+            top: 68px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.94);
+            border: 2px solid #38bdf8;
+            border-radius: 14px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.7), 0 0 16px rgba(56, 189, 248, 0.4);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .live-stream-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .live-toast-text strong {
+            font-size: 13px;
+            color: #38bdf8;
+            display: block;
+        }
+
+        .live-toast-text p {
+            font-size: 11px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        /* --- STREAMER CONTROL DOCK (BOTTOM) --- */
+        .streamer-dock {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 15, 26, 0.95);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 8px 16px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+            z-index: 40;
+            max-width: 95vw;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .streamer-dock::-webkit-scrollbar { display: none; }
+
+        .dock-btn {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 7px 13px;
+            border-radius: 9999px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .dock-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .dock-btn.btn-rose {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.45), rgba(15, 23, 42, 0.85));
+            border-color: #f43f5e;
+            color: #ffe4e6;
+        }
+
+        .dock-btn.btn-tsunami {
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.5), rgba(15, 23, 42, 0.85));
+            border-color: #38bdf8;
+            color: #e0f2fe;
+        }
+
+        .dock-btn.btn-giant {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(15, 23, 42, 0.85));
+            border-color: #c084fc;
+            color: #faf5ff;
+        }
+
+        /* JUMP PROMPT */
+        .jump-hint {
+            position: absolute;
+            bottom: 68px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.75);
+            background: rgba(0, 0, 0, 0.55);
+            padding: 4px 14px;
+            border-radius: 9999px;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 15;
+        }
+
+        /* GAME OVER MODAL */
+        .modal-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background: rgba(15, 23, 42, 0.98);
+            border: 3px solid #ef4444;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(239, 68, 68, 0.6);
+            border-radius: 24px;
+            padding: 34px 44px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 60;
+            max-width: 420px;
+            width: 90%;
+        }
+
+        .modal-over.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .over-btn {
+            width: 100%;
+            padding: 14px;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+            transition: all 0.2s ease;
+            margin-top: 18px;
+        }
+
+        .over-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+<div id="gameContainer">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- 1. AUTHENTIC HUD TOP-LEFT (COINS, BRAINS, LOTTERY TICKET) -->
+    <div class="hud-top-left">
+        <div class="hud-row">
+            <div class="hud-icon-badge" id="hudCoinIcon"></div>
+            <span class="hud-stat-num" id="hudCoinsCount">9</span>
+        </div>
+        <div class="hud-row">
+            <div class="hud-icon-badge" id="hudBrainIcon"></div>
+            <span class="hud-stat-num brain-num" id="hudBrainsCount">8</span>
+        </div>
+        <div class="lottery-badge">
+            <span class="lottery-seven">7</span>
+            <span class="lottery-progress" id="hudLotteryText">2/10</span>
+        </div>
+    </div>
+
+    <!-- 2. AUTHENTIC TOP-CENTER HORDE COUNTER (🧟 x COUNT) -->
+    <div class="hud-horde-counter">
+        <div class="hud-horde-zombie-head" id="hudHordeHead"></div>
+        <span class="hud-horde-multiplier" id="hudHordeMultiplier">x 1</span>
+    </div>
+
+    <!-- 3. TOP-RIGHT PAUSE BUTTON -->
+    <div class="hud-pause-btn" onclick="togglePause()">
+        <div class="pause-bar"></div>
+        <div class="pause-bar"></div>
+    </div>
+
+    <!-- 4. LIVE STREAM GIFTER ALERT TOAST -->
+    <div class="live-stream-toast" id="liveStreamToast">
+        <span style="font-size: 26px;" id="toastIcon">🌹</span>
+        <div class="live-toast-text">
+            <strong id="toastTitle">TikTok Gift!</strong>
+            <p id="toastDesc">@User sent Rose! +1 Zombie</p>
+        </div>
+    </div>
+
+    <!-- JUMP HINT -->
+    <div class="jump-hint">
+        Tap / Press [SPACE] to Jump • Hold to Jump Higher
+    </div>
+
+    <!-- 5. STREAMER TEST DOCK -->
+    <div class="streamer-dock">
+        <span style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">⚡ Triggers:</span>
+        <button type="button" class="dock-btn btn-rose" onclick="triggerRose(1)">
+            <span>🌹</span> Rose (+1)
+        </button>
+        <button type="button" class="dock-btn btn-rose" onclick="triggerRose(5)">
+            <span>🌹x5</span> Rush (+5)
+        </button>
+        <button type="button" class="dock-btn btn-tsunami" onclick="triggerTsunami()">
+            <span>🌊</span> Tsunami Wave
+        </button>
+        <button type="button" class="dock-btn btn-giant" onclick="triggerGiantLaser()">
+            <span>🤖</span> Giant Laser
+        </button>
+        <button type="button" class="dock-btn" onclick="forceJump()" style="background: #2563eb;">
+            <span>🦘</span> Jump
+        </button>
+        <button type="button" class="dock-btn" id="stageToggleBtn" onclick="toggleStageTheme()" style="background: #0d9488;">
+            <span>🏙️</span> Stage
+        </button>
+        <button type="button" class="dock-btn" onclick="restartGame()" style="background: #334155;">
+            <span>🔄</span> Restart
+        </button>
+    </div>
+
+    <!-- 6. GAME OVER MODAL -->
+    <div class="modal-over" id="modalGameOver">
+        <h2 style="font-family: 'Luckiest Guy', cursive; font-size: 34px; color: #ef4444; text-shadow: 0 4px 14px rgba(239, 68, 68, 0.6);">
+            HORDE WIPED OUT!
+        </h2>
+        <p style="color: #94a3b8; font-size: 14px; margin-top: 6px;">All zombies have fallen into mines or pits.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;">
+            <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 12px;">
+                <div style="font-size: 11px; color: #94a3b8; font-weight: 700;">BRAINS EATEN</div>
+                <div style="font-family: 'Luckiest Guy', cursive; font-size: 26px; color: #ffb703; margin-top: 4px;" id="overBrains">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: 12px;">
+                <div style="font-size: 11px; color: #94a3b8; font-weight: 700;">DISTANCE</div>
+                <div style="font-family: 'Luckiest Guy', cursive; font-size: 26px; color: #38bdf8; margin-top: 4px;" id="overDist">0m</div>
+            </div>
+        </div>
+
+        <button type="button" class="over-btn" onclick="restartGame()">
+            PLAY AGAIN
+        </button>
+    </div>
+</div>
+
+<script>
+/**
+ * ==============================================================================
+ * AUTHENTIC ZOMBIE TSUNAMI ENGINE (1:1 VISUAL RECREATION FROM SCREENSHOTS)
+ * ==============================================================================
+ * Pixel-perfect implementation of the Mobigame visual aesthetics:
+ * 1. 3D-shaded green zombies with bulging purple/black eyes and gaping mouths
+ * 2. Palm tree beach stage & ocean waves (Screenshots 1, 2, 3, 4)
+ * 3. 3 Giant black naval mines embedded in road with glowing red cores (Screenshot 1)
+ * 4. Pushing yellow/black cars with "0/4 🧟" bubble & screaming driver (Screenshots 2 & 5)
+ * 5. Giant retro chrome "TSUNAMI" banner with speed-lines & wave (Screenshot 3)
+ * 6. Mystery power-up cube "?" with smoke clouds & traffic light (Screenshot 4)
+ * 7. Live TikTok stream integration with viewer names
+ */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let width = window.innerWidth;
+let height = window.innerHeight;
+let groundY = height - 150;
+
+function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    groundY = height - 150;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// --- SYNTHESIZED SOUND EFFECTS ---
+class GameAudio {
+    constructor() { this.ctx = null; }
+    init() {
+        if (!this.ctx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) this.ctx = new AC();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    }
+    jump() {
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(260, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(640, this.ctx.currentTime + 0.16);
+            gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.18);
+        } catch(e) {}
+    }
+    chomp() {
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.1);
+        } catch(e) {}
+    }
+    coin() {
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(987, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1318, this.ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.14);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.14);
+        } catch(e) {}
+    }
+    boom() {
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(90, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.35);
+            gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.35);
+        } catch(e) {}
+    }
+    tsunami() {
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(110, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.9);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.9);
+        } catch(e) {}
+    }
+}
+const SFX = new GameAudio();
+
+// --- GAME STATE ---
+const Game = {
+    running: true,
+    paused: false,
+    coins: 9,
+    brains: 8,
+    distance: 0,
+    speed: 6.2,
+    baseSpeed: 6.2,
+    gravity: 0.85,
+    jumpForce: -16.5,
+    isJumpingInput: false,
+
+    // Super Mode
+    mode: 'normal', // 'normal' | 'tsunami' | 'giant'
+    modeTimer: 0,
+    tsunamiBannerAnim: 0,
+    tsunamiWaveX: -300,
+
+    zombies: [],
+    civilians: [],
+    obstacles: [],
+    coinsList: [],
+    mysteryBlocks: [],
+    particles: [],
+
+    // Scenery offsets
+    skyX: 0,
+    oceanX: 0,
+    treesX: 0,
+    roadX: 0,
+
+    nextObsDist: 350,
+    nextCivDist: 280,
+    nextCoinDist: 220,
+    nextBlockDist: 600
+};
+
+// --- AUTHENTIC 3D-STYLED ZOMBIE (MATCHING SCREENSHOT 1 & 2) ---
+class AuthenticZombie {
+    constructor(x, y, isLead = false, owner = 'Streamer') {
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.width = 52;
+        this.height = 62;
+        this.isGrounded = true;
+        this.isLead = isLead;
+        this.owner = owner;
+        this.runCycle = Math.random() * 10;
+        this.targetOffsetX = (Math.random() - 0.5) * 40;
+
+        // Shirt & pants colors from screenshots
+        const colors = [
+            { shirt: '#9d174d', pants: '#1e3a8a' }, // magenta / blue (Screenshot 1)
+            { shirt: '#475569', pants: '#334155' }, // dark gray
+            { shirt: '#0284c7', pants: '#1e293b' }  // blue
+        ];
+        this.palette = colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    jump(mult = 1) {
+        if (this.isGrounded) {
+            this.vy = Game.jumpForce * mult;
+            this.isGrounded = false;
+        }
+    }
+
+    update(index, leadX) {
+        this.runCycle += 0.32;
+
+        if (Game.mode === 'tsunami') {
+            // Surfing the tidal wave
+            this.y = groundY - 145 + Math.sin(this.runCycle + index) * 20;
+            this.vy = 0;
+            this.isGrounded = false;
+            return;
+        }
+
+        this.vy += Game.gravity;
+        this.y += this.vy;
+
+        if (this.y >= groundY - this.height) {
+            this.y = groundY - this.height;
+            this.vy = 0;
+            this.isGrounded = true;
+        }
+
+        if (!this.isLead) {
+            const targetX = leadX - 36 - (index * 24) + this.targetOffsetX;
+            this.x += (targetX - this.x) * 0.15;
+        }
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        const isGiant = (Game.mode === 'giant' && this.isLead);
+        if (isGiant) {
+            ctx.scale(2.5, 2.5);
+            ctx.translate(-10, -18);
+        }
+
+        const legRot = Math.sin(this.runCycle) * 0.5;
+        const armRot = Math.cos(this.runCycle) * 0.45;
+
+        // --- 1. LEGS (DARK PANTS) ---
+        // Back leg
+        ctx.save();
+        ctx.translate(18, 48);
+        ctx.rotate(-legRot);
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-5, 0, 10, 16, 3);
+        ctx.fill();
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(-6, 12, 12, 5); // shoe
+        ctx.restore();
+
+        // Front leg
+        ctx.save();
+        ctx.translate(32, 48);
+        ctx.rotate(legRot);
+        ctx.fillStyle = this.palette.pants;
+        ctx.beginPath();
+        ctx.roundRect(-5, 0, 10, 16, 3);
+        ctx.fill();
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(-6, 12, 12, 5); // shoe
+        ctx.restore();
+
+        // --- 2. TORSO & SHIRT (TATTERED) ---
+        ctx.fillStyle = this.palette.shirt;
+        ctx.beginPath();
+        ctx.roundRect(14, 28, 26, 22, 6);
+        ctx.fill();
+
+        // --- 3. BACK ARM ---
+        ctx.save();
+        ctx.translate(16, 32);
+        ctx.rotate(-armRot - 0.2);
+        ctx.fillStyle = '#4ade80';
+        ctx.beginPath();
+        ctx.roundRect(-4, 0, 8, 18, 3);
+        ctx.fill();
+        ctx.restore();
+
+        // --- 4. FRONT OUTSTRETCHED ARM (ZOMBIE REACH) ---
+        ctx.save();
+        ctx.translate(32, 32);
+        ctx.rotate(0.3 + armRot * 0.3);
+        ctx.fillStyle = '#4ade80';
+        ctx.beginPath();
+        ctx.roundRect(-4, 0, 8, 20, 3);
+        ctx.fill();
+        // Hand claw
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.arc(0, 20, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // --- 5. AUTHENTIC 3D-SHADED HEAD (MATCHING SCREENSHOT 1 & 2) ---
+        // Smooth radial green gradient for bulbous cartoon head
+        const headGrad = ctx.createRadialGradient(28, 12, 4, 28, 16, 24);
+        headGrad.addColorStop(0, '#86efac'); // bright highlight
+        headGrad.addColorStop(0.5, '#4ade80'); // vibrant zombie lime
+        headGrad.addColorStop(1, '#15803d'); // deep shadow contour
+
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        // Bulbous elongated skull shape
+        ctx.ellipse(28, 16, 22, 18, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // --- 6. JAW & OPEN CHOMPING MOUTH ---
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.ellipse(36, 23, 10, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pointed jagged teeth (Screenshot 1)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(30, 18);
+        ctx.lineTo(33, 22);
+        ctx.lineTo(36, 18);
+        ctx.lineTo(39, 22);
+        ctx.lineTo(42, 18);
+        ctx.fill();
+
+        // --- 7. LARGE BULGING 3D EYEBALL (PURPLE/BLACK PUPILS) ---
+        // Eye White
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(30, 12, 9, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#166534';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Purple Iris Ring (Screenshot 1: distinctive purple eye!)
+        ctx.fillStyle = '#7c3aed';
+        ctx.beginPath();
+        ctx.arc(33, 12, 4.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Black Pupil
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(34, 12, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // White specular eye glint
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(32.5, 10.5, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Giant Laser Beams
+        if (isGiant && Game.laserActive) {
+            ctx.restore();
+            ctx.save();
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 18;
+            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 36;
+            ctx.beginPath();
+            ctx.moveTo(this.x + 90, this.y + 12);
+            ctx.lineTo(width + 300, this.y + 12);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            ctx.restore();
+            return;
+        }
+
+        ctx.restore();
+
+        // Owner tag for TikTok viewers
+        if (this.owner && this.owner !== 'Streamer' && !isGiant && Game.mode !== 'tsunami') {
+            ctx.save();
+            ctx.font = 'bold 10px Outfit';
+            ctx.textAlign = 'center';
+            const w = ctx.measureText(this.owner).width + 10;
+            ctx.fillStyle = 'rgba(0,0,0,0.65)';
+            ctx.beginPath();
+            ctx.roundRect(this.x + 26 - w/2, this.y - 18, w, 14, 4);
+            ctx.fill();
+            ctx.fillStyle = '#4ade80';
+            ctx.fillText(this.owner, this.x + 26, this.y - 7);
+            ctx.restore();
+        }
+    }
+}
+
+// --- 3 GIANT BLACK NAVAL MINES (SCREENSHOT 1) ---
+class NavalMinesCluster {
+    constructor(x) {
+        this.x = x;
+        this.y = groundY - 70;
+        this.width = 240;
+        this.height = 75;
+        this.alive = true;
+        this.exploded = false;
+        this.pulse = 0;
+    }
+
+    update() {
+        this.x -= Game.speed;
+        this.pulse += 0.15;
+    }
+
+    draw(ctx) {
+        if (this.exploded) return;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        // Broken cracked road rubble underneath (Screenshot 1)
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.moveTo(-15, 75);
+        ctx.lineTo(5, 55);
+        ctx.lineTo(80, 75);
+        ctx.lineTo(160, 58);
+        ctx.lineTo(250, 75);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw 3 giant sunken spherical mines
+        for (let i = 0; i < 3; i++) {
+            const mx = 35 + (i * 80);
+            const my = 40;
+            const r = 36;
+
+            // Spikes on the outer rim
+            ctx.fillStyle = '#18181b';
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+                const sx = mx + Math.cos(a) * (r + 4);
+                const sy = my + Math.sin(a) * (r + 4);
+                ctx.beginPath();
+                ctx.arc(sx, sy, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Dark metallic spherical body
+            const sphereGrad = ctx.createRadialGradient(mx - 8, my - 8, 4, mx, my, r);
+            sphereGrad.addColorStop(0, '#3f3f46');
+            sphereGrad.addColorStop(0.7, '#18181b');
+            sphereGrad.addColorStop(1, '#09090b');
+            ctx.fillStyle = sphereGrad;
+            ctx.beginPath();
+            ctx.arc(mx, my, r, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Glowing Red/White Core (Screenshot 1: blazing circular core!)
+            const glowR = 18 + Math.sin(this.pulse + i) * 2;
+            const coreGrad = ctx.createRadialGradient(mx, my, 2, mx, my, glowR);
+            coreGrad.addColorStop(0, '#ffffff'); // bright white center
+            coreGrad.addColorStop(0.3, '#fef08a'); // yellow warmth
+            coreGrad.addColorStop(0.65, '#dc2626'); // intense red
+            coreGrad.addColorStop(1, 'rgba(153, 27, 27, 0)');
+
+            ctx.fillStyle = coreGrad;
+            ctx.beginPath();
+            ctx.arc(mx, my, glowR, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core lens shine
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.beginPath();
+            ctx.arc(mx - 4, my - 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
+    }
+}
+
+// --- AUTHENTIC VEHICLE: CAR WITH "0/4 🧟" BUBBLE (SCREENSHOTS 2 & 5) ---
+class AuthenticCar {
+    constructor(x, isYellow = true) {
+        this.x = x;
+        this.y = groundY - 65;
+        this.width = 110;
+        this.height = 65;
+        this.isYellow = isYellow; // Yellow Taxi (Screenshot 5) or Dark Sedan (Screenshot 2)
+        this.reqZombies = 4;
+        this.currentPushers = 0;
+        this.flipped = false;
+        this.rot = 0;
+        this.dustCycle = 0;
+    }
+
+    update() {
+        this.x -= Game.speed;
+        this.dustCycle += 0.2;
+
+        if (this.flipped) {
+            this.y -= 14;
+            this.rot += 0.25;
+        }
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+        if (this.flipped) ctx.rotate(this.rot);
+
+        // Kicking up brown dust clouds behind the tires (Screenshot 2)
+        if (!this.flipped) {
+            ctx.fillStyle = 'rgba(180, 140, 100, 0.45)';
+            for (let d = 0; d < 3; d++) {
+                const dx = 40 + (d * 12);
+                const dy = 20 + Math.sin(this.dustCycle + d) * 6;
+                ctx.beginPath();
+                ctx.arc(dx, dy, 12 + d * 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Car body color
+        const mainColor = this.isYellow ? '#eab308' : '#3f3f46';
+        const shadowColor = this.isYellow ? '#ca8a04' : '#18181b';
+
+        // Chassis & Cabin (Vintage Rounded Bug Shape)
+        ctx.fillStyle = shadowColor;
+        ctx.beginPath();
+        ctx.roundRect(-this.width/2, -12, this.width, 38, 10);
+        ctx.fill();
+
+        ctx.fillStyle = mainColor;
+        ctx.beginPath();
+        ctx.roundRect(-this.width/2 + 2, -14, this.width - 4, 36, 10);
+        ctx.fill();
+
+        // Rounded roof
+        ctx.fillStyle = mainColor;
+        ctx.beginPath();
+        ctx.roundRect(-24, -32, 54, 24, 8);
+        ctx.fill();
+
+        // Top fin / taxi sign
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-4, -40, 8, 8);
+
+        // Front & Rear Windows
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-18, -28, 20, 16, 4);
+        ctx.roundRect(8, -28, 18, 16, 4);
+        ctx.fill();
+
+        // Screaming Civilian Driver inside with hands up on window! (Screenshot 5)
+        if (!this.flipped) {
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(-8, -20, 5, 0, Math.PI * 2); // face
+            ctx.fill();
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(-10, -18, 4, 2); // screaming mouth
+            // Hands pressed against glass
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.arc(-14, -16, 2.5, 0, Math.PI * 2);
+            ctx.arc(-2, -16, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Headlights
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(-this.width/2 + 6, 2, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Thick Black Rubber Wheels
+        ctx.fillStyle = '#09090b';
+        ctx.beginPath();
+        ctx.arc(-32, 22, 14, 0, Math.PI * 2);
+        ctx.arc(28, 22, 14, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#71717a';
+        ctx.beginPath();
+        ctx.arc(-32, 22, 6, 0, Math.PI * 2);
+        ctx.arc(28, 22, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // --- AUTHENTIC "0/4 🧟" COUNTER BUBBLE (SCREENSHOT 5) ---
+        if (!this.flipped) {
+            ctx.save();
+            ctx.translate(-20, -68);
+
+            // Black comic speech bubble
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.roundRect(-30, -22, 70, 36, 10);
+            ctx.fill();
+            // Tail pointing down to car
+            ctx.beginPath();
+            ctx.moveTo(5, 14);
+            ctx.lineTo(15, 24);
+            ctx.lineTo(18, 14);
+            ctx.fill();
+
+            // Text "0/4" with yellow-to-orange gradient
+            ctx.font = 'bold 20px "Luckiest Guy", Bungee, cursive';
+            ctx.fillStyle = '#ffb703';
+            ctx.textAlign = 'left';
+            ctx.fillText(`${this.currentPushers}/4`, -22, 4);
+
+            // Mini zombie head icon inside bubble
+            ctx.fillStyle = '#4ade80';
+            ctx.beginPath();
+            ctx.arc(24, -4, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(26, -4, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        ctx.restore();
+    }
+}
+
+// --- MYSTERY POWER-UP BLOCK WITH CLOUDS (SCREENSHOT 4) ---
+class MysteryBlock {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 46;
+        this.collected = false;
+        this.cloudRot = 0;
+    }
+    update() {
+        this.x -= Game.speed;
+        this.cloudRot += 0.08;
+    }
+    draw(ctx) {
+        if (this.collected) return;
+        ctx.save();
+        ctx.translate(this.x + this.size/2, this.y + this.size/2);
+
+        // Surrounding white smoke clouds (Screenshot 4)
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
+        for (let i = 0; i < 4; i++) {
+            const a = this.cloudRot + (i * Math.PI / 2);
+            const cx = Math.cos(a) * 20;
+            const cy = Math.sin(a) * 16;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 3D White Cube
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.roundRect(-this.size/2, -this.size/2, this.size, this.size, 8);
+        ctx.fill();
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Big Green Question Mark "?" (Screenshot 4)
+        ctx.font = 'bold 32px "Luckiest Guy", cursive';
+        ctx.fillStyle = '#22c55e';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', 0, 2);
+
+        ctx.restore();
+    }
+}
+
+// --- GOLD COIN PICKUP ---
+class GoldCoin {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.alive = true;
+        this.rot = Math.random() * 10;
+    }
+    update() {
+        this.x -= Game.speed;
+        this.rot += 0.16;
+    }
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x + 12, this.y + 12);
+        ctx.scale(Math.cos(this.rot), 1);
+
+        // Gold coin
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#b45309';
+        ctx.font = 'bold 12px Outfit';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Z', 0, 0);
+
+        ctx.restore();
+    }
+}
+
+// --- DRAW STAGE BACKGROUND (TROPICAL BEACH - SCREENSHOTS 1, 2, 3, 4) ---
+// --- OFFICIAL MOBIGAME ASSET LOADER ---
+const mobiIconImg = new Image();
+mobiIconImg.src = 'images/zombie_tsunami_icon.png';
+const mobiBannerImg = new Image();
+mobiBannerImg.src = 'images/zombie_tsunami_banner.png';
+
+// Stage Theme: 'city' (Screenshot 2 & New Screenshot) or 'beach' (Screenshot 1 & 4)
+Game.stageTheme = 'city'; 
+
+function toggleStageTheme() {
+    Game.stageTheme = (Game.stageTheme === 'beach') ? 'city' : 'beach';
+    const btn = document.getElementById('stageToggleBtn');
+    if (btn) btn.innerText = Game.stageTheme === 'beach' ? '🏖️ Beach' : '🏙️ City';
+}
+
+// --- DRAW STAGE BACKGROUND (BEACH OR METROPOLIS CITY) ---
+function drawStageBackground() {
+    if (Game.stageTheme === 'city') {
+        // --- METROPOLIS CITY THEME (USER SCREENSHOT 2 & LIVE SCREENSHOT) ---
+        // 1. City Sky Gradient
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
+        skyGrad.addColorStop(0, '#7dd3fc');
+        skyGrad.addColorStop(0.6, '#bae6fd');
+        skyGrad.addColorStop(1, '#e0f2fe');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. Distant Clouds
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        for (let c = 0; c < 5; c++) {
+            const cx = ((Game.skyX * 0.25) + (c * 340)) % (width + 300) - 100;
+            ctx.beginPath();
+            ctx.arc(cx, 110, 24, 0, Math.PI * 2);
+            ctx.arc(cx + 25, 100, 32, 0, Math.PI * 2);
+            ctx.arc(cx + 55, 110, 26, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 3. Far Distant Skyscrapers & Chrysler Tower (Screenshot)
+        for (let b = 0; b < 6; b++) {
+            const bx = ((Game.skyX * 0.4) + (b * 260)) % (width + 300) - 80;
+            
+            // Chrysler art deco tower
+            if (b % 3 === 0) {
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(bx, groundY - 240, 55, 140);
+                // Art deco tiered arches
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(bx + 8, groundY - 265, 39, 25);
+                ctx.fillRect(bx + 16, groundY - 290, 23, 25);
+                // Needle Spire
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(bx + 27, groundY - 290);
+                ctx.lineTo(bx + 27, groundY - 330);
+                ctx.stroke();
+            } else {
+                // Flat office skyscraper
+                ctx.fillStyle = '#64748b';
+                ctx.fillRect(bx, groundY - 210, 65, 110);
+            }
+        }
+
+        // 4. Elevated Highway Viaduct & Stone Arches (Screenshot)
+        const viaductY = groundY - 95;
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(0, viaductY, width, 12);
+        for (let a = 0; a < 8; a++) {
+            const ax = ((Game.oceanX * 0.6) + (a * 200)) % (width + 200) - 60;
+            // Arch pillar
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(ax, viaductY, 22, 95);
+            // Arch curve
+            ctx.beginPath();
+            ctx.arc(ax + 100, viaductY + 45, 45, Math.PI, 0);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 14;
+            ctx.stroke();
+        }
+
+        // 5. White 5-Story Building & Red Brick Brownstone (Screenshot)
+        for (let w = 0; w < 4; w++) {
+            const wx = ((Game.treesX * 0.8) + (w * 360)) % (width + 400) - 120;
+            
+            // White 5-Story Modern Building (Exact from user screenshot!)
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(wx, groundY - 170, 115, 170);
+            ctx.fillStyle = '#1e293b'; // black windows
+            for (let fl = 0; fl < 5; fl++) {
+                ctx.fillRect(wx + 10, groundY - 160 + (fl * 30), 95, 12);
+            }
+
+            // Brownstone red brick building
+            ctx.fillStyle = '#991b1b';
+            ctx.fillRect(wx + 130, groundY - 140, 90, 140);
+            ctx.fillStyle = '#fef08a'; // yellow windows
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    ctx.fillRect(wx + 140 + (c * 26), groundY - 130 + (r * 38), 16, 20);
+                }
+            }
+        }
+
+        // 6. Road Barrier & Curb
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, groundY, width, 55);
+
+        // White Dashed Highway Lane Lines (Exact from Screenshot 2)
+        ctx.fillStyle = '#ffffff';
+        for (let d = 0; d < 12; d++) {
+            const dx = ((Game.dist * 3.5) + (d * 140)) % width;
+            ctx.fillRect(width - dx, groundY + 22, 60, 6);
+        }
+
+        // 7. Earth Soil Cross-Section
+        const earthGrad = ctx.createLinearGradient(0, groundY + 55, 0, height);
+        earthGrad.addColorStop(0, '#593214');
+        earthGrad.addColorStop(1, '#2c1808');
+        ctx.fillStyle = earthGrad;
+        ctx.fillRect(0, groundY + 55, width, height - groundY - 55);
+
+        // In-game tutorial banner at bottom (Screenshot 2!)
+        ctx.save();
+        const tutW = 340;
+        const tutH = 65;
+        const tutX = (width - tutW) / 2;
+        const tutY = height - 85;
+
+        // Slime green border
+        ctx.fillStyle = '#65a30d';
+        ctx.beginPath();
+        ctx.roundRect(tutX - 4, tutY - 4, tutW + 8, tutH + 8, 18);
+        ctx.fill();
+
+        // Lime green inside
+        ctx.fillStyle = '#a3e635';
+        ctx.beginPath();
+        ctx.roundRect(tutX, tutY, tutW, tutH, 16);
+        ctx.fill();
+
+        // Tutorial text
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 16px "Outfit", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tap to jump. Press and', tutX + tutW / 2 - 20, tutY + 26);
+        ctx.fillText('hold to jump longer', tutX + tutW / 2 - 20, tutY + 48);
+
+        // Pointing Hand icon (Screenshot 2)
+        ctx.font = '28px sans-serif';
+        ctx.fillText('👆', tutX + tutW - 40, tutY + 44);
+        ctx.restore();
+
+    } else {
+        // --- TROPICAL BEACH THEME (SCREENSHOT 1, 3, 4) ---
+        // 1. Tropical Blue Sky
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
+        skyGrad.addColorStop(0, '#0284c7');
+        skyGrad.addColorStop(0.5, '#38bdf8');
+        skyGrad.addColorStop(1, '#bae6fd');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. Clouds
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        for (let c = 0; c < 4; c++) {
+            const cx = ((Game.skyX * 0.3) + (c * 380)) % (width + 300) - 100;
+            ctx.beginPath();
+            ctx.arc(cx, 100, 26, 0, Math.PI * 2);
+            ctx.arc(cx + 25, 90, 36, 0, Math.PI * 2);
+            ctx.arc(cx + 55, 100, 28, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 3. Turquoise Ocean & Sails
+        const oceanY = groundY - 140;
+        const oceanGrad = ctx.createLinearGradient(0, oceanY, 0, groundY);
+        oceanGrad.addColorStop(0, '#0369a1');
+        oceanGrad.addColorStop(0.6, '#0284c7');
+        oceanGrad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = oceanGrad;
+        ctx.fillRect(0, oceanY, width, 140);
+
+        for (let s = 0; s < 3; s++) {
+            const sx = ((Game.oceanX * 0.4) + (s * 480)) % (width + 200) - 50;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(sx, oceanY + 45);
+            ctx.lineTo(sx + 10, oceanY + 30);
+            ctx.lineTo(sx + 14, oceanY + 45);
+            ctx.fill();
+        }
+
+        // 4. Palm Trees & Beach Houses
+        for (let t = 0; t < 5; t++) {
+            const tx = ((Game.treesX * 0.7) + (t * 320)) % (width + 300) - 100;
+            ctx.fillStyle = '#fed7aa';
+            ctx.fillRect(tx + 40, groundY - 105, 75, 45);
+            ctx.fillStyle = '#e11d48';
+            ctx.beginPath();
+            ctx.moveTo(tx + 30, groundY - 105);
+            ctx.lineTo(tx + 77, groundY - 135);
+            ctx.lineTo(tx + 125, groundY - 105);
+            ctx.fill();
+
+            ctx.fillStyle = '#78350f';
+            ctx.fillRect(tx, groundY - 120, 8, 60);
+            ctx.fillStyle = '#15803d';
+            for (let f = 0; f < 5; f++) {
+                const fa = (f * Math.PI / 3) - 1.2;
+                ctx.beginPath();
+                ctx.ellipse(tx + Math.cos(fa) * 24, groundY - 120 + Math.sin(fa) * 14, 28, 8, fa, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // 5. Barrier & Asphalt Road
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, groundY - 12);
+        ctx.lineTo(width, groundY - 12);
+        ctx.stroke();
+
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(0, groundY, width, 55);
+        ctx.fillStyle = '#facc15';
+        ctx.fillRect(0, groundY + 16, width, 4);
+        ctx.fillRect(0, groundY + 24, width, 4);
+
+        // 6. Earth Soil
+        const earthGrad = ctx.createLinearGradient(0, groundY + 55, 0, height);
+        earthGrad.addColorStop(0, '#593214');
+        earthGrad.addColorStop(1, '#2c1808');
+        ctx.fillStyle = earthGrad;
+        ctx.fillRect(0, groundY + 55, width, height - groundY - 55);
+    }
+}
+
+
+// --- GIANT "TSUNAMI" CHROME BANNER & MEGA WAVE (SCREENSHOT 3) ---
+function drawTsunamiTransformation() {
+    if (Game.mode !== 'tsunami') return;
+
+    ctx.save();
+
+    // Towering Blue Water Wave with Froth (Screenshot 3)
+    const waveGrad = ctx.createLinearGradient(0, groundY - 280, 0, groundY + 55);
+    waveGrad.addColorStop(0, '#06b6d4');
+    waveGrad.addColorStop(0.5, '#0284c7');
+    waveGrad.addColorStop(1, '#0c4a6e');
+
+    ctx.fillStyle = waveGrad;
+    ctx.beginPath();
+    ctx.moveTo(0, groundY + 55);
+    ctx.lineTo(0, groundY - 240);
+
+    for (let x = 0; x <= Game.tsunamiWaveX; x += 24) {
+        const y = groundY - 240 + Math.sin((x / 60) + Date.now() / 150) * 24;
+        ctx.lineTo(x, y);
+    }
+    ctx.lineTo(Game.tsunamiWaveX + 60, groundY + 55);
+    ctx.closePath();
+    ctx.fill();
+
+    // White sea foam spray
+    ctx.fillStyle = '#ffffff';
+    for (let f = 0; f < 10; f++) {
+        const fx = Game.tsunamiWaveX - 40 + (f * 10);
+        const fy = groundY - 230 + Math.sin(f) * 16;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 14, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Retro Angled Speedlines Wipe (Screenshot 3)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    for (let l = 0; l < 8; l++) {
+        ctx.fillRect(0, 160 + (l * 32), width, 4);
+    }
+
+    // Massive 3D Metallic Retro "TSUNAMI" Logo across screen (Screenshot 3!)
+    const logoY = 240;
+    ctx.font = '900 84px "Titan One", "Luckiest Guy", Bungee, cursive';
+    ctx.textAlign = 'center';
+
+    // 3D Black Extrusion Drop
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText('TSUNAMI', width / 2 + 8, logoY + 8);
+    ctx.fillText('TSUNAMI', width / 2 + 6, logoY + 6);
+
+    // Chrome Blue Gradient
+    const chromeGrad = ctx.createLinearGradient(0, logoY - 70, 0, logoY);
+    chromeGrad.addColorStop(0, '#e0f2fe');
+    chromeGrad.addColorStop(0.48, '#38bdf8');
+    chromeGrad.addColorStop(0.52, '#0369a1');
+    chromeGrad.addColorStop(1, '#e0f2fe');
+
+    ctx.fillStyle = chromeGrad;
+    ctx.fillText('TSUNAMI', width / 2, logoY);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3.5;
+    ctx.strokeText('TSUNAMI', width / 2, logoY);
+
+    ctx.restore();
+}
+
+// --- INIT HORDE ---
+function initHorde(count = 1) {
+    Game.zombies = [];
+    const leadX = 260;
+    for (let i = 0; i < count; i++) {
+        Game.zombies.push(new AuthenticZombie(leadX - (i * 24), groundY - 62, i === 0, 'Streamer'));
+    }
+    updateHud();
+}
+
+function updateHud() {
+    document.getElementById('hudCoinsCount').textContent = Game.coins;
+    document.getElementById('hudBrainsCount').textContent = Game.brains;
+    document.getElementById('hudHordeMultiplier').textContent = `x ${Game.zombies.length}`;
+}
+
+// --- SUPER POWERS ---
+function triggerTsunami() {
+    SFX.tsunami();
+    Game.mode = 'tsunami';
+    Game.modeTimer = 14;
+    Game.tsunamiWaveX = -260;
+    showToast('🌊', 'MEGA TSUNAMI!', 'Authentic tidal wave rushing through city!');
+}
+
+function triggerGiantLaser() {
+    SFX.boom();
+    Game.mode = 'giant';
+    Game.modeTimer = 14;
+    Game.laserActive = true;
+    showToast('🤖', 'GIANT MECHA ZOMBIE!', 'Blasting red eye lasers!');
+}
+
+function triggerRose(count = 1) {
+    SFX.chomp();
+    const lead = Game.zombies[0] || { x: 260 };
+    for (let i = 0; i < count; i++) {
+        Game.zombies.push(new AuthenticZombie(lead.x - 30 - ((Game.zombies.length + i) * 22), groundY - 62, false, 'Gifter'));
+    }
+    Game.brains += count;
+    updateHud();
+    showToast('🌹', `Gift: ${count}x Rose!`, `Added +${count} zombie(s) to horde!`);
+}
+
+function forceJump() {
+    SFX.jump();
+    Game.zombies.forEach(z => z.jump());
+}
+
+function togglePause() {
+    Game.paused = !Game.paused;
+}
+
+function showToast(icon, title, desc) {
+    const toast = document.getElementById('liveStreamToast');
+    document.getElementById('toastIcon').textContent = icon;
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastDesc').textContent = desc;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3800);
+}
+
+// --- INPUT LISTENERS ---
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        if (!Game.isJumpingInput) {
+            Game.isJumpingInput = true;
+            SFX.jump();
+            Game.zombies.forEach(z => z.jump(1));
+        }
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        Game.isJumpingInput = false;
+    }
+});
+
+canvas.addEventListener('mousedown', () => {
+    SFX.jump();
+    Game.zombies.forEach(z => z.jump(1));
+});
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    SFX.jump();
+    Game.zombies.forEach(z => z.jump(1));
+}, { passive: false });
+
+// --- GAME LOOP ---
+let lastTime = performance.now();
+
+function gameLoop(now) {
+    const dt = (now - lastTime) / 1000;
+    lastTime = now;
+
+    if (Game.running && !Game.paused) {
+        update(dt);
+    }
+    render();
+    requestAnimationFrame(gameLoop);
+}
+
+function update(dt) {
+    Game.distance += Game.speed * dt * 2.5;
+
+    if (Game.mode !== 'normal') {
+        Game.modeTimer -= dt;
+        if (Game.modeTimer <= 0) {
+            Game.mode = 'normal';
+            Game.laserActive = false;
+        }
+    }
+
+    if (Game.mode === 'tsunami') {
+        Game.tsunamiWaveX += (460 - Game.tsunamiWaveX) * 0.08;
+    }
+
+    // Scenery scroll
+    Game.skyX -= Game.speed * 0.15;
+    Game.oceanX -= Game.speed * 0.3;
+    Game.treesX -= Game.speed * 0.6;
+    Game.roadX -= Game.speed;
+
+    const lead = Game.zombies[0];
+    const leadX = lead ? lead.x : 260;
+
+    Game.zombies.forEach((z, i) => z.update(i, leadX));
+
+    if (Game.zombies.length === 0) {
+        gameOver();
+        return;
+    }
+
+    // Spawning
+    Game.nextObsDist -= Game.speed;
+    if (Game.nextObsDist <= 0) {
+        // Alternate between 3 Giant Naval Mines (Screenshot 1) and Car (Screenshot 2 & 5)
+        if (Math.random() > 0.45) {
+            Game.obstacles.push(new AuthenticCar(width + 60, Math.random() > 0.5));
+        } else {
+            Game.obstacles.push(new NavalMinesCluster(width + 60));
+        }
+        Game.nextObsDist = 380 + Math.random() * 260;
+    }
+
+    Game.nextBlockDist -= Game.speed;
+    if (Game.nextBlockDist <= 0) {
+        Game.mysteryBlocks.push(new MysteryBlock(width + 50, groundY - 110));
+        Game.nextBlockDist = 550 + Math.random() * 350;
+    }
+
+    Game.nextCoinDist -= Game.speed;
+    if (Game.nextCoinDist <= 0) {
+        const cy = groundY - 60 - Math.random() * 70;
+        for (let c = 0; c < 4; c++) {
+            Game.coinsList.push(new GoldCoin(width + 30 + (c * 32), cy));
+        }
+        Game.nextCoinDist = 220 + Math.random() * 240;
+    }
+
+    // --- COLLISIONS ---
+    // 1. Mystery Blocks
+    for (let i = Game.mysteryBlocks.length - 1; i >= 0; i--) {
+        const b = Game.mysteryBlocks[i];
+        b.update();
+        if (!b.collected) {
+            for (let z of Game.zombies) {
+                if (Math.abs(z.x - b.x) < 40 && Math.abs(z.y - b.y) < 50) {
+                    b.collected = true;
+                    SFX.coin();
+                    triggerTsunami();
+                    break;
+                }
+            }
+        }
+        if (b.x < -100) Game.mysteryBlocks.splice(i, 1);
+    }
+
+    // 2. Obstacles
+    for (let i = Game.obstacles.length - 1; i >= 0; i--) {
+        const o = Game.obstacles[i];
+        o.update();
+
+        // Tsunami / Laser destroys everything
+        if ((Game.mode === 'tsunami' || (Game.mode === 'giant' && Game.laserActive)) && o.x < width) {
+            if (o instanceof AuthenticCar) {
+                o.flipped = true;
+                triggerRose(4);
+            } else if (o instanceof NavalMinesCluster) {
+                o.exploded = true;
+            }
+        }
+
+        if (o instanceof NavalMinesCluster && !o.exploded) {
+            for (let z of Game.zombies) {
+                if (z.x + z.width > o.x && z.x < o.x + o.width && z.y + z.height > o.y + 20) {
+                    SFX.boom();
+                    o.exploded = true;
+                    // Mines eliminate 2 zombies
+                    const wipe = Math.min(Game.zombies.length, 2);
+                    Game.zombies.splice(-wipe, wipe);
+                    updateHud();
+                    break;
+                }
+            }
+        } else if (o instanceof AuthenticCar && !o.flipped) {
+            let pushers = 0;
+            for (let z of Game.zombies) {
+                if (z.x + z.width > o.x && z.x < o.x + o.width && z.y + z.height > o.y) {
+                    pushers++;
+                }
+            }
+            o.currentPushers = Math.min(pushers, 4);
+
+            if (pushers >= o.reqZombies) {
+                o.flipped = true;
+                SFX.chomp();
+                triggerRose(4);
+            }
+        }
+
+        if (o.x < -300 || (o instanceof AuthenticCar && o.flipped && o.y < -150)) {
+            Game.obstacles.splice(i, 1);
+        }
+    }
+
+    // 3. Coins
+    for (let i = Game.coinsList.length - 1; i >= 0; i--) {
+        const c = Game.coinsList[i];
+        c.update();
+        for (let z of Game.zombies) {
+            if (Math.abs(z.x - c.x) < 30 && Math.abs(z.y - c.y) < 45) {
+                c.alive = false;
+                SFX.coin();
+                Game.coins += 1;
+                updateHud();
+                break;
+            }
+        }
+        if (!c.alive || c.x < -50) Game.coinsList.splice(i, 1);
+    }
+
+    updateHud();
+}
+
+function render() {
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Stage Background (Beach & Palms)
+    drawStageBackground();
+
+    // 2. Coins
+    Game.coinsList.forEach(c => c.draw(ctx));
+
+    // 3. Mystery Blocks
+    Game.mysteryBlocks.forEach(b => b.draw(ctx));
+
+    // 4. Obstacles (Naval Mines & Cars)
+    Game.obstacles.forEach(o => o.draw(ctx));
+
+    // 5. Tsunami Wave & Logo
+    drawTsunamiTransformation();
+
+    // 6. Zombies
+    Game.zombies.forEach(z => z.draw(ctx));
+}
+
+function gameOver() {
+    Game.running = false;
+    document.getElementById('modalGameOver').classList.add('show');
+    document.getElementById('overBrains').textContent = Game.brains;
+    document.getElementById('overDist').textContent = `${Math.floor(Game.distance)}m`;
+}
+
+function restartGame() {
+    document.getElementById('modalGameOver').classList.remove('show');
+    Game.running = true;
+    Game.coins = 9;
+    Game.brains = 8;
+    Game.distance = 0;
+    Game.mode = 'normal';
+    Game.obstacles = [];
+    Game.coinsList = [];
+    Game.mysteryBlocks = [];
+    initHorde(1);
+}
+
+// Start
+initHorde(1);
+requestAnimationFrame(gameLoop);
+
+</script>
+</body>
+</html>

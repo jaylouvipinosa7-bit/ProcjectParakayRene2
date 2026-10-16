@@ -21,6 +21,7 @@ game_directory.txt
 *.log
 .system_generated/
 scratch/
+core/scratch/
 core/bin/
 *.zip
 
