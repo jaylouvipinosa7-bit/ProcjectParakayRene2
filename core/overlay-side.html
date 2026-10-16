@@ -198,30 +198,9 @@
             box-shadow: 0 0 12px rgba(163, 113, 247, 0.5);
         }
 
-        /* Floating Gear Button (When top bar is hidden) */
+        /* Floating Gear Button (Hidden on overlay per user request) */
         .btn-floating-gear {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(13, 17, 23, 0.85);
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 99998;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.6);
-        }
-        .btn-floating-gear:hover {
-            background: #1f6feb;
-            color: #fff;
-            transform: rotate(45deg) scale(1.08);
+            display: none !important;
         }
 
         /* ==================== 2. SIDE OVERLAY VIEWPORT & WRAPPER ==================== */
@@ -240,7 +219,9 @@
         }
 
         body.hide-controls .side-overlay-viewport {
-            padding-top: 16px;
+            padding: 6px;
+            height: auto;
+            min-height: 100vh;
         }
 
         /* Alignment positions */
@@ -552,6 +533,48 @@
             font-size: 10px;
         }
 
+        /* FULL-BOTTOM ROW CARD TO FILL BOTTOM GAPS */
+        .side-cmd-card.card-fill-bottom-full {
+            grid-column: 1 / -1 !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 5px 14px !important;
+            background: rgba(22, 27, 34, 0.88) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .side-cmd-card.card-fill-bottom-span {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            background: rgba(22, 27, 34, 0.85) !important;
+        }
+
+        .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-details-col,
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-details-col {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            margin: 0 12px !important;
+        }
+
+        .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-label-text,
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-label-text {
+            font-size: 12.5px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+        }
+
+        .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-sub-badge,
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-sub-badge {
+            font-size: 10.5px !important;
+            color: #fbbf24 !important;
+        }
+
         /* ==================== 4. CUSTOMIZATION SETTINGS DRAWER ==================== */
         .settings-drawer {
             position: fixed;
@@ -745,8 +768,8 @@
         </div>
     </header>
 
-    <!-- Floating Gear Button (When top bar is hidden) -->
-    <div class="btn-floating-gear" id="btnFloatingGear" onclick="toggleControlsBar()" title="Show/Hide Controls (Press 'C')">
+    <!-- Floating Gear Button (Hidden on overlay per user request) -->
+    <div class="btn-floating-gear" id="btnFloatingGear" onclick="toggleControlsBar()" style="display: none !important;">
         ⚙
     </div>
 
@@ -1062,11 +1085,26 @@
                 list = list.slice(Math.ceil(list.length / 2));
             }
 
+            const total = list.length;
+            const cols = (currentColumns && currentColumns > 0) ? currentColumns : (cardDisplayMode === 'strip' ? 6 : 2);
+            const rem = total % cols;
+
             list.forEach((card, idx) => {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'side-cmd-card';
                 cardEl.id = `sideCard_${card.id}`;
                 cardEl.onclick = () => triggerCardDonation(card);
+
+                // If this is the last card and there is a gap on the bottom row, fill the full bottom!
+                if (idx === total - 1 && rem !== 0) {
+                    if (rem === 1) {
+                        cardEl.classList.add('card-fill-bottom-full');
+                        cardEl.style.gridColumn = '1 / -1';
+                    } else {
+                        cardEl.classList.add('card-fill-bottom-span');
+                        cardEl.style.gridColumn = `span ${cols - rem + 1}`;
+                    }
+                }
 
                 // Icons & labels
                 const unitImg = card.funcImg || card.unitIcon || 'images/game-icons/pvz/spawn_gatling_pea.webp';
