@@ -2980,6 +2980,70 @@ INSTALLATION INSTRUCTIONS:
             continue
         }
 
+        # 1c-profile. Real TikTok Profile & Avatar Endpoint
+        if ($reqPath -eq '/api/tiktok/profile') {
+            $targetU = if ($request.QueryString["username"]) { ($request.QueryString["username"]).Trim().TrimStart('@') } else { "" }
+            if (-not $targetU) {
+                $cfg = LoadConfig
+                $targetU = if ($cfg.tiktokUsername) { $cfg.tiktokUsername } else { "gohanmalunggay" }
+            }
+
+            # 1. Check live state file or cache
+            $stateFile = Join-Path $folder "tiktok_live_state.json"
+            $cacheFile = Join-Path $folder "tiktok_profile_cache.json"
+            $foundAvatar = ""
+            $foundNick = ""
+
+            if (Test-Path $cacheFile) {
+                try {
+                    $cJson = Get-Content $cacheFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    $uProp = $cJson.PSObject.Properties[$targetU]
+                    if ($uProp -and $uProp.Value -and $uProp.Value.avatar) {
+                        $foundAvatar = [string]$uProp.Value.avatar
+                        if ($uProp.Value.nickname) { $foundNick = [string]$uProp.Value.nickname }
+                    }
+                } catch {}
+            }
+
+            if (-not $foundAvatar -and (Test-Path $stateFile)) {
+                try {
+                    $sJson = Get-Content $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                    if ($sJson.username -and ($sJson.username.ToLower() -eq $targetU.ToLower()) -and $sJson.avatar) {
+                        $foundAvatar = [string]$sJson.avatar
+                        if ($sJson.nickname) { $foundNick = [string]$sJson.nickname }
+                    }
+                } catch {}
+            }
+
+            if ($foundAvatar) {
+                Send-JsonResponse $response @{
+                    success = $true
+                    username = $targetU
+                    nickname = if ($foundNick) { $foundNick } else { $targetU }
+                    avatar = $foundAvatar
+                }
+                continue
+            }
+
+            # 2. Invoke fetch_tiktok_profile.js tool
+            try {
+                $fetcherScript = Join-Path $folder "tools\fetch_tiktok_profile.js"
+                $nodeBin = Join-Path $folder "bin\node.exe"
+                $cmd = if (Test-Path $nodeBin) { $nodeBin } else { "node" }
+                if (Test-Path $fetcherScript) {
+                    $procOut = & $cmd $fetcherScript $targetU 2>$null | Out-String
+                    if ($procOut) {
+                        $pObj = $procOut.Trim() | ConvertFrom-Json
+                        Send-JsonResponse $response $pObj
+                        continue
+                    }
+                }
+            } catch {}
+
+            Send-JsonResponse $response @{ success = $false; username = $targetU; avatar = "" }
+            continue
+        }
+
         # 1d. TikTok Authentication Endpoint
         if ($reqPath -eq '/api/auth/tiktok' -and $request.HttpMethod -eq 'POST') {
             $body = ReadRequestBody $request
@@ -2994,7 +3058,44 @@ INSTALLATION INSTRUCTIONS:
                 }
 
                 $token = "pvz_tk_" + [System.Guid]::NewGuid().ToString("N")
-                $avatar = "https://ui-avatars.com/api/?name=" + [System.Uri]::EscapeDataString($username) + "&background=000000&color=25f4ee&size=128&bold=true"
+                
+                # Fetch Real TikTok Avatar & Nickname
+                $realAvatar = ""
+                $realNickname = ""
+                $cacheFile = Join-Path $folder "tiktok_profile_cache.json"
+                if (Test-Path $cacheFile) {
+                    try {
+                        $cJson = Get-Content $cacheFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        $uProp = $cJson.PSObject.Properties[$username]
+                        if ($uProp -and $uProp.Value -and $uProp.Value.avatar) {
+                            $realAvatar = [string]$uProp.Value.avatar
+                            if ($uProp.Value.nickname) { $realNickname = [string]$uProp.Value.nickname }
+                        }
+                    } catch {}
+                }
+                if (-not $realAvatar) {
+                    try {
+                        $fetcherScript = Join-Path $folder "tools\fetch_tiktok_profile.js"
+                        $nodeBin = Join-Path $folder "bin\node.exe"
+                        $cmd = if (Test-Path $nodeBin) { $nodeBin } else { "node" }
+                        if (Test-Path $fetcherScript) {
+                            $procOut = & $cmd $fetcherScript $username 2>$null | Out-String
+                            if ($procOut) {
+                                $pObj = $procOut.Trim() | ConvertFrom-Json
+                                if ($pObj.success -and $pObj.avatar) {
+                                    $realAvatar = [string]$pObj.avatar
+                                    if ($pObj.nickname) { $realNickname = [string]$pObj.nickname }
+                                }
+                            }
+                        }
+                    } catch {}
+                }
+
+                $avatar = if ($realAvatar) { $realAvatar } else { "https://ui-avatars.com/api/?name=" + [System.Uri]::EscapeDataString($username) + "&background=000000&color=25f4ee&size=128&bold=true" }
+                if ($realNickname -and (-not $data.name -or $data.name -eq "@$username")) {
+                    $displayName = $realNickname
+                }
+
                 $email = "tiktok_$($username.ToLower())@tiktok.live"
 
                 $userRole = Get-UserRole $email
@@ -5825,6 +5926,47 @@ INSTALLATION INSTRUCTIONS:
                         Save-CustomCommunityGifts $script:customCommunityGifts
                     }
                     Send-JsonResponse $response @{ status = "ok"; message = "Community gifts synced"; added = $addedCount; total = $commList.Count }
+                    continue
+                }
+
+                # Check for streamer profile event from TikTok bridge
+                if ($payload.event -eq "streamer_profile") {
+                    $u = if ($payload.username) { [string]$payload.username } else { "" }
+                    $av = if ($payload.avatar) { [string]$payload.avatar } else { "" }
+                    $nick = if ($payload.nickname) { [string]$payload.nickname } else { "" }
+                    if ($u -and $av) {
+                        if (-not $config.streamer) {
+                            $config | Add-Member -NotePropertyName streamer -NotePropertyValue ([PSCustomObject]@{}) -Force
+                        }
+                        if (-not ($config.streamer.PSObject.Properties.Match('streamerAvatar').Count)) {
+                            $config.streamer | Add-Member -NotePropertyName streamerAvatar -NotePropertyValue $av -Force
+                        } else {
+                            $config.streamer.streamerAvatar = $av
+                        }
+                        if ($nick) {
+                            if (-not ($config.streamer.PSObject.Properties.Match('streamerNickname').Count)) {
+                                $config.streamer | Add-Member -NotePropertyName streamerNickname -NotePropertyValue $nick -Force
+                            } else {
+                                $config.streamer.streamerNickname = $nick
+                            }
+                        }
+                        try {
+                            $cfgJson = $config | ConvertTo-Json -Depth 10
+                            [System.IO.File]::WriteAllText($configFile, $cfgJson, [System.Text.Encoding]::UTF8)
+                            $userCfg = Get-UserConfigPath $u
+                            if ($userCfg -and (Test-Path $userCfg) -and ($userCfg -ne $configFile)) {
+                                [System.IO.File]::WriteAllText($userCfg, $cfgJson, [System.Text.Encoding]::UTF8)
+                            }
+                        } catch {}
+
+                        AddEventLog @{
+                            type = "streamer_profile"
+                            username = $u
+                            avatar = $av
+                            nickname = $nick
+                        }
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; message = "Streamer profile updated" }
                     continue
                 }
 

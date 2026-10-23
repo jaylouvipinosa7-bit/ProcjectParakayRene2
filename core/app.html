@@ -12412,8 +12412,9 @@
                 <!-- USER PROFILE BADGE WITH CLICKABLE DROPDOWN (MATCHES USER PHOTO) -->
                 <div class="header-profile-pill" id="headerProfileBadge" onclick="toggleUserAccountDropdown(event)"
                     style="cursor: pointer; position: relative;" title="Active Streamer Account - Click for settings & profile">
-                    <div class="header-avatar-circle" id="headerProfileAvatar" style="background: #10b981; color: #ffffff; font-weight: 800;">
-                        <span>GO</span>
+                    <div class="header-avatar-circle" id="headerProfileAvatar" style="background: #0284c7; color: #ffffff; font-weight: 800; overflow: hidden; padding: 0;" title="Active Streamer Account">
+                        <img id="headerProfileAvatarImg" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&refresh_token=99df98ca&x-expires=1792922400&x-signature=%2BqTmP1WO2r1V%2FXglZ9lCTSEtVH0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                        <span style="display: none;">GO</span>
                     </div>
                     <div class="header-profile-info">
                         <span class="header-profile-name" id="headerProfileUsername">gohanmalunggay</span>
@@ -12426,10 +12427,15 @@
 
                     <!-- AUTHENTIC ACCOUNT DROPDOWN MODAL (MATCHES USER PHOTO) -->
                     <div id="userAccountDropdown" class="user-account-dropdown" onclick="event.stopPropagation()">
-                        <!-- Top Header Row -->
-                        <div class="account-dropdown-topbar">
-                            <div class="account-dropdown-name" id="dropdownUserTitle">Goten</div>
-                            <div class="account-dropdown-sub" id="dropdownUserSubtitle">gohanmalunggay</div>
+                        <!-- Top Header Row with Real TikTok Avatar -->
+                        <div class="account-dropdown-topbar" style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid #10b981; overflow: hidden; flex-shrink: 0; background: #0284c7; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);">
+                                <img id="dropdownUserAvatarImg" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&refresh_token=99df98ca&x-expires=1792922400&x-signature=%2BqTmP1WO2r1V%2FXglZ9lCTSEtVH0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div>
+                                <div class="account-dropdown-name" id="dropdownUserTitle">Goten</div>
+                                <div class="account-dropdown-sub" id="dropdownUserSubtitle">gohanmalunggay</div>
+                            </div>
                         </div>
 
                         <!-- Active Subscription Box (Owner Lifetime) -->
@@ -24940,6 +24946,47 @@
                     }
                 }
 
+                // Real TikTok Avatar & Profile Discovery Helper
+                async function fetchAndApplyRealTikTokAvatar(username) {
+                    if (!username) return;
+                    const clean = username.replace(/^@+/, '').trim();
+                    if (!clean) return;
+
+                    // 1. Instant cache check from localStorage
+                    const cached = localStorage.getItem('pvz_tiktok_avatar_' + clean);
+                    if (cached) {
+                        applyAvatarToUI(cached);
+                    }
+
+                    try {
+                        const res = await fetch('/api/tiktok/profile?username=' + encodeURIComponent(clean));
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.success && data.avatar) {
+                                localStorage.setItem('pvz_tiktok_avatar_' + clean, data.avatar);
+                                applyAvatarToUI(data.avatar);
+                                if (currentUser) {
+                                    currentUser.picture = data.avatar;
+                                    try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser)); } catch (e) {}
+                                }
+                            }
+                        }
+                    } catch (err) {}
+                }
+
+                function applyAvatarToUI(avatarUrl) {
+                    if (!avatarUrl) return;
+                    const headerAvatar = document.getElementById('headerProfileAvatar');
+                    if (headerAvatar) {
+                        headerAvatar.innerHTML = `<img id="headerProfileAvatarImg" src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"><span style="display: none;">GO</span>`;
+                    }
+                    const dropImg = document.getElementById('dropdownUserAvatarImg');
+                    if (dropImg) dropImg.src = avatarUrl;
+
+                    const userAvatarImg = document.getElementById('userAvatarImg');
+                    if (userAvatarImg) userAvatarImg.src = avatarUrl;
+                }
+
                 function updateUserProfileUI(user) {
                     const pill = document.getElementById('userProfilePill');
                     const avatar = document.getElementById('userAvatarImg');
@@ -24966,9 +25013,13 @@
                         // Sync Top-Right Header Profile Bar
                         if (headerUsername) headerUsername.innerText = displayName;
                         if (headerHandle) headerHandle.innerText = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
-                        if (headerAvatar) {
-                            const initials = (displayName.length >= 2 ? displayName.substring(0, 2) : displayName).toUpperCase();
-                            headerAvatar.innerHTML = user.picture ? `<img src="${user.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : `<span>${initials}</span>`;
+                        
+                        // Apply Real TikTok Profile Photo
+                        const cleanTtUser = (user.username || (config && config.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || 'gohanmalunggay').replace(/^@+/, '');
+                        if (user.picture && !user.picture.includes('ui-avatars.com')) {
+                            applyAvatarToUI(user.picture);
+                        } else {
+                            fetchAndApplyRealTikTokAvatar(cleanTtUser);
                         }
 
                         // Determine strict Admin Status
@@ -25976,6 +26027,9 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(config)
                     }).catch(() => {});
+
+                    // Auto-fetch real TikTok profile photo for new username
+                    fetchAndApplyRealTikTokAvatar(val);
 
                     showToast(`✓ TikTok username saved as @${val}`, 'SUCCESS');
                 }
@@ -30181,6 +30235,9 @@
                             if (data.events && data.events.length > 0) {
                                 const ticker = document.getElementById('logTicker');
                                 data.events.forEach(ev => {
+                                    if (ev.type === 'streamer_profile' && ev.avatar) {
+                                        applyAvatarToUI(ev.avatar);
+                                    }
                                     if (ev.type === 'win_widget_update') {
                                         renderWinWidgetData(ev);
                                     }

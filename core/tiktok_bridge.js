@@ -120,6 +120,30 @@ function startConnection() {
         }
     });
 
+    // Auto-discover streamer profile photo & nickname
+    try {
+        if (tiktokConnection && tiktokConnection.webClient && typeof tiktokConnection.webClient.fetchRoomInfoFromHtml === 'function') {
+            tiktokConnection.webClient.fetchRoomInfoFromHtml({ uniqueId: targetUser }).then(res => {
+                if (res && res.user) {
+                    const u = res.user;
+                    const av = u.avatarMedium || u.avatarLarger || u.avatarThumb;
+                    if (av) {
+                        liveState.avatar = av;
+                        liveState.nickname = u.nickname || targetUser;
+                        saveState();
+                        postWebhook({
+                            event: 'streamer_profile',
+                            username: targetUser,
+                            nickname: liveState.nickname,
+                            avatar: av
+                        });
+                        console.log(`[PROFILE] Synced real TikTok Profile Photo for @${targetUser}`);
+                    }
+                }
+            }).catch(() => {});
+        }
+    } catch (e) {}
+
     tiktokConnection.connect().then(async state => {
         isReconnecting = false;
         liveState.connected = true;
