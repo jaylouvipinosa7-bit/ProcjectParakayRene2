@@ -155,39 +155,65 @@ namespace RENEarnStudio
 
             string dashboardUrl = "http://localhost:8080/app.html";
 
-            // 1. Close existing duplicate server sessions
+            // 1. Check if server is already running and responding
+            bool serverAlreadyRunning = false;
             try
             {
-                ProcessStartInfo killPsi = new ProcessStartInfo();
-                killPsi.FileName = "powershell.exe";
-                killPsi.Arguments = "-NoProfile -Command \"Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*server.ps1*' -and $_.ProcessId -ne " + Process.GetCurrentProcess().Id + " } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }\"";
-                killPsi.WindowStyle = ProcessWindowStyle.Hidden;
-                killPsi.CreateNoWindow = true;
-                killPsi.UseShellExecute = false;
-                Process p = Process.Start(killPsi);
-                p.WaitForExit(3000);
+                HttpWebRequest ping = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:8080/api/status");
+                ping.Timeout = 400;
+                using (WebResponse r = ping.GetResponse()) { serverAlreadyRunning = true; }
             }
             catch { }
 
-            // 2. Start server.ps1 in background
-            try
+            // 2. Only start server.ps1 if not already running
+            if (!serverAlreadyRunning)
             {
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "powershell.exe";
-                psi.Arguments = "-NoProfile -ExecutionPolicy Bypass -File \"" + serverScript + "\"";
-                psi.WorkingDirectory = Path.GetDirectoryName(serverScript);
-                psi.WindowStyle = ProcessWindowStyle.Hidden;
-                psi.CreateNoWindow = true;
-                psi.UseShellExecute = false;
-                serverProc = Process.Start(psi);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Failed to start server: " + ex.Message, "RENEarn Studio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                try
+                {
+                    ProcessStartInfo killPsi = new ProcessStartInfo();
+                    killPsi.FileName = "powershell.exe";
+                    killPsi.Arguments = "-NoProfile -Command \"Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*server.ps1*' -and $_.ProcessId -ne " + Process.GetCurrentProcess().Id + " } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }\"";
+                    killPsi.WindowStyle = ProcessWindowStyle.Hidden;
+                    killPsi.CreateNoWindow = true;
+                    killPsi.UseShellExecute = false;
+                    Process p = Process.Start(killPsi);
+                    p.WaitForExit(2000);
+                }
+                catch { }
+
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "powershell.exe";
+                    psi.Arguments = "-NoProfile -ExecutionPolicy Bypass -File \"" + serverScript + "\"";
+                    psi.WorkingDirectory = Path.GetDirectoryName(serverScript);
+                    psi.WindowStyle = ProcessWindowStyle.Hidden;
+                    psi.CreateNoWindow = true;
+                    psi.UseShellExecute = false;
+                    serverProc = Process.Start(psi);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to start server: " + ex.Message, "RENEarn Studio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
-            Thread.Sleep(1200);
+            // Wait dynamically until server is listening and ready to serve app.html
+            for (int i = 0; i < 60; i++)
+            {
+                try
+                {
+                    HttpWebRequest ping = (HttpWebRequest)WebRequest.Create(dashboardUrl);
+                    ping.Timeout = 250;
+                    using (WebResponse r = ping.GetResponse()) { }
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(100);
+                }
+            }
 
             // 3. Find Edge or Chrome to launch as an App Window (Frameless desktop app mode)
             string edgePath = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
@@ -203,7 +229,7 @@ namespace RENEarnStudio
             {
                 ProcessStartInfo bPsi = new ProcessStartInfo();
                 bPsi.FileName = targetBrowser;
-                bPsi.Arguments = "--app=\"" + dashboardUrl + "\" --user-data-dir=\"" + profileDir + "\" --window-size=1440,900 --app-id=renearn-studio";
+                bPsi.Arguments = "--app=\"" + dashboardUrl + "\" --user-data-dir=\"" + profileDir + "\" --window-size=1440,900 --app-id=renearn-studio --background-color=#090a0f --force-dark-mode";
                 bPsi.UseShellExecute = false;
                 Process.Start(bPsi);
             }
@@ -267,7 +293,7 @@ namespace RENEarnStudio
                 }
             };
 
-            trayIcon.ShowBalloonTip(3000, "RENEarn Studio", "Live Stream Studio is ready!\nAlt + - : LOSE / Score -1\nAlt + = : WIN / Score +1", ToolTipIcon.Info);
+            // (Startup balloon notification removed to keep startup clean and quiet)
 
             // Install low-level keyboard hook
             GlobalKeyboardHook.Install();

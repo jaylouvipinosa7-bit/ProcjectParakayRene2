@@ -674,12 +674,18 @@
                     Full control over appearance styles (Classic, Cute Kawaii, Neon, Luxury), avatars, position, and counts. Add the generated Browser Source URLs directly into OBS Studio or TikTok LIVE Studio!
                 </p>
             </div>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn btn-gold" onclick="populateSampleData()">
                     ✨ Populate Sample Top 10
                 </button>
+                <button class="btn" onclick="resetLeaderboard('coins')" style="color: #fbbf24; border-color: rgba(251,191,36,0.6); background: rgba(251,191,36,0.1);">
+                    🪙 Reset Coins
+                </button>
+                <button class="btn" onclick="resetLeaderboard('likes')" style="color: #f43f5e; border-color: rgba(244,63,94,0.6); background: rgba(244,63,94,0.1);">
+                    ❤️ Reset TapTap / Likes
+                </button>
                 <button class="btn" onclick="resetLeaderboard('all')" style="color: #f87171;">
-                    🗑️ Reset Rankings
+                    🗑️ Reset All
                 </button>
             </div>
         </section>
@@ -711,6 +717,9 @@
             </button>
             <button class="nav-tab-btn" onclick="switchStudioTab('top-donators')">
                 🎀 Top Donators (Cute Card)
+            </button>
+            <button class="nav-tab-btn" onclick="switchStudioTab('primal-hud')">
+                🌋 Primal Sci-Fi Live HUD & Leaderboard
             </button>
             <button class="nav-tab-btn" onclick="switchStudioTab('avatar-studio')">
                 🎨 Avatar & Appearance Studio
@@ -754,6 +763,8 @@
                         <div class="control-group">
                             <label class="control-label">Style</label>
                             <select id="coinsStyle" class="select-input" onchange="onSettingChanged()">
+                                <option value="groudon">🌋 Primal Groudon</option>
+                                <option value="anime">🌸 Anime Sakura</option>
                                 <option value="classic">Classic</option>
                                 <option value="cute">Cute</option>
                                 <option value="neon">Neon</option>
@@ -806,6 +817,8 @@
                         <div class="control-group">
                             <label class="control-label">Style</label>
                             <select id="likesStyle" class="select-input" onchange="onSettingChanged()">
+                                <option value="groudon">🌋 Primal Groudon</option>
+                                <option value="anime">🌸 Anime Sakura</option>
                                 <option value="classic">Classic</option>
                                 <option value="cute">Cute</option>
                                 <option value="neon">Neon</option>
@@ -882,6 +895,68 @@
                 <!-- Cute Card Live Preview Pane -->
                 <div class="preview-pane" style="min-height: 540px;">
                     <iframe id="previewDonators" class="preview-iframe" style="height: 540px;" src="/overlay-leaderboard.html?type=donators&style=cute"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================================================
+             TAB: PRIMAL SCI-FI LIVE HUD & LEADERBOARD (PHOTO 1)
+             ========================================================================= -->
+        <div id="tab-primal-hud" style="display: none;">
+            <div class="widget-box" style="border: 1.5px solid rgba(255, 30, 66, 0.45); box-shadow: 0 0 30px rgba(255, 30, 66, 0.15);">
+                <div class="widget-box-header">
+                    <div class="widget-box-title">
+                        <span>🌋</span>
+                        <span>Primal Sci-Fi Live HUD Suite (Top Donators, Milestones & Spotlights)</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="/groudon-hud-overlay.html" target="_blank" class="btn btn-primary"
+                            style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; padding: 4px 10px;">
+                            ↗ Popout HUD
+                        </a>
+                        <button class="btn-test" onclick="simulateTest('coins', 1000, 'GroudonKing')">test +1k</button>
+                    </div>
+                </div>
+
+                <div class="url-box-row">
+                    <input type="text" id="urlPrimalHudCustomizer" class="url-input" readonly
+                        value="http://localhost:8080/groudon-hud-overlay.html">
+                    <button class="btn-copy" onclick="copyUrl('urlPrimalHudCustomizer')">Copy</button>
+                    <button class="btn-refresh" onclick="refreshPreview('primal-hud')">Refresh</button>
+                </div>
+
+                <div class="controls-row">
+                    <div class="control-group">
+                        <label class="control-label">View Layout Mode</label>
+                        <select id="primalViewModeCustomizer" class="select-input" onchange="onPrimalSettingChanged()">
+                            <option value="all" selected>Full 1080p HUD Suite (Photo 1)</option>
+                            <option value="leaderboard">🏆 Top Donators Leaderboard Only</option>
+                            <option value="counters">⚡ Tap-Taps & Coin Counters Only</option>
+                            <option value="spotlight">👑 Top Gift & Streak Spotlights</option>
+                            <option value="goal">🎯 Milestone & Goal Progress Bar</option>
+                            <option value="vertical">📱 Vertical Stream Strip</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Theme</label>
+                        <select id="primalThemeCustomizer" class="select-input" onchange="onPrimalSettingChanged()">
+                            <option value="dual" selected>Magma Red & Plasma Blue</option>
+                            <option value="magma">🌋 Magma Pure Red</option>
+                            <option value="plasma">⚡ Plasma Electric Blue</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Stream Capture Clean Mode</label>
+                        <select id="primalCleanCustomizer" class="select-input" onchange="onPrimalSettingChanged()">
+                            <option value="0" selected>Clean (Hide Simulator Panel for OBS)</option>
+                            <option value="1">Show Simulator Panel (Dev Mode)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="preview-box" style="min-height: 560px; background: #070b14; border-radius: 10px; overflow: hidden; padding: 0;">
+                    <iframe id="previewPrimalHudCustomizer" style="width: 100%; height: 560px; border: none; background: transparent;"
+                        src="/groudon-hud-overlay.html"></iframe>
                 </div>
             </div>
         </div>
@@ -1014,10 +1089,29 @@
         function switchStudioTab(tabId) {
             document.getElementById('tab-ranking-widgets').style.display = tabId === 'ranking-widgets' ? 'block' : 'none';
             document.getElementById('tab-top-donators').style.display = tabId === 'top-donators' ? 'block' : 'none';
+            document.getElementById('tab-primal-hud').style.display = tabId === 'primal-hud' ? 'block' : 'none';
             document.getElementById('tab-avatar-studio').style.display = tabId === 'avatar-studio' ? 'block' : 'none';
 
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
+            if (tabId === 'primal-hud') onPrimalSettingChanged();
+        }
+
+        function onPrimalSettingChanged() {
+            const host = window.location.origin;
+            const view = (document.getElementById('primalViewModeCustomizer') || {}).value || 'all';
+            const theme = (document.getElementById('primalThemeCustomizer') || {}).value || 'dual';
+            const clean = (document.getElementById('primalCleanCustomizer') || {}).value || '0';
+            let query = [];
+            if (view !== 'all') query.push('view=' + encodeURIComponent(view));
+            if (theme !== 'dual') query.push('theme=' + encodeURIComponent(theme));
+            if (clean === '0') query.push('test=0');
+            const qs = query.length ? ('?' + query.join('&')) : '';
+            const fullUrl = host + '/groudon-hud-overlay.html' + qs;
+            const inp = document.getElementById('urlPrimalHudCustomizer');
+            if (inp) inp.value = fullUrl;
+            const ifr = document.getElementById('previewPrimalHudCustomizer');
+            if (ifr) ifr.src = fullUrl;
         }
 
         // Setup URL Fields

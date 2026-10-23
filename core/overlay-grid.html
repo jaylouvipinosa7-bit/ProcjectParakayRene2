@@ -7,12 +7,13 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" href="/app_icon.png">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <script src="cards-data.js"></script>
+    <script src="stream-keepalive.js"></script>
     <style>
         :root {
-            --cell-width: 82px;
-            --cell-height: 52px;
-            --grid-cols: 14;
+            --cell-width: 90px;
+            --cell-height: 58px;
+            --grid-cols: 10;
             --scale-factor: 1;
         }
 
@@ -26,7 +27,7 @@
         body {
             background: transparent;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
+            overflow: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -136,23 +137,23 @@
         }
 
         .zone-pink {
-            width: 28%;
-            background: linear-gradient(135deg, rgba(244, 114, 182, 0.55) 0%, rgba(236, 72, 153, 0.35) 100%);
+            width: 30%;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.6) 0%, rgba(236, 72, 153, 0.4) 100%);
         }
 
         .zone-purple {
-            width: 14%;
-            background: linear-gradient(135deg, rgba(192, 132, 252, 0.55) 0%, rgba(168, 85, 247, 0.35) 100%);
+            width: 10%;
+            background: linear-gradient(135deg, rgba(192, 132, 252, 0.6) 0%, rgba(168, 85, 247, 0.4) 100%);
         }
 
         .zone-yellow {
-            width: 43%;
-            background: linear-gradient(135deg, rgba(250, 204, 21, 0.55) 0%, rgba(234, 179, 8, 0.35) 100%);
+            width: 40%;
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.6) 0%, rgba(234, 179, 8, 0.4) 100%);
         }
 
         .zone-blue {
-            width: 15%;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.55) 0%, rgba(14, 165, 233, 0.35) 100%);
+            width: 20%;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.6) 0%, rgba(14, 165, 233, 0.4) 100%);
         }
 
         /* Grid of cells */
@@ -160,40 +161,124 @@
             position: relative;
             z-index: 2;
             display: grid;
-            grid-template-columns: repeat(var(--grid-cols, 14), var(--cell-width, 82px));
+            grid-template-columns: repeat(var(--grid-cols, 10), var(--cell-width, 90px));
             gap: 1px;
             background: rgba(255, 255, 255, 0.14);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .grid-cell {
-            height: var(--cell-height, 52px);
+            height: var(--cell-height, 58px);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 4px 6px;
+            padding: 3px 4px 2px 4px;
             background: rgba(18, 22, 28, 0.52);
             backdrop-filter: blur(4px);
             position: relative;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             overflow: hidden;
-        }
-
-        .grid-cell:hover {
-            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
         }
 
         .grid-cell.active-trigger {
-            animation: cellPulse 0.8s ease;
-            background: rgba(255, 255, 255, 0.35);
-            box-shadow: inset 0 0 12px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.8);
-            z-index: 10;
+            animation: cellGlowPulse 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.45) 0%, rgba(168, 85, 247, 0.45) 100%) !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 35px #38bdf8, 0 0 65px rgba(168, 85, 247, 0.85), inset 0 0 20px rgba(255, 255, 255, 0.8) !important;
+            z-index: 100 !important;
+            outline: 2px solid rgba(56, 189, 248, 0.95);
+            outline-offset: 1px;
         }
 
-        @keyframes cellPulse {
-            0% { transform: scale(1); filter: brightness(1); }
-            35% { transform: scale(1.15); filter: brightness(1.7); }
-            100% { transform: scale(1); filter: brightness(1); }
+        .grid-cell.active-trigger .cell-unit-img {
+            animation: unitBounceGlow 2.6s ease;
+            filter: drop-shadow(0 0 12px #38bdf8) brightness(1.35) !important;
+        }
+
+        .grid-cell.active-trigger .cell-trig-wrap {
+            animation: triggerIconPop 2.6s ease;
+            filter: drop-shadow(0 0 14px #fde047) brightness(1.35) !important;
+        }
+
+        .grid-cell.active-trigger .cell-label {
+            color: #ffffff !important;
+            text-shadow: 0 0 10px #38bdf8, 0 0 16px #a855f7, 0 1px 3px rgba(0,0,0,1) !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.2px;
+        }
+
+        @keyframes cellGlowPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(56, 189, 248, 0);
+                filter: brightness(1);
+            }
+            15% {
+                transform: scale(1.22);
+                box-shadow: 0 0 45px #38bdf8, 0 0 80px rgba(168, 85, 247, 0.9), inset 0 0 25px rgba(255, 255, 255, 0.9);
+                filter: brightness(1.6);
+            }
+            35% {
+                transform: scale(1.10);
+                box-shadow: 0 0 30px #38bdf8, 0 0 55px rgba(56, 189, 248, 0.75), inset 0 0 18px rgba(56, 189, 248, 0.6);
+                filter: brightness(1.35);
+            }
+            55% {
+                transform: scale(1.15);
+                box-shadow: 0 0 38px #a855f7, 0 0 70px rgba(56, 189, 248, 0.85), inset 0 0 22px rgba(255, 255, 255, 0.85);
+                filter: brightness(1.45);
+            }
+            75% {
+                transform: scale(1.05);
+                box-shadow: 0 0 22px rgba(56, 189, 248, 0.7), 0 0 40px rgba(168, 85, 247, 0.55), inset 0 0 14px rgba(56, 189, 248, 0.4);
+                filter: brightness(1.2);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+                filter: brightness(1);
+            }
+        }
+
+        @keyframes unitBounceGlow {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.28) rotate(-6deg); }
+            35% { transform: scale(1.12) rotate(4deg); }
+            55% { transform: scale(1.20) rotate(-3deg); }
+            75% { transform: scale(1.06); }
+        }
+
+        @keyframes triggerIconPop {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.38) rotate(12deg); }
+            35% { transform: scale(1.15) rotate(-6deg); }
+            55% { transform: scale(1.24) rotate(6deg); }
+            75% { transform: scale(1.08); }
+        }
+
+        .cell-top-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .cell-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #ef4444;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            line-height: 1.1;
+            margin-top: 1px;
+            letter-spacing: -0.2px;
         }
 
         /* Left: In-game Unit Icon */
@@ -357,20 +442,57 @@
 
         // Check standalone / OBS query parameter
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('standalone') === 'true' || urlParams.get('obs') === 'true') {
+        if (urlParams.get('standalone') === 'true' || urlParams.get('obs') === 'true' || urlParams.get('inapp') === 'true') {
             document.getElementById('controlBar').classList.add('hidden');
         }
         if (urlParams.get('cols')) {
             setCols(parseInt(urlParams.get('cols')));
         }
 
-        async function loadCards() {
+        async function loadCards(force = false) {
             try {
-                const res = await fetch('/api/cards');
-                cards = await res.json();
+                const res = await fetch(`/cards.json?t=${Date.now()}`);
+                if (res.ok) {
+                    const text = await res.text();
+                    const clean = text.replace(/^\uFEFF/, '').trim();
+                    const data = JSON.parse(clean);
+                    if (Array.isArray(data) && data.length > 0) {
+                        cards = data;
+                        renderGrid();
+                        return;
+                    }
+                }
+            } catch (err) { }
+
+            try {
+                const res2 = await fetch(`/api/config?t=${Date.now()}`);
+                if (res2.ok) {
+                    const conf = await res2.json();
+                    if (conf && conf.gifts && Array.isArray(conf.gifts)) {
+                        cards = conf.gifts.map(g => ({
+                            id: String(g.id),
+                            action: g.action || (g.triggerType === 'likes_all' ? 'LikeAmount' : (g.triggerType === 'likes_person' ? 'LikeForEach' : (g.triggerType === 'follow' ? 'Follow' : (g.triggerType === 'share' ? 'Share' : 'SelectedGift')))),
+                            giftId: g.giftId || '',
+                            giftName: g.giftName || 'Gift',
+                            funcName: (g.label && g.label !== 'Custom') ? g.label : ((g.functionName && g.functionName !== 'Custom') ? g.functionName : (g.command || 'Action')),
+                            funcImg: (g.unitIcon && !g.unitIcon.includes('func_2')) ? g.unitIcon : (g.command ? `images/game-icons/pvz/${g.command}.webp` : 'images/func_2.png'),
+                            trigImg: g.icon || 'images/tiktok-gifts/5655_rose.webp',
+                            triggerValue: g.triggerValue || (g.likeThreshold ? String(g.likeThreshold) : ''),
+                            commands: g.command || '',
+                            hideInOverlay: (g.hideInOverlay === true || g.triggerType === 'custom' || g.actionType === 'custom'),
+                            triggerType: g.triggerType || 'gift',
+                            actionType: g.actionType || 'zombie'
+                        }));
+                        renderGrid();
+                        return;
+                    }
+                }
+            } catch (e2) { }
+
+            // Final fallback to static cardsData only if network fails
+            if (typeof cardsData !== 'undefined' && Array.isArray(cardsData) && cardsData.length > 0) {
+                cards = cardsData;
                 renderGrid();
-            } catch (err) {
-                console.error("Failed to load cards:", err);
             }
         }
 
@@ -379,16 +501,30 @@
             if (!grid || !cards) return;
             grid.innerHTML = '';
 
-            cards.forEach(card => {
+            const validCards = (cards || []).filter(c => {
+                if (!c) return false;
+                // Exclude any card explicitly hidden in overlay
+                if (c.hideInOverlay === true || c.hideInOverlay === 'true') return false;
+                // Exclude all custom commands, custom triggers, and internal game triggers
+                if (c.triggerType === 'custom' || c.actionType === 'custom' || c.action === 'Custom' || c.action === 'custom' || String(c.id) === '59') {
+                    return false;
+                }
+                return true;
+            });
+
+            validCards.forEach(card => {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell';
                 cell.id = `cell_${card.id}`;
-                cell.title = `${card.giftName} -> ${card.funcName}`;
+                cell.title = `${card.giftName || ''} -> ${card.funcName || ''}`;
+
+                const topRow = document.createElement('div');
+                topRow.className = 'cell-top-row';
 
                 // Left: Unit Image
                 const unitImg = document.createElement('img');
                 unitImg.className = 'cell-unit-img';
-                unitImg.src = card.funcImg || 'images/func_2.png';
+                unitImg.src = card.funcImg || card.unitIcon || 'images/func_2.png';
                 unitImg.onerror = () => { unitImg.src = 'images/func_2.png'; };
 
                 // Right: Trigger Image or Pill Badge
@@ -416,37 +552,96 @@
                     pill.className = 'pill-follow';
                     pill.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>`;
                     trigWrap.appendChild(pill);
+                } else if (cardAct === 'Custom' || cardAct === 'Share' || card.triggerType === 'custom' || trigVal === 'event' || trigVal === 'custom') {
+                    // Custom Event
+                    const trigImg = document.createElement('img');
+                    trigImg.className = 'cell-trig-img';
+                    trigImg.src = card.trigImg || card.icon || 'images/game-icons/stream/custom_action.webp';
+                    trigImg.onerror = () => { trigImg.src = 'images/game-icons/stream/custom_action.webp'; };
+                    trigWrap.appendChild(trigImg);
                 } else {
                     // TikTok Gift Icon
                     const trigImg = document.createElement('img');
                     trigImg.className = 'cell-trig-img';
-                    trigImg.src = card.trigImg || 'images/tiktok-gifts/5655_rose.webp';
+                    trigImg.src = card.trigImg || card.icon || 'images/tiktok-gifts/5655_rose.webp';
                     trigImg.onerror = () => { trigImg.src = 'images/tiktok-gifts/5655_rose.webp'; };
                     trigWrap.appendChild(trigImg);
                 }
 
-                cell.appendChild(unitImg);
-                cell.appendChild(trigWrap);
+                topRow.appendChild(unitImg);
+                topRow.appendChild(trigWrap);
+                cell.appendChild(topRow);
+
+                // Bottom label (matching Photo 3)
+                const labelEl = document.createElement('div');
+                labelEl.className = 'cell-label';
+                const displayName = card.label || card.subLabel || card.nickname || card.customName || card.giftName || card.funcName || 'Custom';
+                labelEl.innerText = displayName;
+                cell.appendChild(labelEl);
+
                 grid.appendChild(cell);
             });
         }
 
-        // Live Event Polling for pulse/glow animation
+        // Live Event Polling for pulse/glow animation (Unthrottled WorkerTicker)
         function startEventPolling() {
-            setInterval(async () => {
+            let isPolling = false;
+            async function poll() {
+                if (isPolling) return;
+                isPolling = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const res = await fetch(`/api/events?since=${lastEventTime}`);
+                    const res = await fetch(`/api/events?since=${lastEventTime}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) return;
                     const data = await res.json();
                     if (data.serverTime) lastEventTime = data.serverTime;
 
                     if (data.events && data.events.length > 0) {
                         data.events.forEach(ev => {
+                            if (ev.type === 'config_updated' || ev.type === 'cards_updated' || ev.type === 'cards_refresh') {
+                                loadCards(true);
+                            }
                             if (ev.hideInOverlay) return;
                             highlightTrigger(ev);
                         });
                     }
-                } catch {}
-            }, 300);
+                } catch (e) {
+                } finally {
+                    clearTimeout(timeoutId);
+                    isPolling = false;
+                }
+            }
+
+            if (typeof window.createWorkerTicker === 'function') {
+                window.createWorkerTicker(poll, 150);
+            } else {
+                setInterval(poll, 200);
+            }
+
+            // Realtime BroadcastChannel for instantaneous cross-tab updates
+            try {
+                const bc = new BroadcastChannel('renearn_overlay_events');
+                bc.onmessage = (e) => {
+                    if (!e || !e.data) return;
+                    if (e.data.type === 'cards_updated' || e.data.type === 'config_updated' || e.data.type === 'counts_reset') {
+                        loadCards(true);
+                    }
+                };
+            } catch (e) { }
+
+            // Realtime Storage listener
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'renearn_cards_updated' || e.key === 'renearn_cached_config') {
+                    loadCards(true);
+                }
+            });
+
+            // Periodic auto-sync fallback (ensures OBS is 100% synchronized)
+            setInterval(() => {
+                loadCards(true);
+            }, 3000);
         }
 
         function highlightTrigger(ev) {
@@ -459,9 +654,14 @@
             if (targetCardId) {
                 const cell = document.getElementById(`cell_${targetCardId}`);
                 if (cell) {
+                    if (cell.__activeTimeout) clearTimeout(cell.__activeTimeout);
                     cell.classList.remove('active-trigger');
                     void cell.offsetWidth;
                     cell.classList.add('active-trigger');
+                    cell.__activeTimeout = setTimeout(() => {
+                        cell.classList.remove('active-trigger');
+                        cell.__activeTimeout = null;
+                    }, 2650);
                 }
             }
         }

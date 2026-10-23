@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
     <script src="wheel-engine.js"></script>
     <script src="renearn-command-engine.js"></script>
+    <script src="stream-keepalive.js"></script>
     <style>
         :root {
             --pvz-green: #10b981;
@@ -330,11 +331,45 @@
             color: #fef08a !important;
             border: 1px solid #fde047 !important;
         }
+        /* 2. Groudon Neon Magma Theme in Overlay */
+        .s2e-reel-card.theme-groudon_magma,
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card,
         .s2e-reel-card.theme-neon_cyber,
         .s2e-reel-track.theme-neon_cyber .s2e-reel-card {
-            background: linear-gradient(180deg, #090d16 0%, #03060a 100%) !important;
-            border: 2px solid #00f0ff !important;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.2) !important;
+            background: linear-gradient(180deg, #180509 0%, #0a0204 100%) !important;
+            border: 2px solid #ff2247 !important;
+            box-shadow: 0 0 22px rgba(255, 34, 71, 0.65), 0 0 10px rgba(255, 107, 0, 0.4), inset 0 0 14px rgba(255, 34, 71, 0.25) !important;
+        }
+        .s2e-reel-card.theme-groudon_magma .rarity-tag,
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card .rarity-tag,
+        .s2e-reel-card.theme-neon_cyber .rarity-tag,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card .rarity-tag {
+            background: rgba(255, 34, 71, 0.22) !important;
+            color: #ff3b60 !important;
+            border: 1px solid #ff2247 !important;
+            text-shadow: 0 0 10px #ff2247 !important;
+            box-shadow: 0 0 8px rgba(255, 34, 71, 0.45) !important;
+        }
+
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card.rarity-mythic,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card.rarity-mythic {
+            border-color: #ff1744 !important;
+            box-shadow: 0 0 24px rgba(255, 23, 68, 0.8), inset 0 0 14px rgba(255, 23, 68, 0.35) !important;
+        }
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card.rarity-legendary,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card.rarity-legendary {
+            border-color: #ff9100 !important;
+            box-shadow: 0 0 24px rgba(255, 145, 0, 0.8), inset 0 0 14px rgba(255, 145, 0, 0.35) !important;
+        }
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card.rarity-epic,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card.rarity-epic {
+            border-color: #e11d48 !important;
+            box-shadow: 0 0 22px rgba(225, 29, 72, 0.75), inset 0 0 12px rgba(225, 29, 72, 0.3) !important;
+        }
+        .s2e-reel-track.theme-groudon_magma .s2e-reel-card.rarity-rare,
+        .s2e-reel-track.theme-neon_cyber .s2e-reel-card.rarity-rare {
+            border-color: #ff5722 !important;
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.7), inset 0 0 12px rgba(255, 87, 34, 0.3) !important;
         }
         .s2e-reel-card.theme-obsidian_luxury,
         .s2e-reel-track.theme-obsidian_luxury .s2e-reel-card {
@@ -671,8 +706,16 @@
             dock.innerHTML = '';
             if (!config || !config.gifts) return;
 
-            // Render top 5 active gifts
-            config.gifts.filter(g => g.enabled !== false).slice(0, 6).forEach(gift => {
+            // Render active gifts
+            const urlParams = new URLSearchParams(window.location.search);
+            const overlayLimit = parseInt(urlParams.get('limit')) || 12;
+            const activeGifts = config.gifts.filter(g => {
+                if (!g || g.enabled === false) return false;
+                if (g.hideInOverlay === true || g.hideInOverlay === 'true') return false;
+                if (g.triggerType === 'custom' || g.actionType === 'custom' || g.action === 'custom' || g.action === 'Custom' || String(g.id) === '59') return false;
+                return true;
+            });
+            activeGifts.slice(0, overlayLimit).forEach(gift => {
                 const card = document.createElement('div');
                 card.id = `overlayCard_${gift.id}`;
                 card.className = `s2e-card ${gift.actionType}-side`;
@@ -680,17 +723,21 @@
                 const actionEmoji = getActionEmoji(gift.actionType);
                 const currentCount = counts[gift.id] || 0;
 
-                const unitImgSrc = gift.unitIcon || ('images/game-icons/pvz/' + (gift.command ? gift.command.split(';')[0].trim() : '') + '.webp');
-                const giftIconSrc = gift.icon || 'images/tiktok-gifts/5655_rose.webp';
+                const isCustom = gift.triggerType === 'custom' || gift.actionType === 'custom' || (gift.giftName && gift.giftName.toLowerCase().includes('custom'));
+                const unitImgSrc = (gift.unitIcon || ('images/game-icons/pvz/' + (gift.command ? gift.command.split(';')[0].trim() : '') + '.webp')).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
+                let giftIconSrc = (gift.icon || (isCustom ? 'images/game-icons/stream/custom_action.webp' : 'images/tiktok-gifts/18508_mystery_box.webp')).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
+                if (giftIconSrc === 'images/trig_3.svg') giftIconSrc = 'images/trig_3.webp';
+                if (isCustom && (giftIconSrc === 'images/trig_1.svg' || !giftIconSrc)) giftIconSrc = 'images/game-icons/stream/custom_action.webp';
 
                 card.innerHTML = `
                     <div class="card-trigger-section">
-                        <div class="trigger-icon-box">
-                            <img src="${giftIconSrc}" class="trigger-icon-img" alt="" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                        <div class="trigger-icon-box" ${isCustom ? 'style="border-color: rgba(245, 158, 11, 0.6); box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);"' : ''}>
+                            <img src="${giftIconSrc}" class="trigger-icon-img" alt="" onerror="this.src='${isCustom ? 'images/game-icons/stream/custom_action.webp' : 'images/tiktok-gifts/18508_mystery_box.webp'}'">
                         </div>
                         <div class="trigger-meta">
-                            <div class="trigger-title">${gift.giftName}</div>
+                            <div class="trigger-title">${gift.giftName || (isCustom ? 'TikTok Custom Event' : 'Trigger')}</div>
                             <div class="trigger-subtitle">${(() => {
+                                if (isCustom) return 'Custom Event';
                                 if (String(gift.id) === '1' || gift.eventType === 'team_plants_likes') return `Every ${gift.likeThreshold || 50} Likes (Team Plants)`;
                                 if (String(gift.id) === '2' || gift.eventType === 'team_zombies_likes') return `Every ${gift.likeThreshold || 50} Likes (Team Zombies)`;
                                 if (String(gift.id) === '3' || gift.eventType === 'total_likes' || (gift.giftName && gift.giftName.toLowerCase().includes('total likes'))) {
@@ -736,9 +783,18 @@
                 };
             } catch (e) {}
 
-            setInterval(async () => {
+            let isPolling = false;
+            let isSyncing = false;
+
+            async function poll() {
+                if (isPolling) return;
+                isPolling = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
+                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) return;
                     const data = await res.json();
                     if (data.serverTime) lastEventTimestamp = data.serverTime;
 
@@ -747,13 +803,22 @@
                             handleLiveEvent(ev);
                         });
                     }
-                } catch {}
-            }, 400);
+                } catch (e) {
+                } finally {
+                    clearTimeout(timeoutId);
+                    isPolling = false;
+                }
+            }
 
-            // Sync counts every 1.5s
-            setInterval(async () => {
+            async function syncCounts() {
+                if (isSyncing) return;
+                isSyncing = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const res = await fetch('/api/counts');
+                    const res = await fetch('/api/counts', { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) return;
                     const newCounts = await res.json();
                     for (const [id, count] of Object.entries(newCounts)) {
                         const pill = document.getElementById(`countPill_${id}`);
@@ -767,13 +832,25 @@
                             }
                         }
                     }
-                } catch {}
-            }, 1500);
+                } catch (e) {
+                } finally {
+                    clearTimeout(timeoutId);
+                    isSyncing = false;
+                }
+            }
+
+            if (typeof window.createWorkerTicker === 'function') {
+                window.createWorkerTicker(poll, 150);
+                window.createWorkerTicker(syncCounts, 1000);
+            } else {
+                setInterval(poll, 200);
+                setInterval(syncCounts, 1200);
+            }
         }
 
         // Handle Event
         function handleLiveEvent(ev) {
-            if (ev.type === 'config_updated' || ev.type === 'spinner_updated') {
+            if (ev.type === 'config_updated' || ev.type === 'spinner_updated' || ev.type === 'cards_updated') {
                 fetchConfig().then(renderCards);
                 return;
             }
@@ -781,8 +858,16 @@
             if (ev.hideInOverlay === true) {
                 return; // Silently execute without showing alert/popup on stream overlay
             }
-            // Trigger Sound
-            AudioEngine.playAlert();
+            // Trigger Sound: Only play synth alert beep if sound alerts are enabled AND no custom audio is configured
+            const isSoundAlertsEnabled = !config || !config.overlay || config.overlay.soundAlerts !== false;
+            let hasAttachedAudio = false;
+            if (config && config.gifts) {
+                const cg = config.gifts.find(g => (ev.cardId && String(g.id) === String(ev.cardId)) || (ev.giftName && g.giftName && g.giftName.toLowerCase() === ev.giftName.toLowerCase()));
+                if (cg && cg.audio && cg.audio.file) hasAttachedAudio = true;
+            }
+            if (isSoundAlertsEnabled && !hasAttachedAudio) {
+                AudioEngine.playAlert();
+            }
 
             // Trigger Alert Banner
             showAlertBanner(ev);
@@ -799,10 +884,12 @@
             const alert = document.createElement('div');
             alert.className = 'alert-popup';
 
-            const alertTag = ev.type === 'gift' ? 'GIFT' : (ev.type === 'like' ? 'LIKE' : (ev.type === 'follow' ? 'FOLLOW' : 'LIVE'));
+            const isCustom = ev.type === 'custom' || ev.triggerType === 'custom' || ev.actionType === 'custom';
+            const alertTag = isCustom ? 'EVENT' : (ev.type === 'gift' ? 'GIFT' : (ev.type === 'like' ? 'LIKE' : (ev.type === 'follow' ? 'FOLLOW' : 'LIVE')));
+            const tagBg = isCustom ? 'linear-gradient(135deg, #f59e0b, #d97706)' : '#3b82f6';
 
             alert.innerHTML = `
-                <div class="alert-avatar" style="font-size:12px; font-weight:800; background:#3b82f6; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">${alertTag}</div>
+                <div class="alert-avatar" style="font-size:12px; font-weight:800; background:${tagBg}; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center;">${alertTag}</div>
                 <div class="alert-text-group">
                     <div style="font-size:9.5px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:4px;">
                         <span>✦</span> ${ev.branding || (ev.embedTitle ? ev.embedTitle : 'RENEarn')}

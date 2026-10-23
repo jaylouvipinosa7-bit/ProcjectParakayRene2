@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Viewer Join Alert Overlay - RENEarn Stream Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Oxanium:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           VIEWER JOIN STREAM WELCOME OVERLAY
+           Matches reference image with 3D Golden Star & Laurel Medal,
+           Royal Purple/Gold Ribbon Banner, Groudon Signature Emblem,
+           and smooth cinematic entrance, levitation, and exit animations.
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            background: transparent !important;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Test preview background when ?preview=true */
+        body.preview-mode {
+            background: radial-gradient(circle at center, #1a1f2c 0%, #0d1117 100%) !important;
+        }
+
+        /* Master Alert Stage */
+        #joinAlertStage {
+            position: relative;
+            width: 580px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        /* Hidden by default */
+        .join-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.1) translateY(60px) rotateX(25deg);
+            transform-origin: center bottom;
+            transition: none;
+            pointer-events: none;
+        }
+
+        /* ----------------------------------------------------
+           ANIMATION PHASES
+           ---------------------------------------------------- */
+        /* Phase 1: Entrance Pop & 3D Starburst */
+        .join-card.animate-in {
+            animation: alertPopIn 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Phase 2: Gentle Idle Levitation */
+        .join-card.animate-idle {
+            opacity: 1;
+            transform: scale(1) translateY(0) rotateX(0);
+            animation: alertFloatIdle 3.2s ease-in-out infinite alternate;
+        }
+
+        /* Phase 3: Smooth Exit Dissolve */
+        .join-card.animate-out {
+            animation: alertPopOut 0.65s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
+
+        @keyframes alertPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.15) translateY(90px) rotate(-14deg);
+                filter: blur(12px) brightness(2.2);
+            }
+            50% {
+                opacity: 1;
+                filter: blur(0px) brightness(1.4);
+            }
+            75% {
+                transform: scale(1.14) translateY(-14px) rotate(2deg);
+                filter: brightness(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0deg);
+                filter: brightness(1);
+            }
+        }
+
+        @keyframes alertFloatIdle {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-8px) rotate(-0.5deg);
+            }
+            100% {
+                transform: translateY(3px) rotate(0.5deg);
+            }
+        }
+
+        @keyframes alertPopOut {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: brightness(1);
+            }
+            30% {
+                transform: scale(1.05) translateY(-8px);
+                filter: brightness(1.3);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.4) translateY(-70px);
+                filter: blur(14px) brightness(0.6);
+            }
+        }
+
+        /* ----------------------------------------------------
+           ROTATING BACKGROUND SUNBURST RAYS
+           ---------------------------------------------------- */
+        .sunburst-rays {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 380px;
+            height: 380px;
+            margin-left: -190px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.35) 0%, rgba(255, 170, 0, 0.15) 45%, rgba(0, 0, 0, 0) 70%);
+            mask-image: conic-gradient(
+                from 0deg,
+                #000 0deg 10deg, transparent 10deg 20deg,
+                #000 20deg 30deg, transparent 30deg 40deg,
+                #000 40deg 50deg, transparent 50deg 60deg,
+                #000 60deg 70deg, transparent 70deg 80deg,
+                #000 80deg 90deg, transparent 90deg 100deg,
+                #000 100deg 110deg, transparent 110deg 120deg,
+                #000 120deg 130deg, transparent 130deg 140deg,
+                #000 140deg 150deg, transparent 150deg 160deg,
+                #000 160deg 170deg, transparent 170deg 180deg,
+                #000 180deg 190deg, transparent 190deg 200deg,
+                #000 200deg 210deg, transparent 210deg 220deg,
+                #000 220deg 230deg, transparent 230deg 240deg,
+                #000 240deg 250deg, transparent 250deg 260deg,
+                #000 260deg 270deg, transparent 270deg 280deg,
+                #000 280deg 290deg, transparent 290deg 300deg,
+                #000 300deg 310deg, transparent 310deg 320deg,
+                #000 320deg 330deg, transparent 330deg 340deg,
+                #000 340deg 350deg, transparent 350deg 360deg
+            );
+            -webkit-mask-image: conic-gradient(
+                from 0deg,
+                #000 0deg 10deg, transparent 10deg 20deg,
+                #000 20deg 30deg, transparent 30deg 40deg,
+                #000 40deg 50deg, transparent 50deg 60deg,
+                #000 60deg 70deg, transparent 70deg 80deg,
+                #000 80deg 90deg, transparent 90deg 100deg,
+                #000 100deg 110deg, transparent 110deg 120deg,
+                #000 120deg 130deg, transparent 130deg 140deg,
+                #000 140deg 150deg, transparent 150deg 160deg,
+                #000 160deg 170deg, transparent 170deg 180deg,
+                #000 180deg 190deg, transparent 190deg 200deg,
+                #000 200deg 210deg, transparent 210deg 220deg,
+                #000 220deg 230deg, transparent 230deg 240deg,
+                #000 240deg 250deg, transparent 250deg 260deg,
+                #000 260deg 270deg, transparent 270deg 280deg,
+                #000 280deg 290deg, transparent 290deg 300deg,
+                #000 300deg 310deg, transparent 310deg 320deg,
+                #000 320deg 330deg, transparent 330deg 340deg,
+                #000 340deg 350deg, transparent 350deg 360deg
+            );
+            animation: spinSunburst 24s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes spinSunburst {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ----------------------------------------------------
+           THE MEDAL APPARATUS (STAR + LAUREL + AVATAR)
+           ---------------------------------------------------- */
+        .medal-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.75));
+        }
+
+        /* Golden Laurel Wreath / Wings flanking the star */
+        .laurel-wreath-svg {
+            position: absolute;
+            width: 270px;
+            height: 250px;
+            z-index: 2;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
+        }
+
+        /* 8-Pointed Golden Star SVG */
+        .star-emblem-svg {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            z-index: 3;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+            animation: pulseGlint 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlint {
+            0% { filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); }
+            100% { filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 28px rgba(255, 225, 50, 0.85)); }
+        }
+
+        /* Center Circular Avatar Frame */
+        .avatar-container {
+            position: relative;
+            width: 104px;
+            height: 104px;
+            border-radius: 50%;
+            z-index: 6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -10px;
+            background: linear-gradient(135deg, #ffd700 0%, #b8860b 50%, #fff275 100%);
+            padding: 4px;
+            box-shadow: 
+                0 0 0 3px #5b21b6,
+                0 0 0 6px #f59e0b,
+                inset 0 3px 6px rgba(255, 255, 255, 0.8),
+                0 8px 18px rgba(0, 0, 0, 0.8);
+        }
+
+        .avatar-img-wrap {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1e1b4b;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Top Star Diamond Crest Accent */
+        .star-top-diamond {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            z-index: 10;
+            filter: drop-shadow(0 0 8px #ffffff);
+            animation: diamondSparkle 2.2s infinite ease-in-out;
+        }
+
+        @keyframes diamondSparkle {
+            0%, 100% { transform: translateX(-50%) scale(0.9); opacity: 0.85; }
+            50% { transform: translateX(-50%) scale(1.25); opacity: 1; filter: drop-shadow(0 0 14px #ffffff) drop-shadow(0 0 20px #ffd700); }
+        }
+
+        /* Signature Groudon Badge Crest - Removed per user request */
+        .groudon-badge-crest {
+            display: none !important;
+        }
+
+        /* ----------------------------------------------------
+           ROYAL CURVED 3D RIBBON BANNER
+           ---------------------------------------------------- */
+        .ribbon-banner-wrap {
+            position: absolute;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 52px;
+            z-index: 8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.85));
+        }
+
+        .ribbon-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .ribbon-label {
+            position: relative;
+            z-index: 5;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 
+                -1.5px -1.5px 0 #000,
+                 1.5px -1.5px 0 #000,
+                -1.5px  1.5px 0 #000,
+                 1.5px  1.5px 0 #000,
+                0 2px 4px rgba(0, 0, 0, 0.9),
+                0 0 10px rgba(255, 215, 0, 0.6);
+            padding-bottom: 2px;
+            max-width: 215px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        /* Ribbon Shimmer Sheen */
+        .ribbon-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+            transform: skewX(-25deg);
+            z-index: 4;
+            animation: ribbonSheen 3.2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ribbonSheen {
+            0% { left: -80%; }
+            35% { left: 140%; }
+            100% { left: 140%; }
+        }
+
+        /* ----------------------------------------------------
+           VIEWER USERNAME & WELCOME SUBTITLE
+           ---------------------------------------------------- */
+        .announcement-box {
+            position: relative;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 7;
+        }
+
+        /* Viewer name on the bottom is deleted/hidden - now displayed inside the ribbon banner */
+        .viewer-name {
+            display: none !important;
+        }
+
+        .welcome-subtext {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #fde047;
+            letter-spacing: 1px;
+            text-shadow: 
+                -1.5px -1.5px 0 #000,  
+                 1.5px -1.5px 0 #000,
+                -1.5px  1.5px 0 #000,
+                 1.5px  1.5px 0 #000,
+                 0 3px 10px rgba(0, 0, 0, 0.9),
+                 0 0 15px rgba(255, 215, 0, 0.5);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ----------------------------------------------------
+           SPARKLE & STARBURST PARTICLES
+           ---------------------------------------------------- */
+        .sparkles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9;
+        }
+
+        .sparkle-dot {
+            position: absolute;
+            color: #ffd700;
+            font-size: 20px;
+            opacity: 0;
+            filter: drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 14px #ffffff);
+            animation: sparkleTwinkle 1.8s infinite ease-in-out;
+        }
+
+        @keyframes sparkleTwinkle {
+            0% { transform: scale(0.2) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(90deg); opacity: 1; }
+            100% { transform: scale(0.2) rotate(180deg); opacity: 0; }
+        }
+
+        /* ----------------------------------------------------
+           THEME VARIANTS
+           ---------------------------------------------------- */
+        /* Magma Red Theme (Groudon Style) */
+        body.theme-groudon_magma .avatar-container {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 50%, #fca5a5 100%);
+            box-shadow: 
+                0 0 0 3px #991b1b,
+                0 0 0 6px #f87171,
+                inset 0 3px 6px rgba(255, 255, 255, 0.8),
+                0 8px 18px rgba(0, 0, 0, 0.8);
+        }
+        body.theme-groudon_magma .welcome-subtext {
+            color: #fca5a5;
+        }
+
+        /* Cyber Neon Theme */
+        body.theme-neon_cyber .avatar-container {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #67e8f9 100%);
+            box-shadow: 
+                0 0 0 3px #0284c7,
+                0 0 0 6px #38bdf8,
+                inset 0 3px 6px rgba(255, 255, 255, 0.8),
+                0 8px 18px rgba(0, 0, 0, 0.8);
+        }
+        body.theme-neon_cyber .welcome-subtext {
+            color: #67e8f9;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="joinAlertStage">
+        <!-- ALERT CARD (Animated In / Idle / Out) -->
+        <div class="join-card" id="joinCard">
+            <!-- Rotating Radiant Sunburst Rays -->
+            <div class="sunburst-rays"></div>
+
+            <!-- Floating Sparkle Stars -->
+            <div class="sparkles-container">
+                <div class="sparkle-dot" style="top: 15%; left: 18%; animation-delay: 0s;">✦</div>
+                <div class="sparkle-dot" style="top: 22%; right: 16%; animation-delay: 0.4s;">★</div>
+                <div class="sparkle-dot" style="top: 48%; left: 12%; animation-delay: 0.8s;">✦</div>
+                <div class="sparkle-dot" style="top: 52%; right: 14%; animation-delay: 1.2s;">★</div>
+                <div class="sparkle-dot" style="top: 10%; right: 35%; animation-delay: 0.6s;">✦</div>
+                <div class="sparkle-dot" style="top: 65%; left: 24%; animation-delay: 1.4s;">✦</div>
+                <div class="sparkle-dot" style="top: 68%; right: 26%; animation-delay: 0.2s;">★</div>
+            </div>
+
+            <!-- MEDAL APPARATUS -->
+            <div class="medal-wrapper">
+                <!-- Top Diamond Glint -->
+                <svg class="star-top-diamond" viewBox="0 0 24 24" fill="#ffffff">
+                    <polygon points="12,0 15,9 24,12 15,15 12,24 9,15 0,12 9,9" />
+                </svg>
+
+                <!-- Signature Groudon Badge Crest - Removed per user request -->
+                <!-- <div class="groudon-badge-crest" id="groudonBadge">
+                    <img src="images/groudon_icon.png" alt="Groudon" onerror="this.src='images/default_avatar.svg'">
+                </div> -->
+
+                <!-- Golden Laurel Wreath (SVG with rich bevel gradients) -->
+                <svg class="laurel-wreath-svg" viewBox="0 0 320 280">
+                    <defs>
+                        <linearGradient id="goldLaurelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fff59d" />
+                            <stop offset="25%" stop-color="#ffd54f" />
+                            <stop offset="60%" stop-color="#f57f17" />
+                            <stop offset="100%" stop-color="#ffb300" />
+                        </linearGradient>
+                        <filter id="laurelGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.6"/>
+                        </filter>
+                    </defs>
+                    <!-- Left Laurel Branch -->
+                    <g filter="url(#laurelGlow)" fill="url(#goldLaurelGrad)" stroke="#78350f" stroke-width="1.2">
+                        <!-- Lower leaves -->
+                        <path d="M100,210 C75,195 65,160 70,130 C65,145 68,175 92,205 Z"/>
+                        <path d="M72,180 C50,165 45,135 55,105 C50,120 52,148 70,172 Z"/>
+                        <path d="M58,140 C40,125 38,95 52,68 C45,85 46,112 60,132 Z"/>
+                        <path d="M56,98 C46,80 48,55 68,36 C58,52 56,76 64,95 Z"/>
+                        <!-- Upper leaves -->
+                        <path d="M72,60 C68,42 75,25 96,12 C85,26 82,46 84,62 Z"/>
+                        <path d="M98,34 C98,18 112,8 132,4 C118,14 112,28 110,40 Z"/>
+                        <!-- Side Laurel Berries -->
+                        <circle cx="78" cy="155" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                        <circle cx="65" cy="115" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                        <circle cx="72" cy="76" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                    </g>
+                    <!-- Right Laurel Branch (Mirrored) -->
+                    <g filter="url(#laurelGlow)" fill="url(#goldLaurelGrad)" stroke="#78350f" stroke-width="1.2" transform="translate(320, 0) scale(-1, 1)">
+                        <path d="M100,210 C75,195 65,160 70,130 C65,145 68,175 92,205 Z"/>
+                        <path d="M72,180 C50,165 45,135 55,105 C50,120 52,148 70,172 Z"/>
+                        <path d="M58,140 C40,125 38,95 52,68 C45,85 46,112 60,132 Z"/>
+                        <path d="M56,98 C46,80 48,55 68,36 C58,52 56,76 64,95 Z"/>
+                        <path d="M72,60 C68,42 75,25 96,12 C85,26 82,46 84,62 Z"/>
+                        <path d="M98,34 C98,18 112,8 132,4 C118,14 112,28 110,40 Z"/>
+                        <circle cx="78" cy="155" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                        <circle cx="65" cy="115" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                        <circle cx="72" cy="76" r="4" fill="#ffe082" stroke="#b45309" stroke-width="1"/>
+                    </g>
+                </svg>
+
+                <!-- 8-Pointed 3D Multi-Facet Golden Star Emblem -->
+                <svg class="star-emblem-svg" viewBox="0 0 240 240">
+                    <defs>
+                        <!-- Light Gold Gradient -->
+                        <linearGradient id="facetGoldLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fff9c4" />
+                            <stop offset="50%" stop-color="#ffd54f" />
+                            <stop offset="100%" stop-color="#f59e0b" />
+                        </linearGradient>
+                        <!-- Shadow Gold Gradient -->
+                        <linearGradient id="facetGoldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f59e0b" />
+                            <stop offset="50%" stop-color="#b45309" />
+                            <stop offset="100%" stop-color="#78350f" />
+                        </linearGradient>
+                    </defs>
+                    <g transform="translate(120, 120)">
+                        <!-- Faceted Star 8 Points with Alternating Light & Dark shading for 3D Bevel -->
+                        <!-- North -->
+                        <polygon points="0,0 0,-115 -22,-45" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 0,-115 22,-45" fill="url(#facetGoldDark)" />
+                        <!-- North-East -->
+                        <polygon points="0,0 81,-81 45,-22" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 81,-81 22,-45" fill="url(#facetGoldDark)" />
+                        <!-- East -->
+                        <polygon points="0,0 115,0 45,-22" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 115,0 45,22" fill="url(#facetGoldDark)" />
+                        <!-- South-East -->
+                        <polygon points="0,0 81,81 45,22" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 81,81 22,45" fill="url(#facetGoldDark)" />
+                        <!-- South -->
+                        <polygon points="0,0 0,115 22,45" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 0,115 -22,45" fill="url(#facetGoldDark)" />
+                        <!-- South-West -->
+                        <polygon points="0,0 -81,81 -22,45" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 -81,81 -45,22" fill="url(#facetGoldDark)" />
+                        <!-- West -->
+                        <polygon points="0,0 -115,0 -45,22" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 -115,0 -45,-22" fill="url(#facetGoldDark)" />
+                        <!-- North-West -->
+                        <polygon points="0,0 -81,-81 -45,-22" fill="url(#facetGoldLight)" />
+                        <polygon points="0,0 -81,-81 -22,-45" fill="url(#facetGoldDark)" />
+
+                        <!-- Center Outer Ring -->
+                        <circle cx="0" cy="0" r="54" fill="#ffd700" stroke="#78350f" stroke-width="2" />
+                    </g>
+                </svg>
+
+                <!-- Center Circular Avatar -->
+                <div class="avatar-container">
+                    <div class="avatar-img-wrap">
+                        <img id="userAvatarImg" class="avatar-img" src="images/groudon_icon.png" alt="Avatar" onerror="this.src='images/groudon_icon.png'">
+                    </div>
+                </div>
+
+                <!-- ROYAL CURVED 3D RIBBON BANNER -->
+                <div class="ribbon-banner-wrap">
+                    <svg class="ribbon-svg" viewBox="0 0 280 60" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="ribbonPurpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#9333ea" />
+                                <stop offset="35%" stop-color="#7e22ce" />
+                                <stop offset="70%" stop-color="#6b21a8" />
+                                <stop offset="100%" stop-color="#4c1d95" />
+                            </linearGradient>
+                            <linearGradient id="ribbonGoldBorder" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ffd54f" />
+                                <stop offset="50%" stop-color="#fff9c4" />
+                                <stop offset="100%" stop-color="#ffb300" />
+                            </linearGradient>
+                            <linearGradient id="swallowtailDark" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#581c87" />
+                                <stop offset="100%" stop-color="#2e1065" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Left Swallowtail Ribbon End (Behind) -->
+                        <polygon points="2,14 36,4 40,38 2,48 18,31" fill="url(#swallowtailDark)" stroke="#b45309" stroke-width="1.5" />
+                        <!-- Right Swallowtail Ribbon End (Behind) -->
+                        <polygon points="278,14 244,4 240,38 278,48 262,31" fill="url(#swallowtailDark)" stroke="#b45309" stroke-width="1.5" />
+                        <!-- Ribbon Fold Shadow Triangles -->
+                        <polygon points="34,36 42,36 34,48" fill="#1e1b4b" />
+                        <polygon points="246,36 238,36 246,48" fill="#1e1b4b" />
+                        <!-- Center Ribbon Body (Curved 3D Plaque) -->
+                        <path d="M 32,8 Q 140,2 248,8 L 244,44 Q 140,52 36,44 Z" fill="url(#ribbonPurpleGrad)" stroke="url(#ribbonGoldBorder)" stroke-width="2.5" />
+                        <!-- Inner Gold Accent Line -->
+                        <path d="M 38,13 Q 140,7 242,13" fill="none" stroke="#ffd700" stroke-width="1" stroke-opacity="0.7" />
+                        <path d="M 40,39 Q 140,46 240,39" fill="none" stroke="#ffd700" stroke-width="1" stroke-opacity="0.7" />
+                    </svg>
+
+                    <!-- Shimmer Sheen -->
+                    <div class="ribbon-shimmer"></div>
+
+                    <!-- Ribbon Title Label (Displays Viewer's Name) -->
+                    <span class="ribbon-label" id="ribbonText">renearn</span>
+                </div>
+            </div>
+
+            <!-- ANNOUNCEMENT TEXT (SUBTEXT ONLY - VIEWER NAME IN RIBBON) -->
+            <div class="announcement-box">
+                <div class="viewer-name" id="viewerUsername" style="display: none;"></div>
+                <div class="welcome-subtext" id="welcomeSubtext">
+                    <span>✨</span>
+                    <span id="subtextMsg">joined the stream!</span>
+                    <span>✨</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO SYNTHESIS / WEB AUDIO CHIME & CONTROLS -->
+    <script>
+        // =========================================================================
+        // JOIN OVERLAY CLIENT LOGIC & EVENT SYNCHRONIZATION
+        // =========================================================================
+        const params = new URLSearchParams(window.location.search);
+        const isPreview = params.get('preview') === 'true';
+        const isLoop = params.get('loop') === 'true';
+
+        // State & Config
+        let config = {
+            bannerText: 'renearn',
+            subText: 'joined the stream!',
+            theme: 'gold_purple',
+            showGroudonBadge: false,
+            displayDuration: 5000,
+            soundEnabled: !isLoop,
+            animationStyle: 'crest_pop',
+            customSoundUrl: ''
+        };
+
+        // DOM Elements
+        const stage = document.getElementById('joinAlertStage');
+        const card = document.getElementById('joinCard');
+        const userAvatarImg = document.getElementById('userAvatarImg');
+        const groudonBadge = document.getElementById('groudonBadge');
+        const ribbonText = document.getElementById('ribbonText');
+        const viewerUsername = document.getElementById('viewerUsername');
+        const subtextMsg = document.getElementById('subtextMsg');
+
+        // Event Queue System
+        const alertQueue = [];
+        let isAlertPlaying = false;
+        let lastEventTimestamp = Date.now();
+        const seenEventIds = new Set();
+
+        // Apply URL parameter overrides if passed
+        if (params.get('theme')) config.theme = params.get('theme');
+        if (params.get('banner')) config.bannerText = params.get('banner');
+        if (params.get('subtext')) config.subText = params.get('subtext');
+        if (params.get('groudon')) config.showGroudonBadge = params.get('groudon') === 'true';
+        if (params.get('duration')) config.displayDuration = parseInt(params.get('duration'), 10) || 5000;
+
+        if (isPreview) {
+            document.body.classList.add('preview-mode');
+        }
+
+        // Apply Theme Class to Body
+        function applyTheme(themeName) {
+            document.body.className = isPreview ? 'preview-mode' : '';
+            if (themeName && themeName !== 'gold_purple') {
+                document.body.classList.add('theme-' + themeName);
+            }
+        }
+
+        // Apply UI Settings
+        function applyConfigUI() {
+            applyTheme(config.theme);
+            if (groudonBadge) {
+                groudonBadge.style.display = 'none';
+            }
+            if (ribbonText && config.bannerText && config.bannerText !== 'NEW FOLLOWER') {
+                ribbonText.textContent = config.bannerText;
+            }
+            if (subtextMsg && config.subText) {
+                subtextMsg.textContent = config.subText;
+            }
+        }
+
+        // Fetch Server Configuration
+        async function fetchConfig() {
+            try {
+                const res = await fetch('/api/overlay-join/config');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data) {
+                        config = Object.assign(config, data);
+                        applyConfigUI();
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // Web Audio API Synthesizer: Clean Celestial Crystal Chime Fanfare
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playJoinFanfare() {
+            if (!config.soundEnabled) return;
+            try {
+                // If custom sound provided, play it
+                if (config.customSoundUrl) {
+                    const snd = new Audio(config.customSoundUrl);
+                    snd.volume = 0.85;
+                    snd.play().catch(() => {});
+                    return;
+                }
+
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                // 4-Note Celestial Chime: C5, E5, G5, C6 (523Hz, 659Hz, 784Hz, 1046Hz)
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+                    gain.gain.setValueAtTime(0, now + idx * 0.08);
+                    gain.gain.linearRampToValueAtTime(0.35, now + idx * 0.08 + 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 1.2);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 1.25);
+                });
+            } catch (e) {}
+        }
+
+        // Timers for animation lifecycle
+        let currentIdleTimer = null;
+        let currentExitTimer = null;
+        let currentCleanupTimer = null;
+
+        function notifyQueueChange() {
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'join_queue_update',
+                        count: alertQueue.length,
+                        isPlaying: isAlertPlaying
+                    }, '*');
+                }
+            } catch (e) {}
+        }
+
+        // Trigger Alert Animation
+        function showAlert(data) {
+            const username = data.username || data.nickname || data.uniqueId || 'renearn';
+            const avatar = data.avatar || data.profilePictureUrl || 'images/groudon_icon.png';
+            const isFollow = data.type === 'follow' || data.event === 'follow' || data.type === 'new_follower' || (data.bannerText && data.bannerText.toLowerCase().includes('follow'));
+            const subtitle = data.subText || (isFollow ? 'followed the stream!' : (config.subText || 'joined the stream!'));
+            const banner = (data.bannerText && data.bannerText !== 'NEW FOLLOWER') ? data.bannerText : username;
+
+            // Clear previous timers if any
+            if (currentIdleTimer) clearTimeout(currentIdleTimer);
+            if (currentExitTimer) clearTimeout(currentExitTimer);
+            if (currentCleanupTimer) clearTimeout(currentCleanupTimer);
+
+            // Populate Elements: Ribbon displays viewer's name; bottom name is deleted/hidden
+            if (ribbonText) {
+                ribbonText.textContent = banner;
+            }
+            if (viewerUsername) {
+                viewerUsername.textContent = '';
+                viewerUsername.style.display = 'none';
+            }
+            if (subtextMsg) {
+                subtextMsg.textContent = subtitle;
+            }
+            if (userAvatarImg) {
+                userAvatarImg.onerror = function() { this.src = 'images/groudon_icon.png'; };
+                userAvatarImg.src = avatar;
+            }
+
+            // Reset animation states
+            card.classList.remove('animate-in', 'animate-idle', 'animate-out');
+            void card.offsetWidth; // Trigger reflow
+
+            // Play sound chime
+            playJoinFanfare();
+
+            // Phase 1: Entrance Pop (850ms)
+            card.classList.add('animate-in');
+
+            // Phase 2: Switch to Idle Float
+            currentIdleTimer = setTimeout(() => {
+                card.classList.remove('animate-in');
+                card.classList.add('animate-idle');
+            }, 850);
+
+            // In continuous loop mode, stay floating in idle!
+            if (isLoop) return;
+
+            // Phase 3: Exit Dissolve
+            // If multiple viewers are queued up consecutively, slightly speed up duration so queue flows smoothly
+            let duration = Math.max(config.displayDuration || 4500, 3000);
+            if (alertQueue.length >= 3) {
+                duration = 2600;
+            } else if (alertQueue.length >= 1) {
+                duration = 3200;
+            }
+
+            currentExitTimer = setTimeout(() => {
+                card.classList.remove('animate-idle');
+                card.classList.add('animate-out');
+
+                // Finish and pop queue
+                currentCleanupTimer = setTimeout(() => {
+                    card.classList.remove('animate-out');
+                    isAlertPlaying = false;
+                    notifyQueueChange();
+                    processQueue();
+                }, 650);
+            }, duration);
+        }
+
+        // Queue Manager with deduplication & queue cap
+        function queueJoinAlert(data) {
+            if (!data) return;
+            const eid = data.id || `${data.username || ''}_${data.timestamp || Date.now()}`;
+            if (eid && seenEventIds.has(eid)) return;
+            if (eid) seenEventIds.add(eid);
+            if (seenEventIds.size > 300) {
+                const firstKey = seenEventIds.values().next().value;
+                seenEventIds.delete(firstKey);
+            }
+
+            // Cap queue at max 12 to prevent endless runaway queues
+            if (alertQueue.length >= 12) {
+                alertQueue.shift();
+            }
+            alertQueue.push(data);
+            notifyQueueChange();
+            processQueue();
+        }
+
+        function processQueue() {
+            if (isAlertPlaying) return;
+            if (alertQueue.length === 0) {
+                notifyQueueChange();
+                return;
+            }
+
+            isAlertPlaying = true;
+            const nextAlert = alertQueue.shift();
+            notifyQueueChange();
+            showAlert(nextAlert);
+        }
+
+        // Global function to immediately stop and reset the queue
+        window.clearJoinQueue = function() {
+            alertQueue.length = 0;
+            isAlertPlaying = false;
+            if (currentIdleTimer) clearTimeout(currentIdleTimer);
+            if (currentExitTimer) clearTimeout(currentExitTimer);
+            if (currentCleanupTimer) clearTimeout(currentCleanupTimer);
+            card.classList.remove('animate-in', 'animate-idle', 'animate-out');
+            notifyQueueChange();
+        };
+
+        // BroadcastChannel Listener (Zero-latency instant alerts within app/browser)
+        try {
+            const bc = new BroadcastChannel('renearn_overlay_events');
+            bc.onmessage = (msg) => {
+                if (!msg || !msg.data) return;
+                const d = msg.data;
+                const isMatch = (
+                    d.type === 'join' || d.event === 'join' ||
+                    d.type === 'member' || d.event === 'member' ||
+                    d.type === 'follow' || d.event === 'follow' ||
+                    d.type === 'new_follower'
+                );
+                if (isMatch) {
+                    if (!d.bannerText || d.bannerText === 'NEW FOLLOWER') {
+                        d.bannerText = d.username || d.nickname || d.uniqueId || 'renearn';
+                    }
+                    queueJoinAlert(d);
+                } else if (d.type === 'join_overlay_config_update' && d.config) {
+                    config = Object.assign(config, d.config);
+                    applyConfigUI();
+                } else if (d.type === 'clear_join_queue') {
+                    window.clearJoinQueue();
+                }
+            };
+        } catch (e) {}
+
+        // Polling Event Queue (/api/events) for TikTok Live Studio & OBS Browser Source compatibility
+        let isFirstPoll = true;
+        async function pollEvents() {
+            try {
+                const querySince = isFirstPoll ? 0 : lastEventTimestamp;
+                const res = await fetch(`/api/events?since=${querySince}&_t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (isFirstPoll) {
+                        lastEventTimestamp = data.serverTime || Date.now();
+                        isFirstPoll = false;
+                        if (data.events && Array.isArray(data.events)) {
+                            data.events.forEach(ev => {
+                                const ts = Number(ev.timestamp) || 0;
+                                if (ts > lastEventTimestamp) lastEventTimestamp = ts;
+                                const eid = ev.id || `${ev.username}_${ts}`;
+                                seenEventIds.add(eid);
+                            });
+                        }
+                    } else if (data && data.events && Array.isArray(data.events)) {
+                        if (data.serverTime && data.serverTime > lastEventTimestamp) {
+                            lastEventTimestamp = data.serverTime;
+                        }
+                        data.events.forEach(ev => {
+                            const ts = Number(ev.timestamp) || 0;
+                            if (ts > lastEventTimestamp) lastEventTimestamp = ts;
+
+                            const isMatch = (
+                                ev.type === 'join' || ev.event === 'join' ||
+                                ev.type === 'member' || ev.event === 'member' ||
+                                ev.type === 'follow' || ev.event === 'follow' ||
+                                ev.type === 'new_follower'
+                            );
+
+                            if (isMatch) {
+                                if (!ev.bannerText || ev.bannerText === 'NEW FOLLOWER') {
+                                    ev.bannerText = ev.username || ev.nickname || ev.uniqueId || 'renearn';
+                                }
+                                queueJoinAlert(ev);
+                            } else if (ev.type === 'join_overlay_config_update' && ev.config) {
+                                config = Object.assign(config, ev.config);
+                                applyConfigUI();
+                            }
+                        });
+                    }
+                }
+            } catch (e) {}
+            setTimeout(pollEvents, 300);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchConfig();
+            applyConfigUI();
+            pollEvents();
+
+            if (isLoop) {
+                const previewUser = params.get('user') || 'renearn';
+                viewerUsername.textContent = '';
+                viewerUsername.style.display = 'none';
+                ribbonText.textContent = previewUser;
+                subtextMsg.textContent = config.subText || 'joined the stream!';
+                userAvatarImg.src = 'images/groudon_icon.png';
+                card.classList.remove('animate-in', 'animate-out');
+                card.classList.add('animate-idle');
+            } else if (params.get('test') === 'true') {
+                setTimeout(() => {
+                    const testUser = params.get('user') || 'renearn';
+                    queueJoinAlert({
+                        username: testUser,
+                        avatar: 'images/groudon_icon.png',
+                        bannerText: testUser,
+                        subText: config.subText || 'joined the stream!'
+                    });
+                }, 400);
+            }
+        });
+
+        // Global manual test function for iframe / parent app controls
+        window.triggerTestJoin = function(customData) {
+            const defaultUser = 'renearn';
+            queueJoinAlert(customData || {
+                username: defaultUser,
+                avatar: 'images/groudon_icon.png',
+                bannerText: defaultUser,
+                subText: config.subText || 'joined the stream!'
+            });
+        };
+    </script>
+</body>
+</html>

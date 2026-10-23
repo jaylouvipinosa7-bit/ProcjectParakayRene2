@@ -1,23 +1,5 @@
 ﻿[
     {
-        "id":  "comm_rice_bowl",
-        "name":  "Gohan\u0027s Rice Bowl",
-        "coins":  1,
-        "icon":  "images/game-icons/pvz/spawn_sun_nut.webp",
-        "isCommunity":  true,
-        "source":  "custom_manual",
-        "addedAt":  "2026-10-11T20:09:00Z"
-    },
-    {
-        "id":  "comm_malunggay",
-        "name":  "Malunggay Energy",
-        "coins":  5,
-        "icon":  "images/game-icons/pvz/spawn_ice_cattail.webp",
-        "isCommunity":  true,
-        "source":  "custom_manual",
-        "addedAt":  "2026-10-11T20:09:00Z"
-    },
-    {
         "id":  "1228602",
         "name":  "GOten",
         "coins":  1,
@@ -6181,5 +6163,149 @@
         "isCommunity":  true,
         "source":  "tiktok_live_room",
         "addedAt":  "2026-10-16T07:32:12.7282667Z"
+    },
+    {
+        "id":  "1374228",
+        "name":  "Lovely to Have You",
+        "coins":  6000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/fd04282f3b8f3612851fd1091e42f2a5.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-17T05:43:18.0091795Z"
+    },
+    {
+        "id":  "1374223",
+        "name":  "Do Not Blow",
+        "coins":  500,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/685d583afaabd64d684fbe19ec1fd630.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-17T05:43:18.0158958Z"
+    },
+    {
+        "id":  "1374230",
+        "name":  "A Fun House",
+        "coins":  15000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/31025adc96f52afd05ba8fa6206aa296.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-17T05:43:18.0158958Z"
+    },
+    {
+        "id":  "1374221",
+        "name":  "Eye for an Eye",
+        "coins":  1,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f13894e35ea4efa123d1f8475bd5349f.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-17T05:43:18.0158958Z"
+    },
+    {
+        "id":  "1374227",
+        "name":  "Anybody Home?",
+        "coins":  1500,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/d5652dc35bb883b3f26fef1284de2e88.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-17T05:43:18.0167278Z"
+    },
+    {
+        "id":  "1453175",
+        "name":  "Interstellar Trek",
+        "coins":  14999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/9b96e064a327ac9f720a767a1c2603b3.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-18T04:32:31.8853335Z"
+    },
+    {
+        "id":  "1453173",
+        "name":  "Starship Tunnel",
+        "coins":  2500,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/caaeb516e2a48acbec49f4e5a216e6d6.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-18T04:32:31.9817729Z"
+    },
+    {
+        "id":  "15708",
+        "name":  "Space",
+        "coins":  1000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f0004c9719369c8fd3e591fae848b52e.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-18T04:32:31.9817729Z"
+    },
+    {
+        "id":  "58182",
+        "name":  "Record Player",
+        "coins":  600,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/9b3d84a61aba75bd506869b46f3c573c.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-18T04:32:31.9822727Z"
+    },
+    {
+        "id":  "11113",
+        "name":  "Dancing Hands",
+        "coins":  199,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/d5d829bbca08bd500317991fbaa84bc3.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-18T04:32:31.9837802Z"
+    },
+    {
+        "id":  "1374236",
+        "name":  "The Dreamy Night",
+        "coins":  15000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/df26e2fb81a861bea05c2d03cd15521d.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-19T11:32:40.0946072Z"
+    },
+    {
+        "id":  "1374235",
+        "name":  "We Have a Guest!",
+        "coins":  6000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/929901ada2bb22a76e1f9e384e5e4bac.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-19T11:32:40.1819199Z"
+    },
+    {
+        "id":  "1374233",
+        "name":  "Good Auspices",
+        "coins":  1500,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/51c4c839e1708b7aa060cca0e678ed05.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-19T11:32:40.1819199Z"
+    },
+    {
+        "id":  "1377342",
+        "name":  "The Fair King",
+        "coins":  42999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/7637d66446d78ed25582097bc1f183aa.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-21T11:02:57.1326889Z"
+    },
+    {
+        "id":  "1377335",
+        "name":  "Villainy Slain",
+        "coins":  25999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/bab7672a280f87ce5ff864c5fdaeeafa.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-21T11:02:57.1390611Z"
+    },
+    {
+        "id":  "1377331",
+        "name":  "Iron Resolve",
+        "coins":  14999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/a7f1f50e578edd3c26cd2baf89014a95.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-21T11:02:57.1400665Z"
     }
 ]

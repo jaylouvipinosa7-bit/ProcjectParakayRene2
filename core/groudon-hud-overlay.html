@@ -792,61 +792,95 @@
 
         .spotlight-card {
             position: relative;
-            width: 220px;
-            background: linear-gradient(160deg, rgba(8, 14, 26, 0.94), rgba(18, 25, 42, 0.95));
+            width: 224px;
+            background: linear-gradient(160deg, rgba(8, 14, 26, 0.95), rgba(15, 23, 42, 0.98));
             border: 1.5px solid var(--hud-border-cyan);
-            border-radius: 14px;
-            padding: 14px 12px;
+            border-radius: 16px;
+            padding: 16px 14px 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 0 18px var(--plasma-subtle);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 210, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .spotlight-card.spotlight-red {
             border-color: var(--hud-border-red);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 0 18px var(--magma-subtle);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 30, 66, 0.25);
+            animation: cardMagmaPulse 4s ease-in-out infinite alternate;
+        }
+
+        .spotlight-card.spotlight-blue {
+            border-color: var(--hud-border-cyan);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 210, 255, 0.25);
+            animation: cardPlasmaPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardMagmaPulse {
+            0% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 18px rgba(255, 30, 66, 0.2); }
+            100% { box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85), 0 0 28px rgba(255, 30, 66, 0.45); }
+        }
+
+        @keyframes cardPlasmaPulse {
+            0% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 18px rgba(0, 210, 255, 0.2); }
+            100% { box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85), 0 0 28px rgba(0, 210, 255, 0.45); }
         }
 
         .spotlight-header-tag {
             font-size: 11px;
             font-weight: 900;
-            letter-spacing: 1.6px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: #fde047;
-            text-shadow: 0 0 8px rgba(253, 224, 71, 0.5);
-            margin-bottom: 6px;
+            text-shadow: 0 0 10px rgba(253, 224, 71, 0.7);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .spotlight-header-tag.tag-blue {
             color: var(--plasma-cyan);
-            text-shadow: 0 0 8px var(--plasma-glow);
+            text-shadow: 0 0 10px var(--plasma-glow);
         }
 
         .spotlight-radial-stage {
             position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 6px 0;
+            width: 114px;
+            height: 114px;
+            margin: 4px 0 8px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* Enhanced Multi-Frequency Rotating Sunburst with Smooth Radial Fade Mask */
         .spotlight-sunburst-bg {
             position: absolute;
-            inset: -12px;
+            inset: -22px;
             border-radius: 50%;
             background: repeating-conic-gradient(
                 from 0deg,
-                rgba(255, 209, 59, 0.25) 0deg 15deg,
+                rgba(255, 209, 59, 0.35) 0deg 10deg,
+                rgba(255, 140, 0, 0.15) 10deg 15deg,
                 transparent 15deg 30deg
             );
-            animation: spinRays 18s linear infinite;
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 72%);
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 72%);
+            animation: spinSunburst 14s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -854,33 +888,156 @@
         .spotlight-card.spotlight-red .spotlight-sunburst-bg {
             background: repeating-conic-gradient(
                 from 0deg,
-                rgba(255, 30, 66, 0.28) 0deg 15deg,
+                rgba(255, 30, 66, 0.45) 0deg 10deg,
+                rgba(255, 107, 139, 0.2) 10deg 15deg,
                 transparent 15deg 30deg
             );
         }
 
-        @keyframes spinRays {
+        .spotlight-card.spotlight-blue .spotlight-sunburst-bg {
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(0, 210, 255, 0.45) 0deg 10deg,
+                rgba(56, 189, 248, 0.2) 10deg 15deg,
+                transparent 15deg 30deg
+            );
+        }
+
+        @keyframes spinSunburst {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        .spotlight-avatar {
-            position: relative;
-            width: 68px;
-            height: 68px;
+        /* Ambient Radiant Glow Core */
+        .spotlight-glow-core {
+            position: absolute;
+            inset: 6px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.8), 0 0 14px var(--gold-glow);
+            background: radial-gradient(circle, rgba(255, 209, 59, 0.4) 0%, rgba(255, 60, 0, 0.2) 50%, transparent 75%);
+            animation: coreBreath 2.8s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .spotlight-card.spotlight-red .spotlight-glow-core {
+            background: radial-gradient(circle, rgba(255, 30, 66, 0.5) 0%, rgba(255, 90, 0, 0.25) 50%, transparent 75%);
+        }
+
+        .spotlight-card.spotlight-blue .spotlight-glow-core {
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.5) 0%, rgba(37, 99, 235, 0.25) 50%, transparent 75%);
+        }
+
+        @keyframes coreBreath {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            100% { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* Counter-Rotating Primal Energy Rings */
+        .spotlight-energy-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
             z-index: 2;
         }
 
+        .spotlight-energy-ring.ring-outer {
+            inset: 3px;
+            border: 2px dashed rgba(255, 209, 59, 0.6);
+            animation: spinRingClockwise 12s linear infinite;
+        }
+
+        .spotlight-card.spotlight-red .spotlight-energy-ring.ring-outer {
+            border-color: rgba(255, 60, 90, 0.7);
+            filter: drop-shadow(0 0 6px var(--magma-glow));
+        }
+
+        .spotlight-card.spotlight-blue .spotlight-energy-ring.ring-outer {
+            border-color: rgba(0, 210, 255, 0.7);
+            filter: drop-shadow(0 0 6px var(--plasma-glow));
+        }
+
+        .spotlight-energy-ring.ring-inner {
+            inset: 8px;
+            border: 1.5px dotted rgba(255, 255, 255, 0.45);
+            animation: spinRingCounterClockwise 8s linear infinite;
+        }
+
+        @keyframes spinRingClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinRingCounterClockwise {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        /* Groudon Floating & Breathing Mascot Avatar */
+        .spotlight-avatar-wrap {
+            position: relative;
+            z-index: 3;
+            animation: groudonFloat 3.2s ease-in-out infinite;
+        }
+
+        @keyframes groudonFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-4px) scale(1.03); }
+        }
+
+        .spotlight-avatar {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 20px var(--gold-glow);
+            display: block;
+            background: #000;
+        }
+
         .spotlight-card.spotlight-red .spotlight-avatar {
-            box-shadow: 0 0 18px rgba(0, 0, 0, 0.8), 0 0 14px var(--magma-glow);
+            border-color: #ffd13b;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 30, 66, 0.85);
+        }
+
+        .spotlight-card.spotlight-blue .spotlight-avatar {
+            border-color: #38bdf8;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 210, 255, 0.85);
+        }
+
+        /* Ornate Glowing Badges */
+        .spotlight-crown-badge {
+            position: absolute;
+            top: -10px;
+            right: -6px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fde047 0%, #d97706 100%);
+            border: 1.5px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 0 12px rgba(255, 209, 59, 0.9), 0 4px 10px rgba(0,0,0,0.6);
+            animation: crownBounce 2s ease-in-out infinite;
+            z-index: 4;
+        }
+
+        .spotlight-crown-badge.badge-streak {
+            background: radial-gradient(circle, #38bdf8 0%, #2563eb 100%);
+            border-color: #e0f2fe;
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.9), 0 4px 10px rgba(0,0,0,0.6);
+        }
+
+        @keyframes crownBounce {
+            0%, 100% { transform: translateY(0) scale(1) rotate(6deg); }
+            50% { transform: translateY(-3px) scale(1.12) rotate(-6deg); }
         }
 
         .spotlight-user-title {
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 800;
             color: #ffffff;
             max-width: 190px;
@@ -888,33 +1045,72 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             margin-top: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
         .spotlight-user-sub {
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 700;
             color: #94a3b8;
             margin-top: 1px;
         }
 
+        /* Score Badge Enhancements */
         .spotlight-score-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            margin-top: 6px;
-            padding: 3px 10px;
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(255, 209, 59, 0.35);
-            border-radius: 12px;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 209, 59, 0.5);
+            border-radius: 16px;
             font-family: var(--font-num);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 800;
             color: #fde047;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 209, 59, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spotlight-score-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            animation: badgeShimmer 3.5s infinite;
+        }
+
+        @keyframes badgeShimmer {
+            0% { left: -100%; }
+            30%, 100% { left: 100%; }
         }
 
         .spotlight-card.spotlight-red .spotlight-score-badge {
-            border-color: rgba(255, 30, 66, 0.4);
+            border-color: rgba(255, 30, 66, 0.5);
             color: #ff758f;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 30, 66, 0.25);
+        }
+
+        .spotlight-score-badge.badge-blue {
+            border-color: rgba(0, 210, 255, 0.55);
+            color: var(--plasma-cyan);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Pulse Trigger on Event Update */
+        .spotlight-card.spotlight-burst {
+            animation: spotlightBurstAnim 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes spotlightBurstAnim {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.08) translateY(-4px); filter: brightness(1.3); }
+            100% { transform: scale(1); filter: brightness(1); }
         }
 
         /* ==========================================================================
@@ -1338,29 +1534,41 @@
              ========================================================================== -->
         <div class="hud-spotlight-container" id="spotlightWidget">
             <div class="spotlight-card spotlight-red" id="topGiftCard">
-                <span class="spotlight-header-tag" id="topGiftHeader">TOP GIFT</span>
+                <span class="spotlight-header-tag" id="topGiftHeader">👑 TOP GIFT</span>
                 <div class="spotlight-radial-stage">
                     <div class="spotlight-sunburst-bg"></div>
-                    <img class="spotlight-avatar" id="topGiftAvatar" src="images/renearn_icon.png" alt="Top Gift User">
+                    <div class="spotlight-glow-core"></div>
+                    <div class="spotlight-energy-ring ring-outer"></div>
+                    <div class="spotlight-energy-ring ring-inner"></div>
+                    <div class="spotlight-avatar-wrap">
+                        <img class="spotlight-avatar" id="topGiftAvatar" src="images/groudon_top_gift.jpg" alt="Primal Groudon Top Gift">
+                        <div class="spotlight-crown-badge">👑</div>
+                    </div>
                 </div>
                 <span class="spotlight-user-title" id="topGiftTitle">Top Gifter VIP</span>
-                <span class="spotlight-user-sub" id="topGiftSub">None yet</span>
+                <span class="spotlight-user-sub" id="topGiftSub">Lion King</span>
                 <div class="spotlight-score-badge">
                     <svg class="coin-mini-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
-                    <span id="topGiftScore">0</span>
+                    <span id="topGiftScore">29,999</span>
                 </div>
             </div>
 
-            <div class="spotlight-card" id="topStreakCard">
-                <span class="spotlight-header-tag tag-blue" id="topStreakHeader">TOP STREAK</span>
+            <div class="spotlight-card spotlight-blue" id="topStreakCard">
+                <span class="spotlight-header-tag tag-blue" id="topStreakHeader">⚡ TOP STREAK</span>
                 <div class="spotlight-radial-stage">
                     <div class="spotlight-sunburst-bg"></div>
-                    <img class="spotlight-avatar" id="topStreakAvatar" src="images/renearn_icon.png" alt="Top Streak User">
+                    <div class="spotlight-glow-core"></div>
+                    <div class="spotlight-energy-ring ring-outer"></div>
+                    <div class="spotlight-energy-ring ring-inner"></div>
+                    <div class="spotlight-avatar-wrap">
+                        <img class="spotlight-avatar" id="topStreakAvatar" src="images/groudon_top_streak.jpg" alt="Plasma Groudon Top Streak">
+                        <div class="spotlight-crown-badge badge-streak">⚡</div>
+                    </div>
                 </div>
                 <span class="spotlight-user-title" id="topStreakTitle">Streak Master</span>
-                <span class="spotlight-user-sub" id="topStreakSub">None yet</span>
-                <div class="spotlight-score-badge" style="color: var(--plasma-cyan); border-color: rgba(0, 210, 255, 0.4);">
-                    <span id="topStreakScore">x0</span>
+                <span class="spotlight-user-sub" id="topStreakSub">Top Active Combo</span>
+                <div class="spotlight-score-badge badge-blue">
+                    <span id="topStreakScore">x99</span>
                 </div>
             </div>
         </div>
@@ -1476,22 +1684,22 @@
                 followers: { label: 'Follower Goal', current: 0, target: 200 }
             },
             leaderboard: [
-                { rank: 1, username: 'Omodox', amount: 2840, avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Omodox' },
-                { rank: 2, username: 'Gonta', amount: 2310, avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Gonta' },
-                { rank: 3, username: 'Sahavovo', amount: 1750, avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sahavovo' },
-                { rank: 4, username: 'Wolfich', amount: 1420, avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Wolfich' },
-                { rank: 5, username: 'Stasie', amount: 980, avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Stasie' }
+                { rank: 1, username: 'Omodox', amount: 2840, avatar: 'images/renearn_icon.png' },
+                { rank: 2, username: 'Gonta', amount: 2310, avatar: 'images/groudon_top_gift.jpg' },
+                { rank: 3, username: 'Sahavovo', amount: 1750, avatar: 'images/groudon_top_streak.jpg' },
+                { rank: 4, username: 'Wolfich', amount: 1420, avatar: 'images/renearn_icon.png' },
+                { rank: 5, username: 'Stasie', amount: 980, avatar: 'images/groudon_icon.png' }
             ],
             topGift: {
                 username: 'Top Gifter VIP',
                 giftName: 'Lion King',
                 amount: 29999,
-                avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=LionVIP'
+                avatar: 'images/groudon_top_gift.jpg'
             },
             topStreak: {
                 username: 'Streak Master',
                 streak: 99,
-                avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=StreakMaster'
+                avatar: 'images/groudon_top_streak.jpg'
             },
             dedupSet: new Set()
         };
@@ -1747,18 +1955,41 @@
             document.getElementById('goalProgressFill').style.width = pct + '%';
         }
 
-        function renderSpotlights() {
+        function triggerSpotlightBurst(cardId) {
+            const card = document.getElementById(cardId);
+            if (!card) return;
+            card.classList.remove('spotlight-burst');
+            void card.offsetWidth;
+            card.classList.add('spotlight-burst');
+            setTimeout(() => card.classList.remove('spotlight-burst'), 750);
+        }
+
+        function renderSpotlights(burst = false) {
             if (state.topGift) {
                 document.getElementById('topGiftTitle').textContent = state.topGift.username;
-                document.getElementById('topGiftSub').textContent = state.topGift.giftName || 'VIP Gift';
-                document.getElementById('topGiftScore').textContent = (state.topGift.amount || 0).toLocaleString();
-                if (state.topGift.avatar) document.getElementById('topGiftAvatar').src = state.topGift.avatar;
+                document.getElementById('topGiftSub').textContent = state.topGift.giftName || 'Lion King';
+                document.getElementById('topGiftScore').textContent = (state.topGift.amount != null ? state.topGift.amount : 29999).toLocaleString();
+                const tgAvatar = document.getElementById('topGiftAvatar');
+                if (tgAvatar) {
+                    const src = (state.topGift.avatar && !state.topGift.avatar.includes('dicebear')) 
+                        ? state.topGift.avatar 
+                        : 'images/groudon_top_gift.jpg';
+                    tgAvatar.src = src;
+                }
+                if (burst) triggerSpotlightBurst('topGiftCard');
             }
             if (state.topStreak) {
                 document.getElementById('topStreakTitle').textContent = state.topStreak.username;
                 document.getElementById('topStreakSub').textContent = 'Top Active Combo';
-                document.getElementById('topStreakScore').textContent = 'x' + (state.topStreak.streak || 0);
-                if (state.topStreak.avatar) document.getElementById('topStreakAvatar').src = state.topStreak.avatar;
+                document.getElementById('topStreakScore').textContent = 'x' + (state.topStreak.streak != null ? state.topStreak.streak : 99);
+                const tsAvatar = document.getElementById('topStreakAvatar');
+                if (tsAvatar) {
+                    const src = (state.topStreak.avatar && !state.topStreak.avatar.includes('dicebear')) 
+                        ? state.topStreak.avatar 
+                        : 'images/groudon_top_streak.jpg';
+                    tsAvatar.src = src;
+                }
+                if (burst) triggerSpotlightBurst('topStreakCard');
 
                 // Sync with Vertical Strip Pod 2
                 const vName2 = document.getElementById('vName2');
@@ -1766,7 +1997,11 @@
                 const vAvatar2 = document.getElementById('vAvatar2');
                 if (vName2) vName2.textContent = state.topStreak.username;
                 if (vStreak2) vStreak2.textContent = 'X' + (state.topStreak.streak || 1);
-                if (vAvatar2 && state.topStreak.avatar) vAvatar2.src = state.topStreak.avatar;
+                if (vAvatar2) {
+                    vAvatar2.src = (state.topStreak.avatar && !state.topStreak.avatar.includes('dicebear'))
+                        ? state.topStreak.avatar
+                        : 'images/groudon_top_streak.jpg';
+                }
             }
         }
 
@@ -1913,13 +2148,13 @@
 
             if (!state.topGift || coins >= (state.topGift.amount || 0)) {
                 state.topGift = { username: user, giftName, amount: coins, avatar };
-                renderSpotlights();
+                renderSpotlights(true);
                 showToast(`👑 ${user} SENT ${giftName} (${coins.toLocaleString()} 🪙)!`, '🎁');
             }
 
             if (ev.streak && ev.streak > 1) {
                 state.topStreak = { username: user, streak: ev.streak, avatar };
-                renderSpotlights();
+                renderSpotlights(true);
             }
 
             updateUserLeaderboard(user, coins, avatar);
@@ -2102,6 +2337,15 @@
                         eventBus.emit('tap', parsed);
                     } catch (err) {}
                 }
+            });
+
+            window.addEventListener('message', (e) => {
+                if (!e.data) return;
+                if (e.data.action === 'tap') simulateTap(e.data.count || 1);
+                else if (e.data.action === 'coins') simulateCoins(e.data.count || 50);
+                else if (e.data.action === 'gift') simulateGift(e.data.giftName || 'Gift', e.data.coins || 100, e.data.user || 'Viewer');
+                else if (e.data.action === 'takeover') simulateTopTakeover();
+                else if (e.data.action === 'goal') triggerGoalCompletion();
             });
         }
 

@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <script src="stream-keepalive.js"></script>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -384,7 +385,11 @@
             } catch (e) {}
         }
 
-        setInterval(fetchSync, 400);
+        if (typeof window.createWorkerTicker === 'function') {
+            window.createWorkerTicker(fetchSync, 200);
+        } else {
+            setInterval(fetchSync, 300);
+        }
         fetchSync();
 
         // BroadcastChannel for cross-tab events

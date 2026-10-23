@@ -1,0 +1,10 @@
+{
+  "bannerText": "renearn",
+  "subText": "joined the stream!",
+  "theme": "gold_purple",
+  "showGroudonBadge": false,
+  "displayDuration": 5000,
+  "soundEnabled": true,
+  "animationStyle": "crest_pop",
+  "customSoundUrl": ""
+}

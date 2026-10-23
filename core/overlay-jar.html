@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
     <script src="matter.min.js"></script>
+    <script src="stream-keepalive.js"></script>
     <style>
         :root {
             --accent-glow: rgba(56, 189, 248, 0.4);
@@ -470,12 +471,28 @@
             { name: 'Ice Cream Cone', id: '5827', icon: 'images/tiktok-gifts/5827_ice_cream_cone.webp', coins: 1 },
             { name: 'Finger Heart', id: '5487', icon: 'images/tiktok-gifts/5487_finger_heart.webp', coins: 5 },
             { name: 'GG', id: '6064', icon: 'images/tiktok-gifts/6064_gg.webp', coins: 1 },
+            { name: 'Fried Chicken', id: '15328', icon: 'images/tiktok-gifts/15328_fried_chicken.webp', coins: 1 },
+            { name: 'Arcade Game', id: '5876', icon: 'images/tiktok-gifts/5876_arcade_game.webp', coins: 1 },
             { name: 'Cap', id: '6104', icon: 'images/tiktok-gifts/6104_cap.webp', coins: 99 },
             { name: 'Doughnut', id: '5879', icon: 'images/tiktok-gifts/5879_doughnut.webp', coins: 30 },
             { name: 'Panda', id: '5659', icon: 'images/tiktok-gifts/5659_panda.webp', coins: 5 },
             { name: 'Cake Slice', id: '6784', icon: 'images/tiktok-gifts/6784_cake_slice.webp', coins: 1 },
             { name: 'Hearts', id: '5586', icon: 'images/tiktok-gifts/5586_hearts.webp', coins: 199 },
+            { name: 'Hand Heart', id: '5660', icon: 'images/tiktok-gifts/5660_hand_heart.webp', coins: 100 },
             { name: 'Bibingka', id: '6027', icon: 'images/tiktok-gifts/6027_bibingka.webp', coins: 10 },
+            { name: 'Confetti', id: '7121', icon: 'images/tiktok-gifts/7121_marvelous_confetti.webp', coins: 100 },
+            { name: 'Money Gun', id: '5881', icon: 'images/tiktok-gifts/5881_money_gun.webp', coins: 500 },
+            { name: 'Fireworks', id: '6090', icon: 'images/tiktok-gifts/6090_fireworks.webp', coins: 1088 },
+            { name: 'Whale Diving', id: '6820', icon: 'images/tiktok-gifts/6820_whale_diving.webp', coins: 2150 },
+            { name: 'Swan', id: '5897', icon: 'images/tiktok-gifts/5897_swan.webp', coins: 699 },
+            { name: 'Corgi', id: '6267', icon: 'images/tiktok-gifts/6267_corgi.webp', coins: 299 },
+            { name: 'Thumbs Up', id: '6246', icon: 'images/tiktok-gifts/6246_thumbs_up.webp', coins: 1 },
+            { name: 'Perfume', id: 'perfume', icon: 'images/tiktok-gifts/5658_perfume.webp', coins: 20 },
+            { name: 'Boxing Gloves', id: '6007', icon: 'images/tiktok-gifts/6007_boxing_gloves.webp', coins: 1 },
+            { name: 'Galaxy', id: '11046', icon: 'images/tiktok-gifts/11046_galaxy.webp', coins: 1000 },
+            { name: "Galaxy's Bestest", id: '657072', icon: 'images/tiktok-gifts/657072_galaxy_s_bestest.webp', coins: 300 },
+            { name: 'Lion', id: '5962', icon: 'images/tiktok-gifts/5962_lion.webp', coins: 29999 },
+            { name: 'Universe', id: '6059', icon: 'images/tiktok-gifts/6059_tiktok_universe.webp', coins: 34999 },
             { name: 'Rose Bear', id: '15862', icon: 'images/tiktok-gifts/15862_rose_bear.webp', coins: 1000 }
         ];
         let clickGiftIndex = 0;
@@ -486,8 +503,11 @@
 
         // Seed with popular gifts immediately so lookups work with 0ms delay
         POPULAR_TIKTOK_GIFTS.forEach(g => {
-            verifiedGiftsMap.set(g.id, g);
-            verifiedGiftsByName.set(g.name.toLowerCase(), g);
+            verifiedGiftsMap.set(String(g.id), g);
+            const raw = g.name.toLowerCase().trim();
+            const clean = raw.replace(/[^a-z0-9]/g, '');
+            verifiedGiftsByName.set(raw, g);
+            verifiedGiftsByName.set(clean, g);
         });
 
         async function loadVerifiedGiftsCatalog() {
@@ -498,7 +518,12 @@
                     if (Array.isArray(list)) {
                         list.forEach(g => {
                             if (g.id) verifiedGiftsMap.set(String(g.id).trim(), g);
-                            if (g.name) verifiedGiftsByName.set(String(g.name).trim().toLowerCase(), g);
+                            if (g.name) {
+                                const raw = String(g.name).trim().toLowerCase();
+                                const clean = raw.replace(/[^a-z0-9]/g, '');
+                                verifiedGiftsByName.set(raw, g);
+                                verifiedGiftsByName.set(clean, g);
+                            }
                         });
                     }
                 }
@@ -522,26 +547,34 @@
         });
 
         // Genuine Gift Asset Resolver (Maps gift name/id to real TikTok WebP art)
-        function resolveGiftAsset(giftName, giftId, iconUrl) {
+        function resolveGiftAsset(giftName, giftId, iconUrl, coins = 1) {
             let name = String(giftName || '').trim();
             let id = String(giftId || '').trim();
             let icon = String(iconUrl || '').trim();
+            const coinVal = parseInt(coins, 10) || 1;
 
-            // 1. If explicit valid icon given (not default avatar or empty)
-            if (icon && icon !== 'images/default_avatar.svg' && !icon.includes('default_avatar')) {
-                return { name: name || 'Rose', icon: icon };
+            // Reject non-gift dummy icons
+            const isNonGiftIcon = !icon || 
+                                  icon === 'images/default_avatar.svg' || 
+                                  icon.includes('default_avatar') || 
+                                  icon.includes('game-icons') || 
+                                  icon.includes('numbers/');
+
+            // 1. If explicit valid image URL/path given (local webp or TikTok CDN or web URL)
+            if (icon && !isNonGiftIcon && (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('images/') || icon.includes('.webp') || icon.includes('.png') || icon.includes('tiktok'))) {
+                return { name: name || 'Gift', icon: icon };
             }
 
-            // 2. Exact or clean match by giftId in verified map
+            // 2. Exact match by giftId in verified map
             if (id && verifiedGiftsMap.has(id)) {
                 const vg = verifiedGiftsMap.get(id);
                 return {
-                    name: name || vg.name || 'Rose',
+                    name: name || vg.name || 'Gift',
                     icon: vg.icon || vg.cdnIcon || 'images/tiktok-gifts/5655_rose.webp'
                 };
             }
 
-            // 3. Name lookup in verifiedGiftsByName
+            // 3. Name lookup in verifiedGiftsByName or fuzzy match
             const clean = name.toLowerCase().replace(/[^a-z0-9]/g, '');
             if (clean) {
                 if (verifiedGiftsByName.has(clean)) {
@@ -558,13 +591,57 @@
                 if (foundPop) {
                     return { name: foundPop.name, icon: foundPop.icon };
                 }
+
+                // Substring search in verified catalog
+                for (const vg of verifiedGiftsMap.values()) {
+                    if (vg.name) {
+                        const vgClean = vg.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (vgClean.includes(clean) || clean.includes(vgClean)) {
+                            return { name: name || vg.name, icon: vg.icon || vg.cdnIcon || 'images/tiktok-gifts/5655_rose.webp' };
+                        }
+                    }
+                }
             }
 
-            // 4. Default fallback: cycle through popular TikTok gifts (NEVER fallback to plain blue 🎁 ball)
-            const fallback = POPULAR_TIKTOK_GIFTS[clickGiftIndex % POPULAR_TIKTOK_GIFTS.length];
+            // 4. Common keywords fallback
+            const lower = name.toLowerCase();
+            if (lower.includes('chicken')) return { name: 'Fried Chicken', icon: 'images/tiktok-gifts/15328_fried_chicken.webp' };
+            if (lower.includes('arcade') || lower.includes('game') || lower.includes('controller')) return { name: 'Arcade Game', icon: 'images/tiktok-gifts/5876_arcade_game.webp' };
+            if (lower.includes('heart me')) return { name: 'Heart Me', icon: 'images/tiktok-gifts/7934_heart_me.webp' };
+            if (lower.includes('finger heart')) return { name: 'Finger Heart', icon: 'images/tiktok-gifts/5487_finger_heart.webp' };
+            if (lower.includes('hand heart')) return { name: 'Hand Heart', icon: 'images/tiktok-gifts/5660_hand_heart.webp' };
+            if (lower.includes('money gun')) return { name: 'Money Gun', icon: 'images/tiktok-gifts/5881_money_gun.webp' };
+            if (lower.includes('firework')) return { name: 'Fireworks', icon: 'images/tiktok-gifts/6090_fireworks.webp' };
+            if (lower.includes('whale')) return { name: 'Whale Diving', icon: 'images/tiktok-gifts/6820_whale_diving.webp' };
+            if (lower.includes('swan')) return { name: 'Swan', icon: 'images/tiktok-gifts/5897_swan.webp' };
+            if (lower.includes('confetti')) return { name: 'Confetti', icon: 'images/tiktok-gifts/7121_marvelous_confetti.webp' };
+            if (lower.includes('doughnut') || lower.includes('donut')) return { name: 'Doughnut', icon: 'images/tiktok-gifts/5879_doughnut.webp' };
+            if (lower.includes('ice cream') || lower.includes('icecream')) return { name: 'Ice Cream Cone', icon: 'images/tiktok-gifts/5827_ice_cream_cone.webp' };
+            if (lower.includes('gg')) return { name: 'GG', icon: 'images/tiktok-gifts/6064_gg.webp' };
+            if (lower.includes('cap') || lower.includes('hat')) return { name: 'Cap', icon: 'images/tiktok-gifts/6104_cap.webp' };
+            if (lower.includes('panda')) return { name: 'Panda', icon: 'images/tiktok-gifts/5659_panda.webp' };
+            if (lower.includes('corgi')) return { name: 'Corgi', icon: 'images/tiktok-gifts/6267_corgi.webp' };
+            if (lower.includes('perfume')) return { name: 'Perfume', icon: 'images/tiktok-gifts/5658_perfume.webp' };
+            if (lower.includes('cake')) return { name: 'Cake Slice', icon: 'images/tiktok-gifts/6784_cake_slice.webp' };
+            if (lower.includes('thumbs up')) return { name: 'Thumbs Up', icon: 'images/tiktok-gifts/6246_thumbs_up.webp' };
+            if (lower.includes('galaxy')) return { name: 'Galaxy', icon: 'images/tiktok-gifts/11046_galaxy.webp' };
+            if (lower.includes('universe')) return { name: 'Universe', icon: 'images/tiktok-gifts/6059_tiktok_universe.webp' };
+            if (lower.includes('lion')) return { name: 'Lion', icon: 'images/tiktok-gifts/5962_lion.webp' };
+            if (lower.includes('rose bear')) return { name: 'Rose Bear', icon: 'images/tiktok-gifts/15862_rose_bear.webp' };
+
+            // 5. Fallback by coin value to legitimate popular TikTok gift
+            if (coinVal >= 1000) return { name: 'Galaxy', icon: 'images/tiktok-gifts/11046_galaxy.webp' };
+            if (coinVal >= 500) return { name: 'Money Gun', icon: 'images/tiktok-gifts/5881_money_gun.webp' };
+            if (coinVal >= 199) return { name: 'Hearts', icon: 'images/tiktok-gifts/5586_hearts.webp' };
+            if (coinVal >= 99) return { name: 'Cap', icon: 'images/tiktok-gifts/6104_cap.webp' };
+            if (coinVal >= 30) return { name: 'Doughnut', icon: 'images/tiktok-gifts/5879_doughnut.webp' };
+            if (coinVal >= 10) return { name: 'Bibingka', icon: 'images/tiktok-gifts/6027_bibingka.webp' };
+            if (coinVal >= 5) return { name: 'Finger Heart', icon: 'images/tiktok-gifts/5487_finger_heart.webp' };
+
+            // 6. Default fallback: Rose (1 coin)
             return {
-                name: (name && name !== 'Gift') ? name : fallback.name,
-                icon: fallback.icon
+                name: (name && name !== 'Gift') ? name : 'Rose',
+                icon: 'images/tiktok-gifts/5655_rose.webp'
             };
         }
 
@@ -721,7 +798,7 @@
                 render: { visible: false }
             };
 
-            const isPriceMode = (settings.capacityMode === 'price');
+            const isPriceMode = (settings.capacityMode === 'price' || settings.capacityMode === 'infinite' || settings.isInfiniteGoal === true || settings.coinGoal === 'infinite');
 
             // 1. Canvas outer boundaries
             const outerSafety = [
@@ -864,19 +941,52 @@
             }
         }
 
+        // Authentic TikTok Gift coin-based sizing scale:
+        // Rose (1 coin) drops cute and small (13px radius), higher coin gifts scale up progressively
+        function calculateGiftRadius(coinVal, scaleMultiplier = 1.0) {
+            const c = Math.max(1, parseInt(coinVal, 10) || 1);
+            let baseR = 13;
+            if (c >= 30000) {
+                baseR = 44; // TikTok Universe / Lion (30k+ coins)
+            } else if (c >= 10000) {
+                baseR = 40; // Falcon / Phoenix (10k+ coins)
+            } else if (c >= 2000) {
+                baseR = 36; // Whale Diving / Castle (2k+ coins)
+            } else if (c >= 1000) {
+                baseR = 33; // Galaxy / Fireworks / Rose Bear (1k+ coins)
+            } else if (c >= 500) {
+                baseR = 29; // Money Gun / Swan (500 coins)
+            } else if (c >= 200) {
+                baseR = 26; // Corgi / Hearts / Galaxy's Bestest (200-300 coins)
+            } else if (c >= 100) {
+                baseR = 23; // Confetti / Hand Heart (100 coins)
+            } else if (c >= 50) {
+                baseR = 20; // Cap / Sunglasses (50-99 coins)
+            } else if (c >= 20) {
+                baseR = 18; // Perfume / Doughnut (20-30 coins)
+            } else if (c >= 10) {
+                baseR = 16; // Bibingka (10 coins)
+            } else if (c >= 5) {
+                baseR = 14.5; // Finger Heart (5 coins)
+            } else {
+                baseR = 13; // Rose, GG, Ice Cream Cone, Heart Me (1 coin - small)
+            }
+            const scaled = Math.round(baseR * scaleMultiplier);
+            return Math.max(10, Math.min(52, scaled));
+        }
+
         // Add gift physical body
         function dropGiftItem(giftName, iconUrl, coinVal = 1) {
             if (isResetting) return;
 
-            // Always resolve authentic TikTok gift asset (Rose, Heart Me, Ice Cream, etc.)
-            const resolved = resolveGiftAsset(giftName, null, iconUrl);
+            // Always resolve authentic TikTok gift asset (Rose, Heart Me, Finger Heart, etc.)
+            const resolved = resolveGiftAsset(giftName, null, iconUrl, coinVal);
             const actualName = resolved.name;
             const actualIcon = resolved.icon;
 
             const isPriceMode = (settings.capacityMode === 'price');
-            const scaleMultiplier = Math.max(0.4, Math.min(2.2, parseFloat(settings.giftScale || 1.0)));
-            const baseR = 18 * scaleMultiplier * (coinVal > 50 ? 1.25 : (coinVal > 10 ? 1.1 : 1.0));
-            const radius = Math.round(Math.min(42, Math.max(8, baseR)));
+            const scaleMultiplier = Math.max(0.7, Math.min(2.5, parseFloat(settings.giftScale || 1.0)));
+            const radius = calculateGiftRadius(coinVal, scaleMultiplier);
             const cx = stageW / 2;
 
             let spawnSpread = 20;
@@ -935,23 +1045,36 @@
             playDropSound(coinVal > 10 ? 1.2 : 1.0);
 
             // Capacity threshold check
+            const isInfinite = (settings.capacityMode === 'infinite' || settings.isInfiniteGoal === true || settings.coinGoal === 'infinite' || settings.coinGoal === 0);
             const targetLimit = isPriceMode ? (settings.coinGoal || 500) : (settings.maxCapacity || 80);
             const currentProgress = isPriceMode ? currentCoins : currentCount;
 
-            if (!isResetting && currentProgress >= targetLimit) {
+            if (!isInfinite && !isResetting && currentProgress >= targetLimit) {
                 triggerJarFullCelebration();
+            }
+
+            // In infinite or high volume sessions, maintain silky 60fps by recycling oldest settled gifts when body count exceeds 180
+            const allDynamic = Composite.allBodies(engine.world).filter(b => !b.isStatic && b.customGift);
+            if (allDynamic.length > 180) {
+                const oldest = allDynamic.sort((a, b) => (a.customGift?.createdAt || 0) - (b.customGift?.createdAt || 0))[0];
+                if (oldest) {
+                    World.remove(engine.world, oldest);
+                }
             }
         }
 
-        // Multi-drop for combo packets
+        // Strictly 1 icon drop per gift item sent (1 any gift = 1 icon drop)
         function queueGiftDrops(giftName, iconUrl, count, coins) {
-            const safeCount = Math.min(25, Math.max(1, count || 1));
-            const unitCoins = Math.max(1, Math.round((coins || count || 1) / safeCount));
+            // Exactly 1 icon per gift!
+            // If someone sent 1 Galaxy -> count is 1 -> exactly 1 drop!
+            // If someone sent a streak/combo of N gifts -> N drops!
+            const dropTotal = Math.min(40, Math.max(1, parseInt(count, 10) || 1));
+            const unitCoins = Math.max(1, Math.round((coins || dropTotal || 1) / dropTotal));
 
-            for (let i = 0; i < safeCount; i++) {
+            for (let i = 0; i < dropTotal; i++) {
                 setTimeout(() => {
                     dropGiftItem(giftName, iconUrl, unitCoins);
-                }, i * 85);
+                }, i * 90);
             }
         }
 
@@ -983,8 +1106,9 @@
 
         // Update HUD Counter & Capacity Bar
         function updateHud() {
-            const isPriceMode = (settings.capacityMode === 'price');
-            const targetLimit = isPriceMode ? (settings.coinGoal || 500) : (settings.maxCapacity || 80);
+            const isInfinite = (settings.capacityMode === 'infinite' || settings.isInfiniteGoal === true || settings.coinGoal === 'infinite' || settings.coinGoal === 0);
+            const isPriceMode = (settings.capacityMode === 'price') || isInfinite;
+            const targetLimit = isInfinite ? '♾️' : (isPriceMode ? (settings.coinGoal || 500) : (settings.maxCapacity || 80));
             const currentProgress = isPriceMode ? currentCoins : currentCount;
 
             const countEl = document.getElementById('txtJarCount');
@@ -999,15 +1123,22 @@
                 hudEl.style.opacity = '1';
             }
 
-            titleEl.innerText = settings.jarTitle || (isPriceMode ? '🪙 TikTok Coin Jar' : '🏺 TikTok Gift Jar');
-            countEl.innerText = isPriceMode ? `🪙 ${currentCoins} / ${targetLimit}` : `🏺 ${currentCount} / ${targetLimit}`;
-            const pct = Math.min(100, Math.round((currentProgress / targetLimit) * 100));
-            fillEl.style.width = `${pct}%`;
-
-            if (pct >= 85) {
-                fillEl.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+            if (isInfinite) {
+                titleEl.innerText = settings.jarTitle || '🪙 TikTok Coin Jar (Infinite)';
+                countEl.innerText = `🪙 ${currentCoins.toLocaleString()} Coins (♾️ Infinite)`;
+                fillEl.style.width = '100%';
+                fillEl.style.background = 'linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #f472b6, #fbbf24)';
             } else {
-                fillEl.style.background = 'linear-gradient(90deg, #38bdf8, #10b981, #facc15)';
+                titleEl.innerText = settings.jarTitle || (isPriceMode ? '🪙 TikTok Coin Jar' : '🏺 TikTok Gift Jar');
+                countEl.innerText = isPriceMode ? `🪙 ${currentCoins.toLocaleString()} / ${targetLimit}` : `🏺 ${currentCount} / ${targetLimit}`;
+                const pct = Math.min(100, Math.round((currentProgress / targetLimit) * 100));
+                fillEl.style.width = `${pct}%`;
+
+                if (pct >= 85) {
+                    fillEl.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+                } else {
+                    fillEl.style.background = 'linear-gradient(90deg, #38bdf8, #10b981, #facc15)';
+                }
             }
         }
 
@@ -1156,13 +1287,11 @@
                 ctx.translate(position.x, position.y);
                 ctx.rotate(angle);
 
-                // Optional outlined border around gift (only drawn if user enabled setting)
+                // Optional outlined border around gift (only drawn if user explicitly enabled setting)
                 if (settings.showGiftBorder === true) {
                     ctx.save();
                     ctx.beginPath();
                     ctx.arc(0, 0, r + 2, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
-                    ctx.fill();
                     ctx.lineWidth = 2.0;
                     ctx.strokeStyle = '#ffffff';
                     ctx.shadowColor = 'rgba(56, 189, 248, 0.7)';
@@ -1171,40 +1300,37 @@
                     ctx.restore();
                 }
 
-                if (img && img.complete && img.naturalWidth > 0) {
+                let renderImg = (img && img.complete && img.naturalWidth > 0) ? img : null;
+                if (!renderImg) {
+                    // Guaranteed instant preloaded legitimate TikTok gift image fallback (never draw numbered balls)
+                    const c = customGift.coins || 1;
+                    const nm = (customGift.name || '').toLowerCase();
+                    let fallbackSrc = 'images/tiktok-gifts/5655_rose.webp';
+                    if (c >= 1000 || nm.includes('galaxy') || nm.includes('universe') || nm.includes('lion')) {
+                        fallbackSrc = 'images/tiktok-gifts/11046_galaxy.webp';
+                    } else if (c >= 199 || nm.includes('hearts')) {
+                        fallbackSrc = 'images/tiktok-gifts/5586_hearts.webp';
+                    } else if (c >= 99 || nm.includes('cap') || nm.includes('hat')) {
+                        fallbackSrc = 'images/tiktok-gifts/6104_cap.webp';
+                    } else if (c >= 30 || nm.includes('doughnut') || nm.includes('donut')) {
+                        fallbackSrc = 'images/tiktok-gifts/5879_doughnut.webp';
+                    } else if (c >= 10 || nm.includes('bibingka')) {
+                        fallbackSrc = 'images/tiktok-gifts/6027_bibingka.webp';
+                    } else if (c >= 5 || nm.includes('finger') || nm.includes('panda')) {
+                        fallbackSrc = 'images/tiktok-gifts/5487_finger_heart.webp';
+                    } else if (nm.includes('heart')) {
+                        fallbackSrc = 'images/tiktok-gifts/7934_heart_me.webp';
+                    } else if (nm.includes('ice')) {
+                        fallbackSrc = 'images/tiktok-gifts/5827_ice_cream_cone.webp';
+                    }
+                    renderImg = getCachedImage(fallbackSrc);
+                }
+
+                if (renderImg && renderImg.complete && renderImg.naturalWidth > 0) {
                     const isRose = (customGift.name && customGift.name.toLowerCase().includes('rose')) ||
                                    (customGift.iconUrl && customGift.iconUrl.toLowerCase().includes('rose'));
-                    if (isRose) {
-                        const roseSize = r * 2.4;
-                        ctx.drawImage(img, -roseSize / 2, -roseSize / 2, roseSize, roseSize);
-                    } else {
-                        const itemSize = r * 2.1;
-                        ctx.drawImage(img, -itemSize / 2, -itemSize / 2, itemSize, itemSize);
-                    }
-                } else {
-                    // Preload if not yet cached
-                    if (customGift.iconUrl) getCachedImage(customGift.iconUrl);
-
-                    // Stylized glowing authentic gift token
-                    const isRose = (customGift.name && customGift.name.toLowerCase().includes('rose')) || (customGift.iconUrl && customGift.iconUrl.toLowerCase().includes('rose'));
-                    const isHeart = (customGift.name && customGift.name.toLowerCase().includes('heart')) || (customGift.iconUrl && customGift.iconUrl.toLowerCase().includes('heart'));
-                    const coinColor = isRose ? '#f43f5e' : (isHeart ? '#ec4899' : ((customGift.coins >= 100) ? '#a855f7' : (customGift.coins >= 10 ? '#f59e0b' : '#38bdf8')));
-                    const grad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 1, 0, 0, r);
-                    grad.addColorStop(0, '#ffffff');
-                    grad.addColorStop(0.3, coinColor);
-                    grad.addColorStop(1, '#0f172a');
-
-                    ctx.beginPath();
-                    ctx.arc(0, 0, r, 0, Math.PI * 2);
-                    ctx.fillStyle = grad;
-                    ctx.fill();
-
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = `bold ${Math.max(10, Math.round(r * 0.72))}px Outfit, sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    const labelText = isRose ? '🌹' : (isHeart ? '💖' : (customGift.coins > 1 ? `${customGift.coins}` : '🌹'));
-                    ctx.fillText(labelText, 0, 1);
+                    const itemSize = r * (isRose ? 2.4 : 2.25);
+                    ctx.drawImage(renderImg, -itemSize / 2, -itemSize / 2, itemSize, itemSize);
                 }
 
                 ctx.restore();
@@ -1273,14 +1399,14 @@
 
             // 2. Bounciness & Gift Scale updates on existing bodies
             const bounciness = parseFloat(settings.bounciness !== undefined ? settings.bounciness : 0.4);
-            const scaleMultiplier = Math.max(0.4, Math.min(2.2, parseFloat(settings.giftScale || 1.0)));
+            const scaleMultiplier = Math.max(0.7, Math.min(2.5, parseFloat(settings.giftScale || 1.0)));
 
             Composite.allBodies(engine.world).forEach(b => {
                 if (!b.isStatic && b.customGift) {
                     b.restitution = bounciness;
-                    const oldR = b.customGift.radius || 18;
-                    const targetBase = 18 * scaleMultiplier * (b.customGift.coins > 50 ? 1.25 : (b.customGift.coins > 10 ? 1.1 : 1.0));
-                    const targetR = Math.round(Math.min(42, Math.max(8, targetBase)));
+                    const oldR = b.customGift.radius || 24;
+                    const cCoins = b.customGift.coins || 1;
+                    const targetR = calculateGiftRadius(cCoins, scaleMultiplier);
                     if (targetR !== oldR && oldR > 0) {
                         const ratio = targetR / oldR;
                         Body.scale(b, ratio, ratio);
@@ -1318,60 +1444,79 @@
 
         function processIncomingJarEvent(payload) {
             if (!payload) return;
-            const eventKey = payload.id || (payload.type + '_' + (payload.timestamp || '') + '_' + (payload.giftName || payload.name || payload.label || '') + '_' + (payload.count || payload.repeatCount || ''));
-            if (eventKey && processedEventIds.has(eventKey)) return;
-            if (eventKey) {
-                processedEventIds.add(eventKey);
-                if (processedEventIds.size > 500) {
-                    const first = processedEventIds.values().next().value;
-                    processedEventIds.delete(first);
-                }
-            }
 
-            if (payload.type === 'jar_drop' || payload.type === 'gift' || payload.type === 'unconfigured_gift' || payload.action === 'drop_gift') {
-                const gName = String(payload.giftName || payload.name || payload.label || 'Rose').trim();
-                const gId = String(payload.giftId || payload.id || '').trim();
-                const rawIcon = payload.icon || payload.giftPictureUrl || '';
-
-                const resolved = resolveGiftAsset(gName, gId, rawIcon);
-                const finalName = resolved.name;
-                const finalIcon = resolved.icon;
-
-                const gCount = parseInt(payload.count || payload.repeatCount || payload.amount || 1, 10);
-                const gCoins = parseInt(payload.coins || gCount || 1, 10);
-                const uName = payload.username || 'Viewer';
-                const uAvatar = payload.avatar || payload.profilePictureUrl || 'images/default_avatar.svg';
-
-                queueGiftDrops(finalName, finalIcon, gCount, gCoins);
-                showDropToast(uName, finalName, gCount, finalIcon, uAvatar);
-            } else if (payload.type === 'jar_reset' || payload.action === 'reset_jar') {
+            // Handle resets & settings updates
+            if (payload.type === 'jar_reset' || payload.action === 'reset_jar' || payload.type === 'counts_reset') {
                 resetJarQuietly();
-            } else if (payload.type === 'jar_settings_update' || payload.action === 'settings_update') {
+                return;
+            }
+            if (payload.type === 'jar_settings_update' || payload.action === 'settings_update') {
                 if (payload.settings) {
                     settings = { ...settings, ...payload.settings };
                     applySettings();
                 } else {
                     loadJarSettings();
                 }
+                return;
             }
+
+            // Accept any genuine gift event:
+            // 1. Dedicated jar_drop events
+            // 2. Live TikTok stream gift events (type === 'gift' or action === 'drop_gift' or event === 'gift')
+            // 3. Any payload with giftName / giftId
+            const isGiftEvent = payload.type === 'jar_drop' || 
+                                payload.type === 'gift' || 
+                                payload.action === 'drop_gift' || 
+                                payload.event === 'gift' || 
+                                Boolean(payload.giftName || payload.giftId);
+
+            if (!isGiftEvent) return;
+
+            const gName = String(payload.giftName || payload.name || payload.label || 'Rose').trim();
+            const gId = String(payload.giftId || payload.id || '').trim();
+            const rawIcon = payload.icon || payload.giftPictureUrl || payload.giftIcon || '';
+            const gCount = Math.max(1, parseInt(payload.count || payload.repeatCount || payload.amount || 1, 10));
+            const gCoins = Math.max(1, parseInt(payload.coins || payload.diamondCount || gCount || 1, 10));
+            const uName = payload.username || payload.nickname || 'Viewer';
+            const uAvatar = payload.avatar || payload.profilePictureUrl || 'images/default_avatar.svg';
+
+            // Multi-channel deduplication key (BroadcastChannel + Storage + Polling window)
+            const normUser = uName.toLowerCase().trim();
+            const normGift = gName.toLowerCase().trim();
+            const timeWindow = Math.floor((payload.timestamp || Date.now()) / 2000);
+            const dedupKey = payload.id ? `id_${payload.id}` : `${normUser}_${normGift}_${gCount}_${timeWindow}`;
+
+            if (processedEventIds.has(dedupKey)) return;
+            processedEventIds.add(dedupKey);
+            if (processedEventIds.size > 500) {
+                const first = processedEventIds.values().next().value;
+                processedEventIds.delete(first);
+            }
+
+            const resolved = resolveGiftAsset(gName, gId, rawIcon, gCoins);
+            const finalName = resolved.name;
+            const finalIcon = resolved.icon;
+
+            queueGiftDrops(finalName, finalIcon, gCount, gCoins);
+            showDropToast(uName, finalName, gCount, finalIcon, uAvatar);
         }
 
         function startLiveEventPolling() {
-            // 1. BroadcastChannel for instant local inter-tab communication (0ms latency)
+            // 1. Primary BroadcastChannel for dedicated jar events (0ms latency)
             try {
                 const bc = new BroadcastChannel('renearn_jar_events');
                 bc.onmessage = function(e) {
                     if (!e.data) return;
-                    if (e.data.type === 'jar_settings_update') {
-                        if (e.data.settings) {
-                            settings = { ...settings, ...e.data.settings };
-                            applySettings();
-                        } else {
-                            loadJarSettings();
-                        }
-                    } else if (e.data.type === 'jar_reset') {
-                        resetJarQuietly();
-                    } else {
+                    processIncomingJarEvent(e.data);
+                };
+            } catch (err) {}
+
+            // 2. Secondary BroadcastChannel for TikTok live stream overlay events (catches every live gift)
+            try {
+                const bcOverlay = new BroadcastChannel('renearn_overlay_events');
+                bcOverlay.onmessage = function(e) {
+                    if (!e.data) return;
+                    if (e.data.type === 'gift' || e.data.type === 'jar_drop' || e.data.giftName || e.data.type === 'jar_reset') {
                         processIncomingJarEvent(e.data);
                     }
                 };
@@ -1401,12 +1546,15 @@
                 }
             });
 
-            // 3. Reliable HTTP Polling on /api/events
-            setInterval(async () => {
+            // 3. Reliable HTTP Polling on /api/events (Unthrottled WorkerTicker)
+            async function pollJarEvents() {
                 if (isPollingEvents) return;
                 isPollingEvents = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`);
+                    const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
                     if (res.ok) {
                         const data = await res.json();
                         if (data.serverTime) {
@@ -1420,9 +1568,16 @@
                     }
                 } catch (e) {
                 } finally {
+                    clearTimeout(timeoutId);
                     isPollingEvents = false;
                 }
-            }, 250);
+            }
+
+            if (typeof window.createWorkerTicker === 'function') {
+                window.createWorkerTicker(pollJarEvents, 150);
+            } else {
+                setInterval(pollJarEvents, 250);
+            }
         }
 
         // URL Query Param Overrides

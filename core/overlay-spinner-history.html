@@ -101,12 +101,21 @@
             gap: 8px;
         }
 
-        /* SINGLE HISTORY CARD: EXACT MATCH TO USER'S SCREENSHOT */
+        /* SINGLE HISTORY CARD: LUXURY GLOWING TIER CARD */
+        @keyframes steadyTierGlowOverlay {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 12px var(--card-glow, rgba(56, 189, 248, 0.3));
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), 0 0 18px var(--card-glow, rgba(56, 189, 248, 0.5));
+            }
+        }
+
         .history-card {
-            background: rgba(18, 22, 34, 0.94);
+            background: linear-gradient(135deg, rgba(18, 24, 38, 0.95) 0%, rgba(11, 15, 25, 0.98) 100%);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             padding: 8px 12px;
             display: flex;
@@ -114,17 +123,47 @@
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-            animation: cardSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 12px var(--card-glow, rgba(56, 189, 248, 0.3));
+            animation: steadyTierGlowOverlay 4s ease-in-out infinite;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+            opacity: 1 !important;
         }
 
-        @keyframes cardSlideIn {
-            0% { opacity: 0; transform: translateY(-16px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+        /* TIER THEMES FOR OVERLAY CARDS */
+        .history-card.tier-mythic {
+            --card-glow: rgba(255, 45, 85, 0.65);
+            border-color: #ff2d55;
+        }
+        .history-card.tier-legendary {
+            --card-glow: rgba(245, 158, 11, 0.65);
+            border-color: #f59e0b;
+        }
+        .history-card.tier-epic {
+            --card-glow: rgba(168, 85, 247, 0.6);
+            border-color: #a855f7;
+        }
+        .history-card.tier-rare {
+            --card-glow: rgba(56, 189, 248, 0.55);
+            border-color: #38bdf8;
+        }
+        .history-card.tier-uncommon {
+            --card-glow: rgba(16, 185, 129, 0.5);
+            border-color: #10b981;
+        }
+        .history-card.tier-normal {
+            --card-glow: rgba(148, 163, 184, 0.3);
+            border-color: #64748b;
+        }
+        .history-card.tier-penalty {
+            --card-glow: rgba(239, 68, 68, 0.65);
+            border-color: #ef4444;
+        }
+        .history-card.tier-score {
+            --card-glow: rgba(52, 211, 153, 0.55);
+            border-color: #10b981;
         }
 
-        /* GOLDEN / AMBER CURVED LEFT ACCENT BAR */
+        /* CURVED LEFT ACCENT BAR */
         .card-left-accent {
             position: absolute;
             left: 0;
@@ -136,6 +175,60 @@
             border-bottom-left-radius: 12px;
             box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
         }
+
+        .history-card.tier-mythic .card-left-accent {
+            background: linear-gradient(180deg, #ff2d55 0%, #be123c 100%);
+            box-shadow: 0 0 14px rgba(255, 45, 85, 0.7);
+        }
+        .history-card.tier-legendary .card-left-accent {
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
+        }
+        .history-card.tier-epic .card-left-accent {
+            background: linear-gradient(180deg, #c084fc 0%, #7e22ce 100%);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+        }
+        .history-card.tier-rare .card-left-accent {
+            background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+        }
+        .history-card.tier-uncommon .card-left-accent {
+            background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+        .history-card.tier-penalty .card-left-accent {
+            background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+        }
+        .history-card.tier-score .card-left-accent {
+            background: linear-gradient(180deg, #34d399 0%, #047857 100%);
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
+        }
+
+        /* RARITY BADGE IN OVERLAY */
+        .card-rarity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 8.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 1px 5px;
+            border-radius: 4px;
+            line-height: 1.2;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+
+        .badge-mythic { background: rgba(255, 45, 85, 0.25); color: #fecdd3; border-color: #ff2d55; }
+        .badge-legendary { background: rgba(245, 158, 11, 0.25); color: #fef08a; border-color: #f59e0b; }
+        .badge-epic { background: rgba(168, 85, 247, 0.25); color: #f3e8ff; border-color: #a855f7; }
+        .badge-rare { background: rgba(56, 189, 248, 0.22); color: #e0f2fe; border-color: #38bdf8; }
+        .badge-uncommon { background: rgba(16, 185, 129, 0.22); color: #d1fae5; border-color: #10b981; }
+        .badge-normal { background: rgba(148, 163, 184, 0.16); color: #e2e8f0; border-color: #64748b; }
+        .badge-penalty { background: rgba(239, 68, 68, 0.25); color: #fee2e2; border-color: #ef4444; }
+        .badge-score { background: rgba(16, 185, 129, 0.25); color: #ecfdf5; border-color: #34d399; }
 
         .card-user-info {
             display: flex;
@@ -269,6 +362,44 @@
             }
         }
 
+        function resolveSpinnerItemTier(item) {
+            let rawRarity = (item && item.rarity ? String(item.rarity).trim() : '');
+            const isNumber = (item.isNumber === true || item.actionType === 'score' || item.delta !== null || /^[+-]?\s*\d+$/.test(item.label || ''));
+            let delta = (item.delta !== undefined && item.delta !== null) ? Number(item.delta) : null;
+            if (delta === null && isNumber) {
+                const m = (item.label || '').match(/^([+-]?)\s*(\d+)$/);
+                if (m) delta = (m[1] === '-' ? -1 : 1) * parseInt(m[2], 10);
+            }
+
+            if (isNumber) {
+                if (delta !== null && delta < 0) {
+                    const isMega = delta <= -100;
+                    return {
+                        key: 'penalty',
+                        badgeText: isMega ? 'MEGA PENALTY' : 'PENALTY',
+                        badgeIcon: '💀',
+                        color: '#ef4444'
+                    };
+                } else {
+                    if (delta !== null && delta >= 500) return { key: 'mythic', badgeText: 'MYTHIC', badgeIcon: '🔥', color: '#ff2d55' };
+                    if (delta !== null && delta >= 50) return { key: 'legendary', badgeText: 'LEGENDARY', badgeIcon: '👑', color: '#f59e0b' };
+                    if (delta !== null && delta >= 20) return { key: 'epic', badgeText: 'EPIC', badgeIcon: '⚡', color: '#a855f7' };
+                    if (delta !== null && delta >= 10) return { key: 'rare', badgeText: 'RARE', badgeIcon: '💎', color: '#38bdf8' };
+                    return { key: 'score', badgeText: '+POINTS', badgeIcon: '⭐', color: '#10b981' };
+                }
+            }
+
+            const norm = (rawRarity || 'Normal').toLowerCase();
+            switch (norm) {
+                case 'mythic': return { key: 'mythic', badgeText: 'MYTHIC', badgeIcon: '🔥', color: '#ff2d55' };
+                case 'legendary': return { key: 'legendary', badgeText: 'LEGENDARY', badgeIcon: '👑', color: '#f59e0b' };
+                case 'epic': return { key: 'epic', badgeText: 'EPIC', badgeIcon: '⚡', color: '#a855f7' };
+                case 'rare': return { key: 'rare', badgeText: 'RARE', badgeIcon: '💎', color: '#38bdf8' };
+                case 'uncommon': return { key: 'uncommon', badgeText: 'UNCOMMON', badgeIcon: '☘️', color: '#10b981' };
+                default: return { key: 'normal', badgeText: 'NORMAL', badgeIcon: '✨', color: '#94a3b8' };
+            }
+        }
+
         function renderHistory(list) {
             const container = document.getElementById('historyList');
             if (!container) return;
@@ -279,31 +410,41 @@
             }
 
             const visibleItems = list.slice(0, maxLimit);
+            const renderSig = visibleItems.map(it => `${it.id || ''}:${it.username || ''}:${it.label || ''}:${it.timeStr || ''}:${it.delta || ''}`).join(';;');
+            if (container._lastRenderSig === renderSig) return;
+            container._lastRenderSig = renderSig;
+
             let html = '';
 
             visibleItems.forEach((item) => {
                 const username = escapeHtml(item.username || 'User');
                 const avatar = item.avatar || 'images/default_avatar.svg';
                 const isNumber = (item.isNumber === true || item.actionType === 'score' || item.delta !== null || /^[+-]?\s*\d+$/.test(item.label || ''));
+                const tier = resolveSpinnerItemTier(item);
                 
                 let prizeHtml = '';
                 if (isNumber) {
                     const rawLabel = (item.label || '10').trim();
-                    const color = item.color || '#ff007f';
+                    const color = item.color || tier.color;
                     prizeHtml = `<div class="prize-text-num" style="color: ${color}; text-shadow: 0 0 12px ${color};">${rawLabel}</div>`;
                 } else {
                     const icon = item.icon || 'images/func_2.png';
-                    prizeHtml = `<img src="${icon}" class="prize-unit-img" alt="${item.label}" onerror="this.src='images/func_2.png'">`;
+                    prizeHtml = `<img src="${icon}" class="prize-unit-img" alt="${escapeHtml(item.label)}" onerror="this.src='images/func_2.png'">`;
                 }
 
                 html += `
-                    <div class="history-card">
+                    <div class="history-card tier-${tier.key}">
                         <div class="card-left-accent"></div>
                         <div class="card-user-info">
                             <div class="card-avatar-wrap">
                                 <img src="${avatar}" class="card-avatar-img" alt="${username}" onerror="this.src='images/default_avatar.svg'">
                             </div>
-                            <div class="card-username" title="${username}">${username}</div>
+                            <div style="min-width: 0;">
+                                <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                                    <span class="card-rarity-badge badge-${tier.key}">${tier.badgeIcon} ${tier.badgeText}</span>
+                                </div>
+                                <div class="card-username" title="${username}">${username}</div>
+                            </div>
                         </div>
                         <div class="card-prize-badge">
                             ${prizeHtml}

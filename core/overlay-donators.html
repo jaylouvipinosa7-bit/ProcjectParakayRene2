@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Top Donators Stream Overlay</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Titan+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-coin: #f59e0b;
+            --accent-coin-glow: rgba(245, 158, 11, 0.45);
+            --gold-grad: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
+            --silver-grad: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #64748b 100%);
+            --bronze-grad: linear-gradient(135deg, #fdba74 0%, #ea580c 50%, #9a3412 100%);
+            --scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            background: transparent !important;
+            overflow: visible;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .overlay-viewport {
+            transform-origin: top left;
+            transform: scale(var(--scale));
+            padding: 16px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .overlay-viewport.pos-center { margin: 0 auto; justify-content: center; }
+        .overlay-viewport.pos-right { margin-left: auto; justify-content: flex-end; }
+        .overlay-viewport.pos-left { margin-right: auto; justify-content: flex-start; }
+
+        /* ==========================================================================
+           🌸 STYLE: ANIME SAKURA CARD (Photo 3 Match - 100% Clean without Photo 4)
+           ========================================================================== */
+        .anime-card {
+            position: relative;
+            width: 330px;
+            background: linear-gradient(175deg, rgba(30, 16, 42, 0.94) 0%, rgba(18, 12, 28, 0.97) 100%);
+            border-radius: 26px;
+            border: 2px solid rgba(244, 114, 182, 0.55);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 
+                        0 0 35px rgba(236, 72, 153, 0.35),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            transition: all 0.3s ease;
+        }
+
+        .anime-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: radial-gradient(circle at 80% 10%, rgba(244, 114, 182, 0.18) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Chibi Mascot Badge */
+        .anime-mascot-badge {
+            position: absolute;
+            top: -26px;
+            right: 14px;
+            width: 68px;
+            height: 68px;
+            filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 16px rgba(244, 114, 182, 0.6));
+            z-index: 10;
+            animation: mascotBob 3.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .anime-mascot-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes mascotBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(3deg); }
+        }
+
+        /* Floating Sakura Petals */
+        .anime-sakura-petal {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            animation: floatPetal 4s ease-in-out infinite alternate;
+        }
+        .sakura-1 { top: -10px; left: 16px; font-size: 16px; animation-duration: 3.2s; }
+        .sakura-2 { top: 40px; right: -12px; font-size: 14px; animation-duration: 4.5s; }
+        .sakura-3 { bottom: 8px; left: -10px; font-size: 15px; animation-duration: 3.8s; }
+        .sakura-4 { bottom: -8px; right: 24px; font-size: 13px; animation-duration: 4.2s; }
+
+        @keyframes floatPetal {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            100% { transform: translateY(-8px) rotate(18deg) scale(1.15); }
+        }
+
+        .anime-header {
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .anime-pill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(90deg, #ec4899, #f43f5e);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.45);
+            margin-bottom: 6px;
+        }
+
+        .ranking-title-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .ranking-title {
+            font-family: 'Fredoka', 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: -0.3px;
+        }
+
+        .anime-jp-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f472b6;
+            margin-left: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Donator Rows */
+        .ranking-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .ranking-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 16px;
+            background: rgba(25, 20, 36, 0.85);
+            border: 1.5px solid rgba(244, 114, 182, 0.25);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Rank #1 Champion Row (Gold border + glow) */
+        .ranking-row.rank-1 {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.22) 0%, rgba(30, 20, 42, 0.9) 100%);
+            border: 2px solid #fbbf24;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 20px rgba(245, 158, 11, 0.45);
+        }
+
+        /* Rank #2 (Silver/Cyan border) */
+        .ranking-row.rank-2 {
+            border-color: rgba(56, 189, 248, 0.7);
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(25, 20, 36, 0.85) 100%);
+        }
+
+        /* Rank #3 (Bronze/Pink border) */
+        .ranking-row.rank-3 {
+            border-color: rgba(244, 63, 94, 0.7);
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.15) 0%, rgba(25, 20, 36, 0.85) 100%);
+        }
+
+        .avatar-wrap {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+            display: block;
+            background: #111;
+        }
+
+        .rank-1-crown {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+            animation: crownBob 2s infinite ease-in-out;
+            z-index: 3;
+        }
+
+        @keyframes crownBob {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-3px); }
+        }
+
+        .row-user-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .user-metric-val {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .metric-coin-token {
+            font-size: 13px;
+        }
+
+        /* Celebration Toast */
+        #celebrationToast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(245, 158, 11, 0.7);
+            border: 2px solid #ffffff;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #celebrationToast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="celebrationToast">
+        <span style="font-size: 20px;">👑</span>
+        <span id="toastMsg">New #1 Top Supporter!</span>
+    </div>
+
+    <div id="overlayViewport" class="overlay-viewport pos-left">
+        <div class="anime-card">
+            <!-- Chibi Mascot Badge (Photo 3 Match) -->
+            <div class="anime-mascot-badge" title="RENEarn Anime Mascot">
+                <img src="images/anime_mascot.png" onerror="this.src='images/game-icons/pvz/spawn_cattail_girl.webp'" alt="Anime Mascot">
+            </div>
+
+            <!-- Floating Sakura Petals -->
+            <span class="anime-sakura-petal sakura-1">🌸</span>
+            <span class="anime-sakura-petal sakura-2">✨</span>
+            <span class="anime-sakura-petal sakura-3">🌸</span>
+            <span class="anime-sakura-petal sakura-4">⭐</span>
+
+            <!-- Header without any Photo 4 Controls -->
+            <div class="anime-header">
+                <div class="anime-pill-tag">🌸 ANIME LEGENDS ✨</div>
+                <div class="ranking-title-wrap">
+                    <span class="ranking-title" id="cardTitle">Top Donators</span>
+                    <span class="anime-jp-subtitle">トップサポーター</span>
+                </div>
+            </div>
+
+            <!-- Clean Ranked Donator List -->
+            <ul class="ranking-list" id="donatorList">
+                <!-- Dynamically populated -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const cardStyle = params.get('style') || 'anime';
+        const maxCount = parseInt(params.get('count') || '5', 10);
+        const customTitle = params.get('title') || 'Top Donators';
+        const overlayPos = params.get('pos') || 'left';
+        const overlayScale = parseFloat(params.get('scale') || '1');
+
+        document.getElementById('cardTitle').textContent = customTitle;
+        const vp = document.getElementById('overlayViewport');
+        if (vp) {
+            vp.className = `overlay-viewport pos-${overlayPos}`;
+            document.documentElement.style.setProperty('--scale', overlayScale);
+        }
+
+        // Default Sample Donators (Photo 3 Match)
+        let donators = [
+            { username: 'DoMo PhoN CAPH', value: 751, avatar: 'images/tiktok-gifts/rose.png' },
+            { username: 'Nerooooo', value: 746, avatar: 'images/tiktok-gifts/ice_cream_cone.png' },
+            { username: 'ScreenGazer_G', value: 509, avatar: 'images/tiktok-gifts/doughnut.png' },
+            { username: 'Monsterrized23', value: 253, avatar: 'images/renearn_icon.png' },
+            { username: 'Patrick Flores', value: 20, avatar: 'images/groudon_top_gift.jpg' }
+        ];
+
+        function getAvatarUrl(username, avatar, rank) {
+            if (avatar && avatar.trim().length > 0) return avatar;
+            if (username && !username.startsWith('Top ')) {
+                return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&bold=true&size=128`;
+            }
+            return `https://ui-avatars.com/api/?name=${rank}&background=f59e0b&color=fff&bold=true&size=128`;
+        }
+
+        function renderRows() {
+            const list = document.getElementById('donatorList');
+            if (!list) return;
+
+            let html = '';
+            for (let i = 1; i <= maxCount; i++) {
+                const item = donators[i - 1];
+                const hasUser = item && item.username && item.value > 0;
+                const username = hasUser ? item.username : `Top ${i}`;
+                const valFormatted = hasUser ? item.value.toLocaleString() : '0';
+                const avatar = getAvatarUrl(username, (item && item.avatar) || '', i);
+                const rankClass = i === 1 ? 'rank-1' : (i === 2 ? 'rank-2' : (i === 3 ? 'rank-3' : ''));
+                const crownHtml = i === 1 ? `<span class="rank-1-crown" title="Crown">👑</span>` : '';
+
+                html += `
+                    <li class="ranking-row ${rankClass}">
+                        <div class="avatar-wrap">
+                            ${crownHtml}
+                            <img src="${avatar}" class="avatar-img" alt="${username}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
+                        </div>
+                        <div class="row-user-details">
+                            <div class="user-name" title="${username}">${username}</div>
+                            <div class="user-metric-val">
+                                <span>${valFormatted}</span>
+                                <span class="metric-coin-token">🪙</span>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            }
+            list.innerHTML = html;
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('celebrationToast');
+            const msg = document.getElementById('toastMsg');
+            if (!toast || !msg) return;
+            msg.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // Live Event Listeners
+        async function fetchLiveLeaderboard() {
+            try {
+                const res = await fetch('/api/leaderboard?type=all&count=10&t=' + Date.now());
+                if (!res.ok) return;
+                const json = await res.json();
+                const list = json.coins || json.donators;
+                if (list && list.length > 0) {
+                    donators = list;
+                    renderRows();
+                }
+            } catch (e) {}
+        }
+
+        try {
+            const bc = new BroadcastChannel('renearn_leaderboard_events');
+            bc.onmessage = function(e) {
+                if (e.data && e.data.type === 'gift') {
+                    const u = e.data.user || e.data.nickname || 'Viewer';
+                    const coins = e.data.coins || e.data.diamondCount || 10;
+                    showToast(`🎁 ${u} sent gift (+${coins} 🪙)!`);
+                }
+                fetchLiveLeaderboard();
+            };
+        } catch (e) {}
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'renearn_leaderboard_update' || e.key === 'renearn_live_gift_event') {
+                fetchLiveLeaderboard();
+            }
+        });
+
+        // Initialize
+        renderRows();
+        fetchLiveLeaderboard();
+    </script>
+</body>
+</html>

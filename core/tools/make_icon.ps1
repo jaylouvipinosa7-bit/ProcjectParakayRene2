@@ -4,12 +4,31 @@ $srcPath = "c:\Users\pc\Downloads\ano na\core\images\renearn_icon.png"
 $targetIcoPaths = @(
     "c:\Users\pc\Downloads\ano na\app_icon.ico",
     "c:\Users\pc\Downloads\ano na\renearn.ico",
-    "c:\Users\pc\Downloads\ano na\core\app_icon.ico"
+    "c:\Users\pc\Downloads\ano na\core\app_icon.ico",
+    "c:\Users\pc\Downloads\ano na\Apps\renearn.ico"
 )
 
 $srcBmp = [System.Drawing.Bitmap]::FromFile($srcPath)
-$sizes = @(256, 128, 64, 48, 32, 16)
+$sizes = @(256, 128, 64, 48, 32, 24, 16)
 
+# Generate individual crisp PNGs for PWA / web favicons
+foreach ($sz in @(256, 192, 128, 64, 48, 32, 24, 16)) {
+    $targetBmp = New-Object System.Drawing.Bitmap $sz, $sz
+    $g = [System.Drawing.Graphics]::FromImage($targetBmp)
+    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+    $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+    $g.Clear([System.Drawing.Color]::Transparent)
+    $g.DrawImage($srcBmp, 0, 0, $sz, $sz)
+    $g.Dispose()
+
+    $pngPath = "c:\Users\pc\Downloads\ano na\core\images\renearn_icon_$sz.png"
+    $targetBmp.Save($pngPath, [System.Drawing.Imaging.ImageFormat]::Png)
+    $targetBmp.Dispose()
+    Write-Host "Exported favicon: $pngPath"
+}
+
+# Generate multi-resolution Windows .ICO files
 foreach ($icoPath in $targetIcoPaths) {
     $pngStreams = @()
     foreach ($sz in $sizes) {
@@ -27,6 +46,9 @@ foreach ($icoPath in $targetIcoPaths) {
         $targetBmp.Dispose()
         $pngStreams += $ms
     }
+
+    $parentDir = [System.IO.Path]::GetDirectoryName($icoPath)
+    if (-not (Test-Path $parentDir)) { New-Item -ItemType Directory -Path $parentDir -Force | Out-Null }
 
     $icoFile = [System.IO.File]::Create($icoPath)
     $bw = New-Object System.IO.BinaryWriter $icoFile
@@ -68,4 +90,4 @@ foreach ($icoPath in $targetIcoPaths) {
 }
 
 $srcBmp.Dispose()
-Write-Host "SUCCESS: Groudon RENEarn icon created!"
+Write-Host "SUCCESS: Groudon RENEarn icon created with transparent corners & all taskbar resolutions!"

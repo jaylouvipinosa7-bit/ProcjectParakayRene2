@@ -375,6 +375,29 @@
             pointer-events: none;
         }
 
+        .trigger-gift-name {
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7.5px;
+            font-weight: 800;
+            color: #ffffff;
+            background: rgba(10, 12, 16, 0.90);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 4px;
+            padding: 0 3px;
+            line-height: 10px;
+            white-space: nowrap;
+            max-width: 96%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            pointer-events: none;
+            letter-spacing: -0.2px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+
         /* ==========================================================
            TOP-RIGHT PURPLE DONATION COUNTER BADGE
            Matches requested pill style: purple fill + white border
@@ -1177,7 +1200,10 @@
             const followSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><circle cx="36" cy="32" r="18" fill="#3ac956"/><path d="M 8 76 C 8 56 22 50 36 50 C 50 50 64 56 64 76 Z" fill="#3ac956"/><path d="M 78 36 L 78 56 M 68 46 L 88 46" stroke="#3ac956" stroke-width="8" stroke-linecap="round"/></svg>';
             const followDataUrl = 'data:image/svg+xml,' + encodeURIComponent(followSvg);
 
-            let trigSrc = card.trigImg || `images/trig_${card.id}.png`;
+            let trigSrc = (card.trigImg || card.icon || `images/trig_${card.id}.png`).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
+            if (trigSrc === 'images/trig_3.svg') trigSrc = 'images/trig_3.webp';
+            let funcSrc = (card.funcImg || card.unitIcon || (card.commands ? 'images/game-icons/pvz/' + card.commands + '.webp' : '') || 'images/game-icons/pvz/spawn_gatling_pea.webp').replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
+
             if (card.action === 'Follow') {
                 trigSrc = followDataUrl;
             } else if (card.action === 'LikeForEach' || card.action === 'LikeAmount' || card.action === 'Like') {
@@ -1187,16 +1213,20 @@
                 trigSrc = 'data:image/svg+xml,' + encodeURIComponent(svgData);
             }
 
-            const countVal = currentCounts[String(card.id)] || 0;
+            const cardGiftName = card.giftName || card.action || 'Gift';
+            const cardCost = card.coins ? `${card.coins} Coins` : (card.triggerValue ? `${card.triggerValue} Likes` : '');
+            const cardTooltip = `${cardGiftName}${cardCost ? ' • ' + cardCost : ''} ➔ ${card.funcName || ''}`;
+            const showGiftTag = (card.action !== 'Follow' && !String(card.action || '').startsWith('Like') && cardGiftName && cardGiftName !== 'Gift');
 
             cardEl.innerHTML = `
-                <div class="event">
+                <div class="event" title="${cardTooltip}">
                     <span class="donation-badge" id="badge-${card.id}">${countVal.toLocaleString()}</span>
                     <div class="function-image-wrapper">
-                        <img class="function-icon" src="${card.funcImg}" alt="${card.funcName || ''}" onerror="this.style.opacity='0.4'">
+                        <img class="function-icon" src="${funcSrc}" alt="${card.funcName || ''}" onerror="this.onerror=null; this.src='images/game-icons/pvz/spawn_gatling_pea.webp';">
                     </div>
-                    <div class="trigger-img-wrapper">
-                        <img class="trigger-icon" src="${trigSrc}" alt="${card.giftName || card.action}" onerror="if('${card.action}'==='Follow')this.src='${followDataUrl}';else if('${card.action}'.startsWith('Like'))this.src='images/trig_7.svg';">
+                    <div class="trigger-img-wrapper" title="${cardTooltip}">
+                        <img class="trigger-icon" src="${trigSrc}" alt="${cardGiftName}" onerror="this.onerror=null; if('${card.action}'==='Follow')this.src='${followDataUrl}';else if('${card.action}'.startsWith('Like'))this.src='images/trig_7.svg';else this.src='images/tiktok-gifts/18508_mystery_box.webp';">
+                        ${showGiftTag ? `<span class="trigger-gift-name">${cardGiftName}</span>` : ''}
                     </div>
                 </div>
             `;
@@ -1304,10 +1334,23 @@
 
     async function loadCardsConfig() {
         try {
-            const res = await fetch(`${API_BASE}/cards.json?v=${Date.now()}`);
-            if (res.ok) {
-                const newCards = await res.json();
-                
+            let newCards = null;
+            try {
+                const res = await fetch(`${API_BASE}/cards.json?v=${Date.now()}`);
+                if (res.ok) {
+                    const text = await res.text();
+                    const clean = text.replace(/^\uFEFF/, '').trim();
+                    newCards = JSON.parse(clean);
+                }
+            } catch (netErr) {}
+
+            if (!Array.isArray(newCards) || newCards.length === 0) {
+                if (typeof cardsData !== 'undefined' && Array.isArray(cardsData) && cardsData.length > 0) {
+                    newCards = cardsData;
+                }
+            }
+
+            if (newCards && Array.isArray(newCards) && newCards.length > 0) {
                 const newJson = JSON.stringify(newCards);
                 if (loadCardsConfig._lastJson === newJson) return;
                 loadCardsConfig._lastJson = newJson;

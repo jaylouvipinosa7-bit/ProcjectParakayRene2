@@ -155,38 +155,95 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            perspective: 800px;
         }
 
+        /* 3D TACTILE BUTTONS */
         .btn-copy-link {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1.5px solid #2563eb;
-            border-radius: 8px;
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            border: 1px solid #60a5fa;
+            border-bottom: 3.5px solid #1e3a8a;
+            border-radius: 9px;
             color: #ffffff;
             padding: 5px 14px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.45);
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            transform: translateY(0);
         }
         .btn-copy-link:hover {
-            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.6);
+            border-bottom-width: 4px;
+            filter: brightness(1.1);
+        }
+        .btn-copy-link:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 4px rgba(29, 78, 216, 0.3);
         }
 
         .btn-refresh-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: #94a3b8;
+            background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+            border: 1px solid #475569;
+            border-bottom: 3.5px solid #0f172a;
+            border-radius: 9px;
+            color: #cbd5e1;
             padding: 5px 12px;
             font-size: 13px;
+            font-weight: 900;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(0);
         }
         .btn-refresh-card:hover {
             color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.7);
             border-color: #64748b;
+            filter: brightness(1.15);
+        }
+        .btn-refresh-card:active {
+            transform: translateY(2px) rotate(180deg);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .btn-add-entry {
+            background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+            border: 1px solid #34d399;
+            border-bottom: 3.5px solid #064e3b;
+            border-radius: 9px;
+            color: #ffffff;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            transform: translateY(0);
+        }
+        .btn-add-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.55);
+            border-bottom-width: 4px;
+            filter: brightness(1.1);
+        }
+        .btn-add-entry:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+            box-shadow: 0 1px 4px rgba(16, 185, 129, 0.3);
         }
 
         .header-dropdowns-row {
@@ -203,68 +260,449 @@
 
         .hdr-sel-group label {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* 3D INTERACTIVE DROPDOWNS */
         .hdr-sel-group select {
-            background: #090d14;
-            border: 1px solid #1e293b;
-            border-radius: 6px;
+            background: linear-gradient(180deg, #161f30 0%, #0c121d 100%);
+            border: 1.5px solid #28374d;
+            border-bottom: 3px solid #141d2b;
+            border-radius: 8px;
             color: #ffffff;
             font-size: 12px;
-            font-weight: 600;
-            padding: 4px 8px;
+            font-weight: 700;
+            padding: 5px 8px;
             outline: none;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            transition: all 0.2s ease;
+        }
+        .hdr-sel-group select:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+            transform: translateY(-1px);
+        }
+        .hdr-sel-group select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 16px rgba(96, 165, 250, 0.5);
         }
 
         /* List Rows */
         .ranking-list {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             list-style: none;
             padding: 0;
             margin: 0;
+            perspective: 1000px;
         }
 
+        /* 3D TACTILE RANKING ROW */
         .ranking-row {
-            height: 46px;
-            padding: 0 10px;
-            border-radius: 10px;
+            height: 48px;
+            padding: 0 12px;
+            border-radius: 12px;
             background-color: #171d26;
-            background-image: repeating-conic-gradient(rgba(255, 255, 255, 0.04) 0% 25%, transparent 0% 50%) 50% / 12px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background-image: repeating-conic-gradient(rgba(255, 255, 255, 0.035) 0% 25%, transparent 0% 50%) 50% / 12px 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-bottom: 3.5px solid rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             gap: 10px;
             position: relative;
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hover 3D Lift & Specular Glow */
+        .ranking-row:hover {
+            transform: translateY(-3px) translateZ(16px) scale(1.02);
+            border-color: rgba(56, 189, 248, 0.8);
+            border-bottom-width: 4px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7), 0 0 18px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background-color: #1c2432;
+        }
+
+        /* Active 3D Press Down */
+        .ranking-row:active {
+            transform: translateY(2px) translateZ(-4px) scale(0.98);
+            border-bottom-width: 1.5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 3D Floating Edit Pill that appears on hover */
+        .row-edit-chip {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%) translateZ(20px);
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #000;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            letter-spacing: 0.3px;
+        }
+        .ranking-row:hover .row-edit-chip {
+            opacity: 1;
+            transform: translateY(-50%) translateZ(24px) scale(1.05);
         }
 
         .ranking-row.updated {
-            animation: rowFlash 0.6s ease-out;
+            animation: rowFlash3D 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes rowFlash {
-            0% { transform: scale(1.03); background-color: rgba(245, 158, 11, 0.35); border-color: #f59e0b; }
-            100% { transform: scale(1); }
+        @keyframes rowFlash3D {
+            0% { transform: scale(1.06) translateZ(30px); background-color: rgba(245, 158, 11, 0.45); border-color: #f59e0b; box-shadow: 0 0 30px #f59e0b; }
+            100% { transform: scale(1) translateZ(0); }
         }
 
-        /* Ranks 1, 2, 3 in Screenshot 1 */
+        /* 3D Ranks 1, 2, 3 with Volumetric Depth and Crowns */
         .ranking-row.rank-1 {
             border: 2px solid #facc15;
-            box-shadow: 0 0 12px rgba(250, 204, 21, 0.35);
+            border-bottom: 4px solid #b45309;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), 0 0 16px rgba(250, 204, 21, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(23, 29, 38, 0.95) 45%);
+        }
+        .ranking-row.rank-1:hover {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7), 0 0 26px rgba(250, 204, 21, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-color: #fde047;
         }
 
         .ranking-row.rank-2 {
-            border: 2px solid #3b82f6;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+            border: 2px solid #38bdf8;
+            border-bottom: 4px solid #0369a1;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.1) 0%, rgba(23, 29, 38, 0.95) 45%);
+        }
+        .ranking-row.rank-2:hover {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7), 0 0 24px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-color: #7dd3fc;
         }
 
         .ranking-row.rank-3 {
-            border: 2px solid #d97706;
-            box-shadow: 0 0 12px rgba(217, 119, 6, 0.35);
+            border: 2px solid #fb923c;
+            border-bottom: 4px solid #9a3412;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), 0 0 16px rgba(251, 146, 60, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, rgba(251, 146, 60, 0.1) 0%, rgba(23, 29, 38, 0.95) 45%);
+        }
+        .ranking-row.rank-3:hover {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7), 0 0 24px rgba(251, 146, 60, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-color: #fdba74;
+        }
+
+        /* 3D MODAL STYLES FOR EDITING LEADERBOARD */
+        .lb-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            perspective: 1200px;
+        }
+        .lb-modal-backdrop.active {
+            display: flex;
+            animation: fadeInModal 0.2s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .lb-modal-card {
+            width: 90%;
+            max-width: 440px;
+            background: #11151e;
+            border: 2px solid #28374d;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform-style: preserve-3d;
+            animation: zoom3DModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes zoom3DModal {
+            from { transform: perspective(1000px) translateZ(-80px) rotateX(10deg); opacity: 0; }
+            to { transform: perspective(1000px) translateZ(0) rotateX(0deg); opacity: 1; }
+        }
+
+        .lb-modal-header {
+            padding: 16px 20px;
+            background: linear-gradient(180deg, #182232 0%, #11151e 100%);
+            border-bottom: 1px solid #28374d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .lb-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+        }
+        .lb-modal-close {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 800;
+            transition: all 0.15s ease;
+        }
+        .lb-modal-close:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .lb-modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 3D Avatar Preview Stage in Modal */
+        .lb-avatar-preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: #090d14;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+        }
+        .lb-avatar-3d-stage {
+            width: 76px;
+            height: 76px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        .lb-avatar-3d-stage:hover {
+            transform: perspective(600px) rotateY(15deg) rotateX(-10deg) scale(1.08);
+        }
+        .lb-avatar-preview-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #38bdf8;
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.45);
+        }
+        .lb-avatar-rank-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            font-weight: 900;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            transform: translateZ(10px);
+        }
+
+        .lb-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .lb-label {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .lb-input {
+            background: #090d14;
+            border: 1.5px solid #28374d;
+            border-radius: 9px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 700;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .lb-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+        }
+
+        .lb-score-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .lb-input-number {
+            width: 140px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            color: #f59e0b;
+        }
+        .lb-quick-math-btns {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .btn-math {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-bottom: 2px solid #0f172a;
+            color: #38bdf8;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-math:hover {
+            background: #38bdf8;
+            color: #000;
+            transform: translateY(-1px);
+        }
+        .btn-math:active {
+            transform: translateY(1px);
+        }
+
+        /* Preset Avatar Buttons */
+        .lb-preset-avatars-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .lb-preset-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: #161f30;
+            border: 1.5px solid #30425c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 2px;
+            transition: all 0.15s ease;
+        }
+        .lb-preset-btn:hover {
+            border-color: #38bdf8;
+            transform: scale(1.12);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+        }
+        .lb-preset-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .lb-modal-footer {
+            padding: 14px 20px;
+            background: #090d14;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-3d {
+            padding: 8px 16px;
+            font-size: 12.5px;
+            font-weight: 800;
+            border-radius: 9px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+        }
+        .btn-3d-primary {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            border: 1px solid #7dd3fc;
+            border-bottom: 3.5px solid #0369a1;
+            color: #000;
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
+        }
+        .btn-3d-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(56, 189, 248, 0.6);
+            border-bottom-width: 4px;
+        }
+        .btn-3d-primary:active {
+            transform: translateY(2px);
+            border-bottom-width: 1.5px;
+        }
+
+        .btn-3d-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-bottom: 3px solid #0f172a;
+            color: #94a3b8;
+        }
+        .btn-3d-secondary:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .btn-3d-secondary:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        .btn-3d-danger {
+            background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+            border: 1px solid #f87171;
+            border-bottom: 3.5px solid #7f1d1d;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        }
+        .btn-3d-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+            border-bottom-width: 4px;
+        }
+        .btn-3d-danger:active {
+            transform: translateY(2px);
+            border-bottom-width: 1.5px;
         }
 
         /* Avatar Container */
@@ -303,6 +741,60 @@
             width: 20px;
             height: 20px;
             fill: #475569;
+        }
+
+        /* Dynamic Avatar Geometric Shapes (Live Sync from Avatar Studio) */
+        .avatar-wrap.shape-circle .avatar-img,
+        .avatar-wrap.shape-circle .avatar-silhouette,
+        .avatar-img.shape-circle,
+        .cute-avatar-small.shape-circle img,
+        .cute-avatar-1.shape-circle img {
+            border-radius: 50% !important;
+            clip-path: none !important;
+        }
+
+        .avatar-wrap.shape-squircle .avatar-img,
+        .avatar-wrap.shape-squircle .avatar-silhouette,
+        .avatar-img.shape-squircle,
+        .cute-avatar-small.shape-squircle img,
+        .cute-avatar-1.shape-squircle img {
+            border-radius: 26% !important;
+            clip-path: none !important;
+        }
+
+        .avatar-wrap.shape-hexagon .avatar-img,
+        .avatar-wrap.shape-hexagon .avatar-silhouette,
+        .avatar-img.shape-hexagon,
+        .cute-avatar-small.shape-hexagon img,
+        .cute-avatar-1.shape-hexagon img {
+            clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%) !important;
+            border-radius: 0 !important;
+        }
+
+        .avatar-wrap.shape-diamond .avatar-img,
+        .avatar-wrap.shape-diamond .avatar-silhouette,
+        .avatar-img.shape-diamond,
+        .cute-avatar-small.shape-diamond img,
+        .cute-avatar-1.shape-diamond img {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%) !important;
+            border-radius: 0 !important;
+        }
+
+        /* Floating Royal Crown for Rank #1 */
+        .rank-1-crown {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(25px);
+            font-size: 15px;
+            filter: drop-shadow(0 2px 5px rgba(245, 158, 11, 0.8));
+            animation: crownBounce 2s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes crownBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+            50% { transform: translateX(-50%) translateY(-3px) scale(1.1); }
         }
 
         .row-user-details {
@@ -822,14 +1314,313 @@
             letter-spacing: 0.5px;
         }
 
-        /* Transparent OBS Mode */
+        /* ==========================================================================
+           STYLE 6: PRIMAL GROUDON MAGMA THEME
+           ========================================================================== */
+        .groudon-card {
+            width: 325px;
+            background: linear-gradient(180deg, rgba(26, 12, 10, 0.96) 0%, rgba(12, 6, 6, 0.98) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(239, 68, 68, 0.55);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 28px rgba(239, 68, 68, 0.4), inset 0 0 18px rgba(249, 115, 22, 0.2);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            padding: 14px 12px 10px;
+            position: relative;
+        }
+        .groudon-card .ranking-header {
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.2) 0%, rgba(0, 0, 0, 0.35) 100%);
+            border-bottom: 1.5px solid rgba(239, 68, 68, 0.4);
+            border-radius: 14px 14px 0 0;
+            padding-bottom: 8px;
+        }
+        .groudon-card .ranking-title {
+            color: #ffd35c;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(249, 115, 22, 0.5);
+            font-family: 'Oxanium', 'Outfit', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+        .groudon-card .ranking-row {
+            background: rgba(20, 12, 12, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+        }
+        .groudon-card .ranking-row.rank-1 {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.35) 0%, rgba(249, 115, 22, 0.2) 50%, rgba(20, 10, 10, 0.9) 100%);
+            border: 1.8px solid #fbbf24;
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+        }
+        .groudon-card .ranking-row.rank-1 .user-name {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+        }
+        .groudon-card .ranking-row.rank-1 .metric-num {
+            color: #ffd35c;
+            font-weight: 900;
+        }
+
+        .btn-border-reset {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            color: #fbbf24;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 6px;
+            font-family: inherit;
+        }
+        .btn-border-reset:hover {
+            background: rgba(251, 191, 36, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+        }
+
+        /* ==========================================================================
+           STYLE 5: ANIME SAKURA & CHIBI THEME (Glassmorphic)
+           ========================================================================== */
+        .anime-card {
+            width: 325px;
+            background: linear-gradient(175deg, rgba(35, 20, 58, 0.72) 0%, rgba(20, 14, 40, 0.8) 60%, rgba(38, 16, 48, 0.85) 100%);
+            border-radius: 22px;
+            border: 2px solid rgba(244, 114, 182, 0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 25px rgba(236, 72, 153, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            padding: 16px 14px 12px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Floating Anime Chibi Mascot in Header */
+        .anime-mascot-badge {
+            position: absolute;
+            top: -28px;
+            right: 6px;
+            width: 66px;
+            height: 66px;
+            z-index: 25;
+            filter: drop-shadow(0 6px 14px rgba(236, 72, 153, 0.6));
+            animation: animeMascotBob 3s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        .anime-mascot-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform-origin: bottom center;
+        }
+        @keyframes animeMascotBob {
+            0% { transform: translateY(0) rotate(-3deg) scale(1); }
+            100% { transform: translateY(-7px) rotate(4deg) scale(1.05); }
+        }
+
+        /* Anime Floating Sakura Petals & Magic Stars */
+        .anime-sakura-petal {
+            position: absolute;
+            pointer-events: none;
+            z-index: 15;
+            font-size: 14px;
+            opacity: 0.85;
+            animation: sakuraDrift 5s ease-in-out infinite;
+        }
+        .sakura-1 { top: 18px; left: 10px; animation-duration: 4.5s; font-size: 13px; }
+        .sakura-2 { top: 40%; right: -6px; animation-duration: 6s; animation-delay: 1.5s; font-size: 15px; }
+        .sakura-3 { bottom: 25px; left: -4px; animation-duration: 5.2s; animation-delay: 2.8s; font-size: 14px; }
+        .sakura-4 { bottom: 10px; right: 14px; animation-duration: 4.8s; animation-delay: 0.8s; font-size: 12px; }
+
+        @keyframes sakuraDrift {
+            0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0.4; }
+            50% { transform: translateY(-8px) translateX(6px) rotate(45deg) scale(1.15); opacity: 0.95; filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.8)); }
+            100% { transform: translateY(0) rotate(90deg) scale(0.9); opacity: 0.4; }
+        }
+
+        .anime-pill-tag {
+            align-self: flex-start;
+            background: linear-gradient(90deg, #ec4899, #a855f7);
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .anime-card .ranking-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.2px;
+            text-shadow: 0 2px 10px rgba(236, 72, 153, 0.6), 0 0 20px rgba(168, 85, 247, 0.4);
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .anime-jp-subtitle {
+            font-size: 11px;
+            font-weight: 800;
+            color: #f472b6;
+            letter-spacing: 1px;
+            text-shadow: none;
+            opacity: 0.9;
+        }
+
+        /* Anime Tactile Ranking Rows */
+        .anime-card .ranking-row {
+            background: rgba(35, 25, 58, 0.65);
+            border: 1.5px solid rgba(244, 114, 182, 0.3);
+            border-bottom: 3.5px solid rgba(15, 10, 28, 0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .anime-card .ranking-row:hover {
+            transform: translateY(-3px) translateZ(16px) scale(1.02);
+            background: rgba(55, 35, 88, 0.85);
+            border-color: #f472b6;
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4), 0 0 18px rgba(244, 114, 182, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        /* Anime Rank 1 Divine Star Aura */
+        .anime-card .ranking-row.rank-1 {
+            border: 2px solid #facc15;
+            border-bottom: 4px solid #b45309;
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.3) 0%, rgba(45, 25, 75, 0.75) 100%);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 22px rgba(250, 204, 21, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            animation: animeRank1Pulse 2.5s infinite alternate ease-in-out;
+        }
+        @keyframes animeRank1Pulse {
+            0% { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 15px rgba(250, 204, 21, 0.4); }
+            100% { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 28px rgba(250, 204, 21, 0.75); }
+        }
+
+        .anime-card .ranking-row.rank-2 {
+            border: 2px solid #7dd3fc;
+            border-bottom: 4px solid #0369a1;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.25) 0%, rgba(35, 25, 60, 0.75) 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.4);
+        }
+
+        .anime-card .ranking-row.rank-3 {
+            border: 2px solid #f472b6;
+            border-bottom: 4px solid #be185d;
+            background: linear-gradient(90deg, rgba(244, 114, 182, 0.25) 0%, rgba(35, 25, 60, 0.75) 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 16px rgba(244, 114, 182, 0.4);
+        }
+
+        .anime-card .user-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .anime-card .user-metric-val {
+            font-family: 'Outfit', sans-serif;
+            color: #fde047;
+            text-shadow: 0 0 8px rgba(253, 224, 71, 0.6);
+        }
+
+        /* ==========================================================================
+           STYLE 6: ANIME TRANSPARENT CRYSTAL GLASS (Pure Translucent Stream HUD)
+           ========================================================================== */
+        .anime-glass-card {
+            width: 325px;
+            background: rgba(15, 12, 28, 0.38);
+            border-radius: 20px;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-top: 2px solid rgba(244, 114, 182, 0.6);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            padding: 14px 12px 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .anime-glass-card .ranking-row {
+            background: rgba(10, 8, 22, 0.42);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-bottom: 2.5px solid rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .anime-glass-card .ranking-row:hover {
+            background: rgba(25, 18, 48, 0.7);
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .anime-glass-card .ranking-title {
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 14px #ec4899;
+        }
+
+        /* ==========================================================================
+           STYLE 7: PURE TRANSPARENT GLASS MINIMALIST
+           ========================================================================== */
+        .transparent-card {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .transparent-card .ranking-row {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Refined OBS Transparent Mode (Clean Floating Translucent HUD) */
         .obs-pure-transparent .ranking-card,
         .obs-pure-transparent .cute-card,
         .obs-pure-transparent .neon-card,
-        .obs-pure-transparent .luxury-card {
-            background: transparent !important;
-            box-shadow: none !important;
-            border-color: transparent !important;
+        .obs-pure-transparent .luxury-card,
+        .obs-pure-transparent .anime-card,
+        .obs-pure-transparent .anime-glass-card,
+        .obs-pure-transparent .transparent-card {
+            background: rgba(12, 10, 24, 0.38) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+        }
+        .obs-pure-transparent .header-url-container,
+        .obs-pure-transparent .header-actions-row,
+        .obs-pure-transparent .header-dropdowns-row {
+            display: none !important;
         }
 
         /* Floating Alert Banner on New #1 / Big Donation */
@@ -868,6 +1659,83 @@
     <div id="celebrationToast">
         <span style="font-size: 20px;">👑</span>
         <span id="toastMsg">New #1 Top Supporter!</span>
+    </div>
+
+    <!-- 3D Leaderboard Entry Edit Modal -->
+    <div id="modalEditLeaderboard" class="lb-modal-backdrop" onclick="onModalBackdropClick(event)">
+        <div class="lb-modal-card" onclick="event.stopPropagation()">
+            <div class="lb-modal-header">
+                <div class="lb-modal-title">
+                    <span id="lbModalIcon" style="font-size: 20px;">🪙</span>
+                    <span id="lbModalTitle">Edit Supporter</span>
+                </div>
+                <button type="button" class="lb-modal-close" onclick="closeEditEntryModal()">×</button>
+            </div>
+            
+            <div class="lb-modal-body">
+                <!-- 3D Avatar Preview with live tilt -->
+                <div class="lb-avatar-preview-container">
+                    <div class="lb-avatar-3d-stage" id="lbAvatar3dStage">
+                        <img id="lbModalAvatarImg" src="" class="lb-avatar-preview-img" onerror="this.src='https://ui-avatars.com/api/?name=User&background=1e293b&color=fff&bold=true'">
+                        <div class="lb-avatar-rank-badge" id="lbModalRankBadge">#1</div>
+                    </div>
+                    <div style="font-size: 11px; color: #8b949e; font-weight: 600;">3D Interactive Supporter Card</div>
+                </div>
+
+                <!-- Form inputs with LIVE REALTIME feedback -->
+                <div class="lb-form-group">
+                    <label class="lb-label">Username / Supporter Name</label>
+                    <input type="text" id="lbModalUsername" class="lb-input" placeholder="e.g. Brian, James..." oninput="onModalInputLiveUpdate()">
+                </div>
+
+                <div class="lb-form-group">
+                    <label class="lb-label" id="lbModalValueLabel">Score / Count</label>
+                    <div class="lb-score-row">
+                        <input type="number" id="lbModalValue" class="lb-input lb-input-number" min="0" step="1" oninput="onModalInputLiveUpdate()">
+                        <div class="lb-quick-math-btns">
+                            <button type="button" class="btn-math" onclick="adjustModalValue(10)">+10</button>
+                            <button type="button" class="btn-math" onclick="adjustModalValue(50)">+50</button>
+                            <button type="button" class="btn-math" onclick="adjustModalValue(100)">+100</button>
+                            <button type="button" class="btn-math" onclick="adjustModalValue(500)">+500</button>
+                            <button type="button" class="btn-math" onclick="adjustModalValue(1000)">+1k</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lb-form-group">
+                    <label class="lb-label">Avatar Image URL (Optional)</label>
+                    <input type="text" id="lbModalAvatarInput" class="lb-input" placeholder="Paste image link or choose below..." oninput="onModalInputLiveUpdate()">
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="lb-form-group">
+                    <label class="lb-label">Quick Preset Avatars</label>
+                    <div class="lb-preset-avatars-row">
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/spawn_ultimatecattail.webp')" title="Cattail"><img src="images/game-icons/pvz/spawn_ultimatecattail.webp" alt="Cattail"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/ultimate_gold_gargantuar.webp')" title="Gold Gargantuar"><img src="images/game-icons/pvz/ultimate_gold_gargantuar.webp" alt="Gold Gargantuar"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/spawn_gatlingpea.webp')" title="Gatling Pea"><img src="images/game-icons/pvz/spawn_gatlingpea.webp" alt="Gatling Pea"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/spawn_cherrybomb.webp')" title="Cherry Bomb"><img src="images/game-icons/pvz/spawn_cherrybomb.webp" alt="Cherry Bomb"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/spawn_repeater.webp')" title="Repeater"><img src="images/game-icons/pvz/spawn_repeater.webp" alt="Repeater"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('images/game-icons/pvz/spawn_peashooter.webp')" title="Peashooter"><img src="images/game-icons/pvz/spawn_peashooter.webp" alt="Peashooter"></button>
+                        <button type="button" class="lb-preset-btn" onclick="selectPresetAvatar('initials')" title="Dynamic Initials"><span style="font-size:11px; font-weight:800; color:#38bdf8;">Initials</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lb-modal-footer">
+                <button type="button" class="btn-3d btn-3d-danger" onclick="deleteModalEntry()" id="btnModalDelete">
+                    <span>🗑️</span> Delete
+                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-3d btn-3d-secondary" onclick="closeEditEntryModal()">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn-3d btn-3d-primary" onclick="saveModalEntry()">
+                        <span>💾</span> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main Dynamic Overlay Viewport -->
@@ -926,17 +1794,21 @@
             if (!audioCtx) return;
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.4);
+                const now = audioCtx.currentTime;
+                // Anime sparkle chime (Magical Girl celestial arpeggio)
+                const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
+                freqs.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.045);
+                    gain.gain.setValueAtTime(0.08, now + idx * 0.045);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.045 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.045);
+                    osc.stop(now + idx * 0.045 + 0.35);
+                });
             } catch (e) {}
         }
 
@@ -988,6 +1860,11 @@
                 return pvzAvatars[(rank - 1) % pvzAvatars.length];
             }
 
+            // DiceBear Avatar Pack
+            if (settings.avatarPack === 'dicebear') {
+                return `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(username || ('rank_' + rank))}`;
+            }
+
             // 4. Real viewer with username but no avatar from CDN yet -> Colorful initials avatar
             if (username && !username.startsWith('Top ')) {
                 return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&bold=true&size=128`;
@@ -999,12 +1876,21 @@
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(rank)}&background=${bg}&color=fff&bold=true&size=128`;
         }
 
-        // Render Classic Top 10 Card (Screenshot 1)
+        // Render Classic & Anime Top 10 Card
         function renderClassicCard(type, data, customTitle, maxCount, cardStyle) {
             const isCoins = type === 'coins';
             const title = customTitle || (isCoins ? `Top ${maxCount} Coins` : `Top ${maxCount} Likes`);
-            const themeClass = cardStyle === 'neon' ? 'neon-card' : (cardStyle === 'luxury' ? 'luxury-card' : 'ranking-card');
-            const cardUrl = `${window.location.origin}/overlay-leaderboard.html?type=${type}&style=classic`;
+            let themeClass = 'ranking-card';
+            const isAnimeTheme = cardStyle === 'anime' || cardStyle === 'anime-glass';
+            if (cardStyle === 'anime') themeClass = 'anime-card';
+            else if (cardStyle === 'anime-glass') themeClass = 'anime-glass-card';
+            else if (cardStyle === 'transparent') themeClass = 'transparent-card';
+            else if (cardStyle === 'neon') themeClass = 'neon-card';
+            else if (cardStyle === 'luxury') themeClass = 'luxury-card';
+            else if (cardStyle === 'groudon') themeClass = 'groudon-card';
+
+            const cardUrl = `${window.location.origin}/overlay-leaderboard.html?type=${type}&style=${cardStyle || 'anime'}`;
+            const shapeClass = settings.avatarStyle ? `shape-${settings.avatarStyle}` : 'shape-circle';
 
             let rowsHtml = '';
             for (let i = 1; i <= maxCount; i++) {
@@ -1022,20 +1908,49 @@
                 const heartIconHtml = `<span class="metric-like-token" title="Likes">❤️</span>`;
                 const metricIcon = isCoins ? coinIconHtml : heartIconHtml;
 
-                const avatarHtml = hasUser ? `
-                    <div class="avatar-wrap">
-                        <img src="${avatarUrl}" class="avatar-img" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
-                    </div>
-                ` : `
-                    <div class="avatar-wrap">
-                        <div class="avatar-silhouette">
-                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                let crownHtml = '';
+                if (isRank1 && settings.crownTop1 !== false) {
+                    crownHtml = isAnimeTheme ?
+                        `<span class="rank-1-crown" title="Anime Champion Crown">👑✨</span>` :
+                        `<span class="rank-1-crown" title="Royal Crown over #1 Rank">👑</span>`;
+                }
+
+                let avatarHtml = '';
+                if (settings.showAvatars !== false) {
+                    avatarHtml = hasUser ? `
+                        <div class="avatar-wrap ${shapeClass}">
+                            ${crownHtml}
+                            <img src="${avatarUrl}" class="avatar-img ${shapeClass}" alt="${username}" referrerpolicy="no-referrer" loading="eager" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(username || i)}&background=1e293b&color=fff&bold=true&size=128';">
                         </div>
-                    </div>
-                `;
+                    ` : `
+                        <div class="avatar-wrap ${shapeClass}">
+                            ${crownHtml}
+                            <div class="avatar-silhouette ${shapeClass}">
+                                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    avatarHtml = `
+                        <div class="avatar-wrap ${shapeClass}">
+                            ${crownHtml}
+                            <div style="width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; color:#cbd5e1;">
+                                #${i}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const userScore = (hasUser && item.value) ? item.value : 0;
+                const safeUser = encodeURIComponent(username);
+                const safeAvatar = encodeURIComponent(avatarUrl);
 
                 rowsHtml += `
-                    <li class="ranking-row ${rankClass} ${hasUser ? '' : 'empty'}">
+                    <li class="ranking-row ${rankClass} ${hasUser ? '' : 'empty'}" 
+                        onclick="openEditEntryModal('${type}', '${safeUser}', ${userScore}, '${safeAvatar}', ${i})"
+                        role="button"
+                        tabindex="0"
+                        title="Click to edit ${username} (#${i})">
                         ${avatarHtml}
                         <div class="row-user-details">
                             <div class="user-name" title="${username}">${username}</div>
@@ -1044,17 +1959,37 @@
                                 ${metricIcon}
                             </div>
                         </div>
+                        <span class="row-edit-chip">✏️ Edit</span>
                     </li>
                 `;
             }
 
-            const showControls = params.get('clean') !== 'true' && params.get('controls') !== 'false';
+            // By default on stream overlays, do NOT include the URL box, Copy/Refresh/Add buttons, or dropdowns (Photo 4)
+            const showControls = params.get('controls') === 'true' || params.get('edit') === 'true';
 
             return `
                 <div class="${themeClass}">
+                    ${isAnimeTheme ? `
+                        <div class="anime-mascot-badge" title="RENEarn Anime Chibi Mascot">
+                            <img src="images/anime_mascot.png" onerror="this.src='images/game-icons/pvz/spawn_cattail_girl.webp'" alt="Anime Mascot">
+                        </div>
+                        <span class="anime-sakura-petal sakura-1">🌸</span>
+                        <span class="anime-sakura-petal sakura-2">✨</span>
+                        <span class="anime-sakura-petal sakura-3">🌸</span>
+                        <span class="anime-sakura-petal sakura-4">⭐</span>
+                    ` : ''}
                     <div class="ranking-header">
+                        ${isAnimeTheme ? `
+                            <div class="anime-pill-tag">🌸 ANIME LEGENDS ✨</div>
+                        ` : ''}
                         <div class="ranking-title-wrap">
-                            <span class="ranking-title">${title}</span>
+                            <span class="ranking-title">
+                                ${title}
+                                ${isAnimeTheme ? `<span class="anime-jp-subtitle">トップサポーター</span>` : ''}
+                            </span>
+                            <button type="button" class="btn-border-reset" onclick="resetBorderCoins('${type}')" title="Reset ${isCoins ? 'Coins' : 'Likes'}">
+                                ${isCoins ? '🪙 Reset' : '❤️ Reset'}
+                            </button>
                             <span class="help-circle-badge" title="Live stream overlay ranking">?</span>
                         </div>
                         ${showControls ? `
@@ -1068,15 +2003,31 @@
                                 <button type="button" class="btn-refresh-card" onclick="fetchLeaderboard()" title="Refresh rankings">
                                     ↻
                                 </button>
+                                <button type="button" class="btn-add-entry" onclick="openAddEntryModal('${type}')" title="Add supporter to ${title}">
+                                    <span>➕</span> Add
+                                </button>
                             </div>
                             <div class="header-dropdowns-row">
                                 <div class="hdr-sel-group">
                                     <label>Position</label>
-                                    <select disabled><option selected>${overlayPos === 'right' ? 'Right' : 'Left'}</option></select>
+                                    <select onchange="updateCardPosition(this.value)">
+                                        <option value="left" ${overlayPos === 'left' ? 'selected' : ''}>Left</option>
+                                        <option value="center" ${overlayPos === 'center' ? 'selected' : ''}>Center</option>
+                                        <option value="right" ${overlayPos === 'right' ? 'selected' : ''}>Right</option>
+                                    </select>
                                 </div>
                                 <div class="hdr-sel-group">
                                     <label>Style</label>
-                                    <select disabled><option selected>Classic</option></select>
+                                    <select onchange="updateCardStyle('${type}', this.value)">
+                                        <option value="groudon" ${cardStyle === 'groudon' ? 'selected' : ''}>🌋 Primal Groudon</option>
+                                        <option value="anime" ${cardStyle === 'anime' ? 'selected' : ''}>🌸 Anime Sakura</option>
+                                        <option value="anime-glass" ${cardStyle === 'anime-glass' ? 'selected' : ''}>✨ Anime Glass</option>
+                                        <option value="transparent" ${cardStyle === 'transparent' ? 'selected' : ''}>💎 Transparent</option>
+                                        <option value="classic" ${cardStyle === 'classic' ? 'selected' : ''}>Classic Dark</option>
+                                        <option value="cute" ${cardStyle === 'cute' ? 'selected' : ''}>Cute Kawaii</option>
+                                        <option value="neon" ${cardStyle === 'neon' ? 'selected' : ''}>Cyber Neon</option>
+                                        <option value="luxury" ${cardStyle === 'luxury' ? 'selected' : ''}>Luxury Gold</option>
+                                    </select>
                                 </div>
                             </div>
                         ` : ''}
@@ -1086,6 +2037,27 @@
                     </ul>
                 </div>
             `;
+        }
+
+        async function resetBorderCoins(type = 'coins') {
+            const confirmed = confirm(`Are you sure you want to reset the ${type === 'coins' ? 'Coins' : 'Likes'} leaderboard?`);
+            if (!confirmed) return;
+            try {
+                const res = await fetch('/api/leaderboard/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: type })
+                });
+                if (res.ok) {
+                    showToast(`✅ ${type === 'coins' ? 'Coins' : 'Likes'} Leaderboard Reset!`);
+                    fetchLeaderboard();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    showToast(`⚠️ Reset failed: ${err.message || res.statusText}`);
+                }
+            } catch (e) {
+                showToast(`⚠️ Reset error: ${e.message}`);
+            }
         }
 
         // Render Cute Top Donators Card (Screenshot 2)
@@ -1255,6 +2227,304 @@
             }
 
             vp.innerHTML = html;
+            init3DParallax();
+        }
+
+        // ========================================================
+        // 3D PARALLAX & TACTILE PHYSICS
+        // ========================================================
+        function init3DParallax() {
+            document.querySelectorAll('.ranking-card, .cute-card').forEach(card => {
+                card.onmousemove = (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -5;
+                    const rotateY = ((x - centerX) / centerX) * 5;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
+                };
+                card.onmouseleave = () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+                };
+            });
+        }
+
+        // ========================================================
+        // DYNAMIC POSITION & STYLE CONTROLS
+        // ========================================================
+        function updateCardPosition(pos) {
+            overlayPos = pos;
+            applyLayoutStyles();
+            showToast(`📐 Overlay Position changed to ${pos.toUpperCase()}`);
+        }
+
+        function updateCardStyle(type, style) {
+            overlayStyle = style;
+            if (type === 'coins') settings.coinsStyle = style;
+            if (type === 'likes') settings.likesStyle = style;
+            renderOverlay();
+            showToast(`🎨 Style switched to ${style.toUpperCase()}`);
+        }
+
+        // ========================================================
+        // 3D LEADERBOARD ENTRY EDIT MODAL LOGIC
+        // ========================================================
+        let currentEditingEntry = {
+            type: 'coins',
+            oldUsername: '',
+            username: '',
+            value: 0,
+            avatar: '',
+            rank: 1,
+            isNew: false
+        };
+
+        function openEditEntryModal(type, encodedUsername, value, encodedAvatar, rank) {
+            const username = decodeURIComponent(encodedUsername || '');
+            const avatar = decodeURIComponent(encodedAvatar || '');
+            currentEditingEntry = {
+                type: type || 'coins',
+                oldUsername: username,
+                username: username,
+                value: parseInt(value, 10) || 0,
+                avatar: avatar,
+                rank: rank || 1,
+                isNew: false
+            };
+
+            const isCoins = currentEditingEntry.type === 'coins';
+            document.getElementById('lbModalIcon').textContent = isCoins ? '🪙' : '💖';
+            document.getElementById('lbModalTitle').textContent = `Edit #${rank} Supporter (${isCoins ? 'Coins' : 'Likes'})`;
+            document.getElementById('lbModalValueLabel').textContent = isCoins ? '🪙 Coin Amount' : '❤️ Likes Count';
+            
+            document.getElementById('lbModalUsername').value = username.startsWith('Top ') ? '' : username;
+            document.getElementById('lbModalValue').value = currentEditingEntry.value;
+            document.getElementById('lbModalAvatarInput').value = avatar;
+            document.getElementById('lbModalRankBadge').textContent = `#${rank}`;
+            document.getElementById('btnModalDelete').style.display = 'inline-flex';
+
+            updateModalAvatarPreview(avatar);
+            document.getElementById('modalEditLeaderboard').classList.add('active');
+            playDingSound();
+        }
+
+        function openAddEntryModal(type) {
+            const isCoins = type === 'coins';
+            currentEditingEntry = {
+                type: type || 'coins',
+                oldUsername: '',
+                username: '',
+                value: isCoins ? 100 : 500,
+                avatar: '',
+                rank: '+',
+                isNew: true
+            };
+
+            document.getElementById('lbModalIcon').textContent = isCoins ? '🪙' : '💖';
+            document.getElementById('lbModalTitle').textContent = `Add New Supporter (${isCoins ? 'Coins' : 'Likes'})`;
+            document.getElementById('lbModalValueLabel').textContent = isCoins ? '🪙 Coin Amount' : '❤️ Likes Count';
+            
+            document.getElementById('lbModalUsername').value = '';
+            document.getElementById('lbModalValue').value = currentEditingEntry.value;
+            document.getElementById('lbModalAvatarInput').value = '';
+            document.getElementById('lbModalRankBadge').textContent = 'NEW';
+            document.getElementById('btnModalDelete').style.display = 'none';
+
+            updateModalAvatarPreview('');
+            document.getElementById('modalEditLeaderboard').classList.add('active');
+            playDingSound();
+        }
+
+        function closeEditEntryModal() {
+            document.getElementById('modalEditLeaderboard').classList.remove('active');
+        }
+
+        function onModalBackdropClick(e) {
+            if (e.target.id === 'modalEditLeaderboard') {
+                closeEditEntryModal();
+            }
+        }
+
+        function adjustModalValue(delta) {
+            const input = document.getElementById('lbModalValue');
+            const current = parseInt(input.value, 10) || 0;
+            const next = Math.max(0, current + delta);
+            input.value = next;
+            playDingSound();
+            onModalInputLiveUpdate();
+        }
+
+        function selectPresetAvatar(url) {
+            const avatarInput = document.getElementById('lbModalAvatarInput');
+            if (url === 'initials') {
+                const u = document.getElementById('lbModalUsername').value.trim() || 'User';
+                const initUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u)}&background=random&color=fff&bold=true&size=128`;
+                avatarInput.value = initUrl;
+            } else {
+                avatarInput.value = url;
+            }
+            updateModalAvatarPreview(avatarInput.value);
+            onModalInputLiveUpdate();
+            playDingSound();
+        }
+
+        function updateModalAvatarPreview(url) {
+            const img = document.getElementById('lbModalAvatarImg');
+            const u = document.getElementById('lbModalUsername').value.trim() || 'User';
+            if (url && url.trim().length > 0) {
+                img.src = url.trim();
+            } else {
+                img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(u)}&background=1e293b&color=fff&bold=true&size=128`;
+            }
+        }
+
+        // Realtime live update on every keystroke/adjustment while editing
+        function onModalInputLiveUpdate() {
+            const usernameInput = document.getElementById('lbModalUsername');
+            const valueInput = document.getElementById('lbModalValue');
+            const avatarInput = document.getElementById('lbModalAvatarInput');
+            if (!usernameInput || !valueInput || !avatarInput) return;
+
+            const newUsername = usernameInput.value.trim();
+            const newValue = parseInt(valueInput.value, 10) || 0;
+            const newAvatar = avatarInput.value.trim();
+            const targetType = currentEditingEntry.type;
+
+            // 1. Update 3D Stage in Modal
+            updateModalAvatarPreview(newAvatar);
+
+            // 2. Real-time update into active leaderboard dataset
+            if (!lastLeaderboard[targetType]) lastLeaderboard[targetType] = [];
+            const list = lastLeaderboard[targetType];
+
+            let foundIdx = -1;
+            if (currentEditingEntry.oldUsername) {
+                foundIdx = list.findIndex(x => x.username === currentEditingEntry.oldUsername);
+            }
+            if (foundIdx === -1 && typeof currentEditingEntry.rank === 'number' && currentEditingEntry.rank <= list.length) {
+                foundIdx = currentEditingEntry.rank - 1;
+            }
+
+            const updatedObj = {
+                username: newUsername || (currentEditingEntry.oldUsername || `Top ${currentEditingEntry.rank || 1}`),
+                value: newValue,
+                avatar: newAvatar
+            };
+
+            if (foundIdx !== -1) {
+                list[foundIdx] = updatedObj;
+            } else if (currentEditingEntry.isNew && newUsername) {
+                list.push(updatedObj);
+            }
+
+            // 3. Immediately re-render overlay so changes are visible in real-time
+            renderOverlay();
+
+            // 4. Broadcast live edit to all open windows/iframes
+            try {
+                const bc = new BroadcastChannel('renearn_leaderboard_events');
+                bc.postMessage({
+                    type: 'leaderboard_live_keystroke',
+                    targetType: targetType,
+                    entry: updatedObj,
+                    oldUsername: currentEditingEntry.oldUsername,
+                    timestamp: Date.now()
+                });
+            } catch (e) {}
+        }
+
+        async function saveModalEntry() {
+            const newUsername = document.getElementById('lbModalUsername').value.trim();
+            if (!newUsername) {
+                alert('Please enter a username or supporter name.');
+                return;
+            }
+
+            const newValue = parseInt(document.getElementById('lbModalValue').value, 10) || 0;
+            const newAvatar = document.getElementById('lbModalAvatarInput').value.trim();
+            const targetType = currentEditingEntry.type;
+
+            try {
+                const res = await fetch('/api/leaderboard/entry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: targetType,
+                        action: 'update',
+                        oldUsername: currentEditingEntry.oldUsername,
+                        username: newUsername,
+                        value: newValue,
+                        avatar: newAvatar
+                    })
+                });
+
+                // Immediately update local array for instant feedback
+                const list = lastLeaderboard[targetType] || [];
+                const existingIdx = list.findIndex(x => x.username === currentEditingEntry.oldUsername);
+                if (existingIdx !== -1) {
+                    list[existingIdx].username = newUsername;
+                    list[existingIdx].value = newValue;
+                    if (newAvatar) list[existingIdx].avatar = newAvatar;
+                } else {
+                    list.push({ username: newUsername, value: newValue, avatar: newAvatar });
+                }
+                list.sort((a, b) => b.value - a.value);
+
+                renderOverlay();
+                closeEditEntryModal();
+                showToast(`💾 Saved @${newUsername} (${newValue.toLocaleString()} ${targetType})!`);
+                playDingSound();
+
+                try {
+                    const bc = new BroadcastChannel('renearn_leaderboard_events');
+                    bc.postMessage({ type: 'leaderboard_update' });
+                } catch (e) {}
+
+                // Re-sync with server
+                setTimeout(fetchLeaderboard, 400);
+            } catch (err) {
+                showToast('Failed to save entry: ' + err.message);
+            }
+        }
+
+        async function deleteModalEntry() {
+            if (!confirm(`Are you sure you want to delete ${currentEditingEntry.oldUsername} from the leaderboard?`)) {
+                return;
+            }
+
+            try {
+                await fetch('/api/leaderboard/entry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: currentEditingEntry.type,
+                        action: 'delete',
+                        oldUsername: currentEditingEntry.oldUsername
+                    })
+                });
+
+                const list = lastLeaderboard[currentEditingEntry.type] || [];
+                const idx = list.findIndex(x => x.username === currentEditingEntry.oldUsername);
+                if (idx !== -1) {
+                    list.splice(idx, 1);
+                }
+
+                renderOverlay();
+                closeEditEntryModal();
+                showToast(`🗑️ Deleted @${currentEditingEntry.oldUsername}`);
+                playDingSound();
+
+                try {
+                    const bc = new BroadcastChannel('renearn_leaderboard_events');
+                    bc.postMessage({ type: 'leaderboard_update' });
+                } catch (e) {}
+
+                setTimeout(fetchLeaderboard, 400);
+            } catch (err) {
+                showToast('Failed to delete entry: ' + err.message);
+            }
         }
 
         // Check for Rank #1 Changes to trigger celebration animation & audio
@@ -1333,9 +2603,33 @@
         try {
             const bc = new BroadcastChannel('renearn_leaderboard_events');
             bc.onmessage = function(e) {
-                fetchLeaderboard();
+                if (!e || !e.data) return;
+                if (e.data.type === 'leaderboard_settings_update' && e.data.settings) {
+                    settings = Object.assign(settings, e.data.settings);
+                    renderOverlay();
+                } else if (e.data.type === 'leaderboard_live_keystroke' && e.data.entry) {
+                    const t = e.data.targetType;
+                    if (t && lastLeaderboard[t]) {
+                        const idx = lastLeaderboard[t].findIndex(x => x.username === e.data.oldUsername || x.username === e.data.entry.username);
+                        if (idx !== -1) {
+                            lastLeaderboard[t][idx] = e.data.entry;
+                            renderOverlay();
+                        }
+                    }
+                } else {
+                    fetchLeaderboard();
+                }
             };
         } catch (e) {}
+
+        // Listen for direct postMessage from host iframe for 0ms latency morphing
+        window.addEventListener('message', function(e) {
+            if (!e || !e.data) return;
+            if (e.data.type === 'leaderboard_settings_update' && e.data.settings) {
+                settings = Object.assign(settings, e.data.settings);
+                renderOverlay();
+            }
+        });
 
         // Cross-window storage listener
         window.addEventListener('storage', (e) => {

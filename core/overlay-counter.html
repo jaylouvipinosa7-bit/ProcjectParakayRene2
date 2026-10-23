@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <script src="stream-keepalive.js"></script>
     <style>
         :root {
             --bg-glass: rgba(13, 17, 23, 0.88);
@@ -645,22 +646,40 @@
                 };
             } catch (err) {}
 
-            try {
-                const evtSource = new EventSource('/api/events');
-                evtSource.onmessage = function(e) {
-                    try {
-                        const payload = JSON.parse(e.data);
-                        if (payload.type === 'trigger_counter' || payload.type === 'gift' || payload.type === 'spin_result') {
-                            syncTriggerCounter();
+            let lastEvtTime = Date.now() - 5000;
+            let isPolling = false;
+            async function pollEvents() {
+                if (isPolling) return;
+                isPolling = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                try {
+                    const res = await fetch(`/api/events?since=${lastEvtTime}&_t=${Date.now()}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.serverTime) lastEvtTime = data.serverTime;
+                    if (Array.isArray(data.events) && data.events.length > 0) {
+                        for (const ev of data.events) {
+                            if (ev.type === 'trigger_counter' || ev.type === 'gift' || ev.type === 'spin_result') {
+                                syncTriggerCounter();
+                                break;
+                            }
                         }
-                    } catch (err) {}
-                };
-                evtSource.onerror = function() {
-                    evtSource.close();
-                    setTimeout(setupEventStream, 3000);
-                };
-            } catch (e) {
-                setTimeout(setupEventStream, 3000);
+                    }
+                } catch (e) {
+                } finally {
+                    clearTimeout(timeoutId);
+                    isPolling = false;
+                }
+            }
+
+            if (typeof window.createWorkerTicker === 'function') {
+                window.createWorkerTicker(pollEvents, 250);
+                window.createWorkerTicker(syncTriggerCounter, 1500);
+            } else {
+                setInterval(pollEvents, 300);
+                setInterval(syncTriggerCounter, 2000);
             }
         }
 
@@ -668,7 +687,6 @@
         fetchStatus();
         syncTriggerCounter();
         setupEventStream();
-        setInterval(syncTriggerCounter, 2000);
         setInterval(fetchStatus, 5000);
     </script>
 </body>

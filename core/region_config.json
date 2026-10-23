@@ -87,10 +87,82 @@
                                          "icon":  "images/tiktok-gifts/1347195_sea_shell.webp"
                                      },
                                      {
+                                         "id":  "16760",
+                                         "name":  "Sampaguita",
+                                         "coins":  5,
+                                         "icon":  "images/tiktok-gifts/16760_sampaguita.webp"
+                                     },
+                                     {
+                                         "id":  "16761",
+                                         "name":  "Taho",
+                                         "coins":  5,
+                                         "icon":  "images/tiktok-gifts/16761_taho.webp"
+                                     },
+                                     {
+                                         "id":  "16762",
+                                         "name":  "Halo-Halo",
+                                         "coins":  10,
+                                         "icon":  "images/tiktok-gifts/16762_halo_halo.webp"
+                                     },
+                                     {
+                                         "id":  "16765",
+                                         "name":  "Philippine Mango",
+                                         "coins":  10,
+                                         "icon":  "images/tiktok-gifts/16765_philippine_mango.webp"
+                                     },
+                                     {
+                                         "id":  "1347194",
+                                         "name":  "Shell Energy",
+                                         "coins":  100,
+                                         "icon":  "images/tiktok-gifts/1347194_shell_energy.webp"
+                                     },
+                                     {
+                                         "id":  "16764",
+                                         "name":  "Parol",
+                                         "coins":  100,
+                                         "icon":  "images/tiktok-gifts/16764_parol.webp"
+                                     },
+                                     {
+                                         "id":  "16766",
+                                         "name":  "Barong Tagalog",
+                                         "coins":  300,
+                                         "icon":  "images/tiktok-gifts/16766_barong_tagalog.webp"
+                                     },
+                                     {
+                                         "id":  "59882",
+                                         "name":  "Shell of a Warrior",
+                                         "coins":  500,
+                                         "icon":  "images/tiktok-gifts/59882_shell_of_a_warrior.webp"
+                                     },
+                                     {
+                                         "id":  "11920",
+                                         "name":  "Tricycle",
+                                         "coins":  500,
+                                         "icon":  "images/tiktok-gifts/11920_tricycle.webp"
+                                     },
+                                     {
+                                         "id":  "16763",
+                                         "name":  "Lechon",
+                                         "coins":  1200,
+                                         "icon":  "images/tiktok-gifts/16763_lechon.webp"
+                                     },
+                                     {
                                          "id":  "11922",
                                          "name":  "Jeepney",
                                          "coins":  1800,
                                          "icon":  "images/tiktok-gifts/11922_jeepney.webp"
+                                     },
+                                     {
+                                         "id":  "8796",
+                                         "name":  "Philippine Eagle",
+                                         "coins":  15000,
+                                         "icon":  "images/tiktok-gifts/8796_philippine_eagle.webp"
+                                     },
+                                     {
+                                         "id":  "1347187",
+                                         "name":  "Shell Castle",
+                                         "coins":  18000,
+                                         "icon":  "images/tiktok-gifts/1347187_shell_castle.webp"
                                      }
                                  ]
                       }

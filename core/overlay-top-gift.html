@@ -301,9 +301,100 @@
             0% { background-position: 0 50%; }
             100% { background-position: 260% 50%; }
         }
+
+        /* ================= GROUDON MAGMA VOLCANIC THEME ================= */
+        body.theme-groudon {
+            --accent: #ff2a4b;
+            --accent-light: #ff758f;
+            --accent-deep: #b91c1c;
+            --halo: 255, 42, 75;
+            --gold-hi: #fffbeb;
+            --gold: #ffd13b;
+            --gold-deep: #b45309;
+        }
+
+        body.theme-groudon .sunburst-bg {
+            background: radial-gradient(circle, rgba(255, 42, 75, 0.65) 0%, rgba(180, 83, 9, 0.3) 48%, transparent 72%),
+                        repeating-conic-gradient(from 0deg, rgba(255, 60, 90, 0.8) 0deg 12deg, rgba(245, 158, 11, 0.15) 12deg 20deg, transparent 20deg 30deg);
+            box-shadow: 0 0 60px rgba(255, 42, 75, 0.8), inset 0 0 35px rgba(245, 158, 11, 0.45);
+        }
+
+        body.theme-groudon .gift-hero_aura {
+            background: radial-gradient(circle at 50% 50%, rgba(255, 42, 75, 0.65), rgba(180, 83, 9, 0.25) 45%, transparent 70%);
+        }
+
+        body.theme-groudon .gift-hero_ring {
+            border: 2.5px solid rgba(255, 209, 59, 0.95);
+            box-shadow: 0 0 28px rgba(255, 42, 75, 0.85), inset 0 0 18px rgba(245, 158, 11, 0.6);
+        }
+
+        body.theme-groudon .ray-ring {
+            border: 2.5px solid rgba(255, 60, 90, 0.85);
+            box-shadow: 0 0 28px rgba(255, 42, 75, 0.9), inset 0 0 16px rgba(180, 83, 9, 0.5);
+        }
+
+        body.theme-groudon .face-front {
+            background: radial-gradient(circle, rgba(38, 10, 16, 0.95) 0%, rgba(18, 4, 8, 0.98) 100%);
+            border: 2.5px solid rgba(255, 60, 90, 0.65);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(255, 42, 75, 0.4);
+        }
+
+        body.theme-groudon .face-back {
+            background: radial-gradient(circle, #450a0a 0%, #1c0407 100%);
+            border: 3px solid #ffd13b;
+            box-shadow: 0 0 26px rgba(255, 42, 75, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
+        }
+
+        body.theme-groudon .info-pill {
+            background: linear-gradient(135deg, rgba(30, 8, 12, 0.98), rgba(14, 4, 6, 0.98));
+            border: 1.5px solid rgba(255, 60, 90, 0.65);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 42, 75, 0.45);
+        }
+
+        body.theme-groudon .info-top-tag {
+            color: #ffd13b;
+            text-shadow: 0 0 12px rgba(255, 209, 59, 0.7);
+        }
+
+        body.theme-groudon .info-main-title {
+            background: linear-gradient(96deg, #ffffff, #ffe4e6 50%, #fda4af 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        body.theme-groudon .info-sub-value {
+            background: linear-gradient(96deg, #b45309, #fffbeb 22%, #ffd13b 44%, #ffffff 57%, #ffd13b 66%, #b45309);
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-size: 260% 100%;
+        }
+
+        /* Groudon Crown Badge */
+        .groudon-crown-badge {
+            position: absolute;
+            top: -10px;
+            right: 0px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fde047 0%, #d97706 100%);
+            border: 2px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 0 16px rgba(255, 209, 59, 0.95), 0 4px 12px rgba(0,0,0,0.8);
+            animation: groudonCrownBounce 2.4s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes groudonCrownBounce {
+            0%, 100% { transform: translateY(0) scale(1) rotate(6deg); }
+            50% { transform: translateY(-4px) scale(1.12) rotate(-6deg); }
+        }
     </style>
 </head>
-<body>
+<body class="theme-groudon">
 
     <div class="widget-stage" id="widgetStage">
         <div class="icon-stage">
@@ -312,15 +403,18 @@
             <div class="gift-hero_ring"></div>
             <div class="ray-ring"></div>
 
+            <!-- Groudon Royal Crown -->
+            <div class="groudon-crown-badge">👑</div>
+
             <!-- Floating Sparkles -->
-            <svg class="sparkle" style="top: 14px; left: 16px;" width="18" height="18" viewBox="0 0 24 24" fill="#ffeb3b">
+            <svg class="sparkle" style="top: 14px; left: 16px;" width="18" height="18" viewBox="0 0 24 24" fill="#ffd13b">
                 <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
             </svg>
-            <svg class="sparkle" style="bottom: 18px; right: 16px; animation-delay: 1s;" width="16" height="16" viewBox="0 0 24 24" fill="#ffeb3b">
+            <svg class="sparkle" style="bottom: 18px; right: 16px; animation-delay: 1s;" width="16" height="16" viewBox="0 0 24 24" fill="#ff4b6e">
                 <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
             </svg>
 
-            <!-- 3D Flipping Disc (Front: Gift, Back: Gifter Avatar) -->
+            <!-- 3D Flipping Disc (Front: Gift, Back: Gifter / Groudon Avatar) -->
             <div class="flip-wrapper">
                 <div class="flip-disc" id="flipDisc">
                     <!-- Front Face: Gift -->
@@ -328,26 +422,39 @@
                         <div class="gift-shine-sweep"></div>
                         <img id="spotlightGiftImg" src="images/tiktok-gifts/7934_heart_me.webp" alt="Top Gift" class="gift-img-spotlight" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
                     </div>
-                    <!-- Back Face: Gifter Avatar -->
+                    <!-- Back Face: Gifter Avatar (Defaults to Primal Groudon) -->
                     <div class="flip-face face-back">
-                        <img id="spotlightAvatarImg" src="images/renearn_icon.png" alt="Gifter Avatar" class="avatar-img-back" onerror="this.src='images/renearn_icon.png'">
+                        <img id="spotlightAvatarImg" src="images/groudon_top_gift.jpg" alt="Primal Groudon Gifter" class="avatar-img-back" onerror="this.src='images/groudon_icon.png'">
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="info-pill" id="infoPill">
-            <span class="info-top-tag" id="topTag">TOP GIFT</span>
+            <span class="info-top-tag" id="topTag">👑 PRIMAL TOP GIFT</span>
             <span class="info-main-title" id="giftNameText">Heart Me</span>
-            <span class="info-sub-value" id="gifterSubText">Stream viewer • 1 Coins</span>
+            <span class="info-sub-value" id="gifterSubText">Primal Groudon VIP • 29,999 Coins</span>
         </div>
     </div>
 
-    <script>
         const params = new URLSearchParams(window.location.search);
+        const activeTheme = params.get('theme') || 'groudon';
+        if (activeTheme === 'classic' || activeTheme === 'purple') {
+            document.body.classList.remove('theme-groudon');
+            const crown = document.querySelector('.groudon-crown-badge');
+            if (crown) crown.style.display = 'none';
+            document.getElementById('topTag').textContent = 'TOP GIFT';
+            document.getElementById('gifterSubText').textContent = 'Stream viewer • 1 Coins';
+        } else {
+            document.body.classList.add('theme-groudon');
+        }
+
+        if (params.get('title')) document.getElementById('giftNameText').textContent = params.get('title');
+        if (params.get('tag')) document.getElementById('topTag').textContent = params.get('tag');
+
         let currentGift = 'Heart Me';
-        let currentGifter = 'Stream viewer';
-        let highestCoins = 1;
+        let currentGifter = 'Primal Groudon VIP';
+        let highestCoins = 29999;
         let isFlipped = false;
 
         function triggerHeroPunch() {

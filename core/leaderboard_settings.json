@@ -1,7 +1,7 @@
 ﻿{
     "coins":  {
                   "position":  "left",
-                  "style":  "classic",
+                  "style":  "anime",
                   "count":  10
               },
     "likes":  {
@@ -10,8 +10,8 @@
                   "count":  10
               },
     "donators":  {
-                     "style":  "neon",
-                     "count":  3,
+                     "style":  "cute",
+                     "count":  5,
                      "title":  "TOP 5 DONATORS"
                  },
     "avatar":  {

@@ -7,8 +7,18 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&family=JetBrains+Mono:wght@800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --win-scale: 1;
+            --color-neg: #ff007f;
+            --color-pos: #10b981;
+            --color-zero: #38bdf8;
+            --color-target: #ffffff;
+            --color-divider: #ffffff;
+            --trophy-opacity: 0.45;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -29,6 +39,13 @@
             padding: 24px;
         }
 
+        #overlayContainer {
+            transform: scale(var(--win-scale));
+            transform-origin: top left;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
         #floatingDeltaLayer {
             position: fixed;
             top: 0;
@@ -36,24 +53,19 @@
             width: 100vw;
             height: 100vh;
             pointer-events: none;
-            z-index: 99;
+            z-index: 999;
         }
 
-        /* ================= 1. WIN FRACTION TROPHY BOX (EXACT MATCH TO PHOTO) ================= */
+        /* ================= 1. WIN FRACTION TROPHY BOX (BASE) ================= */
         .trophy-fraction-card {
             width: 220px;
             height: 220px;
             border-radius: 20px;
-            background: rgba(13, 17, 24, 0.94);
-            border: 1.5px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 0, 0, 0.5);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
         }
 
@@ -63,7 +75,7 @@
 
         @keyframes cardPop {
             0% { transform: scale(1); }
-            40% { transform: scale(1.12); border-color: #ff007f; box-shadow: 0 0 35px rgba(255, 0, 127, 0.5); }
+            40% { transform: scale(1.12); }
             100% { transform: scale(1); }
         }
 
@@ -75,9 +87,9 @@
             width: 175px;
             height: 175px;
             pointer-events: none;
-            opacity: 0.42;
+            opacity: var(--trophy-opacity);
             z-index: 1;
-            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+            transition: opacity 0.3s ease, filter 0.3s ease;
         }
 
         .trophy-bg-graphic img {
@@ -107,24 +119,24 @@
         }
 
         .fraction-numerator.is-negative {
-            color: #ff007f; /* Exact vibrant pink from user photo */
-            text-shadow: 0 0 18px rgba(255, 0, 127, 0.75), 0 2px 10px rgba(0, 0, 0, 0.8);
+            color: var(--color-neg);
+            text-shadow: 0 0 18px var(--color-neg), 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         .fraction-numerator.is-positive {
-            color: #10b981;
-            text-shadow: 0 0 18px rgba(16, 185, 129, 0.75), 0 2px 10px rgba(0, 0, 0, 0.8);
+            color: var(--color-pos);
+            text-shadow: 0 0 18px var(--color-pos), 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         .fraction-numerator.is-zero {
-            color: #38bdf8;
-            text-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+            color: var(--color-zero);
+            text-shadow: 0 0 14px var(--color-zero), 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         .fraction-divider-bar {
             width: 120px;
             height: 4.5px;
-            background: #f1f5f9;
+            background: var(--color-divider);
             border-radius: 4px;
             margin: 4px 0 2px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.4);
@@ -136,9 +148,129 @@
             font-weight: 900;
             line-height: 0.95;
             letter-spacing: -1.5px;
-            color: #ffffff;
+            color: var(--color-target);
             text-align: center;
             text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* ------------------ THEME 1: CYBER NEON GLASS (PHOTO 1 MATCH) ------------------ */
+        .theme-cyber {
+            background: rgba(13, 17, 24, 0.94);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .theme-cyber .trophy-bg-graphic {
+            filter: drop-shadow(0 4px 14px rgba(245, 158, 11, 0.35));
+        }
+
+        /* ------------------ THEME 2: GOLDEN CHAMPION (ROYAL PRESTIGE) ------------------ */
+        .theme-champion {
+            background: linear-gradient(135deg, rgba(24, 18, 8, 0.96) 0%, rgba(12, 11, 14, 0.96) 100%);
+            border: 2px solid #f59e0b;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(245, 158, 11, 0.35), inset 0 0 20px rgba(245, 158, 11, 0.18);
+            backdrop-filter: blur(14px);
+        }
+        .theme-champion .trophy-bg-graphic {
+            filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.6));
+            opacity: 0.55;
+        }
+        .theme-champion .fraction-divider-bar {
+            background: linear-gradient(90deg, #b45309, #fde047, #b45309);
+            box-shadow: 0 0 12px #f59e0b;
+            height: 5px;
+        }
+        .theme-champion .fraction-denominator {
+            color: #fef3c7;
+            text-shadow: 0 0 12px rgba(254, 240, 138, 0.6);
+        }
+
+        /* ------------------ THEME 3: EMERALD FUSION (PVZ PLANT ENERGY) ------------------ */
+        .theme-emerald {
+            background: linear-gradient(145deg, rgba(6, 32, 20, 0.96) 0%, rgba(3, 16, 10, 0.96) 100%);
+            border: 2px solid #10b981;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.4), inset 0 0 25px rgba(6, 78, 59, 0.45);
+            backdrop-filter: blur(14px);
+        }
+        .theme-emerald .trophy-bg-graphic {
+            filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.55));
+            opacity: 0.5;
+        }
+        .theme-emerald .fraction-divider-bar {
+            background: #6ee7b7;
+            box-shadow: 0 0 14px #10b981;
+            height: 5px;
+        }
+        .theme-emerald .fraction-denominator {
+            color: #fbbf24;
+            text-shadow: 0 0 14px rgba(251, 191, 36, 0.6);
+        }
+
+        /* ------------------ THEME 4: ESPORTS TECH HUD (HEX SCI-FI) ------------------ */
+        .theme-esports {
+            background: rgba(8, 14, 26, 0.96);
+            border: 2px solid #06b6d4;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 35px rgba(6, 182, 212, 0.4), inset 0 0 20px rgba(6, 182, 212, 0.2);
+            clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+            backdrop-filter: blur(14px);
+        }
+        .theme-esports .fraction-numerator, 
+        .theme-esports .fraction-denominator {
+            font-family: 'JetBrains Mono', 'Outfit', monospace;
+            letter-spacing: -2px;
+        }
+        .theme-esports .trophy-bg-graphic {
+            filter: drop-shadow(0 0 18px rgba(6, 182, 212, 0.6));
+            opacity: 0.45;
+        }
+        .theme-esports .fraction-divider-bar {
+            background: #22d3ee;
+            box-shadow: 0 0 12px #06b6d4;
+            width: 130px;
+            height: 4px;
+        }
+
+        /* ------------------ THEME 5: RUBY BLOOD (CRIMSON INTENSE) ------------------ */
+        .theme-ruby {
+            background: linear-gradient(145deg, rgba(38, 6, 14, 0.96) 0%, rgba(18, 4, 8, 0.96) 100%);
+            border: 2px solid #f43f5e;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(244, 63, 94, 0.45), inset 0 0 20px rgba(136, 19, 55, 0.4);
+            backdrop-filter: blur(14px);
+        }
+        .theme-ruby .trophy-bg-graphic {
+            filter: drop-shadow(0 0 18px rgba(244, 63, 94, 0.5));
+            opacity: 0.5;
+        }
+        .theme-ruby .fraction-divider-bar {
+            background: #fda4af;
+            box-shadow: 0 0 12px #f43f5e;
+            height: 4.5px;
+        }
+
+        /* ------------------ THEME 6: MINIMAL TRANSPARENT ------------------ */
+        .theme-minimal {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+        .theme-minimal .trophy-bg-graphic {
+            opacity: 0.35;
+        }
+
+        /* SOLID BLACK BACKGROUND OVERRIDE */
+        .bg-black {
+            background: #080a0f !important;
+            backdrop-filter: none !important;
+        }
+
+        /* FULLY TRANSPARENT BACKGROUND OVERRIDE */
+        .bg-transparent {
+            background: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
         }
 
         /* ================= 2. COMPACT BADGE PILL MODE (IMAGE 2) ================= */
@@ -146,13 +278,13 @@
             display: none;
             align-items: center;
             gap: 12px;
-            background: rgba(18, 21, 31, 0.92);
+            background: rgba(18, 21, 31, 0.94);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
             border-radius: 9999px;
             padding: 8px 22px 8px 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.2);
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
             position: relative;
         }
@@ -163,15 +295,16 @@
 
         @keyframes badgePop {
             0% { transform: scale(1); }
-            40% { transform: scale(1.15); border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+            40% { transform: scale(1.12); border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
             100% { transform: scale(1); }
         }
 
-        .trophy-icon {
-            font-size: 26px;
-            line-height: 1;
+        .trophy-icon-badge {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
             filter: drop-shadow(0 3px 6px rgba(245, 158, 11, 0.6));
-            animation: trophyWiggle 3s ease-in-out infinite;
+            animation: trophyWiggle 3.5s ease-in-out infinite;
         }
 
         @keyframes trophyWiggle {
@@ -205,20 +338,20 @@
         }
 
         .score-box.is-negative {
-            color: #ff007f;
-            text-shadow: 0 0 14px rgba(255, 0, 127, 0.6);
+            color: var(--color-neg);
+            text-shadow: 0 0 14px var(--color-neg);
             border-color: rgba(255, 0, 127, 0.3);
         }
 
         .score-box.is-positive {
-            color: #10b981;
-            text-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+            color: var(--color-pos);
+            text-shadow: 0 0 14px var(--color-pos);
             border-color: rgba(16, 185, 129, 0.3);
         }
 
         .score-box.is-zero {
-            color: #38bdf8;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            color: var(--color-zero);
+            text-shadow: 0 0 10px var(--color-zero);
         }
 
         .divider-slash {
@@ -236,7 +369,7 @@
             letter-spacing: -0.3px;
         }
 
-        /* ================= 3. DUAL CARDS MODE (IMAGE 3) ================= */
+        /* ================= 3. DUAL CARDS MODE ================= */
         .win-cards-container {
             display: none;
             flex-direction: column;
@@ -245,8 +378,9 @@
             border: 1px solid #30363d;
             border-radius: 16px;
             padding: 16px 20px;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85);
             max-width: 380px;
+            backdrop-filter: blur(14px);
         }
 
         .cards-header {
@@ -256,6 +390,12 @@
             font-size: 16px;
             font-weight: 800;
             color: #f0f6fc;
+        }
+
+        .cards-header-trophy {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
         }
 
         .cards-dual-row {
@@ -336,7 +476,7 @@
             border-radius: 9999px;
             animation: floatUpFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             pointer-events: none;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .delta-chip.plus {
@@ -362,41 +502,43 @@
 </head>
 <body class="mode-fraction">
 
-    <!-- 1. WIN FRACTION TROPHY BOX (EXACT MATCH TO PHOTO) -->
-    <div id="trophyFractionCard" class="trophy-fraction-card">
-        <div class="trophy-bg-graphic">
-            <img src="images/trophy_cup.svg" alt="Trophy" onerror="this.src='images/func_2.png'">
-        </div>
-        <div class="fraction-content-wrap">
-            <div id="fractionScore" class="fraction-numerator is-negative">-3</div>
-            <div class="fraction-divider-bar"></div>
-            <div id="fractionTarget" class="fraction-denominator">5</div>
-        </div>
-    </div>
-
-    <!-- 2. COMPACT WIN BADGE PILL (IMAGE 2) -->
-    <div id="winBadgePill" class="win-badge-pill">
-        <span class="trophy-icon">🏆</span>
-        <span class="win-label-text" id="winLabelText">Win</span>
-        <span class="score-box is-negative" id="scoreValue">-3</span>
-        <span class="divider-slash">/</span>
-        <span class="target-goal" id="targetValue">5</span>
-    </div>
-
-    <!-- 3. DUAL CARDS VIEW (IMAGE 3) -->
-    <div id="winCardsContainer" class="win-cards-container">
-        <div class="cards-header">
-            <span>🏆</span>
-            <span id="cardsTitle">Win Widget</span>
-        </div>
-        <div class="cards-dual-row">
-            <div class="win-card-box card-lose">
-                <div class="card-tag">🌿 LOSE 🌿</div>
-                <div class="card-big-number" id="cardLoseCount">6724</div>
+    <div id="overlayContainer">
+        <!-- 1. WIN FRACTION TROPHY BOX (PHOTO 1 MATCH) -->
+        <div id="trophyFractionCard" class="trophy-fraction-card theme-cyber">
+            <div id="trophyBgGraphic" class="trophy-bg-graphic">
+                <img id="trophyMainImg" src="images/trophy_cup.svg" alt="Trophy" onerror="this.src='images/trophy_diamond.svg'">
             </div>
-            <div class="win-card-box card-win">
-                <div class="card-tag">🌿 WIN 🌿</div>
-                <div class="card-big-number" id="cardWinCount">472</div>
+            <div class="fraction-content-wrap">
+                <div id="fractionScore" class="fraction-numerator is-negative">-5240</div>
+                <div class="fraction-divider-bar"></div>
+                <div id="fractionTarget" class="fraction-denominator">5</div>
+            </div>
+        </div>
+
+        <!-- 2. COMPACT WIN BADGE PILL (PHOTO 2 MATCH) -->
+        <div id="winBadgePill" class="win-badge-pill">
+            <img id="badgeTrophyImg" class="trophy-icon-badge" src="images/trophy_cup.svg" alt="Trophy">
+            <span class="win-label-text" id="winLabelText">Win</span>
+            <span class="score-box is-negative" id="scoreValue">-5240</span>
+            <span class="divider-slash">/</span>
+            <span class="target-goal" id="targetValue">5</span>
+        </div>
+
+        <!-- 3. DUAL CARDS VIEW -->
+        <div id="winCardsContainer" class="win-cards-container">
+            <div class="cards-header">
+                <img id="cardsTrophyImg" class="cards-header-trophy" src="images/trophy_cup.svg" alt="Trophy">
+                <span id="cardsTitle">Win Goal System</span>
+            </div>
+            <div class="cards-dual-row">
+                <div class="win-card-box card-lose">
+                    <div class="card-tag">🌿 LOSE 🌿</div>
+                    <div class="card-big-number" id="cardLoseCount">5403</div>
+                </div>
+                <div class="win-card-box card-win">
+                    <div class="card-tag">🌿 WIN 🌿</div>
+                    <div class="card-big-number" id="cardWinCount">163</div>
+                </div>
             </div>
         </div>
     </div>
@@ -404,27 +546,86 @@
     <div id="floatingDeltaLayer"></div>
 
     <script>
-        let currentScore = -3;
+        let currentScore = -5240;
         let currentTarget = 5;
-        let currentWins = 472;
-        let currentLosses = 6724;
+        let currentWins = 163;
+        let currentLosses = 5403;
+        let currentStyle = 'cyber';
+        let currentTrophy = 'cup';
+        let currentBg = 'glass';
         let lastServerTime = 0;
 
-        // Parse mode from URL query (?mode=classic / fraction / badge / cards)
+        // Parse query params for overrides
         const urlParams = new URLSearchParams(window.location.search);
-        const modeParam = urlParams.get('mode') || urlParams.get('style') || urlParams.get('view') || 'fraction';
-        setMode(modeParam);
 
-        function setMode(mode) {
-            document.body.classList.remove('mode-fraction', 'mode-badge', 'mode-cards');
-            if (mode === 'badge' || mode === 'pill') {
-                document.body.classList.add('mode-badge');
-            } else if (mode === 'cards' || mode === 'dual') {
-                document.body.classList.add('mode-cards');
-            } else {
-                // Classic fraction default
-                document.body.classList.add('mode-fraction');
+        const trophyMap = {
+            'cup': 'images/trophy_cup.svg',
+            'gold': 'images/trophy_cup.svg',
+            'diamond': 'images/trophy_diamond.svg',
+            'crown': 'images/trophy_crown.svg',
+            'emerald': 'images/trophy_emerald.svg',
+            'star': 'images/trophy_star.svg'
+        };
+
+        function applyTrophyIcon(trophy) {
+            currentTrophy = trophy || 'cup';
+            const bgGraphic = document.getElementById('trophyBgGraphic');
+            const mainImg = document.getElementById('trophyMainImg');
+            const badgeImg = document.getElementById('badgeTrophyImg');
+            const cardsImg = document.getElementById('cardsTrophyImg');
+
+            if (currentTrophy === 'none') {
+                if (bgGraphic) bgGraphic.style.display = 'none';
+                if (badgeImg) badgeImg.style.display = 'none';
+                return;
             }
+
+            if (bgGraphic) bgGraphic.style.display = 'block';
+            if (badgeImg) badgeImg.style.display = 'block';
+
+            const src = trophyMap[currentTrophy] || trophyMap['cup'];
+            if (mainImg) mainImg.src = src;
+            if (badgeImg) badgeImg.src = src;
+            if (cardsImg) cardsImg.src = src;
+        }
+
+        function applyTheme(style, bgTheme) {
+            const card = document.getElementById('trophyFractionCard');
+            if (!card) return;
+
+            // Remove previous theme classes
+            card.classList.remove(
+                'theme-cyber', 'theme-champion', 'theme-emerald', 
+                'theme-esports', 'theme-ruby', 'theme-minimal',
+                'bg-black', 'bg-transparent'
+            );
+
+            // Set mode vs style
+            if (style === 'badge' || style === 'pill') {
+                document.body.className = 'mode-badge';
+            } else if (style === 'cards' || style === 'dual') {
+                document.body.className = 'mode-cards';
+            } else {
+                document.body.className = 'mode-fraction';
+                const validThemes = ['cyber', 'champion', 'emerald', 'esports', 'ruby', 'minimal'];
+                const selected = validThemes.includes(style) ? style : 'cyber';
+                card.classList.add(`theme-${selected}`);
+            }
+
+            // Apply background override
+            if (bgTheme === 'black') {
+                card.classList.add('bg-black');
+            } else if (bgTheme === 'transparent') {
+                card.classList.add('bg-transparent');
+            }
+        }
+
+        function applyColors(colorNeg, colorPos, colorZero, scale) {
+            const root = document.documentElement;
+            if (colorNeg) root.style.setProperty('--color-neg', colorNeg);
+            if (colorPos) root.style.setProperty('--color-pos', colorPos);
+            if (colorZero) root.style.setProperty('--color-zero', colorZero);
+            if (scale) root.style.setProperty('--win-scale', scale);
         }
 
         function updateUI(data, delta = null) {
@@ -435,7 +636,18 @@
             currentWins = Number(data.wins ?? currentWins);
             currentLosses = Number(data.losses ?? currentLosses);
 
-            // Update fraction numerator & denominator
+            // Style & Theme updates
+            const activeStyle = data.style || currentStyle || urlParams.get('style') || urlParams.get('mode') || 'fraction';
+            currentStyle = activeStyle;
+            const activeTrophy = data.trophyIcon || urlParams.get('trophy') || currentTrophy;
+            const activeBg = data.bgTheme || urlParams.get('bg') || currentBg;
+            const activeScale = data.scale || urlParams.get('scale') || 1.0;
+
+            applyTheme(activeStyle, activeBg);
+            applyTrophyIcon(activeTrophy);
+            applyColors(data.colorNegative, data.colorPositive, data.colorZero, activeScale);
+
+            // Update fraction score & target
             const fScore = document.getElementById('fractionScore');
             const fTarget = document.getElementById('fractionTarget');
             if (fScore) {
@@ -478,11 +690,6 @@
                 if (b) { b.classList.remove('pop-anim'); void b.offsetWidth; b.classList.add('pop-anim'); }
             }
 
-            // Update mode if remote style is provided and URL didn't lock it
-            if (data.style && !urlParams.get('mode')) {
-                setMode(data.style);
-            }
-
             // Animate card pop
             const fCard = document.getElementById('trophyFractionCard');
             if (fCard) {
@@ -521,6 +728,16 @@
                 }
             } catch (err) {}
         }
+
+        // Live BroadcastChannel for real-time instant cross-window sync
+        try {
+            const bc = new BroadcastChannel('renearn_overlay_events');
+            bc.onmessage = (e) => {
+                if (e.data && e.data.type === 'win_widget_update') {
+                    updateUI(e.data, e.data.delta);
+                }
+            };
+        } catch (e) {}
 
         // Live SSE / Polling for instant updates from dashboard and spinner spins
         function startEventStream() {
@@ -587,6 +804,15 @@
         }, true);
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Apply URL query params immediately on initial load
+            const initialStyle = urlParams.get('style') || urlParams.get('mode') || 'cyber';
+            const initialTrophy = urlParams.get('trophy') || 'cup';
+            const initialBg = urlParams.get('bg') || 'glass';
+            const initialScale = urlParams.get('scale') || 1.0;
+            applyTheme(initialStyle, initialBg);
+            applyTrophyIcon(initialTrophy);
+            applyColors(urlParams.get('colorNeg'), urlParams.get('colorPos'), urlParams.get('colorZero'), initialScale);
+
             fetchInitialState();
             startEventStream();
         });

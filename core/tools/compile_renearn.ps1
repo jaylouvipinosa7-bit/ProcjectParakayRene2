@@ -15,7 +15,10 @@ if ($csc -and (Test-Path $csc)) {
     if (Test-Path $out) {
         Write-Host "RENEarn_Studio.exe successfully compiled with Groudon icon! Size: $((Get-Item $out).Length)"
         Copy-Item -Path $out -Destination "C:\Users\pc\Downloads\ano na\PvZ_Fusion_Studio.exe" -Force
-        Write-Host "Updated PvZ_Fusion_Studio.exe as well."
+        if (Test-Path "C:\Users\pc\Downloads\ano na\Apps") {
+            Copy-Item -Path $out -Destination "C:\Users\pc\Downloads\ano na\Apps\RENEarn_Studio.exe" -Force
+        }
+        Write-Host "Updated PvZ_Fusion_Studio.exe and Apps\RENEarn_Studio.exe as well."
     }
 
     # Also compile standalone GlobalHotkeyService.exe

@@ -126,9 +126,40 @@ function startConnection() {
         liveState.roomId = state.roomId;
         liveState.statusText = 'Connected to Live Stream';
         liveState.lastEventTime = Date.now();
+
+        // Extract initial viewers and likes from roomInfo if available
+        try {
+            if (state && state.roomInfo) {
+                const ri = state.roomInfo;
+                if (ri.user_count !== undefined) liveState.viewerCount = parseInt(ri.user_count, 10) || 0;
+                else if (ri.total_user !== undefined) liveState.viewerCount = parseInt(ri.total_user, 10) || 0;
+                if (ri.like_count !== undefined) liveState.totalLikes = parseInt(ri.like_count, 10) || 0;
+            } else if (typeof tiktokConnection.fetchRoomInfo === 'function') {
+                tiktokConnection.fetchRoomInfo().then(info => {
+                    if (info) {
+                        if (info.user_count !== undefined) liveState.viewerCount = parseInt(info.user_count, 10) || 0;
+                        else if (info.total_user !== undefined) liveState.viewerCount = parseInt(info.total_user, 10) || 0;
+                        if (info.like_count !== undefined) liveState.totalLikes = parseInt(info.like_count, 10) || 0;
+                        saveState();
+                        postWebhook({
+                            event: 'room_viewers',
+                            viewerCount: liveState.viewerCount,
+                            totalLikes: liveState.totalLikes
+                        });
+                    }
+                }).catch(() => {});
+            }
+        } catch (e) {}
+
         saveState();
 
-        console.log(`[SUCCESS] Connected to TikTok LIVE! Room ID: ${state.roomId}`);
+        postWebhook({
+            event: 'room_viewers',
+            viewerCount: liveState.viewerCount,
+            totalLikes: liveState.totalLikes
+        });
+
+        console.log(`[SUCCESS] Connected to TikTok LIVE! Room ID: ${state.roomId} | Viewers: ${liveState.viewerCount} | Likes: ${liveState.totalLikes}`);
         console.log(`[READY] Listening for Gifts, Likes, Follows, and Team Chat (!plants/!zombies)...`);
 
         // AUTOMATIC COMMUNITY / ROOM GIFTS SYNC
@@ -300,16 +331,38 @@ function startConnection() {
         return '';
     }
 
-    // Track repeat counts per user + gift so every tap triggers immediately without duplication
+    // Unique message ID cache to drop identical socket packet retransmissions without dropping real gifts
+    const recentMsgIds = new Map();
+    // Track active combo streaks by user + giftId + groupId
     const activeStreaks = new Map();
-    // Deduplication cache for non-streak gifts (prevents double firing from socket re-transmissions)
-    const recentNonStreakGifts = new Map();
-    // Heart Me 1x per person per day cache (TikTok only allows 1 Heart Me send per viewer per day)
-    const heartMeUsersToday = new Map();
+    // Micro-cache to absorb raw sub-150ms socket duplicate echoes if msgId is absent
+    const recentPacketSignatures = new Map();
 
-    // 1. Gift Event Listener with Clean Combo / Streak Deduplication
+    // 1. Gift Event Listener with Bulletproof Instant Triggering & Combo Support
     tiktokConnection.on('gift', data => {
         liveState.lastEventTime = Date.now();
+        const now = Date.now();
+
+        // 1. UNIQUE PACKET DEDUPLICATION BY MSGID:
+        // TikTok live webcast provides a unique msgId on every single distinct message.
+        // Dropping matching msgId within 8 seconds prevents duplicate socket retransmissions
+        // WITHOUT EVER dropping a 2nd gift sent 1 second later!
+        const msgId = String(
+            (data.common && data.common.msgId) || 
+            data.msgId || 
+            data.id || 
+            (data.common && data.common.createTime && `${data.giftId}_${data.common.createTime}`) ||
+            ''
+        ).trim();
+
+        if (msgId) {
+            if (recentMsgIds.has(msgId)) {
+                return; // Exact socket retransmission duplicate
+            }
+            recentMsgIds.set(msgId, now);
+            setTimeout(() => recentMsgIds.delete(msgId), 8000);
+        }
+
         const giftId = String(data.giftId || (data.giftDetails && data.giftDetails.id) || (data.extendedGiftInfo && data.extendedGiftInfo.id) || '').trim();
         const verified = verifiedGiftsMap.get(giftId);
 
@@ -324,23 +377,21 @@ function startConnection() {
         const user = extractUserName(data);
         const userAvatar = extractAvatarUrl(data);
         const totalCount = parseInt(data.repeatCount, 10) || 1;
-        const now = Date.now();
+        const groupId = String(data.groupId || '');
 
-        // Heart Me deduplication: strictly 1 time per user per day!
-        const isHeartMe = (giftId === '7934' || (giftName && giftName.toLowerCase().replace(/[^a-z]/g, '') === 'heartme'));
-        if (isHeartMe) {
-            const todayDateStr = new Date().toISOString().slice(0, 10);
-            const userKey = (user || '').toLowerCase().trim();
-            if (heartMeUsersToday.get(userKey) === todayDateStr) {
-                console.log(`[TikTokBridge] Heart Me already registered for @${user} today. Skipping duplicate packet.`);
-                return;
+        // 2. SUB-150MS DUPLICATE SIGNATURE PROTECTION (for packets lacking msgId)
+        if (!msgId) {
+            const sig = `${user.toLowerCase()}_${giftId}_${totalCount}_${data.repeatEnd}`;
+            const lastSigTime = recentPacketSignatures.get(sig);
+            if (lastSigTime && (now - lastSigTime < 150)) {
+                return; // Dropped sub-150ms socket loopback bounce
             }
-            heartMeUsersToday.set(userKey, todayDateStr);
+            recentPacketSignatures.set(sig, now);
+            setTimeout(() => recentPacketSignatures.delete(sig), 2000);
         }
 
         // ACCURATE STREAK / COMBO DETECTION:
-        // In TikTok Live Connector, streakable gifts always provide data.repeatEnd (false while tapping, true when finished),
-        // OR repeatCount > 1, OR giftType === 1. Checking data.giftType === 1 alone fails for Rose (ID 5655).
+        // A gift is part of an active streak if repeatEnd is explicitly defined OR repeatCount > 0
         const isStreak = Boolean(
             data.repeatEnd !== undefined ||
             data.giftType === 1 ||
@@ -349,52 +400,76 @@ function startConnection() {
             (data.extendedGiftInfo && data.extendedGiftInfo.gift_type === 1)
         );
 
+        // Deduplication key per user and gift:
+        // NEVER include groupId in the key because TikTok packet 1 often has empty groupId,
+        // while packet 2 (the repeatEnd confirmation) has a numeric groupId. Keeping the key
+        // strictly user + giftId ensures packet 2 is recognized as the same streak!
         const streakKey = `${user.toLowerCase()}_${giftId}`;
+
         let deltaCount = 0;
 
         if (isStreak) {
-            const streak = activeStreaks.get(streakKey);
-            const prevCount = streak ? streak.lastProcessedCount : 0;
+            let streak = activeStreaks.get(streakKey);
+            const isEnd = Boolean(data.repeatEnd);
 
-            if (totalCount > prevCount) {
-                deltaCount = totalCount - prevCount;
+            if (streak) {
+                const timeSinceLastTap = now - (streak.lastTime || 0);
+
+                if (totalCount > streak.lastProcessedCount) {
+                    // Streak advanced (e.g. was 1, now 2; or was 2, now 5)
+                    deltaCount = totalCount - streak.lastProcessedCount;
+                    streak.lastProcessedCount = totalCount;
+                    streak.lastTime = now;
+                    streak.isFinished = isEnd;
+                } else if (totalCount < streak.lastProcessedCount) {
+                    // New streak started after a higher combo ended
+                    deltaCount = totalCount;
+                    streak.lastProcessedCount = totalCount;
+                    streak.lastTime = now;
+                    streak.isFinished = isEnd;
+                } else {
+                    // totalCount is EQUAL to lastProcessedCount (e.g., repeatEnd echo for 1 gift)
+                    if (timeSinceLastTap < 4000) {
+                        // This is an echo/retransmission or repeatEnd confirmation packet! Drop it!
+                        deltaCount = 0;
+                        streak.lastTime = now;
+                        if (isEnd) streak.isFinished = true;
+                    } else {
+                        // More than 4 seconds elapsed: legitimate brand new gift send
+                        deltaCount = totalCount;
+                        streak.lastProcessedCount = totalCount;
+                        streak.lastTime = now;
+                        streak.isFinished = isEnd;
+                    }
+                }
+            } else {
+                // First packet of this streak
+                deltaCount = totalCount;
+                streak = {
+                    lastProcessedCount: totalCount,
+                    lastTime: now,
+                    isFinished: isEnd,
+                    cleanupTimer: null
+                };
+                activeStreaks.set(streakKey, streak);
             }
 
-            // Update streak record
-            if (streak && streak.cleanupTimer) {
+            // Keep streak in memory for 5 seconds to absorb late repeatEnd confirmation echos
+            if (streak.cleanupTimer) {
                 clearTimeout(streak.cleanupTimer);
             }
-
-            // Keep streak record in memory for 8 seconds after repeatEnd to absorb lingering repeatEnd echoes
-            const timer = data.repeatEnd ? setTimeout(() => {
+            streak.cleanupTimer = setTimeout(() => {
                 activeStreaks.delete(streakKey);
-            }, 8000) : null;
+            }, 5000);
 
-            activeStreaks.set(streakKey, {
-                lastProcessedCount: Math.max(prevCount, totalCount),
-                lastTime: now,
-                cleanupTimer: timer
-            });
-
-            // CRITICAL DUPLICATE DROP:
-            // If deltaCount is 0, this packet is a final repeatEnd echo or intermediate status ping.
-            // Since all gifts were already executed on initial tap, DROP this duplicate packet!
+            // If deltaCount is 0, this packet is an end-of-streak confirmation echo with no new gifts
             if (deltaCount <= 0) {
-                const dropMsg = `[${new Date().toLocaleTimeString()}] DROPPED DUPLICATE: ${user} streak echo for ${giftName} (streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd}, already executed: ${prevCount}x)\n`;
-                console.log(dropMsg.trim());
+                const dropMsg = `[${new Date().toLocaleTimeString()}] DROPPED DUPLICATE: ${user} streak echo for ${giftName} (streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd}, already executed: ${streak.lastProcessedCount}x)\n`;
                 try { fs.appendFileSync(path.join(__dirname, 'tiktok_gifts_debug.log'), dropMsg, 'utf8'); } catch (e) {}
                 return;
             }
         } else {
-            // Truly non-streak gift:
-            // Deduplicate across a 4-second sliding window to absorb socket echoes
-            const nonStreakKey = `${user.toLowerCase()}_${giftId}_${totalCount}`;
-            const lastProcessedTime = recentNonStreakGifts.get(nonStreakKey);
-            if (lastProcessedTime && (now - lastProcessedTime < 4000)) {
-                return; // Drop duplicate echo
-            }
-            recentNonStreakGifts.set(nonStreakKey, now);
-            setTimeout(() => recentNonStreakGifts.delete(nonStreakKey), 10000);
+            // Non-streak gift:
             deltaCount = totalCount;
         }
 
@@ -409,6 +484,8 @@ function startConnection() {
 
         const payload = {
             event: 'gift',
+            msgId: msgId,
+            groupId: groupId,
             giftId: giftId,
             giftName: giftName,
             repeatCount: deltaCount,
@@ -418,7 +495,8 @@ function startConnection() {
             username: user,
             avatarUrl: userAvatar,
             giftPictureUrl: giftPic,
-            repeatEnd: Boolean(data.repeatEnd)
+            repeatEnd: Boolean(data.repeatEnd),
+            isStreak: isStreak
         };
 
         const logMsg = `[${new Date().toLocaleTimeString()}] GIFT: ${user} sent ${deltaCount}x ${giftName} (ID: ${giftId}, ${unitCoins} coins each = ${deltaCoins} coins, streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd})\n`;
@@ -429,19 +507,28 @@ function startConnection() {
         saveState();
     });
 
-    // 2. Like Event
+    // 2. Like Event (Real-time accumulation & Webhook dispatch)
     tiktokConnection.on('like', data => {
         liveState.lastEventTime = Date.now();
-        if (data.totalLikeCount) {
-            liveState.totalLikes = data.totalLikeCount;
+        const incomingLikes = parseInt(data.likeCount || 1, 10) || 1;
+        const totalLikesFromData = data.totalLikeCount !== undefined ? parseInt(data.totalLikeCount, 10) :
+                                  (data.total !== undefined ? parseInt(data.total, 10) :
+                                  (data.totalLikes !== undefined ? parseInt(data.totalLikes, 10) : undefined));
+
+        if (totalLikesFromData !== undefined && totalLikesFromData > 0) {
+            liveState.totalLikes = totalLikesFromData;
+        } else {
+            liveState.totalLikes = (liveState.totalLikes || 0) + incomingLikes;
         }
 
         const user = extractUserName(data);
         const userAvatar = extractAvatarUrl(data);
         const payload = {
             event: 'like',
-            likeCount: data.likeCount || 1,
-            totalLikeCount: data.totalLikeCount || liveState.totalLikes,
+            likeCount: incomingLikes,
+            totalLikeCount: liveState.totalLikes,
+            totalLikes: liveState.totalLikes,
+            viewerCount: liveState.viewerCount,
             username: user,
             avatarUrl: userAvatar
         };
@@ -536,13 +623,47 @@ function startConnection() {
         saveState();
     });
 
-    // 6. Room Viewers
+    // 6. Viewer Join / Member Event
+    tiktokConnection.on('member', data => {
+        liveState.lastEventTime = Date.now();
+        const user = extractUserName(data);
+        const userAvatar = extractAvatarUrl(data);
+        const uniqueId = data.uniqueId || (data.user && data.user.uniqueId) || (data.userDetails && data.userDetails.uniqueId) || '';
+
+        const payload = {
+            event: 'join',
+            username: user || uniqueId || 'Viewer',
+            uniqueId: uniqueId,
+            avatar: userAvatar,
+            timestamp: Date.now()
+        };
+
+        console.log(`>>> [MEMBER JOIN] @${payload.username} joined the stream!`);
+        postWebhook(payload);
+        saveState();
+    });
+
+    // 7. Room Viewers (Real-time Webcast Room User updates)
     tiktokConnection.on('roomUser', data => {
-        if (data.viewerCount !== undefined) {
-            liveState.viewerCount = data.viewerCount;
+        liveState.lastEventTime = Date.now();
+        const vCount = data.viewerCount !== undefined ? data.viewerCount : 
+                      (data.userCount !== undefined ? data.userCount : 
+                      (data.totalUser !== undefined ? data.totalUser : 
+                      (data.total !== undefined ? data.total : 
+                      (data.count !== undefined ? data.count : 
+                      (Array.isArray(data.ranksList) ? data.ranksList.length : 
+                      (Array.isArray(data.topViewers) ? data.topViewers.length : undefined))))));
+        if (vCount !== undefined) {
+            liveState.viewerCount = parseInt(vCount, 10) || 0;
             saveState();
+            postWebhook({
+                event: 'room_viewers',
+                viewerCount: liveState.viewerCount,
+                totalLikes: liveState.totalLikes
+            });
         }
     });
+
 
     // 7. Stream End / Disconnect
     tiktokConnection.on('disconnected', () => {

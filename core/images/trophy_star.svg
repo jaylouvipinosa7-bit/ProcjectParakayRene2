@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff59d" />
+      <stop offset="30%" stop-color="#fbc02d" />
+      <stop offset="70%" stop-color="#f57f17" />
+      <stop offset="100%" stop-color="#e65100" />
+    </linearGradient>
+    <filter id="starGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Big Glowing Star -->
+  <polygon points="100,22 122,68 172,74 135,108 145,158 100,132 55,158 65,108 28,74 78,68" 
+           fill="url(#starGrad)" stroke="#ffb300" stroke-width="3" filter="url(#starGlow)" />
+
+  <!-- Inner Star Facets -->
+  <polygon points="100,38 116,74 154,79 125,106 133,144 100,124" fill="#fff9c4" opacity="0.4" />
+  <polygon points="100,38 84,74 46,79 75,106 67,144 100,124" fill="#f57f17" opacity="0.3" />
+
+  <!-- Pedestal -->
+  <path d="M 88 152 L 112 152 L 115 170 L 85 170 Z" fill="#451a03" stroke="#b45309" stroke-width="2" />
+  <path d="M 70 170 L 130 170 L 140 188 L 60 188 Z" fill="#1c1917" stroke="#78350f" stroke-width="2" />
+  <rect x="74" y="174" width="52" height="10" rx="2" fill="#d97706" stroke="#fde68a" stroke-width="1" />
+</svg>

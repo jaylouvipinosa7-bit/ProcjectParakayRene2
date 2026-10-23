@@ -1,39 +1,33 @@
 ﻿const cardsData = [
     {
-        "id":  "1",
-        "action":  "LikeForEach",
-        "giftId":  "",
-        "giftName":  "Team plants likes",
-        "funcName":  "Spawn Blazer Snipea (1167)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatecattail.webp",
-        "trigImg":  "images/trig_7.svg",
-        "triggerValue":  "50",
-        "commands":  "spawn_ultimatecattail",
-        "repetition":  1
-    },
-    {
         "id":  "2",
         "action":  "LikeForEach",
         "giftId":  "",
         "giftName":  "Team zombies likes",
-        "funcName":  "Spawn Trident Jugger-nut Gargantuar (240)",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp",
-        "trigImg":  "images/trig_7.svg",
+        "funcName":  "Spawn Knight Captain Zombie (70)",
+        "funcImg":  "images/game-icons/pvz/spawn_knight_captain.webp",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2242%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E50%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
         "triggerValue":  "50",
-        "commands":  "spawn_trident_juggernut_gargantuar",
-        "repetition":  1
+        "commands":  "spawn_knight_captain",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "likes",
+        "actionType":  "zombie"
     },
     {
         "id":  "3",
         "action":  "LikeAmount",
         "giftId":  "",
         "giftName":  "Total Likes",
-        "funcName":  "Spawn UltimateHorse",
+        "funcName":  "spawn summon horse",
         "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/trig_7.svg",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2236%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E50K%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
         "triggerValue":  "50000",
         "commands":  "spawn_ultimatehorse",
-        "repetition":  20
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "likes_all",
+        "actionType":  "zombie"
     },
     {
         "id":  "4",
@@ -45,7 +39,25 @@
         "trigImg":  "images/trig_1.svg",
         "triggerValue":  "",
         "commands":  "spawn_summonedhorse",
-        "repetition":  20
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "follow",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1792301314168",
+        "action":  "SelectedGift",
+        "giftId":  "637990",
+        "giftName":  "Treasure Clover",
+        "funcName":  "Spawn Kirov_c",
+        "funcImg":  "images/game-icons/pvz/spawn_kirov_c.webp",
+        "trigImg":  "images/tiktok-gifts/637990_treasure_clover.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_kirov_c",
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "5",
@@ -53,11 +65,14 @@
         "giftId":  "5655",
         "giftName":  "Rose",
         "funcName":  "Spawn Ultimate Football Zombie",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
         "trigImg":  "images/tiktok-gifts/5655_rose.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_football_zombie",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "6",
@@ -69,7 +84,10 @@
         "trigImg":  "images/tiktok-gifts/6788_glow_stick.webp",
         "triggerValue":  "",
         "commands":  "spawn_summonedhorse",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "7",
@@ -77,11 +95,44 @@
         "giftId":  "1228602",
         "giftName":  "GOten",
         "funcName":  "Ultimate Gold Gargantuar",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_squalour_zombie.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_squalour_zombie.webp",
         "trigImg":  "images/tiktok-gifts/1228602_goten.webp",
         "triggerValue":  "",
         "commands":  "spawn_squalour_zombie",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1792325312723",
+        "action":  "SelectedGift",
+        "giftId":  "1347121",
+        "giftName":  "Mirwas Beat",
+        "funcName":  "Spawn Hydrofowl Zombie (71)",
+        "funcImg":  "images/game-icons/pvz/spawn_boat_imp.webp",
+        "trigImg":  "images/tiktok-gifts/1347121_mirwas_beat.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_boat_imp",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1792325299503",
+        "action":  "SelectedGift",
+        "giftId":  "5827",
+        "giftName":  "Ice Cream Cone",
+        "funcName":  "Spawn Snow Crab (97)",
+        "funcImg":  "images/game-icons/pvz/spawn_snow_crab.webp",
+        "trigImg":  "images/tiktok-gifts/5827_ice_cream_cone.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_snow_crab",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "8",
@@ -93,7 +144,25 @@
         "trigImg":  "images/tiktok-gifts/19441_freestyle.webp",
         "triggerValue":  "",
         "commands":  "spawn_eternalzombie_c",
-        "repetition":  2
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1792307359731",
+        "action":  "SelectedGift",
+        "giftId":  "59881",
+        "giftName":  "A Shard of Hope",
+        "funcName":  "Spawn Alpha Assassin Squad (226)",
+        "funcImg":  "images/game-icons/pvz/spawn_legion_zombie.webp",
+        "trigImg":  "images/tiktok-gifts/59881_a_shard_of_hope.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_legion_zombie",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "9",
@@ -105,7 +174,10 @@
         "trigImg":  "images/tiktok-gifts/231956_clap_clap.webp",
         "triggerValue":  "",
         "commands":  "spawn_lost_penguin",
-        "repetition":  4
+        "repetition":  4,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "10",
@@ -113,11 +185,44 @@
         "giftId":  "6064",
         "giftName":  "GG",
         "funcName":  "Spawn Squalour Zombie",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_kirov_c.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_kirov_c.webp",
         "trigImg":  "images/tiktok-gifts/6064_gg.webp",
         "triggerValue":  "",
         "commands":  "spawn_kirov_c",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "64",
+        "action":  "SelectedGift",
+        "giftId":  "16757",
+        "giftName":  "Bibingka",
+        "funcName":  "Spawn HorseZombie",
+        "funcImg":  "images/game-icons/pvz/spawn_black_horse.webp",
+        "trigImg":  "images/tiktok-gifts/16757_bibingka.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_black_horse",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1792305417166",
+        "action":  "SelectedGift",
+        "giftId":  "5487",
+        "giftName":  "Finger Heart",
+        "funcName":  "Spawn Buckshot Knight Captain Zombie (252)",
+        "funcImg":  "images/game-icons/pvz/spawn_super_black_horse.webp",
+        "trigImg":  "images/tiktok-gifts/5487_finger_heart.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_super_black_horse",
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "11",
@@ -129,7 +234,10 @@
         "trigImg":  "images/tiktok-gifts/19447_overreact.webp",
         "triggerValue":  "",
         "commands":  "spawn_jackson_c",
-        "repetition":  2
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "12",
@@ -141,7 +249,10 @@
         "trigImg":  "images/tiktok-gifts/9005_rafflesia.webp",
         "triggerValue":  "",
         "commands":  "spawn_lost_snow_monster",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "13",
@@ -153,7 +264,10 @@
         "trigImg":  "images/tiktok-gifts/12963_shining_starlight.webp",
         "triggerValue":  "",
         "commands":  "spawn_lost_machine_iv",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "14",
@@ -161,23 +275,14 @@
         "giftId":  "1402661",
         "giftName":  "Star Light",
         "funcName":  "Spawn Lost Machine III",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_lost_machine_iii.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_lost_machine_iii.webp",
         "trigImg":  "images/tiktok-gifts/1402661_star_light.webp",
         "triggerValue":  "",
         "commands":  "spawn_lost_machine_iii",
-        "repetition":  50
-    },
-    {
-        "id":  "15",
-        "action":  "SelectedGift",
-        "giftId":  "5487",
-        "giftName":  "Finger Heart",
-        "funcName":  "Spawn UltimateDolphin",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatedolphin.webp",
-        "trigImg":  "images/tiktok-gifts/5487_finger_heart.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_ultimatedolphin",
-        "repetition":  1
+        "repetition":  50,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "16",
@@ -189,7 +294,10 @@
         "trigImg":  "images/tiktok-gifts/19445_name_shoutout.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_jackbox_zombie",
-        "repetition":  2
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "17",
@@ -201,7 +309,10 @@
         "trigImg":  "images/tiktok-gifts/544253_i_like_what_i_see.webp",
         "triggerValue":  "",
         "commands":  "spawn_horseboss",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "18",
@@ -213,7 +324,10 @@
         "trigImg":  "images/tiktok-gifts/5779_i_love_you.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_paper_zombie",
-        "repetition":  3
+        "repetition":  3,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "19",
@@ -225,19 +339,10 @@
         "trigImg":  "images/tiktok-gifts/8913_rosa.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimateswordzombie",
-        "repetition":  10
-    },
-    {
-        "id":  "20",
-        "action":  "SelectedGift",
-        "giftId":  "19448",
-        "giftName":  "Slow motion",
-        "funcName":  "Spawn Jackson Driver Boss",
-        "funcImg":  "images/game-icons/pvz/spawn_jackson_driver_boss.webp",
-        "trigImg":  "images/tiktok-gifts/19448_slow_motion.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_jackson_driver_boss",
-        "repetition":  10
+        "repetition":  10,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "21",
@@ -249,7 +354,10 @@
         "trigImg":  "images/tiktok-gifts/15063_journey_pass.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimateendoflamezombie",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "22",
@@ -257,23 +365,14 @@
         "giftId":  "626056",
         "giftName":  "Kudos for My Star",
         "funcName":  "Spawn Submarine_c2",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_submarine_c2.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_submarine_c2.webp",
         "trigImg":  "images/tiktok-gifts/626056_kudos_for_my_star.webp",
         "triggerValue":  "",
         "commands":  "spawn_submarine_c2;spawn_ultimate_machine_nut_zombie",
-        "repetition":  3
-    },
-    {
-        "id":  "23",
-        "action":  "SelectedGift",
-        "giftId":  "1298087",
-        "giftName":  "Blossom Po",
-        "funcName":  "Spawn Kirov_c",
-        "funcImg":  "images/game-icons/pvz/spawn_kirov_c.webp",
-        "trigImg":  "images/tiktok-gifts/1298087_blossom_po.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_kirov_c",
-        "repetition":  30
+        "repetition":  3,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "24",
@@ -285,19 +384,55 @@
         "trigImg":  "images/tiktok-gifts/626064_g_o_a_t__busker.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatesnowzombie",
-        "repetition":  30
+        "repetition":  30,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
-        "id":  "25",
+        "id":  "1792307365816",
         "action":  "SelectedGift",
-        "giftId":  "6427",
-        "giftName":  "Hat and Mustache",
-        "funcName":  "Spawn Ultimate Machine Nut Zombie",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
-        "trigImg":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
+        "giftId":  "6097",
+        "giftName":  "Little Crown",
+        "funcName":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)",
+        "funcImg":  "images/game-icons/pvz/spawn_football_boss.webp",
+        "trigImg":  "images/tiktok-gifts/6097_little_crown.webp",
         "triggerValue":  "",
-        "commands":  "spawn_ultimate_machine_nut_zombie",
-        "repetition":  50
+        "commands":  "spawn_football_boss",
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "15",
+        "action":  "SelectedGift",
+        "giftId":  "12999",
+        "giftName":  "Mark of Love",
+        "funcName":  "Spawn UltimateDolphin",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatedolphin.webp",
+        "trigImg":  "images/tiktok-gifts/12999_ko.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimatedolphin;spawn_ultimate_paper_zombie;spawn_super_black_horse",
+        "repetition":  30,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "20",
+        "action":  "SelectedGift",
+        "giftId":  "5585",
+        "giftName":  "Confetti",
+        "funcName":  "Spawn Jackson Driver Boss",
+        "funcImg":  "images/game-icons/pvz/spawn_jackson_driver_boss.webp",
+        "trigImg":  "images/tiktok-gifts/5585_confetti.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_jackson_driver_boss",
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "26",
@@ -309,7 +444,10 @@
         "trigImg":  "images/tiktok-gifts/5509_sunglasses.webp",
         "triggerValue":  "",
         "commands":  "spawn_zombie_boss2",
-        "repetition":  30
+        "repetition":  30,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "27",
@@ -321,7 +459,10 @@
         "trigImg":  "images/tiktok-gifts/14557_puppy_kisses.webp",
         "triggerValue":  "",
         "commands":  "kill_all_plants",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "power"
     },
     {
         "id":  "28",
@@ -333,7 +474,10 @@
         "trigImg":  "images/tiktok-gifts/6267_corgi.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatehorse",
-        "repetition":  50
+        "repetition":  50,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "29",
@@ -345,7 +489,10 @@
         "trigImg":  "images/tiktok-gifts/657072_galaxy_s_bestest.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimateimpking",
-        "repetition":  100
+        "repetition":  300,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "30",
@@ -357,7 +504,10 @@
         "trigImg":  "images/tiktok-gifts/7168_money_gun.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatehorse",
-        "repetition":  100
+        "repetition":  100,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
     },
     {
         "id":  "31",
@@ -369,79 +519,40 @@
         "trigImg":  "images/tiktok-gifts/11046_galaxy.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimateimpking",
-        "repetition":  500
+        "repetition":  500,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1",
+        "action":  "LikeForEach",
+        "giftId":  "",
+        "giftName":  "Team plants likes",
+        "funcName":  "Spawn Blazer Snipea (1167)",
+        "funcImg":  "images/game-icons/pvz/spawn_overclocked_cherrybomber.webp",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2242%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E50%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
+        "triggerValue":  "50",
+        "commands":  "spawn_overclocked_cherrybomber",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "likes",
+        "actionType":  "plant"
     },
     {
         "id":  "32",
         "action":  "SelectedGift",
         "giftId":  "7934",
         "giftName":  "Heart Me",
-        "funcName":  "Win Score Numbers (+/-)",
-        "funcImg":  "images/spinner_wheel_icon.svg",
+        "funcName":  "Spawn Big Sun Nut",
+        "funcImg":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
         "trigImg":  "images/tiktok-gifts/7934_heart_me.webp",
         "triggerValue":  "",
-        "commands":  "spinner_1791698132034",
-        "repetition":  50
-    },
-    {
-        "id":  "33",
-        "action":  "SelectedGift",
-        "giftId":  "5269",
-        "giftName":  "TikTok",
-        "funcName":  "nambabaliw",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/charm_all_zombies.webp",
-        "trigImg":  "images/tiktok-gifts/5269_tiktok.webp",
-        "triggerValue":  "",
-        "commands":  "charm_all_zombies",
-        "repetition":  1
-    },
-    {
-        "id":  "34",
-        "action":  "SelectedGift",
-        "giftId":  "5583",
-        "giftName":  "Fire",
-        "funcName":  "Spawn Super Threepeater",
-        "funcImg":  "images/game-icons/pvz/spawn_superthreepeater.webp",
-        "trigImg":  "images/tiktok-gifts/5583_fire.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_superthreepeater",
-        "repetition":  5
-    },
-    {
-        "id":  "35",
-        "action":  "SelectedGift",
-        "giftId":  "19438",
-        "giftName":  "Pop",
-        "funcName":  "Spawn Dragon Pot",
-        "funcImg":  "images/game-icons/pvz/spawn_dragon_pot.webp",
-        "trigImg":  "images/tiktok-gifts/19438_pop.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_dragon_pot",
-        "repetition":  6
-    },
-    {
-        "id":  "36",
-        "action":  "SelectedGift",
-        "giftId":  "6784",
-        "giftName":  "Cake Slice",
-        "funcName":  "Spawn Ultimate Spruce",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_spruce.webp",
-        "trigImg":  "images/tiktok-gifts/6784_cake_slice.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_ultimate_spruce",
-        "repetition":  6
-    },
-    {
-        "id":  "37",
-        "action":  "SelectedGift",
-        "giftId":  "231955",
-        "giftName":  "Good Job",
-        "funcName":  "Spawn Ultimate Corn",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
-        "trigImg":  "images/tiktok-gifts/231955_good_job.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_ultimate_corn",
-        "repetition":  2
+        "commands":  "spawn_big_sun_nut",
+        "repetition":  50,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "38",
@@ -453,7 +564,70 @@
         "trigImg":  "images/tiktok-gifts/919346_welcome_dallah.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_gloom",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "35",
+        "action":  "SelectedGift",
+        "giftId":  "19438",
+        "giftName":  "Pop",
+        "funcName":  "Spawn Dragon Pot",
+        "funcImg":  "images/game-icons/pvz/spawn_dragon_pot.webp",
+        "trigImg":  "images/tiktok-gifts/19438_pop.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_dragon_pot",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "36",
+        "action":  "SelectedGift",
+        "giftId":  "6784",
+        "giftName":  "Cake Slice",
+        "funcName":  "Spawn Ultimate Spruce",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_spruce.webp",
+        "trigImg":  "images/tiktok-gifts/6784_cake_slice.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimate_spruce",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "37",
+        "action":  "SelectedGift",
+        "giftId":  "231955",
+        "giftName":  "Good Job",
+        "funcName":  "Spawn Ultimate Corn",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+        "trigImg":  "images/tiktok-gifts/231955_good_job.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimate_corn",
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "1792314269854",
+        "action":  "SelectedGift",
+        "giftId":  "5583",
+        "giftName":  "Fire",
+        "funcName":  "Spawn Super Three Peater",
+        "funcImg":  "images/game-icons/pvz/spawn_super_three_peater.webp",
+        "trigImg":  "images/tiktok-gifts/5583_fire.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_super_three_peater",
+        "repetition":  3,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "39",
@@ -465,7 +639,10 @@
         "trigImg":  "images/tiktok-gifts/19439_oldies.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatecabbagecannon",
-        "repetition":  6
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "40",
@@ -473,11 +650,29 @@
         "giftId":  "19446",
         "giftName":  "Wink wink",
         "funcName":  "Spawn Ultimate Holy Star",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_holy_star.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_holy_star.webp",
         "trigImg":  "images/tiktok-gifts/19446_wink_wink.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_holy_star",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "1792307363377",
+        "action":  "SelectedGift",
+        "giftId":  "5269",
+        "giftName":  "TikTok",
+        "funcName":  "Charm all zombies",
+        "funcImg":  "images/game-icons/pvz/charm_all_zombies.webp",
+        "trigImg":  "images/tiktok-gifts/5269_tiktok.webp",
+        "triggerValue":  "",
+        "commands":  "charm_all_zombies",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "power"
     },
     {
         "id":  "41",
@@ -485,11 +680,14 @@
         "giftId":  "13651",
         "giftName":  "Go Popular",
         "funcName":  "Spawn Ultimate Chomper",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_chomper.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_chomper.webp",
         "trigImg":  "images/tiktok-gifts/13651_go_popular.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_chomper",
-        "repetition":  3
+        "repetition":  3,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "42",
@@ -497,11 +695,14 @@
         "giftId":  "15232",
         "giftName":  "You\u0027re awesome",
         "funcName":  "Spawn DoomSniper",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_doomsniper.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_doomsniper.webp",
         "trigImg":  "images/tiktok-gifts/15232_you_re_awesome.webp",
         "triggerValue":  "",
         "commands":  "spawn_doomsniper",
-        "repetition":  6
+        "repetition":  6,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "43",
@@ -513,7 +714,25 @@
         "trigImg":  "images/tiktok-gifts/1167769_mate_melody.webp",
         "triggerValue":  "",
         "commands":  "spawn_magic_snow_pea2",
-        "repetition":  6
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "1792580336647",
+        "action":  "SelectedGift",
+        "giftId":  "1374221",
+        "giftName":  "Eye for an Eye",
+        "funcName":  "Spawn Obsidian Jugger-nut (997)",
+        "funcImg":  "images/game-icons/pvz/spawn_obsidian_juggernaut.webp",
+        "trigImg":  "images/tiktok-gifts/1374221_eye_for_an_eye.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_obsidian_juggernaut",
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "44",
@@ -525,31 +744,10 @@
         "trigImg":  "images/tiktok-gifts/15231_love_you_so_much.webp",
         "triggerValue":  "",
         "commands":  "spawn_supernutshooter",
-        "repetition":  2
-    },
-    {
-        "id":  "45",
-        "action":  "SelectedGift",
-        "giftId":  "118812",
-        "giftName":  "Divine Fingers",
-        "funcName":  "Spawn Bedrock Tall Nut",
-        "funcImg":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
-        "trigImg":  "images/tiktok-gifts/118812_divine_fingers.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_bedrocktallnut",
-        "repetition":  6
-    },
-    {
-        "id":  "46",
-        "action":  "SelectedGift",
-        "giftId":  "919386",
-        "giftName":  "Love in Scent",
-        "funcName":  "Spawn UltimateBamboo",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatebamboo.webp",
-        "trigImg":  "images/tiktok-gifts/919386_love_in_scent.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_ultimatebamboo",
-        "repetition":  6
+        "repetition":  2,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "47",
@@ -561,7 +759,40 @@
         "trigImg":  "images/tiktok-gifts/105781_spinning_soccer.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimateseashroom",
-        "repetition":  6
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "45",
+        "action":  "SelectedGift",
+        "giftId":  "118812",
+        "giftName":  "Divine Fingers",
+        "funcName":  "Spawn Bedrock Tall Nut",
+        "funcImg":  "images/game-icons/pvz/spawn_bedrocktallnut.webp",
+        "trigImg":  "images/tiktok-gifts/118812_divine_fingers.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_bedrocktallnut",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "46",
+        "action":  "SelectedGift",
+        "giftId":  "919386",
+        "giftName":  "Love in Scent",
+        "funcName":  "Spawn UltimateBamboo",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatebamboo.webp",
+        "trigImg":  "images/tiktok-gifts/919386_love_in_scent.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimatebamboo",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "48",
@@ -573,7 +804,10 @@
         "trigImg":  "images/tiktok-gifts/1137702_encore_ticket.webp",
         "triggerValue":  "",
         "commands":  "spawn_superthreepeater_sp",
-        "repetition":  6
+        "repetition":  6,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "49",
@@ -581,11 +815,14 @@
         "giftId":  "9947",
         "giftName":  "Friendship Necklace",
         "funcName":  "Spawn NuclearDoomCherry",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
         "trigImg":  "images/tiktok-gifts/9947_friendship_necklace.webp",
         "triggerValue":  "",
         "commands":  "spawn_nucleardoomcherry;spawn_nuclearsquash",
-        "repetition":  5
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "50",
@@ -593,11 +830,14 @@
         "giftId":  "15328",
         "giftName":  "Fried Chicken",
         "funcName":  "Spawn Ultimate Spring",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
         "trigImg":  "images/tiktok-gifts/15328_fried_chicken.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimate_machine_nut",
-        "repetition":  10
+        "repetition":  10,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "51",
@@ -609,7 +849,10 @@
         "trigImg":  "images/tiktok-gifts/919332_mystic_ney.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatejalanut",
-        "repetition":  100
+        "repetition":  100,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "52",
@@ -621,7 +864,10 @@
         "trigImg":  "images/tiktok-gifts/13215_night_star.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatesunnut",
-        "repetition":  100
+        "repetition":  100,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "53",
@@ -633,7 +879,10 @@
         "trigImg":  "images/tiktok-gifts/9465_fruit_friends.webp",
         "triggerValue":  "",
         "commands":  "spawn_cherry_jalapeno",
-        "repetition":  500
+        "repetition":  500,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "54",
@@ -645,7 +894,10 @@
         "trigImg":  "images/tiktok-gifts/6007_boxing_gloves.webp",
         "triggerValue":  "",
         "commands":  "spawn_nucleardoomcherry",
-        "repetition":  500
+        "repetition":  500,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "55",
@@ -657,31 +909,55 @@
         "trigImg":  "images/tiktok-gifts/15382_live_ranking_crown.webp",
         "triggerValue":  "",
         "commands":  "kill_all_zombies",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "power"
     },
     {
         "id":  "56",
         "action":  "SelectedGift",
-        "giftId":  "231958",
-        "giftName":  "Mind Blown",
+        "giftId":  "1329117",
+        "giftName":  "Lyric Mail",
         "funcName":  "Start LawnMower",
         "funcImg":  "images/game-icons/pvz/start_lawnmower.webp",
-        "trigImg":  "images/tiktok-gifts/231958_mind_blown.webp",
+        "trigImg":  "images/tiktok-gifts/1329117_lyric_mail.webp",
         "triggerValue":  "",
         "commands":  "start_lawnmower",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "custom"
+    },
+    {
+        "id":  "1792325308925",
+        "action":  "SelectedGift",
+        "giftId":  "1167779",
+        "giftName":  "Mantap",
+        "funcName":  "Spawn Maelonstorm (957)",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+        "trigImg":  "images/tiktok-gifts/1167779_mantap.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimate_winter_melon",
+        "repetition":  5,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "57",
         "action":  "SelectedGift",
-        "giftId":  "231957",
-        "giftName":  "Intimacy",
+        "giftId":  "19448",
+        "giftName":  "Slow motion",
         "funcName":  "Restart LawnMower",
         "funcImg":  "images/game-icons/pvz/restart_lawnmower.webp",
-        "trigImg":  "images/tiktok-gifts/231957_intimacy.webp",
+        "trigImg":  "images/tiktok-gifts/19448_slow_motion.webp",
         "triggerValue":  "",
         "commands":  "restart_lawnmower",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "custom"
     },
     {
         "id":  "58",
@@ -693,19 +969,25 @@
         "trigImg":  "images/tiktok-gifts/1137734_i_m_yours.webp",
         "triggerValue":  "",
         "commands":  "delete_lawnmower",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "power"
     },
     {
-        "id":  "59",
-        "action":  "Share",
+        "id":  "1792310064286",
+        "action":  "SelectedGift",
         "giftId":  "",
-        "giftName":  "Share Stream",
-        "funcName":  "Plant everywahre",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/plant_everywahre.webp",
+        "giftName":  "Plant Everywhere",
+        "funcName":  "Plant Everywhere",
+        "funcImg":  "images/game-icons/pvz/plant_everywahre.webp",
         "trigImg":  "images/trig_3.svg",
         "triggerValue":  "",
         "commands":  "plant_everywahre",
-        "repetition":  1
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "custom",
+        "actionType":  "power"
     },
     {
         "id":  "63",
@@ -717,78 +999,9 @@
         "trigImg":  "images/tiktok-gifts/19443_bravo.webp",
         "triggerValue":  "",
         "commands":  "spawn_ultimatesnipergatling",
-        "repetition":  10
-    },
-    {
-        "id":  "64",
-        "action":  "SelectedGift",
-        "giftId":  "16757",
-        "giftName":  "Bibingka",
-        "funcName":  "Spawn HorseZombie",
-        "funcImg":  "images/game-icons/pvz/spawn_horsezombie.webp",
-        "trigImg":  "images/tiktok-gifts/16757_bibingka.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_horsezombie",
-        "repetition":  1
-    },
-    {
-        "id":  "1791627008321",
-        "action":  "LikeAmount",
-        "giftId":  "",
-        "giftName":  "hatdog",
-        "funcName":  "baliw",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimatehorse.webp",
-        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
-        "triggerValue":  "50000",
-        "commands":  "spawn_ultimatehorse",
-        "repetition":  20
-    },
-    {
-        "id":  "1791698411759",
-        "action":  "SelectedGift",
-        "giftId":  "13087",
-        "giftName":  "Bubble Gum",
-        "funcName":  "Win Score Numbers (+/-)",
-        "funcImg":  "images/spinner_wheel_icon.svg",
-        "trigImg":  "images/tiktok-gifts/13087_bubble_gum.webp",
-        "triggerValue":  "",
-        "commands":  "spinner_1791886127198",
-        "repetition":  1
-    },
-    {
-        "id":  "1791698134030",
-        "action":  "SelectedGift",
-        "giftId":  "5658",
-        "giftName":  "Perfume",
-        "funcName":  "Plants Lucky Wheel",
-        "funcImg":  "images/spinner_wheel_icon.svg",
-        "trigImg":  "images/tiktok-gifts/perfume_gift.webp",
-        "triggerValue":  "",
-        "commands":  "spinner_1791698134030",
-        "repetition":  1
-    },
-    {
-        "id":  "1791698133182",
-        "action":  "SelectedGift",
-        "giftId":  "5879",
-        "giftName":  "Doughnut",
-        "funcName":  "Zombies Lucky Wheel",
-        "funcImg":  "images/spinner_wheel_icon.svg",
-        "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
-        "triggerValue":  "",
-        "commands":  "spinner_1791698133182",
-        "repetition":  1
-    },
-    {
-        "id":  "1791715811937",
-        "action":  "SelectedGift",
-        "giftId":  "5827",
-        "giftName":  "Ice Cream Cone",
-        "funcName":  "Ultimate Gold Gargantuar",
-        "funcImg":  "http://localhost:8080/images/game-icons/pvz/ultimate_gold_gargantuar.webp",
-        "trigImg":  "images/tiktok-gifts/5827_ice_cream_cone.webp",
-        "triggerValue":  "",
-        "commands":  "ultimate_gold_gargantuar",
-        "repetition":  3
+        "repetition":  10,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     }
 ];

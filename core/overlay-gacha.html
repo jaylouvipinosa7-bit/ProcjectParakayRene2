@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fredoka:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="wheel-engine.js"></script>
     <script src="three.min.js"></script>
+    <script src="stream-keepalive.js"></script>
     <style>
         :root {
             --card-width: 120px;
@@ -811,7 +812,7 @@
             padding: 0 !important;
             margin: 0 !important;
             box-sizing: border-box;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
             overflow: visible;
         }
 
@@ -837,9 +838,28 @@
         }
 
         .gacha-summon-overlay.revealed {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+
+        /* Smooth Exit Animation when Summon is finished */
+        .gacha-summon-overlay.fading-out {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out !important;
+        }
+
+        .gacha-summon-overlay.fading-out .summon-card-box {
+            transform: scale(0.9) translateY(14px) !important;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .gacha-summon-overlay.fading-out .card-sender-badge {
+            transform: translateY(-12px) !important;
+            opacity: 0 !important;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out !important;
         }
 
         /* Radiant Sunburst Ray Particles */
@@ -1860,7 +1880,7 @@
         <!-- WINNER BANNER (ACCESSIBLE TO ALL MODES) -->
         <div class="winner-banner-wrap" id="winnerBanner">
             <div class="winner-pill">
-                <img src="images/game-icons/pvz/spawn_ultimatecattail.webp" id="winnerIcon" class="winner-icon" alt="Winner">
+                <img src="images/indicators/indicator_general.svg" id="winnerIcon" class="winner-icon" alt="Winner">
                 <div class="winner-text-content">
                     <span>WON: </span>
                     <span class="winner-text-highlight" id="winnerText">Ultimate Gold Gargantuar</span>
@@ -1933,7 +1953,7 @@
                 <!-- Portal Outer Magic Rings -->
                 <div style="position: absolute; inset: 0; border-radius: 50%; border: 3px solid #fbbf24; box-shadow: 0 0 25px #fbbf24, inset 0 0 20px rgba(251,191,36,0.5); background: radial-gradient(circle, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.95) 70%);"></div>
                 <!-- Character Unit Icon (Crystal Clear, High-Contrast) -->
-                <img src="images/game-icons/pvz/spawn_ultimatecattail.webp" id="summonEntityImg" class="summon-entity-img" style="width: 145px; height: 145px; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.9)); position: relative; z-index: 12;" alt="Unit">
+                <img src="images/game-icons/pvz/spawn_jackson_driver_boss.webp" id="summonEntityImg" class="summon-entity-img" style="width: 145px; height: 145px; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.9)); position: relative; z-index: 12;" alt="Unit" onerror="this.onerror=null; this.src='images/game-icons/pvz/spawn_gatling_pea.webp';">
             </div>
 
             <!-- Yu-Gi-Oh Level Stars Row (Neatly centered under portal, NO overlap with Aurora Star banner) -->
@@ -1942,18 +1962,18 @@
             </div>
 
             <!-- Centered Command Title Badge (Right below stars in the middle - Clean and readable) -->
-            <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; margin-top: 4px;">
-                <div id="summonNameBadge" style="font-size: 15px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 10px #fbbf24; background: rgba(15,23,42,0.92); border: 1.5px solid #fbbf24; border-radius: 9999px; padding: 6px 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.7);">
+            <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; margin-top: 4px; width: 100%; background: linear-gradient(90deg, transparent 0%, rgba(15,23,42,0.95) 12%, rgba(15,23,42,0.95) 88%, transparent 100%); padding: 5px 0;">
+                <div id="summonNameBadge" style="font-size: 14.5px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 0 10px #fbbf24; background: rgba(15,23,42,0.96); border: 1.5px solid #fbbf24; border-radius: 9999px; padding: 6px 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.85); white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;">
                     [MYTHIC] CHARM ALL ZOMBIES
                 </div>
             </div>
 
             <!-- Clean Authentic PvZ Card Footer - Covers the fake Pokemon stats with real-time command -->
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 74px; background: linear-gradient(180deg, rgba(15,23,42,0.9) 0%, #0a0e17 100%); border-top: 1.5px solid rgba(251,191,36,0.6); z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 12px; box-sizing: border-box;">
-                <div id="summonCardRealCmd" style="font-size: 11.5px; font-family: monospace; font-weight: 800; color: #38bdf8; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;">
-                    !cmd: charm_all_zombies
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 74px; background: linear-gradient(180deg, rgba(15,23,42,0.96) 0%, #0a0e17 100%); border-top: 1.5px solid rgba(251,191,36,0.6); z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 14px; box-sizing: border-box; pointer-events: none;">
+                <div id="summonCardRealCmd" style="font-size: 12px; font-weight: 800; color: #38bdf8; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.3px; width: 100%; max-width: 95%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ⚡ COMMAND: charm_all_zombies
                 </div>
-                <div style="font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;">
+                <div id="summonCardSubCmd" style="font-size: 9.5px; font-weight: 800; color: #94a3b8; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 3px; width: 100%; max-width: 95%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                     PVZ FUSION LIVE REWARD • REALTIME
                 </div>
             </div>
@@ -2758,9 +2778,24 @@
             }
 
             const unitLabel = rawItem.label || 'Reward';
-            const unitIcon = rawItem.unitIcon || rawItem.icon || 'images/game-icons/pvz/spawn_superpeashooter_sp.webp';
-            const commandStr = rawItem.command || rawItem.cmd || unitLabel.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            let unitIcon = rawItem.unitIcon || rawItem.icon || '';
+            if (unitIcon) {
+                unitIcon = String(unitIcon).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '').trim();
+            }
+            const commandStr = (rawItem.command || rawItem.cmd || unitLabel.toLowerCase().replace(/[^a-z0-9]/g, '_')).toLowerCase();
+            // Accurately map Jackson vs Football vs generic commands
+            if (!unitIcon || (commandStr.includes('jackson') && unitIcon.includes('cattail'))) {
+                if (commandStr.includes('jackson')) {
+                    unitIcon = 'images/game-icons/pvz/spawn_jackson_driver_boss.webp';
+                } else if (commandStr.includes('football') || unitLabel.toLowerCase().includes('football')) {
+                    unitIcon = 'images/game-icons/pvz/spawn_ultimate_football_zombie.webp';
+                } else {
+                    unitIcon = 'images/game-icons/pvz/spawn_gatling_pea.webp';
+                }
+            }
             const sunCostStr = (rarity === 'mythic' || rarity === 'legendary') ? '☀️ 800 SUN' : (rarity === 'epic' ? '☀️ 500 SUN' : '☀️ 350 SUN');
+            const repCount = (rawItem.repetition !== undefined && rawItem.repetition !== null && rawItem.repetition > 0) ? rawItem.repetition : (rawItem.amount || 1);
+            const repStr = repCount > 1 ? ` (x${repCount})` : '';
 
             const lockedSnapshot = {
                 unitName: unitLabel,
@@ -2768,8 +2803,9 @@
                 icon: unitIcon,
                 rarity: rawItem.rarity || 'Normal',
                 stars: starCount,
-                amount: (rawItem.repetition !== undefined && rawItem.repetition !== null && rawItem.repetition > 0) ? rawItem.repetition : (rawItem.amount || 1),
-                command: commandStr,
+                amount: repCount,
+                repetition: repCount,
+                command: rawItem.command || commandStr,
                 sunCost: sunCostStr,
                 tierClass: tierClass,
                 username: (window._currentSpinData && window._currentSpinData.username) || 'Viewer',
@@ -2777,26 +2813,42 @@
             };
 
             // Preload unit icon and apply values to the DOM immediately
-            if (summonImg) summonImg.src = lockedSnapshot.icon;
+            if (summonImg) {
+                summonImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = commandStr.includes('jackson') ? 'images/game-icons/pvz/spawn_jackson_driver_boss.webp' : (commandStr.includes('football') ? 'images/game-icons/pvz/spawn_ultimate_football_zombie.webp' : 'images/game-icons/pvz/spawn_gatling_pea.webp');
+                };
+                summonImg.src = lockedSnapshot.icon;
+            }
             const unitTitleEl = document.getElementById('summonCardUnitName');
             if (unitTitleEl) unitTitleEl.textContent = lockedSnapshot.unitName;
             const headerStarsEl = document.getElementById('summonCardHeaderStars');
             if (headerStarsEl) headerStarsEl.textContent = '★'.repeat(starCount);
+
+            const primaryCmd = (lockedSnapshot.command || '').split(';')[0].trim();
             const realCmdEl = document.getElementById('summonCardRealCmd');
-            if (realCmdEl) realCmdEl.textContent = `!cmd: ${lockedSnapshot.command}`;
+            if (realCmdEl) {
+                realCmdEl.innerHTML = `<span style="color:#fde047; font-weight:900;">⚡ COMMAND:</span> <span style="color:#ffffff; font-weight:800;">${lockedSnapshot.unitName}</span><span style="color:#38bdf8; font-weight:800;">${repStr}</span>`;
+                realCmdEl.title = lockedSnapshot.command || lockedSnapshot.unitName;
+            }
+            const subCmdEl = document.getElementById('summonCardSubCmd');
+            if (subCmdEl) {
+                subCmdEl.innerHTML = `<span style="color:#38bdf8; font-family:monospace;">!cmd: ${primaryCmd}</span> <span style="color:#64748b;">•</span> PVZ FUSION LIVE REWARD`;
+            }
+
             const cardBox = document.getElementById('summonCardBox');
             if (cardBox) cardBox.className = `summon-card-box pvz-mystery-pack-card ${tierClass}`;
             const starsEl = document.getElementById('summonStarsRow');
             if (starsEl) starsEl.innerHTML = renderOverlayYugiohStarsHtml(starCount);
             const sunCostEl = document.getElementById('summonCardSunCost');
             if (sunCostEl) sunCostEl.innerText = lockedSnapshot.sunCost;
-            if (summonName) summonName.textContent = lockedSnapshot.title;
+            if (summonName) summonName.textContent = `${lockedSnapshot.title}${repStr}`;
             const senderUser = document.getElementById('cardSenderUsername');
             if (senderUser) senderUser.textContent = lockedSnapshot.username;
             const senderAva = document.getElementById('cardSenderAvatar');
             if (senderAva) senderAva.src = lockedSnapshot.avatar;
             const cmdCodeEl = document.getElementById('summonCmdCode');
-            if (cmdCodeEl) cmdCodeEl.innerText = `/summon ${lockedSnapshot.command} (x${lockedSnapshot.amount})`;
+            if (cmdCodeEl) cmdCodeEl.innerText = `/summon ${primaryCmd} (x${lockedSnapshot.amount})`;
 
             // 1. Reset all animation states
             if (summonOverlay) summonOverlay.classList.remove('revealed');
@@ -3390,6 +3442,126 @@
             }
         }
 
+        function generateNumberIndicatorSVG(numVal) {
+            const str = String(numVal).trim();
+            const isNeg = str.startsWith('-') || Number(str) < 0;
+            const isPos = str.startsWith('+') || Number(str) > 0;
+            const bgGradStart = isNeg ? '#ff1744' : (isPos ? '#00e676' : '#ffb300');
+            const bgGradEnd = isNeg ? '#8a001a' : (isPos ? '#005a26' : '#996500');
+            const borderCol = isNeg ? '#ff5252' : (isPos ? '#69f0ae' : '#ffd54f');
+            const glowCol = isNeg ? 'rgba(255, 23, 68, 0.6)' : (isPos ? 'rgba(0, 230, 118, 0.6)' : 'rgba(255, 179, 0, 0.6)');
+
+            let fontSize = 44;
+            if (str.length >= 6) fontSize = 28;
+            else if (str.length >= 5) fontSize = 32;
+            else if (str.length >= 4) fontSize = 38;
+            else if (str.length >= 3) fontSize = 42;
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <radialGradient id="nBg" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="${bgGradStart}"/>
+      <stop offset="100%" stop-color="${bgGradEnd}"/>
+    </radialGradient>
+    <filter id="nGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="${glowCol}"/>
+    </filter>
+  </defs>
+  <rect x="6" y="6" width="108" height="108" rx="28" fill="url(#nBg)" stroke="${borderCol}" stroke-width="6" filter="url(#nGlow)"/>
+  <rect x="12" y="12" width="96" height="96" rx="22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <text x="60" y="62" font-family="'Impact', 'Arial Black', sans-serif" font-size="${fontSize}" font-weight="900" fill="#ffffff" text-anchor="middle" dominant-baseline="central" stroke="#000000" stroke-width="3" paint-order="stroke fill">${str}</text>
+</svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        function resolveWinnerIndicator(wObj) {
+            if (!wObj) {
+                return {
+                    icon: 'images/indicators/indicator_general.svg',
+                    fallback: 'images/indicators/indicator_general.svg',
+                    label: 'LUCKY REWARD',
+                    color: '#ffd700',
+                    borderColor: '#ffd700'
+                };
+            }
+
+            const rawLabel = (wObj.label || wObj.name || wObj.text || '').toString().trim();
+            const rawCmd = (wObj.command || '').toString().toLowerCase();
+            const rawType = (wObj.type || '').toString().toLowerCase();
+            const rawIcon = (wObj.unitIcon || wObj.icon || '').toString();
+
+            // 1. Check if item is a number / score adjustment
+            const numMatch = rawLabel.match(/^([+-]?\d+)/) ||
+                             (wObj.delta !== undefined ? [String(wObj.delta), String(wObj.delta)] : null) ||
+                             (wObj.score !== undefined ? [String(wObj.score), String(wObj.score)] : null) ||
+                             ((rawType === 'score' || rawCmd.includes('score') || rawCmd.includes('coin')) ? rawLabel.match(/([+-]?\d+)/) : null);
+
+            if (numMatch) {
+                const numVal = numMatch[1];
+                const isNeg = numVal.startsWith('-') || Number(numVal) < 0;
+                return {
+                    icon: generateNumberIndicatorSVG(numVal),
+                    fallback: isNeg ? 'images/indicators/indicator_score_neg.svg' : 'images/indicators/indicator_score_pos.svg',
+                    label: rawLabel || numVal,
+                    color: isNeg ? '#ff4d6d' : '#00e676',
+                    borderColor: isNeg ? '#ff1744' : '#00e676'
+                };
+            }
+
+            // 2. Check if item is a plant
+            const isPlant = rawType === 'plant' || 
+                            rawCmd.includes('plant') || 
+                            rawCmd.includes('spawn_plant') || 
+                            rawIcon.toLowerCase().includes('plant') || 
+                            /sunflower|peashooter|chomper|cattail|melon|cherry|jalapeno|potato|wallnut|repeater|gatling|fume|doom|hypno|squash|cabbage|kernel|garlic|marigold|torchwood|puff/i.test(rawLabel);
+
+            if (isPlant) {
+                const iconSrc = (rawIcon && !rawIcon.includes('sword') && !rawIcon.includes('default') && !rawIcon.includes('num_')) 
+                    ? rawIcon 
+                    : 'images/indicators/indicator_plant.svg';
+                return {
+                    icon: iconSrc,
+                    fallback: 'images/indicators/indicator_plant.svg',
+                    label: rawLabel || 'PLANT REWARD',
+                    color: '#76ff03',
+                    borderColor: '#76ff03'
+                };
+            }
+
+            // 3. Check if item is a zombie
+            const isZombie = rawType === 'zombie' || 
+                             rawCmd.includes('zombie') || 
+                             rawCmd.includes('spawn_zombie') || 
+                             rawIcon.toLowerCase().includes('zombie') || 
+                             /zombie|gargantuar|imp|bucket|cone|football|dancer|balloon|digger|bungee|catapult|jack|yeti|screendoor|pole|newspaper/i.test(rawLabel);
+
+            if (isZombie) {
+                const iconSrc = (rawIcon && !rawIcon.includes('default') && !rawIcon.includes('num_')) 
+                    ? rawIcon 
+                    : 'images/indicators/indicator_zombie.svg';
+                return {
+                    icon: iconSrc,
+                    fallback: 'images/indicators/indicator_zombie.svg',
+                    label: rawLabel || 'ZOMBIE REWARD',
+                    color: '#b388ff',
+                    borderColor: '#b388ff'
+                };
+            }
+
+            // 4. General / Default lucky reward fallback
+            const generalIcon = (rawIcon && !rawIcon.includes('sword') && !rawIcon.includes('default') && !rawIcon.includes('num_')) 
+                ? rawIcon 
+                : 'images/indicators/indicator_general.svg';
+
+            return {
+                icon: generalIcon,
+                fallback: 'images/indicators/indicator_general.svg',
+                label: rawLabel || 'LUCKY REWARD',
+                color: '#ffd700',
+                borderColor: '#ffd700'
+            };
+        }
+
         function executeVisualizerSpin(spinData, onFinishedCallback) {
             window._currentSpinData = spinData;
             const stage = document.getElementById('spinnerStageContainer');
@@ -3434,8 +3606,30 @@
                 const wMult = document.getElementById('winnerMultText');
                 const wObj = (spinData.winner && spinData.winner.item) ? spinData.winner.item : (spinData.winner || {});
 
-                if (wIcon && (wObj.unitIcon || wObj.icon)) wIcon.src = wObj.unitIcon || wObj.icon;
-                if (wText && wObj.label) wText.textContent = wObj.label;
+                // Dynamically align indicator icon and styling with what was won (numbers, plants, zombies, general)
+                const indData = resolveWinnerIndicator(wObj);
+
+                if (wIcon) {
+                    wIcon.src = indData.icon;
+                    wIcon.onerror = function() {
+                        this.onerror = null;
+                        this.src = indData.fallback || 'images/indicators/indicator_general.svg';
+                    };
+                }
+
+                if (wText) {
+                    wText.textContent = indData.label;
+                    if (indData.color) {
+                        wText.style.color = indData.color;
+                        wText.style.textShadow = `0 0 12px ${indData.color}`;
+                    }
+                }
+
+                const pill = banner ? banner.querySelector('.winner-pill') : null;
+                if (pill && indData.borderColor) {
+                    pill.style.borderColor = indData.borderColor;
+                    pill.style.boxShadow = `0 10px 30px rgba(0, 0, 0, 0.9), 0 0 25px ${indData.borderColor}`;
+                }
                 if (wMult) {
                     const repCount = (wObj.repetition !== undefined && wObj.repetition !== null && wObj.repetition > 0) ? wObj.repetition : (wObj.amount || 1);
                     if (typeof state !== 'undefined' && state.dualOutcome && spinData.winner && spinData.winner.multiplier) {
@@ -3453,6 +3647,38 @@
                     if (typeof dispatchPvZCommand === 'function') dispatchPvZCommand(wObj, spinData.username);
                 }
 
+        async function dispatchPvZCommand(winnerItem, username = "RENEarn") {
+            if (!winnerItem) return;
+            if (winnerItem.actionType === 'score' || winnerItem.isNumber || /^([+-]?\d+)$/.test(String(winnerItem.label || ''))) {
+                return;
+            }
+            const actionType = winnerItem.actionType || (winnerItem.isZombie ? 'zombie' : 'plant') || 'plant';
+            let command = winnerItem.command || winnerItem.cmd || '';
+            if (!command && winnerItem.label) {
+                command = winnerItem.label.toLowerCase().replace(/[^a-z0-9]/g, '');
+            }
+            const repCount = parseInt(winnerItem.repetition) || parseInt(winnerItem.amount) || 1;
+            if (!command) return;
+            try {
+                await fetch('/api/game/trigger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        actionType: actionType,
+                        command: command,
+                        amount: repCount,
+                        username: username || "RENEarn",
+                        label: winnerItem.label || command,
+                        repetition: repCount,
+                        delay: winnerItem.delay || 0,
+                        interval: winnerItem.interval || 100
+                    })
+                });
+            } catch (e) {
+                console.warn('[dispatchPvZCommand Error]', e);
+            }
+        }
+
                 // DYNAMIC DISPLAY HOLD TIME: Speed up when queue has backlogged gifts so spamming works smoothly!
                 clearTimeout(dismissTimer);
                 isHoldingDismiss = true;
@@ -3460,39 +3686,59 @@
                 const finishDismiss = () => {
                     if (!isHoldingDismiss && !dismissTimer) return;
                     isHoldingDismiss = false;
-                    clearTimeout(dismissTimer);
-                    dismissTimer = null;
+                    if (dismissTimer) {
+                        clearTimeout(dismissTimer);
+                        dismissTimer = null;
+                    }
                     dismissInterruptFn = null;
 
-                    if (stage) stage.classList.add('fading-out');
+                    const hasMore = (spinQueue.length > 0);
                     const gachaSummon = document.getElementById('gachaSummonOverlay');
-                    if (gachaSummon) {
-                        gachaSummon.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-                        gachaSummon.style.opacity = '0';
+                    if (gachaSummon && gachaSummon.classList.contains('revealed')) {
+                        gachaSummon.classList.add('fading-out');
+                    }
+                    if (!hasMore && stage) {
+                        stage.classList.add('fading-out');
                     }
 
-                    setTimeout(() => {
-                        if (stage) {
+                    const finalize = () => {
+                        isSpinning = false; // Mark spin complete so queue can proceed smoothly
+                        if (!hasMore && stage) {
                             stage.classList.remove('active');
                             stage.classList.remove('fading-out');
+                        } else if (hasMore && stage) {
+                            stage.classList.remove('fading-out');
+                            stage.classList.add('active');
                         }
                         if (banner) banner.classList.remove('visible');
                         if (gachaSummon) {
                             gachaSummon.classList.remove('revealed');
+                            gachaSummon.classList.remove('fading-out');
                             gachaSummon.style.opacity = '';
+                            gachaSummon.style.transform = '';
                             gachaSummon.style.transition = '';
                         }
                         const strips = [document.getElementById('slotStrip1'), document.getElementById('slotStrip2'), document.getElementById('slotStrip3')];
                         strips.forEach(s => { if (s) s.classList.remove('spinning'); });
-                        if (onFinishedCallback) onFinishedCallback();
-                    }, 250);
+                        const droppedWrap = document.getElementById('overlayDroppedCapsuleWrap');
+                        if (droppedWrap) { droppedWrap.style.display = 'none'; droppedWrap.style.opacity = '0'; }
+                        const packWrap = document.getElementById('overlayPackWrapper');
+                        if (packWrap) { packWrap.style.display = 'none'; packWrap.style.opacity = '0'; }
+                        if (typeof onFinishedCallback === 'function') {
+                            onFinishedCallback();
+                        }
+                    };
+
+                    // Wait 450ms for CSS fade-out animation to finish smoothly
+                    setTimeout(finalize, 450);
                 };
 
                 dismissInterruptFn = finishDismiss;
 
                 const isBacklogged = spinQueue.length > 0;
-                const dynamicHold = spinQueue.length > 2 ? 600 : (isBacklogged ? 1000 : ((mode === 'gacha' ? 2500 : 3500) || 3000));
-                dismissTimer = setTimeout(finishDismiss, dynamicHold || 5000); // 5 seconds display hold time
+                // Generous hold time so viewers can appreciate their card summon
+                const dynamicHold = spinQueue.length > 3 ? 800 : (isBacklogged ? 1600 : ((mode === 'gacha' ? 3800 : 3200)));
+                dismissTimer = setTimeout(finishDismiss, dynamicHold);
             };
 
             try {
@@ -3545,6 +3791,9 @@
             lastEnqueuedSignature = sig;
             lastEnqueuedTime = now;
 
+            spinQueue.push(data);
+            updateQueueBadge();
+
             // If we are currently holding/displaying a completed card and a new spin arrives,
             // immediately dismiss and start the next spin with ZERO lag!
             if (isHoldingDismiss && typeof dismissInterruptFn === 'function') {
@@ -3552,11 +3801,7 @@
                 dismissInterruptFn = null;
                 isHoldingDismiss = false;
                 fn();
-            }
-
-            spinQueue.push(data);
-            updateQueueBadge();
-            if (!isSpinning) {
+            } else if (!isSpinning) {
                 processNextQueue();
             }
         }
@@ -3694,10 +3939,16 @@
                 .then(d => { if (d.serverTime) lastEventTimestamp = d.serverTime; })
                 .catch(() => {});
 
-            // 1. Polling from /api/events (every 250ms for instant real-time sync)
-            setInterval(async () => {
+            // 1. Polling from /api/events (unthrottled WorkerTicker with timeout)
+            let isPollingEvents = false;
+            async function pollGachaEvents() {
+                if (isPollingEvents) return;
+                isPollingEvents = true;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`);
+                    const res = await fetch(`/api/events?since=${lastEventTimestamp}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
                     if (!res.ok) return;
                     const data = await res.json();
                     if (data.serverTime) lastEventTimestamp = data.serverTime;
@@ -3757,8 +4008,18 @@
                             }
                         }
                     }
-                } catch (e) {}
-            }, 250);
+                } catch (e) {
+                } finally {
+                    clearTimeout(timeoutId);
+                    isPollingEvents = false;
+                }
+            }
+
+            if (typeof window.createWorkerTicker === 'function') {
+                window.createWorkerTicker(pollGachaEvents, 150);
+            } else {
+                setInterval(pollGachaEvents, 250);
+            }
 
             // 2. Cross-window BroadcastChannel
             try {

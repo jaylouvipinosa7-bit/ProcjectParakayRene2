@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groudon TapTap Leaderboard - Live Stream Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --g-red: #ef4444;
+            --g-fire: #f97316;
+            --g-amber: #f59e0b;
+            --g-gold: #ffd35c;
+            --g-dark: #0a0606;
+            --g-obsidian: rgba(18, 10, 10, 0.95);
+            --g-border: rgba(239, 68, 68, 0.55);
+            --g-glow: rgba(239, 68, 68, 0.4);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: hidden;
+            font-family: 'Oxanium', 'Outfit', sans-serif;
+            user-select: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 12px;
+        }
+
+        /* ─── Main Groudon Leaderboard Card ─── */
+        .groudon-lb-container {
+            position: relative;
+            width: 330px;
+            max-width: 100%;
+            background: linear-gradient(180deg, rgba(26, 12, 10, 0.96) 0%, rgba(12, 6, 6, 0.98) 100%);
+            border-radius: 20px;
+            border: 2px solid var(--g-border);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 30px var(--g-glow), inset 0 0 20px rgba(249, 115, 22, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            animation: groudonAuraPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes groudonAuraPulse {
+            0% {
+                border-color: rgba(239, 68, 68, 0.5);
+                box-shadow: 0 16px 45px rgba(0,0,0,0.85), 0 0 25px rgba(239, 68, 68, 0.35);
+            }
+            100% {
+                border-color: rgba(249, 115, 22, 0.85);
+                box-shadow: 0 16px 50px rgba(0,0,0,0.9), 0 0 35px rgba(249, 115, 22, 0.55), inset 0 0 15px rgba(239, 68, 68, 0.3);
+            }
+        }
+
+        /* Magma Energy Crevices Top Accent */
+        .groudon-lb-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #ef4444);
+            box-shadow: 0 0 12px #f59e0b;
+            z-index: 10;
+        }
+
+        /* ─── Header Section ─── */
+        .lb-header {
+            position: relative;
+            padding: 12px 14px 10px;
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.18) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border-bottom: 1.5px solid rgba(239, 68, 68, 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .lb-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lb-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lb-flame-icon {
+            font-size: 18px;
+            animation: flameFlicker 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes flameFlicker {
+            0% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 4px #f97316); }
+            100% { transform: scale(1.15) rotate(3deg); filter: drop-shadow(0 0 10px #ef4444); }
+        }
+
+        .lb-title-text {
+            font-size: 14.5px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .lb-subtitle {
+            font-size: 9.5px;
+            color: var(--g-gold);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* ─── Border Quick Action Buttons (Reset Coins & Reset Taps) ─── */
+        .lb-border-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-border-reset {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-family: inherit;
+        }
+
+        .btn-border-reset:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-reset-coin {
+            border-color: rgba(251, 191, 36, 0.6);
+            color: #fbbf24;
+        }
+        .btn-reset-coin:hover {
+            background: rgba(251, 191, 36, 0.2);
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-reset-tap {
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #f87171;
+        }
+        .btn-reset-tap:hover {
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Live Global Tap Counter Pill */
+        .live-tap-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .live-tap-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fdba74;
+        }
+
+        .live-tap-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulseDot 1s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        .live-tap-count {
+            color: #ffd35c;
+            font-size: 13px;
+            font-weight: 900;
+            text-shadow: 0 0 8px rgba(255, 211, 92, 0.6);
+        }
+
+        /* ─── Leaderboard Rows List ─── */
+        .lb-list {
+            list-style: none;
+            padding: 8px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .lb-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lb-list::-webkit-scrollbar-thumb {
+            background: rgba(239, 68, 68, 0.4);
+            border-radius: 4px;
+        }
+
+        .lb-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(20, 12, 12, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 7px 10px;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .lb-row:hover {
+            transform: translateX(2px);
+            border-color: rgba(249, 115, 22, 0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* ─── Rank 1: Primal Groudon Champion Row ─── */
+        .lb-row.rank-1 {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(249, 115, 22, 0.15) 50%, rgba(20, 10, 10, 0.9) 100%);
+            border: 1.8px solid #fbbf24;
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.4), inset 0 0 10px rgba(239, 68, 68, 0.25);
+            padding: 9px 11px;
+        }
+
+        .lb-row.rank-2 {
+            border-color: rgba(203, 213, 225, 0.6);
+            background: linear-gradient(90deg, rgba(148, 163, 184, 0.18) 0%, rgba(20, 12, 12, 0.85) 100%);
+        }
+
+        .lb-row.rank-3 {
+            border-color: rgba(217, 119, 6, 0.6);
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.18) 0%, rgba(20, 12, 12, 0.85) 100%);
+        }
+
+        /* Rank Badge */
+        .rank-badge {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 900;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lb-row.rank-1 .rank-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            font-size: 13px;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+            border: none;
+        }
+
+        .lb-row.rank-2 .rank-badge {
+            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+            color: #0f172a;
+            border: none;
+        }
+
+        .lb-row.rank-3 .rank-badge {
+            background: linear-gradient(135deg, #fb923c, #b45309);
+            color: #fff;
+            border: none;
+        }
+
+        /* Avatar Container with Crown */
+        .avatar-wrap {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            background: #111;
+        }
+
+        .lb-row.rank-1 .avatar-img {
+            border: 2px solid #fbbf24;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+        }
+
+        .champion-crown {
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            filter: drop-shadow(0 0 6px #fbbf24);
+            animation: crownBob 1.6s ease-in-out infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes crownBob {
+            0% { transform: translateX(-50%) translateY(0) scale(1); }
+            100% { transform: translateX(-50%) translateY(-2px) scale(1.1); }
+        }
+
+        /* User Info */
+        .user-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-name {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .lb-row.rank-1 .user-name {
+            color: #fff;
+            font-weight: 900;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+        }
+
+        .user-taps {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #fdba74;
+        }
+
+        .lb-row.rank-1 .user-taps {
+            color: #ffd35c;
+            font-size: 12.5px;
+        }
+
+        .tap-heart-icon {
+            font-size: 11px;
+            filter: drop-shadow(0 0 4px #ef4444);
+        }
+
+        /* Empty State */
+        .lb-empty-msg {
+            text-align: center;
+            padding: 30px 10px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        /* Toast Alert */
+        .g-toast {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: rgba(15, 10, 10, 0.95);
+            border: 1.5px solid #fbbf24;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 11.5px;
+            font-weight: 800;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.8), 0 0 12px rgba(251, 191, 36, 0.5);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .g-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="groudon-lb-container" id="groudonLbCard">
+        <!-- Top Magma Header -->
+        <div class="lb-header">
+            <div class="lb-title-row">
+                <div class="lb-title-group">
+                    <span class="lb-flame-icon">🔥</span>
+                    <div class="lb-title-text">
+                        <span>TapTap Leaderboard</span>
+                        <span class="lb-subtitle">PRIMAL GROUDON LIVE</span>
+                    </div>
+                </div>
+                <!-- Border Quick Reset Actions -->
+                <div class="lb-border-actions">
+                    <button type="button" class="btn-border-reset btn-reset-coin" onclick="resetRanking('coins')" title="Reset Coin Leaderboard">
+                        🪙 Reset
+                    </button>
+                    <button type="button" class="btn-border-reset btn-reset-tap" onclick="resetRanking('likes')" title="Reset TapTap / Like Leaderboard">
+                        ❤️ Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Total Stream Taps Pill -->
+            <div class="live-tap-banner">
+                <div class="live-tap-left">
+                    <span class="live-tap-pulse-dot"></span>
+                    <span>LIVE TAPTAP GOAL</span>
+                </div>
+                <div class="live-tap-count" id="totalTapCount">0 TAPS</div>
+            </div>
+        </div>
+
+        <!-- Supporters List -->
+        <ul class="lb-list" id="taptapList">
+            <!-- Dynamically populated -->
+        </ul>
+
+        <!-- Notification Toast -->
+        <div class="g-toast" id="toastBox">Notification</div>
+    </div>
+
+    <script>
+        const state = {
+            totalLikes: 0,
+            tappers: []
+        };
+
+        const taptapListEl = document.getElementById('taptapList');
+        const totalTapCountEl = document.getElementById('totalTapCount');
+        const toastBoxEl = document.getElementById('toastBox');
+
+        function showToast(msg) {
+            if (!toastBoxEl) return;
+            toastBoxEl.textContent = msg;
+            toastBoxEl.classList.add('show');
+            setTimeout(() => toastBoxEl.classList.remove('show'), 2500);
+        }
+
+        // Fetch current leaderboard data from server
+        async function fetchTapTapState() {
+            try {
+                const res = await fetch('/api/leaderboard/state');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.likes) {
+                        state.tappers = data.likes || [];
+                    }
+                    if (data && data.totalLikes !== undefined) {
+                        state.totalLikes = data.totalLikes;
+                    } else if (state.tappers.length > 0) {
+                        state.totalLikes = state.tappers.reduce((acc, cur) => acc + (cur.value || 0), 0);
+                    }
+                    render();
+                }
+            } catch (err) {
+                console.warn('[TapTap] State poll error:', err);
+            }
+        }
+
+        function render() {
+            if (totalTapCountEl) {
+                totalTapCountEl.textContent = `${state.totalLikes.toLocaleString()} TAPS`;
+            }
+
+            if (!taptapListEl) return;
+
+            if (!state.tappers || state.tappers.length === 0) {
+                taptapListEl.innerHTML = `
+                    <div class="lb-empty-msg">
+                        🔥 Tap the screen to join the Top Tappers!<br>
+                        <span style="font-size:10px; color:#64748b;">Primal Groudon waits for your taps...</span>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render up to Top 10 tappers
+            const top10 = state.tappers.slice(0, 10);
+            let html = '';
+
+            top10.forEach((item, idx) => {
+                const rank = idx + 1;
+                const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+                const crownHtml = rank === 1 ? '<span class="champion-crown">👑</span>' : '';
+                const avatar = item.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(item.username || rank)}`;
+
+                html += `
+                    <li class="lb-row ${rankClass}">
+                        <div class="rank-badge">#${rank}</div>
+                        <div class="avatar-wrap">
+                            ${crownHtml}
+                            <img src="${avatar}" class="avatar-img" alt="${item.username}" onerror="this.onerror=null; this.src='images/default_avatar.svg';">
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" title="${item.username}">${item.username}</div>
+                            <div class="user-taps">
+                                <span class="tap-heart-icon">💖</span>
+                                <span>${(item.value || 0).toLocaleString()} Taps</span>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            });
+
+            taptapListEl.innerHTML = html;
+        }
+
+        // Quick Reset Trigger for Border buttons
+        async function resetRanking(type) {
+            const label = type === 'coins' ? 'Coin Rankings' : 'TapTap / Like Rankings';
+            if (!confirm(`Are you sure you want to reset ${label}?`)) return;
+            try {
+                const res = await fetch('/api/leaderboard/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: type })
+                });
+                if (res.ok) {
+                    showToast(`🗑️ ${label} Reset!`);
+                    fetchTapTapState();
+                }
+            } catch (err) {
+                showToast(`⚠️ Reset failed: ${err.message}`);
+            }
+        }
+
+        // Real-time SSE listener
+        function connectSSE() {
+            try {
+                const evSource = new EventSource('/api/events');
+                evSource.onmessage = (e) => {
+                    try {
+                        const payload = JSON.parse(e.data);
+                        if (payload.event === 'like' || payload.type === 'like' || payload.type === 'like_count_updated') {
+                            const user = payload.username || 'Viewer';
+                            const count = parseInt(payload.likeCount || payload.likes || 1, 10);
+                            state.totalLikes += count;
+
+                            // Update user in local list
+                            let found = state.tappers.find(u => u.username && u.username.toLowerCase() === user.toLowerCase());
+                            if (found) {
+                                found.value = (found.value || 0) + count;
+                                if (payload.avatarUrl) found.avatar = payload.avatarUrl;
+                            } else {
+                                state.tappers.push({
+                                    username: user,
+                                    value: count,
+                                    avatar: payload.avatarUrl || ''
+                                });
+                            }
+                            state.tappers.sort((a, b) => (b.value || 0) - (a.value || 0));
+                            render();
+                        } else if (payload.type === 'leaderboard_reset') {
+                            if (payload.resetType === 'likes' || payload.resetType === 'all') {
+                                state.tappers = [];
+                                state.totalLikes = 0;
+                                render();
+                            }
+                        }
+                    } catch (parseErr) {}
+                };
+                evSource.onerror = () => {
+                    setTimeout(connectSSE, 4000);
+                };
+            } catch (e) {
+                setTimeout(connectSSE, 5000);
+            }
+        }
+
+        // Initialize
+        fetchTapTapState();
+        setInterval(fetchTapTapState, 2000);
+        connectSSE();
+    </script>
+</body>
+</html>

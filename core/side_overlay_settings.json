@@ -1,0 +1,32 @@
+﻿{
+    "split1":  {
+                   "cols":  "6",
+                   "offset":  0,
+                   "limit":  30,
+                   "style":  "strip"
+               },
+    "split2":  {
+                   "cols":  "6",
+                   "offset":  35,
+                   "limit":  36,
+                   "style":  "strip"
+               },
+    "single":  {
+                   "cols":  "2",
+                   "limit":  0,
+                   "style":  "detailed"
+               },
+    "common":  {
+                   "preset":  "pvz",
+                   "theme":  "gargantua",
+                   "margin":  1,
+                   "height":  46,
+                   "padding":  4,
+                   "growLast":  true,
+                   "hideRep":  false,
+                   "showName":  false,
+                   "giftsFirst":  false,
+                   "counterPos":  "bottom"
+               },
+    "activeMode":  "split"
+}

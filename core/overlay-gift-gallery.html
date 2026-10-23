@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>Gift Gallery Overlay</title>
+    <title>Streamer Live Gift Gallery</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-glass: rgba(18, 16, 20, 0.94);
+            --card-obtained-bg: linear-gradient(180deg, rgba(38, 30, 30, 0.85) 0%, rgba(22, 18, 20, 0.95) 100%);
+            --card-locked-bg: linear-gradient(180deg, rgba(20, 18, 20, 0.8) 0%, rgba(12, 10, 12, 0.95) 100%);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --gold-accent: #f59e0b;
+            --rose-accent: #f43f5e;
+            --cyan-accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,363 +29,529 @@
             user-select: none;
         }
 
-        html, body {
+        body {
             background: transparent !important;
-            font-family: "Oxanium", sans-serif;
-            font-size: 14px;
-            color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
             width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 16px;
         }
 
-        .gallery-container {
+        /* ─── TikTok Live Gallery Sheet (Matching Screenshot 3) ─── */
+        .tiktok-gallery-sheet {
             width: 100%;
-            max-width: 480px;
-            min-width: 340px;
-            min-height: 120px;
-            background: linear-gradient(180deg, #1c1c24 0%, #111117 50%, #060608 100%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            padding: 16px 20px 16px 146px;
+            max-width: 440px;
+            background: var(--bg-glass);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 20px 18px 24px 18px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 14px;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            animation: sheetEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* ─── Left Oversized 3D Gift Art with Bobbing & Shine Sweep ─── */
-        .hero-gift-wrap {
+        @keyframes sheetEnter {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Ambient Header Glow */
+        .sheet-glow-orb {
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 136px;
-            height: 100%;
-            z-index: 2;
+            top: -40px;
+            right: 20px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
             pointer-events: none;
+            filter: blur(20px);
+        }
+
+        /* ─── Header Section ─── */
+        .gallery-header-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: transparent;
-            border-top-left-radius: 19px;
-            border-bottom-left-radius: 19px;
-            overflow: hidden;
-        }
-
-        .hero-gift-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center bottom;
-            filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.65));
-            transition: transform 0.35s ease, opacity 0.25s ease;
-            animation: giftBob 4.2s ease-in-out infinite;
-        }
-
-        @keyframes giftBob {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-4px) scale(1.04); }
-        }
-
-        /* Shine Sweep Beam */
-        .hero-gift-wrap::after {
-            content: "";
-            position: absolute;
-            top: -40%;
-            bottom: -40%;
-            left: 0;
-            width: 50%;
-            background: linear-gradient(104deg, transparent 15%, rgba(255, 255, 255, 0.85) 50%, transparent 85%);
-            transform: translateX(-180%) skewX(-14deg);
-            animation: heroShineSweep 5s linear infinite;
-        }
-
-        @keyframes heroShineSweep {
-            0%, 55% { transform: translateX(-180%) skewX(-14deg); opacity: 0; }
-            60% { opacity: 1; }
-            72% { transform: translateX(300%) skewX(-14deg); opacity: 0; }
-            100% { transform: translateX(300%) skewX(-14deg); opacity: 0; }
-        }
-
-        /* Pop Spring Bounce on Event */
-        .hero-gift-wrap.anim-pop .hero-gift-img {
-            animation: popGift 0.38s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
-        }
-
-        @keyframes popGift {
-            0% { opacity: 0.25; transform: scale(0.8); }
-            50% { transform: scale(1.18); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Right Content Area */
-        .content-area {
+            justify-content: space-between;
             position: relative;
-            z-index: 5;
+            z-index: 2;
+        }
+
+        .header-title-col {
             display: flex;
             flex-direction: column;
-            gap: 7px;
-            width: 100%;
-            min-width: 0;
+            gap: 6px;
         }
 
-        .header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .gallery-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: #10b981;
-            text-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
-        }
-
-        .coin-value-pill {
-            font-size: 11px;
-            font-weight: 700;
-            color: #cbd5e1;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2px 8px;
-            border-radius: 6px;
-            letter-spacing: 0.2px;
-        }
-
-        .gift-info-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .gift-title-h3 {
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            line-height: 1.1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #f1f5f9;
-        }
-
-        .sponsor-profile-wrap {
+        .streamer-title-line {
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-shrink: 0;
-            max-width: 50%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 2px 8px 2px 4px;
-        }
-
-        .sponsor-avatar-img {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1.5px solid #10b981;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-        }
-
-        .sponsor-text-col {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-            overflow: hidden;
-        }
-
-        .sponsor-role-tag {
-            font-size: 8px;
+            font-size: 19px;
             font-weight: 800;
-            letter-spacing: 0.4px;
-            color: #64748b;
-            text-transform: uppercase;
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
 
-        .sponsor-username {
-            font-size: 11px;
-            font-weight: 700;
+        .help-circle-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
             color: #cbd5e1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* ─── Progress Bar with Moving Laser Sweep ─── */
-        .progress-section {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            width: 100%;
-        }
-
-        .progress-count-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-size: 11px;
             font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tier-progress-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fbbf24;
+            width: fit-content;
+        }
+
+        .tier-badge-pill {
+            background: #d97706;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 3D Glowing Reward Chest Artwork */
+        .reward-chest-wrap {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reward-chest-cube {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(217, 119, 6, 0.8));
+            border: 1.5px solid rgba(251, 191, 36, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
+            transform: rotate(45deg);
+            animation: chestFloat 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reward-chest-cube::after {
+            content: "💎";
+            transform: rotate(-45deg);
+            font-size: 20px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+        }
+
+        @keyframes chestFloat {
+            0%, 100% { transform: rotate(45deg) translateY(0) scale(1); }
+            50% { transform: rotate(45deg) translateY(-4px) scale(1.06); box-shadow: 0 0 26px rgba(245, 158, 11, 0.8); }
+        }
+
+        /* ─── Campaign Date Bar ─── */
+        .date-range-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
             color: #94a3b8;
         }
 
-        .progress-bar-track {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
+        .date-range-arrow {
+            color: #64748b;
+            font-size: 14px;
         }
 
-        .progress-bar-fill {
-            height: 100%;
-            width: 5%;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* ─── 3-Column Gift Gallery Grid (Matching Screenshot 3) ─── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             position: relative;
-            overflow: hidden;
+            z-index: 2;
         }
 
-        .progress-bar-fill::after {
+        .gallery-card {
+            background: var(--card-locked-bg);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 12px 6px 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 128px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Obtained State */
+        .gallery-card.obtained {
+            background: var(--card-obtained-bg);
+            border-color: rgba(245, 158, 11, 0.35);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .gallery-card.obtained::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
-            bottom: 0;
-            width: 50px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
-            animation: galleryLaserSweep 2.2s linear infinite;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, transparent);
         }
 
-        @keyframes galleryLaserSweep {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(500%); }
+        /* Just Unlocked Celebration Flip */
+        .gallery-card.just-unlocked {
+            animation: unlockCelebration 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes unlockCelebration {
+            0% { transform: scale(0.85) rotateY(90deg); filter: brightness(2); }
+            50% { transform: scale(1.15) rotateY(0deg); filter: brightness(1.6); box-shadow: 0 0 30px rgba(245, 158, 11, 0.9); }
+            100% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
+        }
+
+        /* Gift Icon Wrapper */
+        .gift-icon-wrap {
+            width: 62px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .gift-img {
+            max-width: 58px;
+            max-height: 58px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        /* Locked / Unobtained Silhouette Style */
+        .gallery-card:not(.obtained) .gift-img {
+            filter: grayscale(1) brightness(0.35) contrast(1.2);
+            opacity: 0.45;
+        }
+
+        .gallery-card:not(.obtained):hover .gift-img {
+            opacity: 0.65;
+            filter: grayscale(0.5) brightness(0.6);
+        }
+
+        /* Gift Title */
+        .gift-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            padding: 0 4px;
+            margin-bottom: 4px;
+        }
+
+        .gallery-card:not(.obtained) .gift-name {
+            color: #94a3b8;
+        }
+
+        /* Status Badge: Top Gifter Pill or Ratio Counter */
+        .status-badge {
+            width: 95%;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        /* Obtained: Shows Gifter Avatar and Name */
+        .gallery-card.obtained .status-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            gap: 5px;
+            padding: 0 6px;
+            justify-content: flex-start;
+        }
+
+        .gifter-avatar-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(251, 191, 36, 0.8);
+        }
+
+        .gifter-username-txt {
+            font-size: 10px;
+            font-weight: 700;
+            color: #f1f5f9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 72px;
+        }
+
+        /* Unobtained: Darkened with ratio 0/3 */
+        .gallery-card:not(.obtained) .status-badge {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* ─── Responsive & Fullscreen Overrides for OBS ─── */
+        @media (max-width: 400px) {
+            .gallery-grid { gap: 6px; }
+            .gallery-card { min-height: 118px; padding: 10px 4px; }
+            .gift-icon-wrap { width: 52px; height: 52px; }
+            .gift-img { max-width: 48px; max-height: 48px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="gallery-container" id="giftGalleryBox">
-        <!-- Left Hero 3D Gift Artwork -->
-        <div class="hero-gift-wrap" id="heroGiftWrap">
-            <img id="heroGiftImg" src="images/tiktok-gifts/7934_heart_me.webp" alt="Gift Artwork" class="hero-gift-img" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+    <div class="tiktok-gallery-sheet" id="gallerySheet">
+        <div class="sheet-glow-orb"></div>
+
+        <!-- 1. Header Row -->
+        <div class="gallery-header-row">
+            <div class="header-title-col">
+                <div class="streamer-title-line">
+                    <span id="txtStreamerTitle">gohanmalunggay's Gift Gallery</span>
+                    <span class="help-circle-icon" title="Streamer Campaign Gift Collection">?</span>
+                </div>
+                <div class="tier-progress-badge">
+                    <span class="tier-badge-pill" id="txtTierBadge">C2</span>
+                    <span id="txtTierRatio">6/12</span>
+                    <span style="font-size: 10px; color: #f59e0b;">▶</span>
+                </div>
+            </div>
+
+            <!-- Glowing Gemstone Box -->
+            <div class="reward-chest-wrap">
+                <div class="reward-chest-cube"></div>
+            </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="content-area">
-            <div class="header-row">
-                <span class="gallery-label" id="galleryLabel">GIFT GALLERY</span>
-                <span class="coin-value-pill" id="coinValuePill">1 Coins</span>
-            </div>
+        <!-- 2. Campaign Dates Bar -->
+        <div class="date-range-bar">
+            <span id="txtDateRange">19 Oct – 2 Nov</span>
+            <span class="date-range-arrow">›</span>
+        </div>
 
-            <div class="gift-info-row">
-                <h3 class="gift-title-h3" id="giftTitle">Heart Me</h3>
-                <div class="sponsor-profile-wrap">
-                    <img id="sponsorAvatar" src="images/renearn_icon.png" alt="Sponsor" class="sponsor-avatar-img">
-                    <div class="sponsor-text-col">
-                        <span class="sponsor-role-tag">TOP SPONSOR</span>
-                        <span class="sponsor-username" id="sponsorName">Stream viewer</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="progress-section">
-                <div class="progress-count-row">
-                    <span id="txtCollectedCount">1 collected</span>
-                    <span id="txtFraction">1 / 1000</span>
-                </div>
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill" id="galleryProgressFill" style="width: 10%;"></div>
-                </div>
-            </div>
+        <!-- 3. Dynamic 3-Column Grid of 12-14 Gifts -->
+        <div class="gallery-grid" id="galleryGridContainer">
+            <!-- Dynamically populated via loadGallery() -->
         </div>
     </div>
 
     <script>
+        let galleryData = null;
+        const gridContainer = document.getElementById('galleryGridContainer');
+        const txtStreamerTitle = document.getElementById('txtStreamerTitle');
+        const txtTierBadge = document.getElementById('txtTierBadge');
+        const txtTierRatio = document.getElementById('txtTierRatio');
+        const txtDateRange = document.getElementById('txtDateRange');
+
+        // URL Parameter Overrides (e.g. ?streamer=yozora112&tier=C2)
         const params = new URLSearchParams(window.location.search);
-        let goalTarget = parseInt(params.get('goal') || '1000', 10);
-        let collectedCount = 0;
-        let lastGiftName = 'Heart Me';
-        const giftHistory = [];
+        const urlStreamer = params.get('streamer') || params.get('user');
+        const urlTier = params.get('tier');
 
-        function updateGallery(giftName, giftIcon, coins, sponsorName, avatar) {
-            lastGiftName = giftName || lastGiftName;
-            collectedCount++;
-            
-            document.getElementById('giftTitle').textContent = lastGiftName;
-            document.getElementById('coinValuePill').textContent = `${coins || 1} Coins`;
-            document.getElementById('sponsorName').textContent = sponsorName || 'Stream viewer';
-            document.getElementById('txtCollectedCount').textContent = `${collectedCount} collected`;
-            document.getElementById('txtFraction').textContent = `${collectedCount} / ${goalTarget}`;
-
-            if (avatar) {
-                document.getElementById('sponsorAvatar').src = avatar;
+        async function fetchGalleryState() {
+            try {
+                const res = await fetch('/api/gift-gallery?t=' + Date.now());
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.gifts) {
+                        applyGalleryData(data);
+                    }
+                }
+            } catch (e) {
+                // Fallback local fetch
+                try {
+                    const resLocal = await fetch('/gift_gallery_state.json?t=' + Date.now());
+                    if (resLocal.ok) {
+                        const localData = await resLocal.json();
+                        applyGalleryData(localData);
+                    }
+                } catch (err) {}
             }
-
-            if (giftIcon) {
-                document.getElementById('heroGiftImg').src = giftIcon;
-            }
-
-            const pct = Math.min(100, Math.max(5, (collectedCount / goalTarget) * 100));
-            document.getElementById('galleryProgressFill').style.width = pct + '%';
-
-            // Trigger Pop Spring Animation
-            const heroWrap = document.getElementById('heroGiftWrap');
-            heroWrap.classList.remove('anim-pop');
-            void heroWrap.offsetWidth;
-            heroWrap.classList.add('anim-pop');
-
-            // Store in rotating deck
-            giftHistory.push({
-                name: lastGiftName,
-                icon: giftIcon,
-                coins: coins || 1,
-                sponsor: sponsorName || 'Stream viewer',
-                avatar: avatar
-            });
-            if (giftHistory.length > 8) giftHistory.shift();
         }
 
-        // Auto-cycle through collected gifts if idle
-        let cycleIdx = 0;
-        setInterval(() => {
-            if (giftHistory.length > 1) {
-                const item = giftHistory[cycleIdx % giftHistory.length];
-                cycleIdx++;
-                document.getElementById('giftTitle').textContent = item.name;
-                document.getElementById('coinValuePill').textContent = `${item.coins} Coins`;
-                document.getElementById('sponsorName').textContent = item.sponsor;
-                if (item.icon) document.getElementById('heroGiftImg').src = item.icon;
-                if (item.avatar) document.getElementById('sponsorAvatar').src = item.avatar;
-                const heroWrap = document.getElementById('heroGiftWrap');
-                heroWrap.classList.remove('anim-pop');
-                void heroWrap.offsetWidth;
-                heroWrap.classList.add('anim-pop');
-            }
-        }, 7000);
+        function applyGalleryData(data) {
+            galleryData = data;
+            const streamerName = urlStreamer || data.streamer || 'Streamer';
+            const tierName = urlTier || data.tier || 'C2';
+            const total = (data.gifts && data.gifts.length) ? data.gifts.length : 12;
+            const obtained = (data.gifts) ? data.gifts.filter(g => g.obtained).length : 0;
 
-        // Event polling
-        let lastEventTimestamp = Date.now() - 5000;
+            txtStreamerTitle.textContent = `${streamerName}'s Gift Gallery`;
+            txtTierBadge.textContent = tierName;
+            txtTierRatio.textContent = `${obtained}/${total}`;
+            if (data.dateRange) txtDateRange.textContent = data.dateRange;
+
+            renderGridCards(data.gifts || []);
+        }
+
+        function renderGridCards(gifts) {
+            gridContainer.innerHTML = '';
+
+            gifts.forEach(g => {
+                const card = document.createElement('div');
+                card.className = `gallery-card ${g.obtained ? 'obtained' : ''}`;
+                card.id = `giftCard_${g.id}`;
+
+                // Status Badge Content: obtained with gifter vs unobtained with ratio 0/3
+                let statusHtml = '';
+                if (g.obtained) {
+                    const gifterName = (g.gifter && g.gifter.username) ? g.gifter.username : 'Gifter';
+                    const gifterAvatar = (g.gifter && g.gifter.avatar) ? g.gifter.avatar : 'images/default_avatar.svg';
+                    statusHtml = `
+                        <div class="status-badge" title="Unlocked by @${gifterName}">
+                            <img src="${gifterAvatar}" class="gifter-avatar-thumb" onerror="this.src='images/default_avatar.svg'">
+                            <span class="gifter-username-txt">${gifterName}</span>
+                        </div>
+                    `;
+                } else {
+                    const cur = g.currentCount || 0;
+                    const tgt = g.targetCount || 1;
+                    statusHtml = `
+                        <div class="status-badge" title="Goal: ${cur}/${tgt}">
+                            ${cur}/${tgt}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="gift-icon-wrap">
+                        <img src="${g.icon || 'images/tiktok-gifts/5655_rose.webp'}" alt="${g.name}" class="gift-img" onerror="this.src='images/tiktok-gifts/5655_rose.webp'">
+                    </div>
+                    <div class="gift-name" title="${g.name}">${g.name}</div>
+                    ${statusHtml}
+                `;
+
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Live Event Listener for real-time progress updates & celebrations
+        function handleIncomingEvent(ev) {
+            if (!ev) return;
+            if (ev.type === 'gift_gallery_update' && ev.gifts) {
+                applyGalleryData(ev);
+                return;
+            }
+
+            // Also auto-detect if incoming live gift advances a gallery item
+            if (ev.type === 'gift' || ev.type === 'jar_drop') {
+                const gName = (ev.giftName || ev.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const gId = String(ev.giftId || ev.id || '').trim();
+
+                if (galleryData && Array.isArray(galleryData.gifts)) {
+                    const match = galleryData.gifts.find(g => {
+                        const targetName = (g.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                        return (gId && String(g.id).trim() === gId) || (gName && targetName === gName);
+                    });
+
+                    if (match) {
+                        const countSent = parseInt(ev.count || ev.repeatCount || 1, 10);
+                        match.currentCount = (match.currentCount || 0) + countSent;
+                        match.gifter = {
+                            username: ev.username || 'Viewer',
+                            avatar: ev.avatar || 'images/default_avatar.svg'
+                        };
+
+                        const wasObtained = match.obtained;
+                        if (match.currentCount >= match.targetCount) {
+                            match.obtained = true;
+                        }
+
+                        applyGalleryData(galleryData);
+
+                        // Trigger animation if just unlocked
+                        if (!wasObtained && match.obtained) {
+                            const el = document.getElementById(`giftCard_${match.id}`);
+                            if (el) {
+                                el.classList.remove('just-unlocked');
+                                void el.offsetWidth;
+                                el.classList.add('just-unlocked');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 1. BroadcastChannel (0ms local inter-tab latency)
+        try {
+            const bc = new BroadcastChannel('renearn_overlay_events');
+            bc.onmessage = (e) => {
+                if (e.data) handleIncomingEvent(e.data);
+            };
+        } catch (e) {}
+
+        // 2. Storage event for cross-window sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'renearn_gallery_update' && e.newValue) {
+                try {
+                    const data = JSON.parse(e.newValue);
+                    applyGalleryData(data);
+                } catch (err) {}
+            }
+        });
+
+        // 3. Reliable Event Polling on /api/events
+        let lastEventTimestamp = Date.now() - 3000;
         setInterval(async () => {
             try {
                 const res = await fetch(`/api/events?since=${lastEventTimestamp}&t=${Date.now()}`);
@@ -381,25 +559,14 @@
                     const data = await res.json();
                     if (data.serverTime) lastEventTimestamp = data.serverTime;
                     if (data.events && Array.isArray(data.events)) {
-                        for (const ev of data.events) {
-                            if (ev.type === 'gift' || ev.type === 'jar_drop') {
-                                updateGallery(ev.giftName || 'Gift', ev.icon || '', ev.coins || 1, ev.username || 'RENEarn', ev.avatar || '');
-                            }
-                        }
+                        data.events.forEach(ev => handleIncomingEvent(ev));
                     }
                 }
             } catch (e) {}
         }, 350);
 
-        // BroadcastChannel
-        try {
-            const bc = new BroadcastChannel('renearn_overlay_events');
-            bc.onmessage = (e) => {
-                if (e.data && (e.data.type === 'gift' || e.data.type === 'jar_drop')) {
-                    updateGallery(e.data.giftName || 'Gift', e.data.icon || '', e.data.coins || 1, e.data.username || 'RENEarn', e.data.avatar);
-                }
-            };
-        } catch (e) {}
+        // Init
+        fetchGalleryState();
     </script>
 </body>
 </html>
