@@ -24967,7 +24967,16 @@
                                 applyAvatarToUI(data.avatar);
                                 if (currentUser) {
                                     currentUser.picture = data.avatar;
+                                    if (data.nickname && (!currentUser.name || currentUser.name.startsWith('@') || currentUser.name === clean)) {
+                                        currentUser.name = data.nickname;
+                                    }
                                     try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser)); } catch (e) {}
+                                }
+                                if (data.nickname) {
+                                    const headerUsername = document.getElementById('headerProfileUsername');
+                                    const dropTitle = document.getElementById('dropdownUserTitle');
+                                    if (headerUsername && (!currentUser || !currentUser.name || currentUser.name.startsWith('@'))) headerUsername.innerText = data.nickname;
+                                    if (dropTitle) dropTitle.textContent = data.nickname;
                                 }
                             }
                         }
@@ -24976,9 +24985,12 @@
 
                 function applyAvatarToUI(avatarUrl) {
                     if (!avatarUrl) return;
+                    const displayName = (currentUser && (currentUser.name || currentUser.username || (currentUser.email ? currentUser.email.split('@')[0] : ''))) || 'Streamer';
+                    const initials = displayName.split(/[\s_.-]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'ST';
+                    
                     const headerAvatar = document.getElementById('headerProfileAvatar');
                     if (headerAvatar) {
-                        headerAvatar.innerHTML = `<img id="headerProfileAvatarImg" src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"><span style="display: none;">GO</span>`;
+                        headerAvatar.innerHTML = `<img id="headerProfileAvatarImg" src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"><span style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 13px; font-weight: 800; color: #fff;">${initials}</span>`;
                     }
                     const dropImg = document.getElementById('dropdownUserAvatarImg');
                     if (dropImg) dropImg.src = avatarUrl;
@@ -25005,24 +25017,26 @@
                     if (user && (user.email || user.username)) {
                         if (pill) pill.style.display = 'inline-flex';
                         const displayName = user.name || user.username || (user.email ? user.email.split('@')[0] : 'Streamer');
-                        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3b82f6&color=fff&size=128&bold=true`;
+                        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=0284c7&color=fff&size=128&bold=true`;
+                        const userHandle = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
+                        
                         if (avatar) avatar.src = user.picture || defaultAvatar;
                         if (nameEl) nameEl.innerText = displayName;
-                        if (emailEl) emailEl.innerText = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
+                        if (emailEl) emailEl.innerText = userHandle;
 
                         // Sync Top-Right Header Profile Bar
                         if (headerUsername) headerUsername.innerText = displayName;
-                        if (headerHandle) headerHandle.innerText = user.platform === 'tiktok' ? `@${user.username || 'tiktok'}` : (user.email || 'user@stream.live');
+                        if (headerHandle) headerHandle.innerText = userHandle;
                         
-                        // Apply Real TikTok Profile Photo
-                        const cleanTtUser = (user.username || (config && config.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || 'gohanmalunggay').replace(/^@+/, '');
-                        if (user.picture && !user.picture.includes('ui-avatars.com')) {
-                            applyAvatarToUI(user.picture);
-                        } else {
-                            fetchAndApplyRealTikTokAvatar(cleanTtUser);
-                        }
+                        // Sync Account Dropdown Card Info
+                        const dropTitle = document.getElementById('dropdownUserTitle');
+                        const dropSub = document.getElementById('dropdownUserSubtitle');
+                        const dropInput = document.getElementById('dropdownTiktokUser');
+                        if (dropTitle) dropTitle.textContent = displayName;
+                        if (dropSub) dropSub.textContent = userHandle;
+                        if (dropInput && user.username) dropInput.value = user.username;
 
-                        // Determine strict Admin Status
+                        // Determine strict Admin / Owner Status
                         const emailStr = (user.email || '').toLowerCase().trim();
                         let role = (user.role || '').toLowerCase();
                         let savedAdmin = '';
@@ -25046,6 +25060,44 @@
                             role = 'editor';
                             user.role = 'editor';
                             try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(user)); } catch (e) { }
+                        }
+
+                        // Update Plan Badge in Dropdown
+                        const planBadge = document.getElementById('dropdownPlanBadge');
+                        const planDesc = document.getElementById('dropdownPlanDesc');
+                        if (planBadge && planDesc) {
+                            if (isAdminUser) {
+                                planBadge.className = 'badge-owner';
+                                planBadge.innerHTML = '👑 Owner';
+                                planDesc.textContent = 'Access: Full Lifetime Owner License';
+                            } else if (role === 'editor') {
+                                planBadge.className = 'badge-owner';
+                                planBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                                planBadge.innerHTML = '✏️ Editor';
+                                planDesc.textContent = 'Access: Streamer Pro License';
+                            } else if (role === 'tester') {
+                                planBadge.className = 'badge-owner';
+                                planBadge.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+                                planBadge.innerHTML = '🧪 Tester';
+                                planDesc.textContent = 'Access: Beta Tester License';
+                            } else {
+                                planBadge.className = 'badge-owner';
+                                planBadge.style.background = 'linear-gradient(135deg, #64748b, #475569)';
+                                planBadge.innerHTML = '👁️ Viewer';
+                                planDesc.textContent = 'Access: Read-Only Stream Viewer';
+                            }
+                        }
+
+                        // Apply Real TikTok / Profile Photo for this specific user
+                        const userTt = (user.username || (user.platform === 'tiktok' ? user.name : '') || localStorage.getItem('pvz_tiktok_username') || (window.config && window.config.tiktokUsername) || 'gohanmalunggay').replace(/^@+/, '');
+                        if (user.picture && !user.picture.includes('ui-avatars.com')) {
+                            applyAvatarToUI(user.picture);
+                        } else if (userTt) {
+                            fetchAndApplyRealTikTokAvatar(userTt);
+                        } else if (user.picture) {
+                            applyAvatarToUI(user.picture);
+                        } else {
+                            applyAvatarToUI(defaultAvatar);
                         }
 
                         if (roleBadge) {
@@ -25958,10 +26010,10 @@
                     const willOpen = !dd.classList.contains('open');
                     if (willOpen) {
                         // Populate dynamic fields
-                        const ttUser = (config && config.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || 'gohanmalunggay';
-                        const ign = (config && config.streamerName) || localStorage.getItem('streamer_ign') || 'Goten';
-                        const email = (currentUser && currentUser.email) || 'jaylouvipinosa7@gmail.com';
-                        const displayName = (currentUser && (currentUser.name || currentUser.username)) || 'gohanmalunggay';
+                        const ttUser = (currentUser && currentUser.username) || (config && config.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || '';
+                        const ign = (config && config.streamerName) || localStorage.getItem('streamer_ign') || '';
+                        const displayName = (currentUser && (currentUser.name || currentUser.username || (currentUser.email ? currentUser.email.split('@')[0] : ''))) || 'Streamer';
+                        const userHandle = (currentUser && currentUser.platform === 'tiktok') ? `@${ttUser || displayName}` : (currentUser && currentUser.email ? currentUser.email : (ttUser ? `@${ttUser}` : 'Active Streamer'));
 
                         const ttInput = document.getElementById('dropdownTiktokUser');
                         if (ttInput) ttInput.value = ttUser;
@@ -25970,10 +26022,15 @@
                         if (ignInput) ignInput.value = ign;
 
                         const titleEl = document.getElementById('dropdownUserTitle');
-                        if (titleEl) titleEl.textContent = ign || 'Goten';
+                        if (titleEl) titleEl.textContent = ign || displayName;
 
                         const subEl = document.getElementById('dropdownUserSubtitle');
-                        if (subEl) subEl.textContent = ttUser || displayName;
+                        if (subEl) subEl.textContent = userHandle;
+
+                        const dropImg = document.getElementById('dropdownUserAvatarImg');
+                        if (dropImg && currentUser && currentUser.picture) {
+                            dropImg.src = currentUser.picture;
+                        }
 
                         // Check Game Status for connection bar
                         const gameUrlEl = document.getElementById('dropdownGameStatusUrl');

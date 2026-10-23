@@ -3153,6 +3153,31 @@ INSTALLATION INSTRUCTIONS:
                             $uObj.spinners = $tmplSpinners
                             $repaired = $true
                         }
+                        if (-not $uObj.streamer) {
+                            $uObj | Add-Member -NotePropertyName streamer -NotePropertyValue ([PSCustomObject]@{}) -Force
+                            $repaired = $true
+                        }
+                        if ($avatar) {
+                            if (-not ($uObj.streamer.PSObject.Properties.Match('streamerAvatar').Count)) {
+                                $uObj.streamer | Add-Member -NotePropertyName streamerAvatar -NotePropertyValue $avatar -Force
+                            } else {
+                                $uObj.streamer.streamerAvatar = $avatar
+                            }
+                            if (-not ($uObj.streamer.PSObject.Properties.Match('userPicture').Count)) {
+                                $uObj.streamer | Add-Member -NotePropertyName userPicture -NotePropertyValue $avatar -Force
+                            } else {
+                                $uObj.streamer.userPicture = $avatar
+                            }
+                            $repaired = $true
+                        }
+                        if ($displayName) {
+                            if (-not ($uObj.streamer.PSObject.Properties.Match('streamerNickname').Count)) {
+                                $uObj.streamer | Add-Member -NotePropertyName streamerNickname -NotePropertyValue $displayName -Force
+                            } else {
+                                $uObj.streamer.streamerNickname = $displayName
+                            }
+                            $repaired = $true
+                        }
                         if ($repaired) {
                             $userJson = $uObj | ConvertTo-Json -Depth 8
                             [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
