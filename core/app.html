@@ -12441,12 +12441,12 @@
                         <!-- Active Subscription Box (Owner Lifetime) -->
                         <div class="account-dropdown-sub-card">
                             <div class="sub-status-row">
-                                <span class="badge-owner" id="dropdownPlanBadge">👑 Owner</span>
+                                <span class="badge-owner" id="dropdownPlanBadge">Owner Lifetime</span>
                                 <span class="status-active-text" id="dropdownPlanStatus">Active</span>
                             </div>
                             <div class="next-payment-text" id="dropdownPlanDesc">Access: Full Lifetime Owner License</div>
                             <button type="button" class="btn-manage-subscription" onclick="openManageSubscriptionModal()">
-                                <span>👑</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                 <span>Manage Subscription</span>
                             </button>
                         </div>
@@ -18943,14 +18943,14 @@
                     <div class="modal-header"
                         style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 18px 24px; background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, transparent 100%); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
-                                👑
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #ec4899); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                             </div>
                             <div>
                                 <h3 style="font-size: 19px; font-weight: 800; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 10px;">
                                     <span>Streamer Subscriptions & Licensing</span>
                                     <span id="modalHeaderPlanBadge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">
-                                        👑 OWNER LIFETIME
+                                        OWNER LIFETIME
                                     </span>
                                 </h3>
                                 <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">
@@ -25236,22 +25236,22 @@
                         if (planBadge && planDesc) {
                             if (isAdminUser) {
                                 planBadge.className = 'badge-owner';
-                                planBadge.innerHTML = '👑 Owner';
+                                planBadge.textContent = 'Owner Lifetime';
                                 planDesc.textContent = 'Access: Full Lifetime Owner License';
                             } else if (role === 'editor') {
                                 planBadge.className = 'badge-owner';
                                 planBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                                planBadge.innerHTML = '✏️ Editor';
+                                planBadge.textContent = 'Editor';
                                 planDesc.textContent = 'Access: Streamer Pro License';
                             } else if (role === 'tester') {
                                 planBadge.className = 'badge-owner';
                                 planBadge.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
-                                planBadge.innerHTML = '🧪 Tester';
+                                planBadge.textContent = 'Tester';
                                 planDesc.textContent = 'Access: Beta Tester License';
                             } else {
                                 planBadge.className = 'badge-owner';
                                 planBadge.style.background = 'linear-gradient(135deg, #64748b, #475569)';
-                                planBadge.innerHTML = '👁️ Viewer';
+                                planBadge.textContent = 'Viewer';
                                 planDesc.textContent = 'Access: Read-Only Stream Viewer';
                             }
                         }

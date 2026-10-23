@@ -60,7 +60,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
             hasSpinner = $true
             hasJar = $true
             hasOverlays = $true
-            badge = "👑 Owner Lifetime"
+            badge = "Owner Lifetime"
             badgeColor = "#e11d48"
             price = 0
             isUnlimited = $true
@@ -78,7 +78,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
             hasSpinner = $true
             hasJar = $true
             hasOverlays = $true
-            badge = "👑 Owner Lifetime"
+            badge = "Owner Lifetime"
             badgeColor = "#e11d48"
             price = 0
             isUnlimited = $true
@@ -94,7 +94,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
             hasSpinner = $true
             hasJar = $true
             hasOverlays = $true
-            badge = "🧪 Beta Tester"
+            badge = "Beta Tester"
             badgeColor = "#a855f7"
             price = 0
             isUnlimited = $true
@@ -122,7 +122,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
             hasSpinner = $true
             hasJar = $true
             hasOverlays = $true
-            badge = "🥇 Streamer Expert"
+            badge = "Streamer Expert"
             badgeColor = "#f59e0b"
             price = 3999
             isUnlimited = $false
@@ -137,7 +137,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
             hasSpinner = $true
             hasJar = $true
             hasOverlays = $true
-            badge = "🥈 Streamer Premium"
+            badge = "Streamer Premium"
             badgeColor = "#38bdf8"
             price = 999
             isUnlimited = $false
@@ -152,7 +152,7 @@ function Get-UserSubscriptionInfo($userIdentifier) {
         hasSpinner = $false
         hasJar = $false
         hasOverlays = $true
-        badge = "🥉 Free Starter"
+        badge = "Free Starter"
         badgeColor = "#94a3b8"
         price = 0
         isUnlimited = $false
