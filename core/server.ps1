@@ -25,6 +25,139 @@ if (-not (Test-Path $userConfigsFolder)) {
 $usersDbFile = Join-Path $userConfigsFolder "users_registry.json"
 $activeSessions = [System.Collections.Hashtable]::Synchronized(@{})
 $permissionsFile = Join-Path $folder "permissions_registry.json"
+$subscriptionsFile = Join-Path $folder "subscriptions.json"
+
+function Load-Subscriptions {
+    if (Test-Path $subscriptionsFile) {
+        try {
+            return (Get-Content $subscriptionsFile -Raw -Encoding UTF8 | ConvertFrom-Json)
+        } catch {}
+    }
+    return $null
+}
+
+function Save-Subscriptions($subsObj) {
+    try {
+        $json = $subsObj | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($subscriptionsFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+function Get-UserSubscriptionInfo($userIdentifier) {
+    $rawId = if ($userIdentifier) { [string]$userIdentifier.ToString().Trim().TrimStart('@').ToLower() } else { "" }
+    
+    # 1. Primary Owner Guarantee (Jaylou Vipinosa / gohanmalunggay)
+    $isPrimaryOwner = (
+        $rawId -eq "jaylouvipinosa7@gmail.com" -or
+        $rawId.Contains("jaylouvipinosa7") -or
+        $rawId -eq "gohanmalunggay"
+    )
+    if ($isPrimaryOwner) {
+        return @{
+            tier = "owner"
+            name = "Owner Lifetime"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "👑 Owner Lifetime"
+            badgeColor = "#e11d48"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    # 2. Permissions Registry Check (Admin / Tester)
+    $perms = Load-Permissions
+    $isAdmin = ($perms.admin -and $rawId -eq $perms.admin.ToLower()) -or ($perms.admins -and ($perms.admins -contains $rawId))
+    if ($isAdmin) {
+        return @{
+            tier = "owner"
+            name = "Owner Lifetime"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "👑 Owner Lifetime"
+            badgeColor = "#e11d48"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    $isTester = ($perms.testers -and ($perms.testers -contains $rawId))
+    if ($isTester) {
+        return @{
+            tier = "tester"
+            name = "Beta Tester"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "🧪 Beta Tester"
+            badgeColor = "#a855f7"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    # 3. Subscriptions Registry Check (Expert / Premium / Free)
+    $subs = Load-Subscriptions
+    $matchedTier = "free"
+    if ($subs -and $subs.userSubscriptions) {
+        foreach ($prop in $subs.userSubscriptions.PSObject.Properties) {
+            $key = $prop.Name.Trim().TrimStart('@').ToLower()
+            if ($key -eq $rawId -and $prop.Value.tier) {
+                $matchedTier = [string]$prop.Value.tier.ToLower()
+                break
+            }
+        }
+    }
+
+    if ($matchedTier -eq "expert") {
+        return @{
+            tier = "expert"
+            name = "Streamer Expert"
+            commandLimit = 150
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "🥇 Streamer Expert"
+            badgeColor = "#f59e0b"
+            price = 3999
+            isUnlimited = $false
+        }
+    }
+
+    if ($matchedTier -eq "premium" -or $matchedTier -eq "pro") {
+        return @{
+            tier = "premium"
+            name = "Streamer Premium"
+            commandLimit = 60
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "🥈 Streamer Premium"
+            badgeColor = "#38bdf8"
+            price = 999
+            isUnlimited = $false
+        }
+    }
+
+    # 4. Default: Free Starter Tier (10 commands only, no spinner, no jar, overlays allowed)
+    return @{
+        tier = "free"
+        name = "Free Starter"
+        commandLimit = 10
+        hasSpinner = $false
+        hasJar = $false
+        hasOverlays = $true
+        badge = "🥉 Free Starter"
+        badgeColor = "#94a3b8"
+        price = 0
+        isUnlimited = $false
+    }
+}
 
 function Load-Permissions {
     $defaultPerms = @{
@@ -3404,6 +3537,203 @@ INSTALLATION INSTRUCTIONS:
                 $caller.role = Get-UserRole $caller.email
             }
             Send-JsonResponse $response @{ success = $true; message = "Designated $adminEmail as Admin/Owner"; admin = $adminEmail; admins = @($perms.admins) }
+            continue
+        }
+
+        # 1g. Subscription & Licensing Endpoints (Free, 999 Premium, 3999 Expert, Owner/Tester)
+        if ($reqPath -eq '/api/subscription/status' -and $request.HttpMethod -eq 'GET') {
+            $caller = Get-CallerUser $request
+            $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } elseif ($request.QueryString['email']) { [string]$request.QueryString['email'] } elseif ($caller -and $caller.email) { [string]$caller.email } else { "" }
+            
+            # Check if desktop local streamer without explicit login
+            $remoteIp = if ($request.RemoteEndPoint) { $request.RemoteEndPoint.Address.ToString() } else { "127.0.0.1" }
+            $isLocal = ($remoteIp -eq "127.0.0.1" -or $remoteIp -eq "::1" -or $request.Url.Host -eq "localhost" -or $request.Url.Host -eq "127.0.0.1")
+            if (-not $userParam -and $isLocal) {
+                # Fallback to local streamer's saved TikTok or primary email
+                $userParam = if ($script:config -and $script:config.tiktokUsername) { $script:config.tiktokUsername } else { "jaylouvipinosa7@gmail.com" }
+            }
+
+            $subInfo = Get-UserSubscriptionInfo $userParam
+            Send-JsonResponse $response @{
+                success = $true
+                user = $userParam
+                tier = $subInfo.tier
+                name = $subInfo.name
+                commandLimit = $subInfo.commandLimit
+                hasSpinner = $subInfo.hasSpinner
+                hasJar = $subInfo.hasJar
+                hasOverlays = $subInfo.hasOverlays
+                badge = $subInfo.badge
+                badgeColor = $subInfo.badgeColor
+                price = $subInfo.price
+                isUnlimited = $subInfo.isUnlimited
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/subscription/plans' -and $request.HttpMethod -eq 'GET') {
+            $subs = Load-Subscriptions
+            if ($subs -and $subs.plans) {
+                Send-JsonResponse $response @{
+                    success = $true
+                    plans = $subs.plans
+                    paymentMethods = $subs.paymentMethods
+                }
+            } else {
+                Send-JsonResponse $response @{
+                    success = $true
+                    plans = @{
+                        free = @{ id = "free"; name = "Free Starter"; price = 0; commandLimit = 10; hasSpinner = $false; hasJar = $false; hasOverlays = $true }
+                        premium = @{ id = "premium"; name = "Streamer Premium"; price = 999; commandLimit = 60; hasSpinner = $true; hasJar = $true; hasOverlays = $true }
+                        expert = @{ id = "expert"; name = "Streamer Expert"; price = 3999; commandLimit = 150; hasSpinner = $true; hasJar = $true; hasOverlays = $true }
+                    }
+                }
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/subscription/activate' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $body = ReadRequestBody $request
+                $data = $body | ConvertFrom-Json
+                $userKey = if ($data.user) { [string]$data.user.Trim().TrimStart('@').ToLower() } else { "" }
+                $licenseKey = if ($data.licenseKey) { [string]$data.licenseKey.Trim().ToUpper() } else { "" }
+                $refNo = if ($data.referenceNo) { [string]$data.referenceNo.Trim() } else { "" }
+
+                if (-not $userKey) {
+                    Send-JsonResponse $response @{ success = $false; message = "TikTok username or email is required." } 400
+                    continue
+                }
+
+                $subs = Load-Subscriptions
+                if (-not $subs) {
+                    Send-JsonResponse $response @{ success = $false; message = "Subscription database unavailable." } 500
+                    continue
+                }
+
+                $grantedTier = ""
+                $grantedLimit = 10
+
+                # Validate License Key
+                if ($licenseKey) {
+                    $keys = $subs.licenseKeys
+                    $foundKey = $null
+                    if ($keys) {
+                        foreach ($prop in $keys.PSObject.Properties) {
+                            if ($prop.Name.ToUpper() -eq $licenseKey) {
+                                $foundKey = $prop
+                                break
+                            }
+                        }
+                    }
+
+                    if ($foundKey) {
+                        if ($foundKey.Value.claimed) {
+                            Send-JsonResponse $response @{ success = $false; message = "This license key has already been redeemed." } 400
+                            continue
+                        }
+                        $grantedTier = [string]$foundKey.Value.tier
+                        $grantedLimit = [int]$foundKey.Value.commandLimit
+                        $foundKey.Value.claimed = $true
+                        if ($foundKey.Value.PSObject.Properties['claimedBy']) {
+                            $foundKey.Value.claimedBy = $userKey
+                        } else {
+                            $foundKey.Value | Add-Member -MemberType NoteProperty -Name "claimedBy" -Value $userKey -Force
+                        }
+                        if ($foundKey.Value.PSObject.Properties['claimedAt']) {
+                            $foundKey.Value.claimedAt = (Get-Date -Format "o")
+                        } else {
+                            $foundKey.Value | Add-Member -MemberType NoteProperty -Name "claimedAt" -Value (Get-Date -Format "o") -Force
+                        }
+                    } else {
+                        Send-JsonResponse $response @{ success = $false; message = "Invalid license key. Please check the code or contact the owner." } 400
+                        continue
+                    }
+                } elseif ($refNo) {
+                    # Manual GCash / Maya Reference number redemption
+                    $targetPlan = if ($data.targetPlan) { [string]$data.targetPlan.ToLower() } else { "premium" }
+                    if ($targetPlan -eq "expert") {
+                        $grantedTier = "expert"
+                        $grantedLimit = 150
+                    } else {
+                        $grantedTier = "premium"
+                        $grantedLimit = 60
+                    }
+                } else {
+                    Send-JsonResponse $response @{ success = $false; message = "License key or Payment Reference Number required." } 400
+                    continue
+                }
+
+                # Update or insert user in userSubscriptions
+                if (-not $subs.userSubscriptions) {
+                    $subs | Add-Member -MemberType NoteProperty -Name "userSubscriptions" -Value ([PSCustomObject]@{})
+                }
+
+                $userSubObj = [PSCustomObject]@{
+                    tier = $grantedTier
+                    commandLimit = $grantedLimit
+                    hasSpinner = $true
+                    hasJar = $true
+                    hasOverlays = $true
+                    activatedAt = (Get-Date -Format "o")
+                    licenseKey = $licenseKey
+                    referenceNo = $refNo
+                }
+
+                if ($subs.userSubscriptions.PSObject.Properties[$userKey]) {
+                    $subs.userSubscriptions.PSObject.Properties[$userKey].Value = $userSubObj
+                } else {
+                    $subs.userSubscriptions | Add-Member -MemberType NoteProperty -Name $userKey -Value $userSubObj
+                }
+
+                Save-Subscriptions $subs
+                
+                # Also notify via toast and SSE
+                Send-JsonResponse $response @{
+                    success = $true
+                    tier = $grantedTier
+                    commandLimit = $grantedLimit
+                    message = "🎉 Subscription successfully activated! Tier: $(if ($grantedTier -eq 'expert') { 'Streamer Expert (150 Commands)' } else { 'Streamer Premium (60 Commands)' }) with 3D Spinner & Jar Unlocked!"
+                }
+                continue
+            } catch {
+                Send-JsonResponse $response @{ success = $false; message = $_.Exception.Message } 500
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/admin/generate-license' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+            $role = if ($callerEmail) { Get-UserRole $callerEmail } else { Get-CallerRole $request }
+            if ($role -ne "admin" -and (Get-CallerRole $request) -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden: Only Owner can generate license keys." } 403
+                continue
+            }
+
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $tier = if ($data.tier) { [string]$data.tier.ToLower() } else { "premium" }
+            $prefix = if ($tier -eq "expert") { "EXPERT-3999" } else { "PREM-999" }
+            $limit = if ($tier -eq "expert") { 150 } else { 60 }
+            $rand = ([System.Guid]::NewGuid().ToString().Substring(0, 8)).ToUpper()
+            $newKey = "$prefix-$rand"
+
+            $subs = Load-Subscriptions
+            if ($subs -and $subs.licenseKeys) {
+                $keyObj = [PSCustomObject]@{
+                    tier = $tier
+                    commandLimit = $limit
+                    claimed = $false
+                    claimedBy = $null
+                    createdAt = (Get-Date -Format "o")
+                }
+                $subs.licenseKeys | Add-Member -MemberType NoteProperty -Name $newKey -Value $keyObj
+                Save-Subscriptions $subs
+                Send-JsonResponse $response @{ success = $true; licenseKey = $newKey; tier = $tier; commandLimit = $limit }
+            } else {
+                Send-JsonResponse $response @{ success = $false; message = "Unable to access license database." } 500
+            }
             continue
         }
 

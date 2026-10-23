@@ -4282,9 +4282,39 @@
         window.addEventListener('resize', updateOverlayResponsiveFit);
         updateOverlayResponsiveFit();
 
+        function renderSpinnerLockedOverlay() {
+            const wrap = document.createElement('div');
+            wrap.id = 'spinnerLockedOverlay';
+            wrap.style.cssText = 'position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(15,23,42,0.92);backdrop-filter:blur(12px);color:#fff;font-family:\'Plus Jakarta Sans\',sans-serif;z-index:999999;text-align:center;padding:24px;';
+            wrap.innerHTML = `
+                <div style="width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,#f59e0b,#ec4899);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 8px 30px rgba(245,158,11,0.4);margin-bottom:16px;">🔒</div>
+                <h2 style="font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:8px;">3D Spinner is a Premium Feature</h2>
+                <p style="font-size:13.5px;color:#94a3b8;max-width:400px;line-height:1.5;margin-bottom:20px;">
+                    Free accounts have access to 10 commands and all standard overlays. Upgrade to <b>Streamer Premium (₱999)</b> for 60 commands or <b>Expert (₱3,999)</b> for 150 commands to unlock the 3D Spinner & Gacha!
+                </p>
+                <a href="/app.html" target="_blank" style="padding:10px 22px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font-weight:800;font-size:13px;border-radius:10px;text-decoration:none;box-shadow:0 4px 15px rgba(56,189,248,0.4);">
+                    👑 Open Manage Subscription
+                </a>
+            `;
+            document.body.appendChild(wrap);
+        }
+
         // Initialize Engine on Boot
         window.addEventListener('DOMContentLoaded', async () => {
             updateOverlayResponsiveFit();
+
+            // Verify subscription access for 3D Spinner
+            try {
+                const subRes = await fetch('/api/subscription/status' + (window.location.search || ''));
+                if (subRes.ok) {
+                    const subData = await subRes.json();
+                    if (subData && subData.hasSpinner === false) {
+                        renderSpinnerLockedOverlay();
+                        return;
+                    }
+                }
+            } catch (err) {}
+
             loadSavedState();
             await syncConfigWithServer();
             setVisualizerDisplayMode(state.activeMode);

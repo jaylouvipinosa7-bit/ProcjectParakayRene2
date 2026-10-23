@@ -18938,19 +18938,23 @@
 
             <!-- MODAL: OWNER MANAGE SUBSCRIPTION & SYSTEM LICENSE -->
             <div id="manageSubscriptionModal" class="modal-backdrop">
-                <div class="modal-box" style="max-width: 620px; background: #0f1117; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 18px; box-shadow: 0 25px 70px rgba(0,0,0,0.85), 0 0 35px rgba(245, 158, 11, 0.2); overflow: hidden;">
+                <div class="modal-box" style="max-width: 860px; width: 94vw; background: #0b0f19; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; box-shadow: 0 25px 80px rgba(0,0,0,0.9), 0 0 40px rgba(245, 158, 11, 0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+                    <!-- MODAL HEADER -->
                     <div class="modal-header"
-                        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 20px 26px; background: linear-gradient(180deg, rgba(245, 158, 11, 0.12) 0%, transparent 100%); display: flex; align-items: center; justify-content: space-between;">
+                        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 18px 24px; background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, transparent 100%); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
                                 👑
                             </div>
                             <div>
-                                <h3 style="font-size: 19px; font-weight: 800; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                    Owner Subscription & License
+                                <h3 style="font-size: 19px; font-weight: 800; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 10px;">
+                                    <span>Streamer Subscriptions & Licensing</span>
+                                    <span id="modalHeaderPlanBadge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">
+                                        👑 OWNER LIFETIME
+                                    </span>
                                 </h3>
-                                <div style="font-size: 12px; color: #fbbf24; margin-top: 3px; font-weight: 600;">
-                                    Official RENEarn PvZ Fusion Studio • Lifetime Owner Access
+                                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">
+                                    RENEarn Interactive Stream Studio • Command limits, 3D Spinner & Gift Jar features
                                 </div>
                             </div>
                         </div>
@@ -18958,81 +18962,245 @@
                             style="padding: 6px 12px; font-weight: 700; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #94a3b8; font-size: 16px; cursor: pointer; transition: all 0.2s;">✕</button>
                     </div>
 
-                    <div class="modal-body" style="padding: 22px 26px; display: flex; flex-direction: column; gap: 18px;">
-                        <!-- OWNER LICENSE CARD -->
-                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(139, 92, 246, 0.12) 50%, rgba(15, 23, 42, 0.6) 100%); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 18px 20px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <!-- MODAL BODY -->
+                    <div class="modal-body" style="padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <!-- CURRENT ACTIVE STATUS BAR -->
+                        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <div id="modalUserAvatarThumbnail" style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid #f59e0b; background: #000;">
+                                    <img id="modalAvatarImg" src="images/tiktok-gifts/5655_rose.webp" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
                                 <div>
-                                    <div style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #fbbf24; letter-spacing: 0.8px;">
-                                        Plan Tier
-                                    </div>
-                                    <div style="font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 2px; display: flex; align-items: center; gap: 8px;">
-                                        <span>👑 OWNER LIFETIME</span>
-                                    </div>
+                                    <div style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px;">Account Status</div>
+                                    <div style="font-size: 15px; font-weight: 800; color: #f8fafc;" id="modalUserDisplayName">Goten (@gohanmalunggay)</div>
                                 </div>
-                                <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; font-weight: 800; font-size: 12px; padding: 5px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px;">
-                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
-                                    ACTIVE & VERIFIED
-                                </span>
                             </div>
-
-                            <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
-                                <div style="background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-                                    <div style="color: #94a3b8; font-size: 11px; font-weight: 600;">License Holder</div>
-                                    <div style="color: #f1f5f9; font-weight: 700; margin-top: 2px;">Goten (Jaylou Vipinosa)</div>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="text-align: right;">
+                                    <div style="font-size: 11px; color: #94a3b8; font-weight: 600;">Active Commands</div>
+                                    <div style="font-size: 14px; font-weight: 800; color: #38bdf8;" id="modalCommandsUsageText">68 / Unlimited</div>
                                 </div>
-                                <div style="background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-                                    <div style="color: #94a3b8; font-size: 11px; font-weight: 600;">Registered Email</div>
-                                    <div style="color: #38bdf8; font-weight: 700; margin-top: 2px;">jaylouvipinosa7@gmail.com</div>
-                                </div>
-                                <div style="background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-                                    <div style="color: #94a3b8; font-size: 11px; font-weight: 600;">TikTok Channel</div>
-                                    <div style="color: #f43f5e; font-weight: 700; margin-top: 2px;">@gohanmalunggay</div>
-                                </div>
-                                <div style="background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-                                    <div style="color: #94a3b8; font-size: 11px; font-weight: 600;">Billing Cycle / Expiration</div>
-                                    <div style="color: #10b981; font-weight: 700; margin-top: 2px;">Never (Lifetime Ownership)</div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 11px; color: #94a3b8; font-weight: 600;">Spinner & Jar</div>
+                                    <div style="font-size: 14px; font-weight: 800; color: #10b981;" id="modalFeaturesAccessText">✓ Unlocked</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- PRIVILEGES UNLOCKED -->
+                        <!-- 3 SUBSCRIPTION TIERS COMPARISON -->
                         <div>
-                            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.6px; margin-bottom: 10px;">
-                                Owner Privileges Included
+                            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #cbd5e1; letter-spacing: 0.6px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <span>Choose Subscription Tier</span>
+                                <span style="font-size: 11px; color: #94a3b8; font-weight: normal;">Overlays are 100% free for all streamers</span>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> Full PvZ Fusion Mod Commands
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+                                
+                                <!-- 1. FREE STARTER -->
+                                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;" class="tier-card-free">
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                            <span style="font-size: 12px; font-weight: 800; color: #94a3b8;">🥉 STARTER</span>
+                                            <span style="background: rgba(148, 163, 184, 0.15); color: #cbd5e1; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 8px;">Free</span>
+                                        </div>
+                                        <div style="font-size: 26px; font-weight: 900; color: #ffffff; margin: 10px 0 4px;">₱0</div>
+                                        <div style="font-size: 11.5px; color: #64748b; margin-bottom: 16px;">Standard stream starter pack</div>
+                                        
+                                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #cbd5e1;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #38bdf8; font-weight: 800;">✓</span> <b>10 Commands Limit</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> All Standard Overlays
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> PvZ Fusion & Mod Bridge
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
+                                                <span style="color: #ef4444; font-weight: 800;">✕</span> 3D Spinner (Locked)
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
+                                                <span style="color: #ef4444; font-weight: 800;">✕</span> Interactive Gift Jar (Locked)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <div id="btnCurrentFreePlan" style="text-align: center; font-size: 12px; font-weight: 700; color: #94a3b8; background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
+                                            Default Free Tier
+                                        </div>
+                                    </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> Repetition & Batch Multipliers
+
+                                <!-- 2. STREAMER PREMIUM (₱999) -->
+                                <div style="background: linear-gradient(180deg, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1.5px solid #38bdf8; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);" class="tier-card-premium">
+                                    <div style="position: absolute; top: -10px; right: 16px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; letter-spacing: 0.5px;">
+                                        POPULAR
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                            <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">🥈 PREMIUM</span>
+                                            <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 8px;">60 Commands</span>
+                                        </div>
+                                        <div style="font-size: 26px; font-weight: 900; color: #ffffff; margin: 10px 0 4px;">
+                                            ₱999 <span style="font-size: 12px; font-weight: 600; color: #94a3b8;">/ license</span>
+                                        </div>
+                                        <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 16px;">Best for active TikTok streamers</div>
+                                        
+                                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #e2e8f0;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #38bdf8; font-weight: 800;">✓</span> <b>60 Commands Limit</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> <b>Full 3D Spinner & Gacha Unlocked</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> <b>Matter.js Interactive Gift Jar Unlocked</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> All Standard Overlays
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> Custom sound alerts & repetitions
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <button type="button" class="btn btn-sm" onclick="selectPlanForPayment('premium')"
+                                            style="width: 100%; background: linear-gradient(135deg, #38bdf8, #0284c7); border: none; color: #fff; font-weight: 800; font-size: 12.5px; padding: 9px; border-radius: 9px; cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);">
+                                            Upgrade for ₱999
+                                        </button>
+                                    </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> All 5 Spinners, Wheels & Slots
+
+                                <!-- 3. STREAMER EXPERT (₱3,999) -->
+                                <div style="background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1.5px solid #f59e0b; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.15);" class="tier-card-expert">
+                                    <div style="position: absolute; top: -10px; right: 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; letter-spacing: 0.5px;">
+                                        VIP PRO
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                            <span style="font-size: 12px; font-weight: 800; color: #fbbf24;">🥇 EXPERT</span>
+                                            <span style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 8px;">150 Commands</span>
+                                        </div>
+                                        <div style="font-size: 26px; font-weight: 900; color: #ffffff; margin: 10px 0 4px;">
+                                            ₱3,999 <span style="font-size: 12px; font-weight: 600; color: #94a3b8;">/ license</span>
+                                        </div>
+                                        <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 16px;">Power streamers & multi-game creators</div>
+                                        
+                                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #e2e8f0;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #fbbf24; font-weight: 800;">✓</span> <b>150 Commands Limit</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> <b>Full 3D Spinner & Gacha Unlocked</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> <b>Matter.js Interactive Gift Jar Unlocked</b>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> All Standard Overlays
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span style="color: #10b981; font-weight: 800;">✓</span> Multi-Game & Zombie Tsunami Bridge
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <button type="button" class="btn btn-sm" onclick="selectPlanForPayment('expert')"
+                                            style="width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; font-weight: 800; font-size: 12.5px; padding: 9px; border-radius: 9px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+                                            Upgrade for ₱3,999
+                                        </button>
+                                    </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> Live Leaderboard & Jar Overlay
+
+                            </div>
+                        </div>
+
+                        <!-- PAYMENT & INSTANT REDEMPTION BOX -->
+                        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px 20px;">
+                            <div style="font-size: 13px; font-weight: 800; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span>⚡</span>
+                                <span>Instant GCash / Maya Payment & Activation</span>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;" id="modalPaymentInfoRow">
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <span style="background: #007dfe; color: #fff; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px;">GCash</span>
+                                        <span style="font-size: 12px; font-weight: 700; color: #f8fafc;">Jaylou Vipinosa</span>
+                                    </div>
+                                    <div style="font-size: 15px; font-weight: 800; color: #38bdf8; font-family: monospace; letter-spacing: 0.5px;">
+                                        09914436578
+                                    </div>
+                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Send payment with your TikTok username in notes</div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> Team & Editor Authorization
+
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <span style="background: #00b488; color: #fff; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px;">Maya</span>
+                                        <span style="font-size: 12px; font-weight: 700; color: #f8fafc;">Jaylou Vipinosa</span>
+                                    </div>
+                                    <div style="font-size: 15px; font-weight: 800; color: #34d399; font-family: monospace; letter-spacing: 0.5px;">
+                                        09914436578
+                                    </div>
+                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Instant activation via code or reference code</div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #e2e8f0; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px;">
-                                    <span style="color: #10b981; font-weight: 800;">✓</span> Direct Desktop Server (Port 8080)
+                            </div>
+
+                            <!-- CODE REDEMPTION FORM -->
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="text" id="inputSubscriptionLicenseKey" placeholder="Enter License Key (e.g. PREM-999-XXXX) or GCash Ref No."
+                                    style="flex: 1; min-width: 260px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 9px; padding: 10px 14px; color: #fff; font-size: 13px; font-weight: 600; outline: none;">
+                                <button type="button" class="btn btn-primary" onclick="submitSubscriptionActivation()"
+                                    style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                                    <span>⚡</span>
+                                    <span>Activate Plan</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- OWNER EXCLUSIVE LICENSE KEY GENERATOR PANEL -->
+                        <div id="ownerLicenseGeneratorBox" style="display: none; background: linear-gradient(135deg, rgba(225, 29, 72, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1.5px solid rgba(225, 29, 72, 0.5); border-radius: 14px; padding: 18px 20px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="font-size: 13px; font-weight: 800; color: #f43f5e; display: flex; align-items: center; gap: 8px;">
+                                    <span>👑</span>
+                                    <span>Owner Tool: Generate Streamer License Keys</span>
+                                </div>
+                                <span style="font-size: 11px; background: rgba(225, 29, 72, 0.2); color: #fb7185; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Admin Only</span>
+                            </div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">
+                                Generate valid activation codes to sell or distribute to streamers for ₱999 (60 commands) or ₱3,999 (150 commands).
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <select id="selectOwnerKeyTier" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 12px; font-weight: 700;">
+                                    <option value="premium">Streamer Premium (₱999 - 60 Commands)</option>
+                                    <option value="expert">Streamer Expert (₱3,999 - 150 Commands)</option>
+                                </select>
+                                <button type="button" class="btn btn-sm" onclick="ownerGenerateNewLicenseKey()"
+                                    style="background: linear-gradient(135deg, #e11d48, #be123c); border: none; color: #fff; font-weight: 800; font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
+                                    + Generate New Key
+                                </button>
+                                <div id="ownerGeneratedKeyDisplay" style="display: none; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); border: 1px solid #10b981; padding: 6px 12px; border-radius: 8px;">
+                                    <span style="font-family: monospace; font-size: 13px; font-weight: 800; color: #34d399;" id="textGeneratedKeyCode"></span>
+                                    <button type="button" class="btn btn-sm" onclick="copyGeneratedLicenseKey()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; cursor: pointer;">Copy</button>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
+                    <!-- MODAL FOOTER -->
                     <div class="modal-footer"
-                        style="padding: 16px 26px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25);">
+                        style="padding: 14px 24px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); flex-shrink: 0;">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="testAllOwnerSystems()"
                             style="font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px;">
                             <span>⚡</span>
                             <span>Verify All Systems</span>
                         </button>
                         <div style="display: flex; gap: 10px;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="closeManageSubscriptionModal(); openPermissionsModal();"
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="closeManageSubscriptionModal(); openPermissionsModal();" id="btnModalManageTeam"
                                 style="font-size: 11.5px; font-weight: 700; padding: 8px 14px; border-radius: 8px;">
                                 Manage Team
                             </button>
@@ -26147,11 +26315,199 @@
                     showToast('🔗 TikTok account unlinked from live studio', 'INFO');
                 }
 
+                let currentSubscription = {
+                    tier: 'owner',
+                    name: 'Owner Lifetime',
+                    commandLimit: 999999,
+                    hasSpinner: true,
+                    hasJar: true,
+                    hasOverlays: true,
+                    badge: '👑 Owner Lifetime',
+                    badgeColor: '#e11d48',
+                    isUnlimited: true
+                };
+
+                async function fetchSubscriptionStatus() {
+                    try {
+                        const ttUser = (config && config.streamer && config.streamer.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || '';
+                        const email = (currentUser && currentUser.email) || 'jaylouvipinosa7@gmail.com';
+                        const userParam = ttUser || email;
+                        const res = await fetch('/api/subscription/status?user=' + encodeURIComponent(userParam));
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data && data.success) {
+                                currentSubscription = data;
+                                updateSubscriptionUI();
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                function updateSubscriptionUI() {
+                    const badge = document.getElementById('modalHeaderPlanBadge');
+                    if (badge) {
+                        badge.textContent = currentSubscription.badge || currentSubscription.name;
+                        badge.style.color = currentSubscription.badgeColor || '#38bdf8';
+                        badge.style.borderColor = currentSubscription.badgeColor || '#38bdf8';
+                    }
+
+                    const dropBadge = document.getElementById('dropdownPlanBadge');
+                    if (dropBadge) {
+                        dropBadge.textContent = currentSubscription.badge || '👑 Owner';
+                    }
+
+                    const dropDesc = document.getElementById('dropdownPlanDesc');
+                    if (dropDesc) {
+                        if (currentSubscription.isUnlimited) {
+                            dropDesc.textContent = 'Access: Full Lifetime Owner License';
+                        } else {
+                            dropDesc.textContent = `Access: ${currentSubscription.name} (${currentSubscription.commandLimit} Max Commands)`;
+                        }
+                    }
+
+                    const nameEl = document.getElementById('modalUserDisplayName');
+                    if (nameEl) {
+                        const curName = (config && config.streamer && config.streamer.tiktokUsername) ? ('@' + config.streamer.tiktokUsername) : 'Jaylou Vipinosa';
+                        nameEl.textContent = `${curName} (${currentSubscription.name})`;
+                    }
+
+                    const countText = document.getElementById('modalCommandsUsageText');
+                    if (countText) {
+                        const curCount = (config && config.gifts) ? config.gifts.length : 0;
+                        if (currentSubscription.isUnlimited) {
+                            countText.textContent = `${curCount} / Unlimited (👑 Owner/Tester)`;
+                            countText.style.color = '#10b981';
+                        } else {
+                            countText.textContent = `${curCount} / ${currentSubscription.commandLimit} Max`;
+                            countText.style.color = (curCount >= currentSubscription.commandLimit) ? '#ef4444' : '#38bdf8';
+                        }
+                    }
+
+                    const accessText = document.getElementById('modalFeaturesAccessText');
+                    if (accessText) {
+                        if (currentSubscription.hasSpinner && currentSubscription.hasJar) {
+                            accessText.textContent = '✓ Unlocked (Full Access)';
+                            accessText.style.color = '#10b981';
+                        } else {
+                            accessText.textContent = '🔒 Locked (Free Starter)';
+                            accessText.style.color = '#ef4444';
+                        }
+                    }
+
+                    // Show or hide owner exclusive license generator tool
+                    const genBox = document.getElementById('ownerLicenseGeneratorBox');
+                    if (genBox) {
+                        const isOwner = (currentSubscription.tier === 'owner' || (currentUser && currentUser.email === 'jaylouvipinosa7@gmail.com'));
+                        genBox.style.display = isOwner ? 'block' : 'none';
+                    }
+                }
+
+                function checkSubscriptionCommandLimit() {
+                    if (currentSubscription.isUnlimited) return true;
+                    const curCount = (config && config.gifts) ? config.gifts.length : 0;
+                    const limit = currentSubscription.commandLimit || 10;
+                    if (curCount >= limit) {
+                        if (currentSubscription.tier === 'free') {
+                            showToast(`⚠️ Command Limit Reached! Free Starter is limited to 10 commands (currently ${curCount}/${limit}). Upgrade to Premium (₱999) for 60 commands or Expert (₱3,999) for 150 commands!`, 'WARN');
+                        } else if (currentSubscription.tier === 'premium') {
+                            showToast(`⚠️ Command Limit Reached! Streamer Premium is limited to 60 commands (currently ${curCount}/${limit}). Upgrade to Expert (₱3,999) for 150 commands!`, 'WARN');
+                        } else {
+                            showToast(`⚠️ Command Limit Reached (${curCount}/${limit}).`, 'WARN');
+                        }
+                        openManageSubscriptionModal();
+                        return false;
+                    }
+                    return true;
+                }
+
+                function selectPlanForPayment(planTier) {
+                    const planName = (planTier === 'expert') ? 'Streamer Expert (₱3,999)' : 'Streamer Premium (₱999)';
+                    const amount = (planTier === 'expert') ? '₱3,999' : '₱999';
+                    const input = document.getElementById('inputSubscriptionLicenseKey');
+                    if (input) {
+                        input.focus();
+                        input.placeholder = `Enter License Key or GCash Ref No. for ${planName}`;
+                    }
+                    showToast(`💡 To activate ${planName}: Send ${amount} to GCash/Maya 09914436578 (Jaylou Vipinosa) and enter your reference number or license key below!`, 'INFO');
+                }
+
+                async function submitSubscriptionActivation() {
+                    const input = document.getElementById('inputSubscriptionLicenseKey');
+                    if (!input || !input.value.trim()) {
+                        showToast('Please enter your License Key or GCash/Maya Reference Number', 'WARN');
+                        return;
+                    }
+
+                    const code = input.value.trim();
+                    const ttUser = (config && config.streamer && config.streamer.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || 'streamer';
+                    
+                    showToast('⚡ Validating and activating license...', 'INFO');
+                    try {
+                        const res = await fetch('/api/subscription/activate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                user: ttUser,
+                                licenseKey: code.includes('-') ? code : '',
+                                referenceNo: !code.includes('-') ? code : '',
+                                targetPlan: code.toUpperCase().includes('EXPERT') ? 'expert' : 'premium'
+                            })
+                        });
+                        const data = await res.json();
+                        if (data && data.success) {
+                            showToast(data.message || '🎉 Subscription successfully activated!', 'SUCCESS');
+                            input.value = '';
+                            await fetchSubscriptionStatus();
+                        } else {
+                            showToast('❌ Activation error: ' + (data.message || 'Invalid key'), 'ERROR');
+                        }
+                    } catch (e) {
+                        showToast('❌ Failed to reach activation server.', 'ERROR');
+                    }
+                }
+
+                async function ownerGenerateNewLicenseKey() {
+                    const select = document.getElementById('selectOwnerKeyTier');
+                    const tier = select ? select.value : 'premium';
+                    showToast('🔑 Generating license code...', 'INFO');
+                    try {
+                        const res = await fetch('/api/admin/generate-license', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ tier: tier })
+                        });
+                        const data = await res.json();
+                        if (data && data.success && data.licenseKey) {
+                            const disp = document.getElementById('ownerGeneratedKeyDisplay');
+                            const txt = document.getElementById('textGeneratedKeyCode');
+                            if (disp && txt) {
+                                txt.textContent = data.licenseKey;
+                                disp.style.display = 'inline-flex';
+                            }
+                            showToast(`✓ Generated ${data.tier.toUpperCase()} Key: ${data.licenseKey}`, 'SUCCESS');
+                        } else {
+                            showToast('Could not generate key: ' + (data.message || 'Unauthorized'), 'ERROR');
+                        }
+                    } catch (e) {
+                        showToast('Key generator error.', 'ERROR');
+                    }
+                }
+
+                function copyGeneratedLicenseKey() {
+                    const txt = document.getElementById('textGeneratedKeyCode');
+                    if (txt && txt.textContent) {
+                        navigator.clipboard.writeText(txt.textContent).then(() => {
+                            showToast('✓ License key copied to clipboard!', 'SUCCESS');
+                        }).catch(() => {});
+                    }
+                }
+
                 function openManageSubscriptionModal() {
                     toggleUserAccountDropdown(false);
                     const modal = document.getElementById('manageSubscriptionModal');
                     if (modal) {
                         modal.classList.add('active');
+                        fetchSubscriptionStatus();
                     } else {
                         showToast('👑 Owner Lifetime Access: Active (Permanent License)', 'SUCCESS');
                     }
@@ -28528,6 +28884,7 @@
 
                 async function duplicateGift(giftId) {
                     if (!checkEditorPermission("duplicate commands")) return;
+                    if (!checkSubscriptionCommandLimit()) return;
                     if (!config || !config.gifts) return;
                     const target = config.gifts.find(g => String(g.id) === String(giftId));
                     if (!target) return;
@@ -37009,6 +37366,7 @@
                                 gift.availableFor = currentEditingAudience;
                             }
                         } else {
+                            if (!checkSubscriptionCommandLimit()) return;
                             let newId = String(Date.now());
                             if ((currentEditingTriggerType === 'likes_all' || name === 'Total Likes') && !config.gifts.some(g => String(g.id) === '3')) {
                                 newId = '3';
