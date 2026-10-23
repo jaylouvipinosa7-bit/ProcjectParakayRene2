@@ -12664,15 +12664,6 @@
                         </div>
                     </button>
 
-                    <!-- 7. ZOMBIE TSUNAMI GAME -->
-                    <button type="button" class="sidebar-nav-item tab-btn" data-tab="zombie-tsunami"
-                        id="sideBtnZombieTsunami" onclick="switchTab('zombie-tsunami')">
-                        <div class="nav-item-left">
-                            <span class="nav-icon nav-icon-zombie">🌊</span>
-                            <span class="nav-text">Zombie Tsunami</span>
-                        </div>
-                        <span class="nav-badge nav-badge-live">PLAY</span>
-                    </button>
 
                     <!-- 8. OVERLAY SETTINGS -->
                     <button type="button" class="sidebar-nav-item tab-btn" data-tab="settings" id="sideBtnSettings"
@@ -13187,6 +13178,11 @@
                             style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
                             👑 Crown Clash
                         </button>
+                        <button type="button" class="album-select-pill" id="albumPillzombie_tsunami"
+                            onclick="selectGameAlbum('zombie_tsunami')"
+                            style="background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                            🌊 Zombie Tsunami
+                        </button>
                     </div>
 
                     <!-- MAIN ALBUM SHOWCASE HERO (INSPIRED BY REFERENCE PHOTOS) -->
@@ -13289,7 +13285,7 @@
                                     style="font-size: 18px; font-weight: 800; color: #fff; margin: 0 0 4px 0; display: flex; align-items: center; gap: 8px;">
                                     <span>🎮</span> Interactive Game Albums Library
                                     <span
-                                        style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 12px;">5
+                                        style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 12px;">6
                                         LIVE ENGINES</span>
                                 </h2>
                                 <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0;">Click on any game
@@ -13425,6 +13421,27 @@
                                         <button type="button" class="album-card-action-btn"
                                             onclick="event.stopPropagation(); openPvzPresetModal('Crown Clash')">Choose
                                             Presets</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Game 6: Zombie Tsunami -->
+                            <div class="pvz-game-album-card" id="albumCardzombie_tsunami"
+                                onclick="launchZombieTsunamiAlbumGame()"
+                                title="Click to play Zombie Tsunami Interactive PC Edition">
+                                <div class="album-card-cover-wrap">
+                                    <img src="images/games/zombie_tsunami_poster.jpg" class="album-card-cover" alt="Zombie Tsunami"
+                                        style="object-fit: cover;">
+                                    <div class="album-card-overlay-tag">READY</div>
+                                </div>
+                                <div class="album-card-body">
+                                    <div class="album-card-title">Zombie Tsunami</div>
+                                    <div class="album-card-engine">🌊 Interactive PC Runner Bridge</div>
+                                    <div class="album-card-footer">
+                                        <span class="album-card-presets-badge">🎁 18 Triggers</span>
+                                        <button type="button" class="album-card-action-btn"
+                                            style="background: linear-gradient(135deg, #0284c7, #06b6d4); color: #fff; font-weight: 800; border: none; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45); cursor: pointer;"
+                                            onclick="event.stopPropagation(); launchZombieTsunamiAlbumGame()">Play</button>
                                     </div>
                                 </div>
                             </div>
@@ -26964,8 +26981,23 @@
                         exe: 'CrownClash.exe',
                         catalog: 'Tower Defense Cards & Spells',
                         desc: 'Viewer card deployment arena. Viewers throw goblin barrels, rage spells, and royal giants directly onto the stream playfield in real time.'
+                    },
+                    'zombie_tsunami': {
+                        name: 'Zombie Tsunami: Interactive PC Edition',
+                        poster: 'images/games/zombie_tsunami_poster.jpg',
+                        port: 'PC Runner Bridge Active',
+                        exe: 'ZombieTsunami.exe',
+                        catalog: '18 Interactive Gifts, Giant Tsunami & Bonuses',
+                        desc: 'Official interactive live runner game engine. TikTok live gifts summon giant waves, ninja zombies, UFO abductions, dragon hordes, and gold coin rain directly into your game in real time.'
                     }
                 };
+
+                function launchZombieTsunamiAlbumGame() {
+                    selectGameAlbum('zombie_tsunami', false);
+                    if (typeof openPvzPresetModal === 'function') {
+                        openPvzPresetModal('zombie_tsunami');
+                    }
+                }
 
                 function selectGameAlbum(gameName, openModal = true) {
                     currentActiveAlbumGame = gameName;
@@ -27755,6 +27787,24 @@
                             { id: "cc3", giftName: "Whale (500 Coins)", coins: 500, label: "Spawn Mega Golem Titan", actionType: "plant", unitIcon: "images/games/sprites/cc_golem.svg", command: "spawn_golem" }
                         ],
                         catLabels: { plant: '🏰 Defensive Towers', zombie: '⚔️ Attack Troops', special: '⚡ Magic Spells' }
+                    },
+                    'zombie_tsunami': {
+                        name: 'Zombie Tsunami PC',
+                        tag: 'Interactive PC Runner',
+                        color: '#06b6d4',
+                        border: 'rgba(6,182,212,0.3)',
+                        bg: 'rgba(6,182,212,0.12)',
+                        engine: 'Runner Keyboard/Mouse Bridge & Memory Hook',
+                        desc: 'Interactive live streaming game engine for Zombie Tsunami. Viewers trigger massive tsunamis, ninja zombie packs, UFO abductions, giant zombies, balloon hordes, and gold coin rain live from TikTok gifts.',
+                        defaultCover: 'images/games/zombie_tsunami_poster.jpg',
+                        fallbackIcon: 'images/games/zombie_tsunami_poster.jpg',
+                        sampleTriggers: [
+                            { id: "zt1", giftName: "Rose (1 Coin)", coins: 1, label: "Add +1 Zombie / Small Jump", actionType: "plant", unitIcon: "images/games/zombie_tsunami_poster.jpg", command: "zt_add_zombie" },
+                            { id: "zt2", giftName: "Ice Cream (20 Coins)", coins: 20, label: "Gold Coin Rain Storm", actionType: "special", unitIcon: "images/games/zombie_tsunami_poster.jpg", command: "zt_coin_rain" },
+                            { id: "zt3", giftName: "Doughnut (30 Coins)", coins: 30, label: "Ninja Zombie Slash Transformation", actionType: "zombie", unitIcon: "images/games/zombie_tsunami_poster.jpg", command: "zt_ninja_bonus" },
+                            { id: "zt4", giftName: "Lion / Whale (500 Coins)", coins: 500, label: "GIANT TSUNAMI WAVE!", actionType: "bomb", unitIcon: "images/games/zombie_tsunami_poster.jpg", command: "zt_giant_tsunami" }
+                        ],
+                        catLabels: { plant: '🧟 Swarm Upgrades', zombie: '🥷 Bonuses & Mutations', special: '🌊 Disasters & Waves' }
                     }
                 };
 
