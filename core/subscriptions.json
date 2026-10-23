@@ -117,13 +117,22 @@
     },
     "paymentMethods": {
         "gcash": {
-            "accountName": "Jaylou Vipinosa",
-            "accountNumber": "09914436578",
-            "qrImage": "images/gcash_qr_sample.png"
+            "name": "GCash",
+            "enabled": true,
+            "paymentUrl": "",
+            "instructions": "Send via GCash and enter your GCash reference number to activate."
         },
         "maya": {
-            "accountName": "Jaylou Vipinosa",
-            "accountNumber": "09914436578"
+            "name": "Maya",
+            "enabled": true,
+            "paymentUrl": "",
+            "instructions": "Send via Maya and enter your Maya reference number to activate."
+        },
+        "paypal": {
+            "name": "PayPal",
+            "enabled": true,
+            "paymentUrl": "",
+            "instructions": "Pay via PayPal checkout / PayPal.Me and enter your transaction ID to activate."
         }
     }
 }

@@ -19117,46 +19117,71 @@
                             </div>
                         </div>
 
-                        <!-- PAYMENT & INSTANT REDEMPTION BOX -->
+                        <!-- PURCHASE & PAYMENT METHOD CHECKOUT BOX -->
                         <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px 20px;">
-                            <div style="font-size: 13px; font-weight: 800; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                                <span>Instant GCash / Maya Payment & Activation</span>
+                            <div style="font-size: 13px; font-weight: 800; color: #f8fafc; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    <span>Instant Plan Checkout</span>
+                                </div>
+                                <span style="font-size: 11px; color: #94a3b8;">Choose payment method</span>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;" id="modalPaymentInfoRow">
-                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px;">
-                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                        <span style="background: #007dfe; color: #fff; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px;">GCash</span>
-                                        <span style="font-size: 12px; font-weight: 700; color: #f8fafc;">Jaylou Vipinosa</span>
+                            <!-- 1. CHOOSE PAYMENT METHOD -->
+                            <div style="margin-bottom: 16px;">
+                                <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Select Payment Method</div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="paymentMethodSelector">
+                                    <!-- GCash -->
+                                    <div onclick="setChosenPaymentMethod('gcash')" id="payMethodCard-gcash"
+                                        style="cursor: pointer; background: rgba(0, 125, 254, 0.12); border: 1.5px solid #007dfe; border-radius: 10px; padding: 10px; text-align: center; transition: all 0.2s;">
+                                        <div style="font-weight: 900; font-size: 12px; color: #38bdf8; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                            <span style="background: #007dfe; color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 900;">G</span>
+                                            <span>GCash</span>
+                                        </div>
+                                        <div style="font-size: 10.5px; color: #94a3b8; margin-top: 4px;">Philippines E-Wallet</div>
                                     </div>
-                                    <div style="font-size: 15px; font-weight: 800; color: #38bdf8; font-family: monospace; letter-spacing: 0.5px;">
-                                        09914436578
+                                    <!-- Maya -->
+                                    <div onclick="setChosenPaymentMethod('maya')" id="payMethodCard-maya"
+                                        style="cursor: pointer; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center; transition: all 0.2s;">
+                                        <div style="font-weight: 900; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                            <span style="background: #00b488; color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 900;">M</span>
+                                            <span>Maya</span>
+                                        </div>
+                                        <div style="font-size: 10.5px; color: #94a3b8; margin-top: 4px;">Maya / PayMaya</div>
                                     </div>
-                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Send payment with your TikTok username in notes</div>
-                                </div>
-
-                                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px;">
-                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                        <span style="background: #00b488; color: #fff; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px;">Maya</span>
-                                        <span style="font-size: 12px; font-weight: 700; color: #f8fafc;">Jaylou Vipinosa</span>
+                                    <!-- PayPal -->
+                                    <div onclick="setChosenPaymentMethod('paypal')" id="payMethodCard-paypal"
+                                        style="cursor: pointer; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; text-align: center; transition: all 0.2s;">
+                                        <div style="font-weight: 900; font-size: 12px; color: #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                            <span style="background: #003087; color: #ffc439; font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 900;">PP</span>
+                                            <span>PayPal</span>
+                                        </div>
+                                        <div style="font-size: 10.5px; color: #94a3b8; margin-top: 4px;">Cards & Global</div>
                                     </div>
-                                    <div style="font-size: 15px; font-weight: 800; color: #34d399; font-family: monospace; letter-spacing: 0.5px;">
-                                        09914436578
-                                    </div>
-                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Instant activation via code or reference code</div>
                                 </div>
                             </div>
 
-                            <!-- CODE REDEMPTION FORM -->
-                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                <input type="text" id="inputSubscriptionLicenseKey" placeholder="Enter License Key (e.g. PREM-999-XXXX) or GCash Ref No."
-                                    style="flex: 1; min-width: 260px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 9px; padding: 10px 14px; color: #fff; font-size: 13px; font-weight: 600; outline: none;">
-                                <button type="button" class="btn btn-primary" onclick="submitSubscriptionActivation()"
-                                    style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                                    <span>Activate Plan</span>
+                            <!-- 2. CHECKOUT ACTION BUTTON -->
+                            <div style="margin-bottom: 16px;">
+                                <button type="button" class="btn" id="btnProceedToCheckout" onclick="proceedToPaymentCheckout()"
+                                    style="width: 100%; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-weight: 800; font-size: 13px; padding: 11px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                    <span id="textBtnProceedCheckout">Proceed to GCash Checkout (₱999)</span>
                                 </button>
+                            </div>
+
+                            <!-- 3. CODE / REFERENCE REDEMPTION FORM -->
+                            <div>
+                                <div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px;">Already paid or have a key? Activate below:</div>
+                                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                    <input type="text" id="inputSubscriptionLicenseKey" placeholder="Enter GCash Ref No, Maya Ref No, PayPal Transaction ID, or License Key"
+                                        style="flex: 1; min-width: 260px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 9px; padding: 10px 14px; color: #fff; font-size: 12.5px; font-weight: 600; outline: none;">
+                                    <button type="button" class="btn btn-primary" onclick="submitSubscriptionActivation()"
+                                        style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-weight: 800; font-size: 12.5px; padding: 10px 18px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                        <span>Activate Plan</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -26429,21 +26454,82 @@
                     return true;
                 }
 
+                let currentCheckoutPlan = 'premium';
+                let currentCheckoutMethod = 'gcash';
+
+                function setChosenPaymentMethod(method) {
+                    currentCheckoutMethod = method;
+                    ['gcash', 'maya', 'paypal'].forEach(m => {
+                        const card = document.getElementById(`payMethodCard-${m}`);
+                        if (!card) return;
+                        if (m === method) {
+                            card.style.background = (m === 'gcash') ? 'rgba(0, 125, 254, 0.16)' : (m === 'maya' ? 'rgba(0, 180, 136, 0.16)' : 'rgba(0, 48, 135, 0.25)');
+                            card.style.border = (m === 'gcash') ? '1.5px solid #007dfe' : (m === 'maya' ? '1.5px solid #00b488' : '1.5px solid #0079c1');
+                        } else {
+                            card.style.background = 'rgba(0,0,0,0.3)';
+                            card.style.border = '1px solid rgba(255,255,255,0.08)';
+                        }
+                    });
+                    updateCheckoutButtonUI();
+                }
+
                 function selectPlanForPayment(planTier) {
+                    currentCheckoutPlan = planTier;
+                    updateCheckoutButtonUI();
                     const planName = (planTier === 'expert') ? 'Streamer Expert (₱3,999)' : 'Streamer Premium (₱999)';
-                    const amount = (planTier === 'expert') ? '₱3,999' : '₱999';
                     const input = document.getElementById('inputSubscriptionLicenseKey');
                     if (input) {
                         input.focus();
-                        input.placeholder = `Enter License Key or GCash Ref No. for ${planName}`;
+                        input.placeholder = `Enter GCash/Maya Ref No, PayPal Transaction ID, or License Key for ${planName}`;
                     }
-                    showToast(`💡 To activate ${planName}: Send ${amount} to GCash/Maya 09914436578 (Jaylou Vipinosa) and enter your reference number or license key below!`, 'INFO');
+                    showToast(`Selected ${planName}. Choose your payment method (GCash, Maya, PayPal) and proceed to checkout!`, 'INFO');
+                }
+
+                function updateCheckoutButtonUI() {
+                    const btn = document.getElementById('textBtnProceedCheckout');
+                    if (!btn) return;
+                    const amount = (currentCheckoutPlan === 'expert') ? '₱3,999' : '₱999';
+                    const methodName = (currentCheckoutMethod === 'gcash') ? 'GCash' : (currentCheckoutMethod === 'maya' ? 'Maya' : 'PayPal');
+                    btn.textContent = `Proceed to ${methodName} Checkout (${amount})`;
+                }
+
+                async function proceedToPaymentCheckout() {
+                    const amount = (currentCheckoutPlan === 'expert') ? '₱3,999' : '₱999';
+                    const planName = (currentCheckoutPlan === 'expert') ? 'Streamer Expert' : 'Streamer Premium';
+                    const methodName = (currentCheckoutMethod === 'gcash') ? 'GCash' : (currentCheckoutMethod === 'maya' ? 'Maya' : 'PayPal');
+
+                    try {
+                        const res = await fetch('/api/subscription/plans');
+                        const data = await res.json();
+                        const pMethods = (data && data.paymentMethods) ? data.paymentMethods : {};
+                        const methodConfig = pMethods[currentCheckoutMethod];
+
+                        if (methodConfig && methodConfig.paymentUrl && methodConfig.paymentUrl.trim() !== '') {
+                            showToast(`Redirecting to ${methodName} payment gateway...`, 'INFO');
+                            window.open(methodConfig.paymentUrl, '_blank');
+                            return;
+                        }
+                    } catch (e) {}
+
+                    if (currentCheckoutMethod === 'paypal') {
+                        showToast(`💳 PayPal Checkout selected for ${planName} (${amount}). Once paid, enter your Transaction ID below to instantly activate!`, 'INFO');
+                    } else if (currentCheckoutMethod === 'gcash') {
+                        showToast(`📱 GCash Payment selected for ${planName} (${amount}). Complete payment in your GCash app, then enter the Reference Number below to activate!`, 'INFO');
+                    } else {
+                        showToast(`📱 Maya Payment selected for ${planName} (${amount}). Complete payment in Maya, then enter your Reference Number below to activate!`, 'INFO');
+                    }
+
+                    const input = document.getElementById('inputSubscriptionLicenseKey');
+                    if (input) {
+                        input.focus();
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
 
                 async function submitSubscriptionActivation() {
                     const input = document.getElementById('inputSubscriptionLicenseKey');
                     if (!input || !input.value.trim()) {
-                        showToast('Please enter your License Key or GCash/Maya Reference Number', 'WARN');
+                        showToast('Please enter your Reference Number, Transaction ID, or License Key', 'WARN');
                         return;
                     }
 

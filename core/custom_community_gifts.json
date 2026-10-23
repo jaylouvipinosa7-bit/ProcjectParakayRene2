@@ -6352,5 +6352,23 @@
         "isCommunity":  true,
         "source":  "tiktok_live_room",
         "addedAt":  "2026-10-23T08:33:56.3931890Z"
+    },
+    {
+        "id":  "1191083",
+        "name":  "Breakthrough Superstar",
+        "coins":  12000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/b8f2f775b630719a55768cf222e0f90b.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T13:15:32.1332704Z"
+    },
+    {
+        "id":  "13211",
+        "name":  "Shooting Stars",
+        "coins":  1580,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/b79f212fa1831d128ed9ae78538d9485.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T13:15:32.1375085Z"
     }
 ]

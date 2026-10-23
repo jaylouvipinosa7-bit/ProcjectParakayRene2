@@ -3737,6 +3737,42 @@ INSTALLATION INSTRUCTIONS:
             continue
         }
 
+        if ($reqPath -eq '/api/admin/payment-settings' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+            $role = if ($callerEmail) { Get-UserRole $callerEmail } else { Get-CallerRole $request }
+            if ($role -ne "admin" -and (Get-CallerRole $request) -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden: Only Owner can modify payment settings." } 403
+                continue
+            }
+
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $subs = Load-Subscriptions
+            if ($subs) {
+                if (-not $subs.paymentMethods) {
+                    $subs | Add-Member -MemberType NoteProperty -Name "paymentMethods" -Value ([PSCustomObject]@{}) -Force
+                }
+                if ($data.paypalUrl -ne $null) {
+                    if (-not $subs.paymentMethods.paypal) { $subs.paymentMethods | Add-Member -MemberType NoteProperty -Name "paypal" -Value ([PSCustomObject]@{}) -Force }
+                    $subs.paymentMethods.paypal | Add-Member -MemberType NoteProperty -Name "paymentUrl" -Value [string]$data.paypalUrl -Force
+                }
+                if ($data.gcashUrl -ne $null) {
+                    if (-not $subs.paymentMethods.gcash) { $subs.paymentMethods | Add-Member -MemberType NoteProperty -Name "gcash" -Value ([PSCustomObject]@{}) -Force }
+                    $subs.paymentMethods.gcash | Add-Member -MemberType NoteProperty -Name "paymentUrl" -Value [string]$data.gcashUrl -Force
+                }
+                if ($data.mayaUrl -ne $null) {
+                    if (-not $subs.paymentMethods.maya) { $subs.paymentMethods | Add-Member -MemberType NoteProperty -Name "maya" -Value ([PSCustomObject]@{}) -Force }
+                    $subs.paymentMethods.maya | Add-Member -MemberType NoteProperty -Name "paymentUrl" -Value [string]$data.mayaUrl -Force
+                }
+                Save-Subscriptions $subs
+                Send-JsonResponse $response @{ success = $true; message = "Payment settings updated successfully." }
+            } else {
+                Send-JsonResponse $response @{ success = $false; message = "Database error." } 500
+            }
+            continue
+        }
+
         # 2. Config Get / Save (Per-User Isolated)
         if ($reqPath -eq '/api/config') {
             $userParam = $request.QueryString['user']
