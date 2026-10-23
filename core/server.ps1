@@ -2349,32 +2349,86 @@ while ($true) {
         }
 
         # 1a. Game Directory & Path Settings
-        if ($reqPath -eq '/api/game/directory' -and $request.HttpMethod -eq 'POST') {
-            $callerRole = Get-CallerRole $request
-            if ($callerRole -ne "admin" -and $callerRole -ne "editor") {
-                Send-JsonResponse $response @{ status = "error"; message = "Access denied: Viewers cannot update game directory." } 403
+        if ($reqPath -eq '/api/game/directory') {
+            if ($request.HttpMethod -eq 'GET') {
+                $gameDirFile = Join-Path $folder "game_directory.txt"
+                $curr = if (Test-Path $gameDirFile) { (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() } else { "C:\Users\pc\Desktop\games ko to ya\Game Files" }
+                Send-JsonResponse $response @{ status = "ok"; directory = $curr; exists = (Test-Path $curr) }
                 continue
             }
-            $body = ReadRequestBody $request
-            try {
-                $data = $body | ConvertFrom-Json
-                $dirPath = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
-                $gameDirFile = Join-Path $folder "game_directory.txt"
-                if ($dirPath) {
-                    [System.IO.File]::WriteAllText($gameDirFile, $dirPath, [System.Text.Encoding]::UTF8)
+            if ($request.HttpMethod -eq 'POST') {
+                $callerRole = Get-CallerRole $request
+                if ($callerRole -ne "admin" -and $callerRole -ne "editor") {
+                    Send-JsonResponse $response @{ status = "error"; message = "Access denied: Viewers cannot update game directory." } 403
+                    continue
                 }
-                Send-JsonResponse $response @{ status = "ok"; directory = $dirPath; exists = (Test-Path $dirPath) }
+                $body = ReadRequestBody $request
+                try {
+                    $data = $body | ConvertFrom-Json
+                    $dirPath = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    if ($dirPath) {
+                        [System.IO.File]::WriteAllText($gameDirFile, $dirPath, [System.Text.Encoding]::UTF8)
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; directory = $dirPath; exists = (Test-Path $dirPath) }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+                }
+                continue
+            }
+        }
+
+        # 1a-browse. Browse Directory via Folder Dialog
+        if ($reqPath -eq '/api/game/browse-directory' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $scratchDir = Join-Path $folder "scratch"
+                if (-not (Test-Path $scratchDir)) { New-Item -ItemType Directory -Path $scratchDir -Force | Out-Null }
+                $pickerOut = Join-Path $scratchDir "folder_picker.txt"
+                if (Test-Path $pickerOut) { Remove-Item $pickerOut -Force -ErrorAction SilentlyContinue }
+
+                $pickerScript = @"
+Add-Type -AssemblyName System.Windows.Forms
+`$f = New-Object System.Windows.Forms.FolderBrowserDialog
+`$f.Description = 'Select PvZ / Game Installation Directory'
+`$f.ShowNewFolderButton = `$false
+`$res = `$f.ShowDialog()
+if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
+    [System.IO.File]::WriteAllText('$($pickerOut.Replace('\','\\'))', `$f.SelectedPath, [System.Text.Encoding]::UTF8)
+}
+"@
+                $proc = Start-Process powershell.exe -ArgumentList "-NoProfile", "-STA", "-Command", $pickerScript -NoNewWindow -PassThru
+                $finished = $proc.WaitForExit(30000)
+                $chosen = ""
+                if (Test-Path $pickerOut) {
+                    $chosen = (Get-Content $pickerOut -Raw -Encoding UTF8).Trim()
+                    Remove-Item $pickerOut -Force -ErrorAction SilentlyContinue
+                }
+                if ($chosen -and (Test-Path $chosen)) {
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    [System.IO.File]::WriteAllText($gameDirFile, $chosen, [System.Text.Encoding]::UTF8)
+                    Send-JsonResponse $response @{ status = "ok"; directory = $chosen }
+                } else {
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    $curr = if (Test-Path $gameDirFile) { (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() } else { "" }
+                    Send-JsonResponse $response @{ status = "cancelled"; directory = $curr }
+                }
             } catch {
                 Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
             }
             continue
         }
 
+        # 1a-open. Open folder in File Explorer
         if ($reqPath -eq '/api/game/open-folder' -and $request.HttpMethod -eq 'POST') {
             $body = ReadRequestBody $request
             try {
                 $data = $body | ConvertFrom-Json
-                $folderToOpen = if ($data.path) { [string]$data.path.Trim() } else { "C:\Users\pc\Downloads\ano na\Game Files" }
+                $folderToOpen = if ($data.directory) { [string]$data.directory.Trim() } elseif ($data.path) { [string]$data.path.Trim() } else { "" }
+                if (-not $folderToOpen) {
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    if (Test-Path $gameDirFile) { $folderToOpen = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
+                }
+                if (-not $folderToOpen) { $folderToOpen = "C:\Users\pc\Desktop\games ko to ya\Game Files" }
                 if (Test-Path $folderToOpen) {
                     Start-Process "explorer.exe" -ArgumentList "`"$folderToOpen`""
                     Send-JsonResponse $response @{ status = "ok"; message = "Folder opened in File Explorer" }
@@ -2387,22 +2441,261 @@ while ($true) {
             continue
         }
 
+        # 1a-mod-install. Auto-Install Mod to Game Directory
+        if ($reqPath -eq '/api/mod/install' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                $gameId = if ($data.gameId) { [string]$data.gameId.Trim() } else { "pvz_fusion_4" }
+                $targetDir = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
+                if (-not $targetDir) {
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    if (Test-Path $gameDirFile) { $targetDir = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
+                }
+                if (-not $targetDir -or -not (Test-Path $targetDir)) {
+                    Send-JsonResponse $response @{ status = "error"; message = "Game directory does not exist: $targetDir" } 400
+                    continue
+                }
+
+                $destSubDir = if ($gameId -eq 'universal_stream') {
+                    if (Test-Path (Join-Path $targetDir "plugins")) { Join-Path $targetDir "plugins" }
+                    elseif (Test-Path (Join-Path $targetDir "mods")) { Join-Path $targetDir "mods" }
+                    else { Join-Path $targetDir "plugins" }
+                } elseif ($gameId -eq 'zombie_tsunami') {
+                    $targetDir
+                } else {
+                    Join-Path $targetDir "Mods"
+                }
+
+                if (-not (Test-Path $destSubDir)) {
+                    New-Item -ItemType Directory -Path $destSubDir -Force | Out-Null
+                }
+
+                $sourceModDir = Join-Path $folder "mods\$gameId"
+                if (-not (Test-Path $sourceModDir)) {
+                    $sourceModDir = Join-Path $folder "mods\pvz_fusion_4"
+                }
+
+                if (Test-Path $sourceModDir) {
+                    Get-ChildItem $sourceModDir | ForEach-Object {
+                        Copy-Item $_.FullName -Destination $destSubDir -Force
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; installed = $true; message = "Files installed successfully into $destSubDir" }
+                } else {
+                    Send-JsonResponse $response @{ status = "error"; message = "Mod bundle not found in studio repository" } 404
+                }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+            }
+            continue
+        }
+
+        # 1a-mod-uninstall. Uninstall Mod from Game Directory
+        if ($reqPath -eq '/api/mod/uninstall' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            try {
+                $data = $body | ConvertFrom-Json
+                $gameId = if ($data.gameId) { [string]$data.gameId.Trim() } else { "pvz_fusion_4" }
+                $targetDir = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
+                if (-not $targetDir) {
+                    $gameDirFile = Join-Path $folder "game_directory.txt"
+                    if (Test-Path $gameDirFile) { $targetDir = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
+                }
+
+                $destSubDir = if ($gameId -eq 'universal_stream') {
+                    if (Test-Path (Join-Path $targetDir "plugins")) { Join-Path $targetDir "plugins" } else { Join-Path $targetDir "mods" }
+                } elseif ($gameId -eq 'zombie_tsunami') {
+                    $targetDir
+                } else {
+                    Join-Path $targetDir "Mods"
+                }
+
+                $modDll = if ($data.modDll) { [string]$data.modDll.Trim() } else { "RENEarnPVZFusionMod.dll" }
+                $depsDll = if ($data.depsDll) { [string]$data.depsDll.Trim() } else { "RENEarnPVZFusionMod.deps.json" }
+
+                $targetDllPath = Join-Path $destSubDir $modDll
+                $targetDepsPath = Join-Path $destSubDir $depsDll
+                $targetInfoPath = Join-Path $destSubDir "renearn_info.json"
+
+                $removed = 0
+                if (Test-Path $targetDllPath) { Remove-Item $targetDllPath -Force -ErrorAction SilentlyContinue; $removed++ }
+                if (Test-Path $targetDepsPath) { Remove-Item $targetDepsPath -Force -ErrorAction SilentlyContinue; $removed++ }
+                if (Test-Path $targetInfoPath) { Remove-Item $targetInfoPath -Force -ErrorAction SilentlyContinue; $removed++ }
+
+                Send-JsonResponse $response @{ status = "ok"; removedCount = $removed; message = "Files removed successfully" }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+            }
+            continue
+        }
+
+        # 1a-mod-download. Download ZIP Archive of Mod
+        if ($reqPath -eq '/api/mod/download') {
+            try {
+                $body = ReadRequestBody $request
+                $gameId = "pvz_fusion_4"
+                if ($body) {
+                    try {
+                        $p = $body | ConvertFrom-Json
+                        if ($p.gameId) { $gameId = [string]$p.gameId.Trim() }
+                    } catch {}
+                }
+                $sourceModDir = Join-Path $folder "mods\$gameId"
+                if (-not (Test-Path $sourceModDir)) { $sourceModDir = Join-Path $folder "mods\pvz_fusion_4" }
+
+                $scratchDir = Join-Path $folder "scratch"
+                if (-not (Test-Path $scratchDir)) { New-Item -ItemType Directory -Path $scratchDir -Force | Out-Null }
+                $zipPath = Join-Path $scratchDir "RENEarn_${gameId}_mod.zip"
+                if (Test-Path $zipPath) { Remove-Item $zipPath -Force -ErrorAction SilentlyContinue }
+
+                $stagingDir = Join-Path $scratchDir "staging_${gameId}"
+                if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force -ErrorAction SilentlyContinue }
+                New-Item -ItemType Directory -Path $stagingDir -Force | Out-Null
+
+                if ($gameId -eq 'universal_stream') {
+                    $stagingPlugins = Join-Path $stagingDir "plugins"
+                    New-Item -ItemType Directory -Path $stagingPlugins -Force | Out-Null
+                    if (Test-Path $sourceModDir) {
+                        Get-ChildItem $sourceModDir | ForEach-Object {
+                            Copy-Item $_.FullName -Destination $stagingPlugins -Force
+                        }
+                    }
+                } elseif ($gameId -eq 'zombie_tsunami') {
+                    if (Test-Path $sourceModDir) {
+                        Get-ChildItem $sourceModDir | ForEach-Object {
+                            Copy-Item $_.FullName -Destination $stagingDir -Force
+                        }
+                    }
+                } else {
+                    $stagingMods = Join-Path $stagingDir "Mods"
+                    New-Item -ItemType Directory -Path $stagingMods -Force | Out-Null
+                    if (Test-Path $sourceModDir) {
+                        Get-ChildItem $sourceModDir | ForEach-Object {
+                            Copy-Item $_.FullName -Destination $stagingMods -Force
+                        }
+                    }
+                }
+
+                if (Test-Path (Join-Path $sourceModDir "INSTALL_README.txt")) {
+                    Copy-Item (Join-Path $sourceModDir "INSTALL_README.txt") -Destination $stagingDir -Force
+                } else {
+                    $readmeContent = @"
+=====================================================
+RENEarn Studio - Live Connector Archive
+Game: $gameId
+=====================================================
+
+INSTALLATION INSTRUCTIONS:
+1. Open your Game directory.
+2. Copy the files/folder from this archive into your Game directory.
+3. Start the game and launch RENEarn Studio!
+"@
+                    [System.IO.File]::WriteAllText((Join-Path $stagingDir "INSTALL_README.txt"), $readmeContent, [System.Text.Encoding]::UTF8)
+                }
+
+                Add-Type -AssemblyName System.IO.Compression.FileSystem
+                [System.IO.Compression.ZipFile]::CreateFromDirectory($stagingDir, $zipPath)
+                Remove-Item $stagingDir -Recurse -Force -ErrorAction SilentlyContinue
+
+                if (Test-Path $zipPath) {
+                    $zipBytes = [System.IO.File]::ReadAllBytes($zipPath)
+                    $response.ContentType = 'application/zip'
+                    $response.StatusCode = 200
+                    $response.AddHeader("Content-Disposition", "attachment; filename=`"RENEarn_${gameId}_mod.zip`"")
+                    $response.ContentLength64 = $zipBytes.Length
+                    $response.OutputStream.Write($zipBytes, 0, $zipBytes.Length)
+                    $response.OutputStream.Flush()
+                    $response.Close()
+                    continue
+                } else {
+                    Send-JsonResponse $response @{ status = "error"; message = "Failed to create archive" } 500
+                    continue
+                }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+                continue
+            }
+        }
+
         # 1a-detect. Game Directory Detection & MelonLoader Integration
         if ($reqPath -eq '/api/game/detect' -and $request.HttpMethod -eq 'POST') {
             $body = ReadRequestBody $request
             try {
                 $data = $body | ConvertFrom-Json
+                $gameId = if ($data.gameId) { [string]$data.gameId.Trim() } else { "pvz_fusion_4" }
                 $gameDir = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
                 if (-not $gameDir) {
                     $gameDirFile = Join-Path $folder "game_directory.txt"
                     if (Test-Path $gameDirFile) { $gameDir = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
                 }
-                if (-not $gameDir -or -not (Test-Path $gameDir)) {
+
+                $dirExists = (-not [string]::IsNullOrEmpty($gameDir)) -and (Test-Path $gameDir)
+
+                # Special handler for Minecraft / Universal Stream
+                if ($gameId -eq 'universal_stream') {
+                    $hasPlugin = $false
+                    $pluginsDir = if ($dirExists) { Join-Path $gameDir "plugins" } else { "" }
+                    $modsDir = if ($dirExists) { Join-Path $gameDir "mods" } else { "" }
+                    $installedList = @()
+                    if ($pluginsDir -and (Test-Path $pluginsDir)) {
+                        Get-ChildItem $pluginsDir -Filter "*.jar" -ErrorAction SilentlyContinue | ForEach-Object {
+                            $isRE = ($_.Name -like "*RENEarn*" -or $_.Name -like "*ServerTap*")
+                            if ($isRE) { $hasPlugin = $true }
+                            $installedList += @{ name = $_.BaseName; size = $_.Length; isRENEarn = $isRE }
+                        }
+                    }
+                    if ($modsDir -and (Test-Path $modsDir)) {
+                        Get-ChildItem $modsDir -Filter "*.jar" -ErrorAction SilentlyContinue | ForEach-Object {
+                            $isRE = ($_.Name -like "*RENEarn*" -or $_.Name -like "*ServerTap*")
+                            if ($isRE) { $hasPlugin = $true }
+                            $installedList += @{ name = $_.BaseName; size = $_.Length; isRENEarn = $isRE }
+                        }
+                    }
+                    $modInfo = $null
+                    $mcInfoPath = Join-Path $folder "mods\universal_stream\renearn_info.json"
+                    if (Test-Path $mcInfoPath) {
+                        try { $modInfo = Get-Content $mcInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+                    }
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        gameId = $gameId
+                        directory = $gameDir
+                        hasMelonLoader = $false
+                        hasPlugin = $hasPlugin
+                        modsInstalled = $installedList
+                        modInfo = $modInfo
+                        connected = $true
+                        gameRunning = $false
+                    }
+                    continue
+                }
+
+                # Special handler for Zombie Tsunami
+                if ($gameId -eq 'zombie_tsunami') {
+                    $modInfo = $null
+                    $ztInfoPath = Join-Path $folder "mods\zombie_tsunami\renearn_info.json"
+                    if (Test-Path $ztInfoPath) {
+                        try { $modInfo = Get-Content $ztInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+                    }
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        gameId = $gameId
+                        directory = $gameDir
+                        hasMelonLoader = $false
+                        modsInstalled = @(@{ name = "RENEarnZombieBridge"; isRENEarn = $true })
+                        modInfo = $modInfo
+                        connected = $true
+                        gameRunning = $false
+                    }
+                    continue
+                }
+
+                if (-not $dirExists) {
                     Send-JsonResponse $response @{ status = "error"; message = "Game directory not found: $gameDir"; connected = $false }
                     continue
                 }
 
-                # Detect MelonLoader
+                # Detect MelonLoader for PvZ games
                 $mlDir = Join-Path $gameDir "MelonLoader"
                 $hasMelonLoader = Test-Path $mlDir
                 $mlVersion = ""
@@ -2416,7 +2709,7 @@ while ($true) {
                     }
                 }
 
-                # Detect installed mods
+                # Detect installed mods in game's Mods directory
                 $modsDir = Join-Path $gameDir "Mods"
                 $installedMods = @()
                 if (Test-Path $modsDir) {
@@ -2430,7 +2723,7 @@ while ($true) {
 
                 # Detect game executable
                 $gameExe = ""
-                $gameExeNames = @("PlantsVsZombiesRH.exe", "PlantsVsZombies.exe")
+                $gameExeNames = @("PlantsVsZombiesRH.exe", "PlantsVsZombies.exe", "PvZ_Hybrid.exe", "PvZ.exe")
                 foreach ($exeName in $gameExeNames) {
                     $exePath = Join-Path $gameDir $exeName
                     if (Test-Path $exePath) { $gameExe = $exeName; break }
@@ -2442,18 +2735,19 @@ while ($true) {
                     if (Test-GamePort $p) { $gameRunning = $true; break }
                 }
 
-                # Read renearn_info.json or runetify_info.json
+                # Read renearn_info.json or fallback to bundled info
                 $modInfo = $null
                 $renearnInfoPath = Join-Path $gameDir "renearn_info.json"
-                $runetifyInfoPath = Join-Path $gameDir "runetify_info.json"
+                $sourceInfoPath = Join-Path $folder "mods\$gameId\renearn_info.json"
                 if (Test-Path $renearnInfoPath) {
                     try { $modInfo = Get-Content $renearnInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
-                } elseif (Test-Path $runetifyInfoPath) {
-                    try { $modInfo = Get-Content $runetifyInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+                } elseif (Test-Path $sourceInfoPath) {
+                    try { $modInfo = Get-Content $sourceInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
                 }
 
                 $resObj = @{
                     status = "ok"
+                    gameId = $gameId
                     connected = $gameRunning
                     directory = $gameDir
                     hasMelonLoader = $hasMelonLoader

@@ -906,6 +906,451 @@
             color: #ffffff;
         }
 
+        
+        /* ==================== USER ACCOUNT DROPDOWN MODAL (MATCHES USER SCREENSHOT) ==================== */
+        .header-profile-pill {
+            position: relative !important;
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header-profile-pill:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .user-account-dropdown {
+            position: absolute;
+            top: calc(100% + 9px);
+            right: 0;
+            width: 300px;
+            background: #11141e;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            padding: 14px 15px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            z-index: 999999;
+            display: none;
+            color: #f1f5f9;
+            text-align: left;
+            cursor: default;
+            user-select: text;
+            box-sizing: border-box;
+            animation: dropdownFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .user-account-dropdown.open {
+            display: block;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .account-dropdown-topbar {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .account-dropdown-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .account-dropdown-sub {
+            font-size: 12px;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .account-dropdown-sub-card {
+            border: 1px solid rgba(168, 85, 247, 0.45);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(17, 20, 30, 0.7) 100%);
+            border-radius: 10px;
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        .sub-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .badge-expert {
+            background: #a855f7;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .status-active-text {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12.5px;
+        }
+
+        .next-payment-text {
+            color: #94a3b8;
+            font-size: 11.5px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .btn-manage-subscription {
+            width: 100%;
+            margin-top: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-manage-subscription:hover {
+            background: #1d4ed8;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+        }
+
+        .dropdown-field-group {
+            margin-top: 13px;
+        }
+
+        .dropdown-field-label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+        }
+
+        .dropdown-field-label .required-tag {
+            color: #f43f5e;
+            font-size: 10.5px;
+            font-weight: 600;
+        }
+
+        .dropdown-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .input-with-check {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-check-icon {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #22c55e;
+            font-size: 12px;
+            font-weight: 900;
+            pointer-events: none;
+        }
+
+        .input-with-check input {
+            width: 100%;
+            background: #0b0e14 !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 6px !important;
+            padding: 6px 10px 6px 26px !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .input-with-check input:focus,
+        .dropdown-plain-input:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3) !important;
+        }
+
+        .dropdown-plain-input {
+            flex: 1;
+            background: #0b0e14 !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .btn-dropdown-save {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-dropdown-save:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+        .btn-dropdown-reconnect {
+            width: 100%;
+            margin-top: 8px;
+            background: #0284c7;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-dropdown-reconnect:hover {
+            background: #0369a1;
+        }
+
+        .btn-dropdown-reconnect .arrow-icon {
+            font-weight: 900;
+            font-size: 13px;
+        }
+
+        .btn-dropdown-unlink {
+            width: 100%;
+            margin-top: 6px;
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: #f87171;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 7px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+
+        .btn-dropdown-unlink:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-dropdown-account-settings {
+            width: 100%;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+
+        .btn-dropdown-account-settings:hover {
+            background: rgba(255, 255, 255, 0.09);
+            color: #ffffff;
+        }
+
+        .dropdown-servertap-row {
+            margin-top: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 7px;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11.5px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .dropdown-servertap-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .servertap-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .servertap-name {
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .servertap-url {
+            color: #64748b;
+            font-size: 10.5px;
+        }
+
+        .dropdown-caret {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-left: 6px;
+        }
+
+        .dropdown-language-row {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11.5px;
+            color: #94a3b8;
+        }
+
+        .lang-selector-pill {
+            background: #0b0e14;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11.5px;
+            color: #ffffff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .lang-code {
+            color: #38bdf8;
+            font-weight: 800;
+            font-size: 10px;
+        }
+
+        .dropdown-bottom-actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-dropdown-logout {
+            flex: 1;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+
+        .btn-dropdown-logout:hover {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-dropdown-cache {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            font-weight: 700;
+            font-size: 11.5px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+
+        .btn-dropdown-cache:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .dropdown-footer-meta {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 10.5px;
+            color: #64748b;
+        }
+
+        .dropdown-footer-meta .version-line {
+            font-weight: 500;
+        }
+
+        .dropdown-footer-meta .legal-links {
+            margin-top: 4px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dropdown-footer-meta .legal-links a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .dropdown-footer-meta .legal-links a:hover {
+            color: #94a3b8;
+            text-decoration: underline;
+        }
+
         /* SIDEBAR STYLES */
         .app-sidebar {
             width: 220px;
@@ -11136,6 +11581,519 @@
             0% { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
+        /* ==================== MOD STATUS BAR ==================== */
+        .mod-status-bar {
+            background: linear-gradient(135deg, #0c1220 0%, #111827 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mod-status-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            opacity: 0.6;
+        }
+
+        .mod-status-bar.mod-not-installed::before {
+            background: linear-gradient(90deg, transparent, #ef4444, transparent);
+        }
+
+        .mod-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mod-bar-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+        }
+
+        .mod-bar-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .mod-bar-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .mod-bar-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mod-bar-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f1f5f9;
+            white-space: nowrap;
+        }
+
+        .mod-bar-version {
+            font-size: 11px;
+            font-weight: 700;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 1px 7px;
+            border-radius: 4px;
+        }
+
+        .mod-bar-badge {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .mod-bar-badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+
+        .mod-bar-badge.download {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mod-bar-badge.download:hover {
+            background: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        .mod-bar-badge.not-installed {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171;
+        }
+
+        .mod-bar-subtitle {
+            font-size: 11px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mod-bar-subtitle .mod-status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .mod-bar-subtitle .mod-status-dot.online {
+            background: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+        }
+
+        .mod-bar-subtitle .mod-status-dot.offline {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+        }
+
+        .mod-bar-middle {
+            flex: 1.5;
+            min-width: 200px;
+        }
+
+        .mod-bar-path-input {
+            width: 100%;
+            background: #080b12 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            font-size: 11.5px !important;
+            font-family: 'Consolas', 'Courier New', monospace !important;
+            color: #94a3b8 !important;
+            font-weight: 500 !important;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.15s;
+        }
+
+        .mod-bar-path-input:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.25) !important;
+            color: #e2e8f0 !important;
+        }
+
+        .mod-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-mod-action {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            border: 1px solid;
+        }
+
+        .btn-mod-select-dir {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+        }
+
+        .btn-mod-select-dir:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .btn-mod-installed {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #34d399;
+        }
+
+        .btn-mod-installed:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-mod-install {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-mod-install:hover {
+            background: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+        }
+
+        .btn-mod-uninstall {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+
+        .btn-mod-uninstall:hover {
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .btn-mod-open-folder {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-mod-open-folder:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* ==================== MANUAL MOD INSTALL MODAL ==================== */
+        .mod-install-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .mod-install-modal-backdrop.active {
+            display: flex;
+        }
+
+        .mod-install-modal {
+            background: linear-gradient(180deg, #151c28 0%, #0f141e 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 640px;
+            padding: 28px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(16, 185, 129, 0.08);
+            position: relative;
+            animation: slideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .mod-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.15s;
+            z-index: 2;
+        }
+
+        .mod-modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+
+        .mod-modal-header {
+            margin-bottom: 18px;
+        }
+
+        .mod-modal-header h2 {
+            font-size: 20px;
+            font-weight: 900;
+            color: #f8fafc;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .mod-modal-game-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .mod-modal-game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mod-modal-game-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #e2e8f0;
+        }
+
+        .mod-modal-game-ver {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .btn-mod-download-archive {
+            background: #166534;
+            border: 1px solid #22c55e;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 3px 12px rgba(22, 101, 52, 0.4);
+        }
+
+        .btn-mod-download-archive:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(22, 101, 52, 0.5);
+        }
+
+        .mod-modal-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+
+        .mod-modal-path-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .mod-modal-path-box {
+            background: #080b12;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin-bottom: 18px;
+            word-break: break-all;
+            user-select: all;
+        }
+
+        .mod-modal-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mod-modal-steps li {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            padding-left: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .mod-modal-steps li .step-num {
+            font-weight: 900;
+            color: #38bdf8;
+            min-width: 18px;
+            flex-shrink: 0;
+        }
+
+        .mod-modal-steps li strong {
+            color: #f1f5f9;
+        }
+
+        .mod-modal-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-mod-modal-primary {
+            background: #0ea5e9;
+            border: none;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-mod-modal-primary:hover {
+            background: #0284c7;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 16px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-mod-modal-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-mod-modal-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .btn-mod-modal-auto {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-mod-modal-auto:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        .btn-mod-modal-auto.installing {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .mod-modal-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 16px 0;
+        }
+
     </style>
 </head>
 
@@ -11431,20 +12389,128 @@
                 </a>
 
 
-                <!-- USER PROFILE BADGE -->
-                <div class="header-profile-pill" id="headerProfileBadge" onclick="openSwitchAccountModal()"
-                    style="cursor: pointer;" title="Active Streamer Account - Click to Switch">
-                    <div class="header-avatar-circle" id="headerProfileAvatar">
+                <!-- USER PROFILE BADGE WITH CLICKABLE DROPDOWN (MATCHES USER PHOTO) -->
+                <div class="header-profile-pill" id="headerProfileBadge" onclick="toggleUserAccountDropdown(event)"
+                    style="cursor: pointer; position: relative;" title="Active Streamer Account - Click for settings & profile">
+                    <div class="header-avatar-circle" id="headerProfileAvatar" style="background: #10b981; color: #ffffff; font-weight: 800;">
                         <span>GO</span>
                     </div>
                     <div class="header-profile-info">
-                        <span class="header-profile-name" id="headerProfileUsername">@gohanmalungg...</span>
-                        <span class="header-profile-handle" id="headerProfileHandle">@gohanmalunggay</span>
+                        <span class="header-profile-name" id="headerProfileUsername">gohanmalunggay</span>
+                        <span class="header-profile-handle" id="headerProfileHandle" style="color: #38bdf8;">jaylouvipinosa7@gmail.com</span>
                     </div>
                     <button type="button" class="btn-header-switch"
-                        onclick="event.stopPropagation(); openSwitchAccountModal()">
+                        onclick="event.stopPropagation(); toggleUserAccountDropdown(event)">
                         Switch
                     </button>
+
+                    <!-- AUTHENTIC ACCOUNT DROPDOWN MODAL (MATCHES USER PHOTO) -->
+                    <div id="userAccountDropdown" class="user-account-dropdown" onclick="event.stopPropagation()">
+                        <!-- Top Header Row -->
+                        <div class="account-dropdown-topbar">
+                            <div class="account-dropdown-name" id="dropdownUserTitle">Goten</div>
+                            <div class="account-dropdown-sub" id="dropdownUserSubtitle">gohanmalunggay</div>
+                        </div>
+
+                        <!-- Active Subscription Box -->
+                        <div class="account-dropdown-sub-card">
+                            <div class="sub-status-row">
+                                <span class="badge-expert">Expert</span>
+                                <span class="status-active-text">Active</span>
+                            </div>
+                            <div class="next-payment-text">Next payment: 11/08/2026</div>
+                            <button type="button" class="btn-manage-subscription" onclick="openManageSubscriptionModal()">
+                                Manage Subscription
+                            </button>
+                        </div>
+
+                        <!-- TikTok @username Field -->
+                        <div class="dropdown-field-group">
+                            <label class="dropdown-field-label">
+                                TikTok @username <span class="required-tag">(required)</span>
+                            </label>
+                            <div class="dropdown-input-row">
+                                <div class="input-with-check">
+                                    <span class="input-check-icon">âœ“</span>
+                                    <input type="text" id="dropdownTiktokUser" value="gohanmalunggay" placeholder="username without @">
+                                </div>
+                                <button type="button" class="btn-dropdown-save" onclick="saveDropdownTiktokUser()">
+                                    Save
+                                </button>
+                            </div>
+                            <button type="button" class="btn-dropdown-reconnect" onclick="reconnectTikTokFromDropdown()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.91-4.49V8.62a8.28 8.28 0 0 0 4.86 1.57v-3.5Z"/>
+                                </svg>
+                                <span>Reconnect account</span>
+                                <span class="arrow-icon">â†’</span>
+                            </button>
+                            <button type="button" class="btn-dropdown-unlink" onclick="unlinkTikTokFromDropdown()">
+                                <span style="font-size: 13px;">ðŸ”—</span>
+                                <span>Unlink TikTok</span>
+                            </button>
+                        </div>
+
+                        <!-- Minecraft Player Name -->
+                        <div class="dropdown-field-group">
+                            <label class="dropdown-field-label">
+                                Minecraft Player Name
+                            </label>
+                            <div class="dropdown-input-row">
+                                <input type="text" id="dropdownPlayerName" class="dropdown-plain-input" value="Goten" placeholder="Player name">
+                                <button type="button" class="btn-dropdown-save" onclick="saveDropdownPlayerName()">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings Button -->
+                        <button type="button" class="btn-dropdown-account-settings" onclick="openPermissionsModal(); toggleUserAccountDropdown(false);">
+                            <span>âš™ï¸</span>
+                            <span>Account settings</span>
+                        </button>
+
+                        <!-- ServerTap Connection Bar -->
+                        <div class="dropdown-servertap-row" onclick="showToast('ServerTap: http://localhost:8080 (Connected)', 'INFO')">
+                            <div class="servertap-left">
+                                <span style="font-size: 13px;">ðŸ—„ï¸</span>
+                                <span class="servertap-name">ServerTap ...</span>
+                                <span class="servertap-url">http://localhost:8080</span>
+                            </div>
+                            <span class="dropdown-caret">â–¼</span>
+                        </div>
+
+                        <!-- Language Row -->
+                        <div class="dropdown-language-row">
+                            <span class="lang-label">Language:</span>
+                            <div class="lang-selector-pill">
+                                <span class="lang-code">EN</span>
+                                <span class="lang-text">English</span>
+                                <span class="dropdown-caret" style="font-size: 8px;">â–¼</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons: Logout & Clear Cache -->
+                        <div class="dropdown-bottom-actions">
+                            <button type="button" class="btn-dropdown-logout" onclick="dropdownLogout()">
+                                <span style="font-size: 12px;">âž”</span>
+                                <span>Logout</span>
+                            </button>
+                            <button type="button" class="btn-dropdown-cache" onclick="dropdownClearCache()">
+                                <span style="font-size: 12px;">ðŸ–´</span>
+                                <span>Clear cache</span>
+                            </button>
+                        </div>
+
+                        <!-- Version & Legal Links Footer -->
+                        <div class="dropdown-footer-meta">
+                            <div class="version-line">Version: 1.16.4 (1.16.1)</div>
+                            <div class="legal-links">
+                                <a href="#" onclick="showToast('Privacy Policy: All accounts & live settings stored locally.', 'INFO'); return false;">Privacy Policy</a>
+                                <a href="#" onclick="showToast('Terms of Service: Free for all livestreamers.', 'INFO'); return false;">Terms of Service</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- MANAGE EDITORS & TESTERS BUTTON (ADMIN ONLY) -->
@@ -11737,6 +12803,102 @@
                             <span
                                 style="width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e;"></span>
                             <span style="color: #94a3b8; font-size: 11px;">MelonLoader Mod Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===================== MOD STATUS BAR (S2E-STYLE) ===================== -->
+                <div class="mod-status-bar" id="modStatusBar">
+                    <!-- Left: Icon + Mod Info -->
+                    <div class="mod-bar-left">
+                        <div class="mod-bar-icon" id="modBarIcon">
+                            <img src="images/renearn_icon_32.png" alt="RENEarn Mod" id="modBarIconImg">
+                        </div>
+                        <div class="mod-bar-info">
+                            <div class="mod-bar-title-row">
+                                <span class="mod-bar-title" id="modBarTitle">PvZFusion Mod Version:</span>
+                                <span class="mod-bar-version" id="modBarVersion">47v</span>
+                                <span class="mod-bar-badge active" id="modBarBadge">ACTIVE</span>
+                                <span class="mod-bar-title" id="modBarInstalledVer" style="color: #94a3b8; font-weight: 600; font-size: 12px;">Installed Version: <strong style="color: #f1f5f9;">47v (BETA)</strong></span>
+                            </div>
+                            <div class="mod-bar-subtitle" id="modBarSubtitle">
+                                <span class="mod-status-dot online" id="modBarDot"></span>
+                                <span id="modBarStatusText">MelonLoader Mod: Waiting for Game...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Middle: Directory Path Input -->
+                    <div class="mod-bar-middle">
+                        <input type="text" class="mod-bar-path-input" id="modBarPathInput"
+                            value="" placeholder="Select your game directory..."
+                            title="Game Files directory where MelonLoader is installed (paste or click Select Directory)"
+                            onchange="onModPathChanged(this.value)">
+                    </div>
+
+                    <!-- Right: Action Buttons -->
+                    <div class="mod-bar-actions">
+                        <button type="button" class="btn-mod-action btn-mod-select-dir" onclick="selectModDirectory()" title="Browse and select your game directory">
+                            Select Directory
+                        </button>
+                        <button type="button" class="btn-mod-action btn-mod-installed" id="btnModInstalled" onclick="openManualModInstallModal()" title="Mod is installed - Click for details">
+                            ✓ Installed
+                        </button>
+                        <button type="button" class="btn-mod-action btn-mod-uninstall" id="btnModUninstall" onclick="uninstallRENEarnMod()" title="Uninstall RENEarn mod from this game" style="display: none;">
+                            Uninstall Mod
+                        </button>
+                        <button type="button" class="btn-mod-action btn-mod-open-folder" onclick="openModFolder()" title="Open the game mods folder in File Explorer">
+                            📁 Open Folder
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===================== MANUAL MOD INSTALLATION MODAL ===================== -->
+                <div class="mod-install-modal-backdrop" id="modInstallModalBackdrop" onclick="closeManualModInstallModal(event)">
+                    <div class="mod-install-modal" onclick="event.stopPropagation()">
+                        <button type="button" class="mod-modal-close" onclick="closeManualModInstallModal()" title="Close">✕</button>
+
+                        <div class="mod-modal-header">
+                            <h2>Manual mod installation</h2>
+                        </div>
+
+                        <div class="mod-modal-game-row">
+                            <div class="mod-modal-game-info">
+                                <div class="mod-modal-game-name" id="modModalGameName">PvZ Fusion</div>
+                                <div class="mod-modal-game-ver" id="modModalGameVer">Version 47v</div>
+                            </div>
+                            <button type="button" class="btn-mod-download-archive" onclick="downloadModArchive()" title="Download mod archive ZIP">
+                                <span>📦</span> Download archive
+                            </button>
+                        </div>
+
+                        <p class="mod-modal-desc">
+                            You can install this mod automatically with the <strong>RENEarn</strong> desktop app, or download the archive here and install it manually.
+                        </p>
+
+                        <div class="mod-modal-path-label">Extract the archive into this folder:</div>
+                        <div class="mod-modal-path-box" id="modModalPathBox">C:\Users\pc\Desktop\games ko to ya\Game Files</div>
+
+                        <ol class="mod-modal-steps">
+                            <li><span class="step-num">1.</span> <span>Close the game before installing the mod.</span></li>
+                            <li><span class="step-num">2.</span> <span>Download the archive using the button above.</span></li>
+                            <li><span class="step-num">3.</span> <span>Open the folder shown above.</span></li>
+                            <li><span class="step-num">4.</span> <span>Extract the archive contents into that folder and allow files to be replaced if Windows asks.</span></li>
+                            <li><span class="step-num">5.</span> <span>Start the game again after extraction is complete.</span></li>
+                        </ol>
+
+                        <hr class="mod-modal-divider">
+
+                        <div class="mod-modal-actions">
+                            <button type="button" class="btn-mod-modal-primary" onclick="openModInstallFolder()" title="Open the target install folder">
+                                📂 Open install folder
+                            </button>
+                            <button type="button" class="btn-mod-modal-secondary" onclick="checkModInstallation(this)" title="Verify mod installation status">
+                                🔍 Check installation
+                            </button>
+                            <button type="button" class="btn-mod-modal-auto" id="btnAutoInstallMod" onclick="autoInstallMod(this)" title="Automatically copy mod files into the game directory">
+                                ⚡ Install automatically
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -24371,6 +25533,11 @@
                         window.RENEarnEngine.switchGame(gameId);
                     }
 
+                    // Dynamically update Mod Status Bar (S2E-Style)
+                    if (typeof updateModBarForGame === 'function') {
+                        updateModBarForGame(gameId);
+                    }
+
                     // Sync with backend API
                     try {
                         await fetch('/api/games/active', {
@@ -24579,6 +25746,134 @@
                     if (typeof showToast === 'function') {
                         showToast(`✨ Universal Preset "${newPreset.name}" created and applied! (RENEarn)`, 'success');
                     }
+                }
+
+                
+                // ==================== USER ACCOUNT DROPDOWN LOGIC (MATCHES USER PHOTO) ====================
+                function toggleUserAccountDropdown(e) {
+                    if (e) {
+                        e.stopPropagation();
+                    }
+                    const dd = document.getElementById('userAccountDropdown');
+                    if (!dd) return;
+
+                    const willOpen = !dd.classList.contains('open');
+                    if (willOpen) {
+                        // Populate dynamic fields
+                        const ttUser = (config && config.tiktokUsername) || localStorage.getItem('pvz_tiktok_username') || 'gohanmalunggay';
+                        const ign = localStorage.getItem('streamer_ign') || 'Goten';
+                        const email = (currentUser && currentUser.email) || 'jaylouvipinosa7@gmail.com';
+                        const displayName = (currentUser && (currentUser.name || currentUser.username)) || 'gohanmalunggay';
+
+                        const ttInput = document.getElementById('dropdownTiktokUser');
+                        if (ttInput) ttInput.value = ttUser;
+
+                        const ignInput = document.getElementById('dropdownPlayerName');
+                        if (ignInput) ignInput.value = ign;
+
+                        const titleEl = document.getElementById('dropdownUserTitle');
+                        if (titleEl) titleEl.textContent = ign || 'Goten';
+
+                        const subEl = document.getElementById('dropdownUserSubtitle');
+                        if (subEl) subEl.textContent = displayName;
+
+                        dd.classList.add('open');
+                    } else {
+                        dd.classList.remove('open');
+                    }
+                }
+
+                // Global outside-click listener to close dropdown
+                document.addEventListener('click', function (e) {
+                    const badge = document.getElementById('headerProfileBadge');
+                    const dd = document.getElementById('userAccountDropdown');
+                    if (dd && dd.classList.contains('open')) {
+                        if (badge && !badge.contains(e.target)) {
+                            dd.classList.remove('open');
+                        }
+                    }
+                });
+
+                function saveDropdownTiktokUser() {
+                    const input = document.getElementById('dropdownTiktokUser');
+                    if (!input) return;
+                    const val = input.value.trim().replace(/^@/, '');
+                    if (!val) {
+                        showToast('Please enter a valid TikTok username', 'WARN');
+                        return;
+                    }
+                    if (config) config.tiktokUsername = val;
+                    localStorage.setItem('pvz_tiktok_username', val);
+
+                    // Update UI labels
+                    const headerUsername = document.getElementById('headerProfileUsername');
+                    const headerHandle = document.getElementById('headerProfileHandle');
+                    if (headerUsername) headerUsername.textContent = val;
+                    if (headerHandle) headerHandle.textContent = '@' + val;
+
+                    const subEl = document.getElementById('dropdownUserSubtitle');
+                    if (subEl) subEl.textContent = val;
+
+                    const pillText = document.getElementById('tiktokLivePillText');
+                    if (pillText) pillText.textContent = `Waiting for @${val} to go LIVE...`;
+
+                    // Persist to server config
+                    fetch('/api/config', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(config)
+                    }).catch(() => {});
+
+                    showToast(`TikTok username updated to @${val}`, 'SUCCESS');
+                }
+
+                function saveDropdownPlayerName() {
+                    const input = document.getElementById('dropdownPlayerName');
+                    if (!input) return;
+                    const val = input.value.trim();
+                    if (!val) {
+                        showToast('Please enter a player name', 'WARN');
+                        return;
+                    }
+                    localStorage.setItem('streamer_ign', val);
+                    const titleEl = document.getElementById('dropdownUserTitle');
+                    if (titleEl) titleEl.textContent = val;
+                    showToast(`In-game player name saved: ${val}`, 'SUCCESS');
+                }
+
+                async function reconnectTikTokFromDropdown() {
+                    const input = document.getElementById('dropdownTiktokUser');
+                    const user = input ? input.value.trim().replace(/^@/, '') : 'gohanmalunggay';
+                    showToast(`Reconnecting to TikTok LIVE @${user}...`, 'INFO');
+                    const refreshBtn = document.querySelector('.btn-tiktok-pill-refresh');
+                    if (refreshBtn) refreshTikTokStatus(refreshBtn);
+                }
+
+                function unlinkTikTokFromDropdown() {
+                    const input = document.getElementById('dropdownTiktokUser');
+                    if (input) input.value = '';
+                    if (config) config.tiktokUsername = '';
+                    localStorage.removeItem('pvz_tiktok_username');
+                    const pillText = document.getElementById('tiktokLivePillText');
+                    if (pillText) pillText.textContent = 'TikTok disconnected';
+                    showToast('TikTok account unlinked', 'INFO');
+                }
+
+                function openManageSubscriptionModal() {
+                    showToast('Subscription Tier: Expert (Active until 11/08/2026)', 'INFO');
+                }
+
+                function dropdownLogout() {
+                    toggleUserAccountDropdown(false);
+                    openSwitchAccountModal();
+                }
+
+                function dropdownClearCache() {
+                    localStorage.removeItem('pvz_cached_permissions');
+                    localStorage.removeItem('pvz_cached_tokens');
+                    localStorage.removeItem('pvz_user_account');
+                    showToast('Cache cleared. Reloading application...', 'SUCCESS');
+                    setTimeout(() => location.reload(), 600);
                 }
 
                 function openSwitchAccountModal() {
@@ -24941,6 +26236,22 @@
                     // Sync with filter and update presets
                     selectedGameFilter = (gameName === 'PvZFusion') ? 'all' : gameName;
                     renderGamePresets();
+
+                    // Sync Mod Status Bar (S2E-Style)
+                    if (typeof updateModBarForGame === 'function') {
+                        const gameKeyMap = {
+                            'PvZFusion': 'pvz_fusion_4',
+                            'pvz_fusion_4': 'pvz_fusion_4',
+                            'pvz_hybrid': 'pvz_hybrid',
+                            'pvz_classic': 'pvz_classic',
+                            'Minecraft': 'universal_stream',
+                            'universal_stream': 'universal_stream',
+                            'zombie_tsunami': 'zombie_tsunami'
+                        };
+                        const mappedKey = gameKeyMap[gameName] || (gameName.toLowerCase().includes('hybrid') ? 'pvz_hybrid' : (gameName.toLowerCase().includes('pvz') ? 'pvz_fusion_4' : (gameName.toLowerCase().includes('mine') ? 'universal_stream' : (gameName.toLowerCase().includes('tsunami') ? 'zombie_tsunami' : 'pvz_fusion_4'))));
+                        window.currentActiveStreamingGame = mappedKey;
+                        updateModBarForGame(mappedKey);
+                    }
 
                     if (openModal) {
                         openPvzPresetModal(gameName);
@@ -38608,6 +39919,591 @@
         setTimeout(() => {
             checkAppUpdates(true);
         }, 2000);
+
+        // ==================== MOD STATUS BAR & MANUAL INSTALL MODAL ====================
+
+        // Mod configuration per game
+        const modGameConfigs = {
+            pvz_fusion_4: {
+                title: 'PvZFusion Mod Version:',
+                gameName: 'PvZ Fusion',
+                icon: 'images/games/pvz_fusion.jpg',
+                modDll: 'RENEarnPVZFusionMod.dll',
+                depsDll: 'RENEarnPVZFusionMod.deps.json',
+                version: '47v',
+                versionFull: '47v (BETA)',
+                needsMelonLoader: true,
+                folderName: 'Mods',
+                itemType: 'Mod'
+            },
+            pvz_hybrid: {
+                title: 'PvZ Hybrid Mod Version:',
+                gameName: 'PvZ: Hybrid Edition',
+                icon: 'images/games/pvz_hybrid_poster.jpg',
+                modDll: 'RENEarnPVZHybridMod.dll',
+                depsDll: 'RENEarnPVZHybridMod.deps.json',
+                version: '47v',
+                versionFull: '47v (BETA)',
+                needsMelonLoader: true,
+                folderName: 'Mods',
+                itemType: 'Mod'
+            },
+            pvz_classic: {
+                title: 'PvZ Classic Mod Version:',
+                gameName: 'PvZ: Classic / GOTY',
+                icon: 'images/games/pvz_classic_poster.jpg',
+                modDll: 'RENEarnPVZClassicMod.dll',
+                depsDll: 'RENEarnPVZClassicMod.deps.json',
+                version: '47v',
+                versionFull: '47v (BETA)',
+                needsMelonLoader: true,
+                folderName: 'Mods',
+                itemType: 'Mod'
+            },
+            universal_stream: {
+                title: 'Minecraft & Universal Connector:',
+                gameName: 'Minecraft & Universal',
+                icon: 'images/games/minecraft_chaos_poster.jpg',
+                modDll: 'RENEarnMinecraftPlugin.jar',
+                depsDll: 'config.yml',
+                version: '1.20+',
+                versionFull: '1.2.0 (Spigot/Paper & Fabric)',
+                needsMelonLoader: false,
+                isPlugin: true,
+                folderName: 'plugins',
+                itemType: 'Plugin'
+            },
+            zombie_tsunami: {
+                title: 'Zombie Tsunami Bridge:',
+                gameName: 'Zombie Tsunami (PC)',
+                icon: 'images/games/zombie_tsunami_poster.jpg',
+                modDll: 'RENEarnZombieBridge.js',
+                depsDll: 'zombie_bridge_config.json',
+                version: '1.0',
+                versionFull: '1.0 (Interactive PC)',
+                needsMelonLoader: false,
+                isBridge: true,
+                folderName: '',
+                itemType: 'Bridge'
+            }
+        };
+
+        // Get saved game directory per game from localStorage
+        function getModGameDirectory(gameId) {
+            const active = gameId || (typeof currentActiveStreamingGame !== 'undefined' ? currentActiveStreamingGame : 'pvz_fusion_4');
+            try {
+                return localStorage.getItem('renearn_game_directory_' + active) || localStorage.getItem('renearn_game_directory') || '';
+            } catch(e) { return ''; }
+        }
+
+        function setModGameDirectory(dir, gameId) {
+            const active = gameId || (typeof currentActiveStreamingGame !== 'undefined' ? currentActiveStreamingGame : 'pvz_fusion_4');
+            try {
+                localStorage.setItem('renearn_game_directory_' + active, dir);
+                localStorage.setItem('renearn_game_directory', dir);
+            } catch(e) {}
+        }
+
+        function onModPathChanged(val) {
+            if (val && val.trim()) {
+                const dir = val.trim();
+                const active = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+                setModGameDirectory(dir, active);
+                fetch('/api/game/directory', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ directory: dir, gameId: active })
+                }).catch(() => {});
+                const modalPath = document.getElementById('modModalPathBox');
+                if (modalPath) modalPath.textContent = dir;
+                detectModInstallation(dir, active);
+            }
+        }
+
+        // Initialize the mod bar on page load
+        async function initModStatusBar() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            let savedDir = getModGameDirectory(activeGame);
+            if (!savedDir) {
+                try {
+                    const res = await fetch('/api/game/directory?gameId=' + encodeURIComponent(activeGame));
+                    const d = await res.json();
+                    if (d && d.directory) {
+                        savedDir = d.directory;
+                        setModGameDirectory(savedDir, activeGame);
+                    }
+                } catch(e) {}
+            }
+            const pathInput = document.getElementById('modBarPathInput');
+            if (pathInput && savedDir) {
+                pathInput.value = savedDir;
+            }
+
+            // Get active game and update bar labels
+            updateModBarForGame(activeGame);
+        }
+
+        // Update bar labels when game changes
+        function updateModBarForGame(gameId) {
+            const config = modGameConfigs[gameId] || modGameConfigs.pvz_fusion_4;
+            const titleEl = document.getElementById('modBarTitle');
+            const versionEl = document.getElementById('modBarVersion');
+            const installedVerEl = document.getElementById('modBarInstalledVer');
+            const badgeEl = document.getElementById('modBarBadge');
+            const statusTextEl = document.getElementById('modBarStatusText');
+            const dotEl = document.getElementById('modBarDot');
+            const bar = document.getElementById('modStatusBar');
+            const btnInstalled = document.getElementById('btnModInstalled');
+            const btnUninstall = document.getElementById('btnModUninstall');
+            const iconImg = document.getElementById('modBarIconImg');
+            const pathInput = document.getElementById('modBarPathInput');
+
+            if (titleEl) titleEl.textContent = config.title;
+            if (versionEl) versionEl.textContent = config.version;
+            if (installedVerEl) installedVerEl.innerHTML = `Installed Version: <strong style="color: #f1f5f9;">${config.versionFull}</strong>`;
+            if (iconImg && config.icon) iconImg.src = config.icon;
+
+            // Update modal texts
+            const modalGameName = document.getElementById('modModalGameName');
+            const modalGameVer = document.getElementById('modModalGameVer');
+            if (modalGameName) modalGameName.textContent = config.gameName;
+            if (modalGameVer) modalGameVer.textContent = `Version ${config.version}`;
+
+            // Sync path input for this game
+            const savedDir = getModGameDirectory(gameId);
+            if (pathInput) pathInput.value = savedDir;
+            const modalPath = document.getElementById('modModalPathBox');
+            if (modalPath) modalPath.textContent = savedDir || 'Select your game folder';
+
+            // Check installation or set initial UI
+            detectModInstallation(savedDir, gameId);
+        }
+
+        // Select game directory via file input / API browse
+        async function selectModDirectory() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            try {
+                const res = await fetch('/api/game/browse-directory', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'browse', gameId: activeGame })
+                });
+                const data = await res.json();
+                if (data && data.directory) {
+                    setModGameDirectory(data.directory, activeGame);
+                    const pathInput = document.getElementById('modBarPathInput');
+                    if (pathInput) pathInput.value = data.directory;
+                    // Update modal path box
+                    const modalPath = document.getElementById('modModalPathBox');
+                    if (modalPath) modalPath.textContent = data.directory;
+                    detectModInstallation(data.directory, activeGame);
+                    if (typeof showToast === 'function') showToast('📁 Game directory set successfully', 'success');
+                }
+            } catch(e) {
+                // Fallback: prompt user for path
+                const current = getModGameDirectory(activeGame) || 'C:\\Users\\pc\\Desktop\\games ko to ya\\Game Files';
+                const dir = prompt('Enter your game directory path:', current);
+                if (dir && dir.trim()) {
+                    setModGameDirectory(dir.trim(), activeGame);
+                    const pathInput = document.getElementById('modBarPathInput');
+                    if (pathInput) pathInput.value = dir.trim();
+                    const modalPath = document.getElementById('modModalPathBox');
+                    if (modalPath) modalPath.textContent = dir.trim();
+                    detectModInstallation(dir.trim(), activeGame);
+                    if (typeof showToast === 'function') showToast('📁 Game directory saved', 'success');
+                }
+            }
+        }
+
+        // Detect mod installation via backend API
+        async function detectModInstallation(directory, gameId) {
+            const bar = document.getElementById('modStatusBar');
+            const badgeEl = document.getElementById('modBarBadge');
+            const statusTextEl = document.getElementById('modBarStatusText');
+            const dotEl = document.getElementById('modBarDot');
+            const btnInstalled = document.getElementById('btnModInstalled');
+            const btnUninstall = document.getElementById('btnModUninstall');
+            const installedVerEl = document.getElementById('modBarInstalledVer');
+
+            const activeGame = gameId || (typeof currentActiveStreamingGame !== 'undefined' ? currentActiveStreamingGame : 'pvz_fusion_4');
+            const config = modGameConfigs[activeGame] || modGameConfigs.pvz_fusion_4;
+
+            // Case 1: Zombie Tsunami (Built-in Web/PC bridge)
+            if (config.isBridge) {
+                if (bar) bar.classList.remove('mod-not-installed');
+                if (badgeEl) {
+                    badgeEl.className = 'mod-bar-badge active';
+                    badgeEl.textContent = 'ACTIVE';
+                    badgeEl.onclick = null;
+                }
+                if (dotEl) dotEl.className = 'mod-status-dot online';
+                if (statusTextEl) statusTextEl.textContent = 'Zombie Tsunami: Web & Desktop Interactive Bridge Ready';
+                if (btnInstalled) {
+                    btnInstalled.style.display = 'inline-flex';
+                    btnInstalled.className = 'btn-mod-action btn-mod-installed';
+                    btnInstalled.textContent = '✓ Bridge Ready';
+                    btnInstalled.onclick = () => openManualModInstallModal();
+                }
+                if (btnUninstall) btnUninstall.style.display = 'none';
+                if (installedVerEl) installedVerEl.innerHTML = `Installed Version: <strong style="color: #f1f5f9;">${config.versionFull}</strong>`;
+                return;
+            }
+
+            // Case 2: Minecraft & Universal (ServerTap / Spigot / Paper / Fabric Plugin)
+            if (config.isPlugin) {
+                try {
+                    const res = await fetch('/api/game/detect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ directory: directory, gameId: activeGame })
+                    });
+                    const data = await res.json();
+                    const hasPlugin = data.hasPlugin || (data.modsInstalled && data.modsInstalled.some(m => m.isRENEarn));
+
+                    if (hasPlugin) {
+                        if (bar) bar.classList.remove('mod-not-installed');
+                        if (badgeEl) {
+                            badgeEl.className = 'mod-bar-badge active';
+                            badgeEl.textContent = 'ACTIVE';
+                            badgeEl.onclick = null;
+                        }
+                        if (dotEl) dotEl.className = 'mod-status-dot online';
+                        if (statusTextEl) statusTextEl.textContent = 'Minecraft Plugin: Installed & Live Ready';
+                        if (btnInstalled) {
+                            btnInstalled.style.display = 'inline-flex';
+                            btnInstalled.className = 'btn-mod-action btn-mod-installed';
+                            btnInstalled.textContent = '✓ Plugin Ready';
+                            btnInstalled.onclick = () => openManualModInstallModal();
+                        }
+                        if (btnUninstall) btnUninstall.style.display = 'inline-flex';
+                        if (installedVerEl) installedVerEl.innerHTML = `Installed Version: <strong style="color: #f1f5f9;">${config.versionFull}</strong>`;
+                    } else {
+                        if (bar) bar.classList.remove('mod-not-installed');
+                        if (badgeEl) {
+                            badgeEl.className = 'mod-bar-badge active';
+                            badgeEl.textContent = 'READY';
+                            badgeEl.onclick = () => openManualModInstallModal();
+                        }
+                        if (dotEl) dotEl.className = 'mod-status-dot online';
+                        if (statusTextEl) statusTextEl.textContent = 'Minecraft Connector: Plugin available (Spigot/Paper/ServerTap)';
+                        if (btnInstalled) {
+                            btnInstalled.style.display = 'inline-flex';
+                            btnInstalled.className = 'btn-mod-action btn-mod-install';
+                            btnInstalled.textContent = 'Install Plugin';
+                            btnInstalled.onclick = () => openManualModInstallModal();
+                        }
+                        if (btnUninstall) btnUninstall.style.display = 'none';
+                        if (installedVerEl) installedVerEl.innerHTML = `Installed Version: <strong style="color: #a7f3d0;">${config.versionFull}</strong>`;
+                    }
+                } catch(e) {
+                    if (statusTextEl) statusTextEl.textContent = 'Minecraft Plugin: Ready (Select server directory to install)';
+                }
+                return;
+            }
+
+            // Case 3: MelonLoader Games (PvZ Fusion, PvZ Hybrid, PvZ Classic)
+            try {
+                const res = await fetch('/api/game/detect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ directory: directory, gameId: activeGame })
+                });
+                const data = await res.json();
+
+                if (data.status === 'ok') {
+                    const hasRENEarnMod = data.modsInstalled && data.modsInstalled.some(m => m.isRENEarn);
+                    const hasMelonLoader = data.hasMelonLoader;
+
+                    // Update modal path
+                    const modalPath = document.getElementById('modModalPathBox');
+                    if (modalPath && directory) modalPath.textContent = directory;
+
+                    if (hasRENEarnMod) {
+                        // MOD IS INSTALLED
+                        if (bar) bar.classList.remove('mod-not-installed');
+                        if (badgeEl) {
+                            badgeEl.className = 'mod-bar-badge active';
+                            badgeEl.textContent = 'ACTIVE';
+                            badgeEl.onclick = null;
+                        }
+                        if (dotEl) {
+                            dotEl.className = 'mod-status-dot online';
+                        }
+                        if (statusTextEl) {
+                            statusTextEl.textContent = data.gameRunning
+                                ? 'MelonLoader Mod: Connected to Game'
+                                : 'MelonLoader Mod: Waiting for Game...';
+                        }
+                        if (btnInstalled) {
+                            btnInstalled.style.display = 'inline-flex';
+                            btnInstalled.className = 'btn-mod-action btn-mod-installed';
+                            btnInstalled.textContent = '✓ Installed';
+                            btnInstalled.onclick = () => openManualModInstallModal();
+                        }
+                        if (btnUninstall) btnUninstall.style.display = 'inline-flex';
+                        if (installedVerEl) {
+                            const modVer = (data.modInfo && data.modInfo.version) ? data.modInfo.version : config.versionFull;
+                            installedVerEl.innerHTML = `Installed Version: <strong style="color: #f1f5f9;">${modVer}</strong>`;
+                        }
+                    } else {
+                        // MOD NOT INSTALLED
+                        if (bar) bar.classList.add('mod-not-installed');
+                        if (badgeEl) {
+                            badgeEl.className = 'mod-bar-badge download';
+                            badgeEl.textContent = 'Download';
+                            badgeEl.onclick = () => openManualModInstallModal();
+                        }
+                        if (dotEl) dotEl.className = 'mod-status-dot offline';
+                        if (statusTextEl) {
+                            statusTextEl.textContent = hasMelonLoader
+                                ? 'MelonLoader detected - RENEarn mod not installed'
+                                : 'MelonLoader not detected in this directory';
+                        }
+                        if (btnInstalled) {
+                            btnInstalled.style.display = 'inline-flex';
+                            btnInstalled.className = 'btn-mod-action btn-mod-install';
+                            btnInstalled.textContent = 'Install Mod';
+                            btnInstalled.onclick = () => openManualModInstallModal();
+                        }
+                        if (btnUninstall) btnUninstall.style.display = 'none';
+                        if (installedVerEl) installedVerEl.innerHTML = `Installed Version: <strong style="color: #f87171;">Not installed</strong>`;
+                    }
+                }
+            } catch(e) {
+                console.warn('[RENEarn] Mod detect error:', e);
+                if (statusTextEl) statusTextEl.textContent = 'MelonLoader Mod: Unable to detect';
+                if (dotEl) dotEl.className = 'mod-status-dot offline';
+            }
+        }
+
+        // Open Manual Mod Installation Modal
+        function openManualModInstallModal() {
+            const backdrop = document.getElementById('modInstallModalBackdrop');
+            if (backdrop) {
+                backdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const savedDir = getModGameDirectory(activeGame);
+            const modalPath = document.getElementById('modModalPathBox');
+            if (modalPath && savedDir) modalPath.textContent = savedDir;
+
+            const config = modGameConfigs[activeGame] || modGameConfigs.pvz_fusion_4;
+            const modalGameName = document.getElementById('modModalGameName');
+            const modalGameVer = document.getElementById('modModalGameVer');
+            if (modalGameName) modalGameName.textContent = config.gameName;
+            if (modalGameVer) modalGameVer.textContent = `Version ${config.version}`;
+        }
+
+        // Close Manual Mod Installation Modal
+        function closeManualModInstallModal(event) {
+            if (event && event.target && !event.target.classList.contains('mod-install-modal-backdrop')) return;
+            const backdrop = document.getElementById('modInstallModalBackdrop');
+            if (backdrop) {
+                backdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Download mod archive ZIP
+        async function downloadModArchive() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            if (typeof showToast === 'function') showToast('📦 Preparing mod archive for download...', 'info');
+
+            try {
+                const res = await fetch('/api/mod/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gameId: activeGame })
+                });
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `RENEarn_${activeGame}_mod.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                    if (typeof showToast === 'function') showToast('✅ Mod archive downloaded! Extract to your game folder.', 'success');
+                } else {
+                    throw new Error('Download failed');
+                }
+            } catch(e) {
+                console.warn('[RENEarn] Mod download error:', e);
+                if (typeof showToast === 'function') showToast('📦 Download unavailable - mod files will be bundled in next release', 'warning');
+            }
+        }
+
+        // Open the install folder in File Explorer
+        async function openModInstallFolder() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const dir = getModGameDirectory(activeGame);
+            if (!dir) {
+                if (typeof showToast === 'function') showToast('⚠️ Set your game directory first', 'warning');
+                return;
+            }
+            try {
+                await fetch('/api/game/open-folder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ directory: dir })
+                });
+                if (typeof showToast === 'function') showToast('📂 Opened game folder', 'success');
+            } catch(e) {
+                if (typeof showToast === 'function') showToast('⚠️ Could not open folder', 'warning');
+            }
+        }
+
+        // Open the Mods folder
+        async function openModFolder() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const config = modGameConfigs[activeGame] || modGameConfigs.pvz_fusion_4;
+            const dir = getModGameDirectory(activeGame);
+            if (!dir) {
+                if (typeof showToast === 'function') showToast('⚠️ Set your game directory first', 'warning');
+                return;
+            }
+            const sub = config.folderName || '';
+            const targetDir = sub ? (dir.replace(/\\$/, '') + '\\' + sub) : dir;
+            try {
+                await fetch('/api/game/open-folder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ directory: targetDir })
+                });
+                if (typeof showToast === 'function') showToast(`📁 Opened ${config.folderName || 'game'} folder`, 'success');
+            } catch(e) {
+                if (typeof showToast === 'function') showToast('⚠️ Could not open folder', 'warning');
+            }
+        }
+
+        // Check mod installation status
+        async function checkModInstallation(btnEl) {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const dir = getModGameDirectory(activeGame);
+            if (!dir) {
+                if (typeof showToast === 'function') showToast('⚠️ Set your game directory first', 'warning');
+                return;
+            }
+            const origText = btnEl ? btnEl.textContent : '';
+            if (btnEl) {
+                btnEl.textContent = '🔄 Checking...';
+                btnEl.disabled = true;
+            }
+
+            await detectModInstallation(dir, activeGame);
+
+            setTimeout(() => {
+                if (btnEl) {
+                    btnEl.textContent = origText;
+                    btnEl.disabled = false;
+                }
+                if (typeof showToast === 'function') showToast('🔍 Installation check complete', 'success');
+            }, 800);
+        }
+
+        // Auto-install mod
+        async function autoInstallMod(btnEl) {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const dir = getModGameDirectory(activeGame);
+            if (!dir) {
+                if (typeof showToast === 'function') showToast('⚠️ Set your game directory first', 'warning');
+                return;
+            }
+
+            const config = modGameConfigs[activeGame] || modGameConfigs.pvz_fusion_4;
+
+            if (btnEl) {
+                btnEl.classList.add('installing');
+                btnEl.textContent = '⏳ Installing...';
+            }
+
+            try {
+                const res = await fetch('/api/mod/install', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gameId: activeGame,
+                        directory: dir,
+                        modDll: config.modDll,
+                        depsDll: config.depsDll
+                    })
+                });
+                const data = await res.json();
+
+                if (data.status === 'ok' || data.installed) {
+                    if (typeof showToast === 'function') showToast('✅ Mod installed automatically!', 'success');
+                    await detectModInstallation(dir, activeGame);
+                } else {
+                    throw new Error(data.message || 'Installation failed');
+                }
+            } catch(e) {
+                console.warn('[RENEarn] Auto-install error:', e);
+                if (typeof showToast === 'function') showToast('⚠️ Auto-install unavailable. Use manual installation instead.', 'warning');
+            }
+
+            setTimeout(() => {
+                if (btnEl) {
+                    btnEl.classList.remove('installing');
+                    btnEl.textContent = '⚡ Install automatically';
+                }
+            }, 1000);
+        }
+
+        // Uninstall RENEarn mod
+        async function uninstallRENEarnMod() {
+            const activeGame = (typeof currentActiveStreamingGame !== 'undefined') ? currentActiveStreamingGame : 'pvz_fusion_4';
+            const dir = getModGameDirectory(activeGame);
+            if (!dir) return;
+
+            if (!confirm('Are you sure you want to uninstall the RENEarn mod from this game?')) return;
+
+            const config = modGameConfigs[activeGame] || modGameConfigs.pvz_fusion_4;
+
+            try {
+                const res = await fetch('/api/mod/uninstall', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gameId: activeGame,
+                        directory: dir,
+                        modDll: config.modDll,
+                        depsDll: config.depsDll
+                    })
+                });
+                const data = await res.json();
+
+                if (data.status === 'ok') {
+                    if (typeof showToast === 'function') showToast('🗑️ Mod uninstalled successfully', 'success');
+                    await detectModInstallation(dir, activeGame);
+                } else {
+                    if (typeof showToast === 'function') showToast('⚠️ ' + (data.message || 'Uninstall failed'), 'warning');
+                }
+            } catch(e) {
+                console.warn('[RENEarn] Uninstall error:', e);
+                if (typeof showToast === 'function') showToast('⚠️ Could not uninstall mod', 'warning');
+            }
+        }
+
+        // Expose functions globally for modal buttons and event handlers
+        window.openManualModInstallModal = openManualModInstallModal;
+        window.closeManualModInstallModal = closeManualModInstallModal;
+        window.selectModDirectory = selectModDirectory;
+        window.onModPathChanged = onModPathChanged;
+        window.downloadModArchive = downloadModArchive;
+        window.openModInstallFolder = openModInstallFolder;
+        window.openModFolder = openModFolder;
+        window.checkModInstallation = checkModInstallation;
+        window.autoInstallMod = autoInstallMod;
+        window.uninstallRENEarnMod = uninstallRENEarnMod;
+        window.updateModBarForGame = updateModBarForGame;
+
+        // Initialize mod bar 1.5 seconds after load
+        setTimeout(() => {
+            initModStatusBar();
+        }, 1500);
     </script>
 </body>
 

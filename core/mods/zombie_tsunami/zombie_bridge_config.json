@@ -1,0 +1,11 @@
+{
+  "bridgeName": "RENEarn Zombie Tsunami PC Hook",
+  "version": "1.0",
+  "endpoint": "http://localhost:8080/api/events",
+  "websocket": "ws://localhost:8080/socket.io/",
+  "actions": {
+    "gift": "spawn_giant_zombie",
+    "like": "add_tsunami_coin",
+    "share": "trigger_wave"
+  }
+}

@@ -1,0 +1,11 @@
+name: RENEarnMinecraft
+version: '1.2.0'
+main: studio.renearn.minecraft.RENEarnPlugin
+api-version: '1.20'
+author: RENEarn Studio
+description: Interactive TikTok Live events connector for Minecraft (Spigot / Paper / Purpur)
+commands:
+  renearn:
+    description: RENEarn Live Connector Command
+    permission: renearn.admin
+    usage: /renearn [status|reload|connect]

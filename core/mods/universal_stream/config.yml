@@ -1,0 +1,33 @@
+# =======================================================
+# RENEarn Minecraft Live Stream Connector Config
+# =======================================================
+# Connects your Minecraft Spigot/Paper server directly
+# to RENEarn Live Studio on port 8080!
+
+server:
+  host: "127.0.0.1"
+  port: 8080
+  api-path: "/api/events"
+  poll-interval-ticks: 10
+  debug: true
+
+events:
+  # On TikTok Rose Gift
+  rose:
+    command: "execute at @a run summon zombie ~ ~ ~ {CustomName:'\"§cGift Zombie\"'}"
+    broadcast: "§e[RENEarn] §f{user} sent a Rose! §cZombie spawned!"
+  
+  # On TikTok Corgi / Donut Gift
+  donut:
+    command: "execute at @a run summon iron_golem ~ ~ ~"
+    broadcast: "§e[RENEarn] §f{user} sent a Donut! §aIron Golem defender spawned!"
+
+  # On TikTok Lion / Universe / Large Gift
+  whale:
+    command: "execute at @a run summon lightning_bolt ~ ~ ~"
+    broadcast: "§6[RENEarn] §lMEGA GIFT from {user}! Lightning strike!"
+
+  # On 1,000 Likes reached
+  likes-goal:
+    command: "give @a diamond 1"
+    broadcast: "§b[RENEarn] §lLike goal reached! Diamond reward to everyone!"

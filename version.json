@@ -4,6 +4,7 @@
     "releaseDate": "2026-10-23",
     "title": "RENEarn Studio v4.1.0 - Game Intelligence & Permissions Update",
     "changelog": [
+        "S2E-Style Mod Status Bar: Real-time mod version & directory detection, auto/manual installation modal with archive downloader",
         "Social Triggers Event Dispatcher: Integrated 10-trigger selector panel & modal (Gift, Likes By Person, All Likes, Follow, Min-Max coins, Viewer Joined, Chat, Share, Super Fan, Custom)",
         "Fixed 50 Likes Team Zombies trigger synchronization across command dashboard, configs, and stream overlay (Trident Jugger-nut Gargantuar)",
         "Dynamic Game-Aware Status Detector (Option 1: dynamically shows PvZ Fusion, Hybrid, Classic, Zombie Tsunami, Minecraft)",
