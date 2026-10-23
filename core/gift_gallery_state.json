@@ -4,7 +4,7 @@
     "dateRange":  "19 Oct - 2 Nov",
     "totalSlots":  12,
     "obtainedCount":  6,
-    "lastUpdated":  1792584087878,
+    "lastUpdated":  1792747915332,
     "gifts":  [
                   {
                       "id":  "5655",
@@ -12,11 +12,11 @@
                       "icon":  "images/tiktok-gifts/5655_rose.webp",
                       "coins":  1,
                       "targetCount":  1,
-                      "currentCount":  364,
+                      "currentCount":  369,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "RoseTester",
-                                     "avatar":  "images/default_avatar.svg"
+                                     "username":  "Caryline",
+                                     "avatar":  "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/238d33a27d47a5aafdcaba9397ecab30~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=d82121ca\u0026x-expires=1792915200\u0026x-signature=8M7jW5zZfN0ApKxh1MdLIvdmS3w%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2"
                                  }
                   },
                   {
@@ -25,11 +25,11 @@
                       "icon":  "images/tiktok-gifts/5487_finger_heart.webp",
                       "coins":  5,
                       "targetCount":  1,
-                      "currentCount":  3,
+                      "currentCount":  4,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "Caryline",
-                                     "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b1f5ebcbdc37526024f630e24ee387f3~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=8add0756\u0026x-expires=1792584000\u0026x-signature=cxUmLNQgZwrDYcRxA3am5wtm%2BHY%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2"
+                                     "username":  "Barney D\u0027 Dinosaur",
+                                     "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-aiso/c20c65cb08c0cfe3bb30493f5c9033ea~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=a8e6f34e\u0026x-expires=1792915200\u0026x-signature=4un8OYdsU0KjwUE5xx4ZAqTO%2BfU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my"
                                  }
                   },
                   {
@@ -38,11 +38,11 @@
                       "icon":  "images/tiktok-gifts/5879_doughnut.webp",
                       "coins":  30,
                       "targetCount":  1,
-                      "currentCount":  10,
+                      "currentCount":  11,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "Nerooooo",
-                                     "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-giso/2c4cc83ea06f8ca020029968ab229831~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=f1af6e27\u0026x-expires=1792476000\u0026x-signature=DmbhZYNDVzYI7i1nSMxmebPKMTk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2"
+                                     "username":  "SpinTester_4269",
+                                     "avatar":  "images/default_avatar.svg"
                                  }
                   },
                   {
@@ -51,10 +51,10 @@
                       "icon":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
                       "coins":  99,
                       "targetCount":  1,
-                      "currentCount":  1,
+                      "currentCount":  2,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "ScreenGaze...",
+                                     "username":  "SpinTester_2323",
                                      "avatar":  "images/default_avatar.svg"
                                  }
                   },

@@ -1789,27 +1789,16 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
     $reps = [Math]::Max(1, [int]$repetition)
     $rawAmt = [Math]::Max(1, [int]$amount)
 
-    # Distribute count per repetition so that the TOTAL summons across all waves
-    # matches the user's intended amount (avoiding amount * repetition multiplication explosion)
-    $countPerRep = 1
-    if ($reps -eq 1) {
-        $countPerRep = $rawAmt
-    } elseif ($rawAmt -ge $reps -and ($rawAmt % $reps -eq 0)) {
-        $countPerRep = [int]($rawAmt / $reps)
-    } elseif ($rawAmt -ge $reps) {
-        $countPerRep = [Math]::Max(1, [int][Math]::Round($rawAmt / $reps))
-    } else {
-        $countPerRep = 1
-    }
-
     $lastResult = @{ success = $true; message = "OK" }
 
-    # INSTANT DISPATCH OPTIMIZATION:
-    # Send the total intended summons directly to the mod queue in a single fast batch so zero HTTP delays or server freezes occur
-    $totalIntendedSummons = if ($rawAmt -gt 1) { $rawAmt } else { ($reps * $countPerRep) }
+    # REPETITION & SUMMON CALCULATION:
+    # When repetition is configured (e.g. Repetition: 3, Amount: 1), total intended summons is reps * amount = 3.
+    # Fast batch mode (interval <= 100ms) delivers all intended summons in 1 rapid non-blocking packet to the mod.
+    # Staggered mode (interval > 100ms) dispatches sequential waves with interval spacing.
+    $totalIntendedSummons = [int]($reps * $rawAmt)
     $useDirectBatch = ($reps -gt 1 -or $interval -le 100)
-    $actualReps = if ($useDirectBatch) { 1 } else { [Math]::Min($reps, 3) }
-    $batchCount = if ($useDirectBatch) { $totalIntendedSummons } else { $countPerRep }
+    $actualReps = if ($useDirectBatch) { 1 } else { $reps }
+    $batchCount = if ($useDirectBatch) { $totalIntendedSummons } else { $rawAmt }
 
     for ($r = 0; $r -lt $actualReps; $r++) {
         foreach ($sub in $subCmds) {
@@ -1838,7 +1827,7 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
 
         # 1. World Powers / Cheats
         $cheatEndpoint = ""
-        $cheatPayload = @{ effect = [string]$countPerRep; amount = [int]$countPerRep; count = [int]$countPerRep; username = $username; avatarUrl = $avatarUrl }
+        $cheatPayload = @{ effect = [string]$batchCount; amount = [int]$batchCount; count = [int]$batchCount; username = $username; avatarUrl = $avatarUrl }
 
         if ($clean -match '^(planteverywhere|planteverywahre)') {
             $cheatEndpoint = "/planteverywhere"
@@ -1906,14 +1895,14 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
             continue
         }
 
-        # 2. Plant Spawning
+        # 2. Plant Spawning (Supports full repetition count e.g. 3 summons)
         $isPlant = ($actionType -eq "plant") -or ($rawCmd -match "spawnplant") -or ($clean -match "(cattail|sunnut|wallnut|peashooter|gatling|threepeater|doomcherry|melon|potato)")
         if ($isPlant -and ($actionType -ne "zombie")) {
             $plantId = Resolve-PlantId $rawCmd
             $payload = @{
                 effect     = [string]$plantId
-                count      = [int]$countPerRep
-                amount     = [int]$countPerRep
+                count      = [int]$batchCount
+                amount     = [int]$batchCount
                 senderName = [string]$username
                 username   = [string]$username
             }
@@ -1921,12 +1910,12 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
             continue
         }
 
-        # 3. Zombie Spawning (Default)
+        # 3. Zombie Spawning (Supports full repetition count e.g. 3 summons)
         $zombieId = Resolve-ZombieId $rawCmd
         $payload = @{
             effect     = [string]$zombieId
-            count      = [int]$countPerRep
-            amount     = [int]$countPerRep
+            count      = [int]$batchCount
+            amount     = [int]$batchCount
             senderName = [string]$username
             username   = [string]$username
         }
@@ -6036,7 +6025,7 @@ INSTALLATION INSTRUCTIONS:
                     # 1. Check if gift matches a multi-spinner trigger
                     $matchedSpinner = $null
 
-                    # Priority A: Check if a configured gift card matches this gift and has a bound spinner (e.g. Card 32 Heart Me -> spinner_1791698132034)
+                    # Priority A: Check if a configured gift card matches this gift and has a bound spinner (e.g. Card 32 Heart Me -> spinner_plusminus)
                     if ($config -and $config.gifts) {
                         foreach ($g in $config.gifts) {
                             if (-not $g.enabled) { continue }
@@ -6054,7 +6043,7 @@ INSTALLATION INSTRUCTIONS:
                                 }
                             }
                             if ($isCardMatch) {
-                                $bSpId = if ($g.spinnerId) { [string]$g.spinnerId } elseif ($g.command -match '^spinner_') { [string]$g.command } else { "" }
+                                $bSpId = if ($g.spinnerId) { [string]$g.spinnerId } elseif ($g.triggerSpinner) { [string]$g.triggerSpinner } elseif ($g.command -match '^spinner_') { [string]$g.command } else { "" }
                                 if ($bSpId -and $config.spinners) {
                                     $foundSp = $config.spinners | Where-Object { [string]$_.id -eq $bSpId } | Select-Object -First 1
                                     if ($foundSp) {
@@ -6066,83 +6055,85 @@ INSTALLATION INSTRUCTIONS:
                         }
                     }
 
-                    # Priority B: Match directly by spinner gift settings (giftId, giftName, or aliases)
-                    # ONLY if the incoming gift is not already an enabled direct game action card in config.gifts (e.g. Card 32 Heart Me -> Spawn Big Sun Nut)
-                    $hasActiveDirectCard = $false
-                    if ($config -and $config.gifts) {
-                        foreach ($dg in $config.gifts) {
-                            if (-not $dg.enabled) { continue }
-                            $isDirect = ($dg.command -and $dg.command -ne "spin_wheel" -and $dg.command -notmatch '^spinner_' -and $dg.actionType -ne "spinner" -and -not $dg.spinnerId -and -not $dg.triggerSpinner)
-                            if (-not $isDirect) { continue }
-                            $dgGId = if ($dg.giftId) { [string]$dg.giftId.Trim() } else { "" }
-                            $curReqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
-                            $curAutoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
-                            if ($curReqGId -and $dgGId -and ($dgGId -eq $curReqGId -or ($curAutoGId -and $dgGId -eq $curAutoGId))) {
-                                $hasActiveDirectCard = $true; break
+                    # Priority B: Universal direct spinner match (Spinner 1 Perfume, Spinner 2 Doughnut, Spinner 3 Hat, Spinner 4 Heart Me, Spinner 5 Bubble Gum)
+                    # Guarantees that ANY gift bound to a spinner triggers the spinner visualizer & reward!
+                    if (-not $matchedSpinner -and $config -and $config.spinners) {
+                        foreach ($sp in $config.spinners) {
+                            if (-not $sp.enabled) { continue }
+                            $spGId = if ($sp.giftId) { [string]$sp.giftId.Trim() } else { "" }
+                            $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
+                            $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
+                            if ($reqGId -and $spGId -and ($spGId -eq $reqGId -or ($autoGId -and $spGId -eq $autoGId))) {
+                                $matchedSpinner = $sp; break
                             }
-                            if ($dg.giftName -and $giftName) {
-                                $cleanDG = ($dg.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                            # Check clean alphanumeric ID match
+                            $cleanSpGId = ($spGId -replace '[^a-zA-Z0-9]','').ToLower()
+                            $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
+                            $cleanAutoGId = ($autoGId -replace '[^a-zA-Z0-9]','').ToLower()
+                            if ($cleanSpGId -and (($cleanReqGId -and $cleanSpGId -eq $cleanReqGId) -or ($cleanAutoGId -and $cleanSpGId -eq $cleanAutoGId))) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Heart Me aliases (Spinner 4)
+                            if (($cleanSpGId -eq '7934' -or $cleanSpGId -eq 'heartme' -or $cleanSpGId -eq 'heart') -and ($cleanReqGId -eq '7934' -or $cleanReqGId -eq 'heartme' -or $cleanReqGId -eq 'heart')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Perfume aliases (Spinner 1)
+                            if (($cleanSpGId -eq '5658' -or $cleanSpGId -eq '5585' -or $cleanSpGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Doughnut aliases (Spinner 2)
+                            if (($cleanSpGId -eq '5879' -or $cleanSpGId -eq 'doughnut' -or $cleanSpGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Hat and Mustache aliases (Spinner 3)
+                            if (($cleanSpGId -eq '6427' -or $cleanSpGId -eq 'hatandmustache' -or $cleanSpGId -eq 'hat') -and ($cleanReqGId -eq '6427' -or $cleanReqGId -eq 'hatandmustache' -or $cleanReqGId -eq 'hat')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Bubble Gum aliases (Spinner 5)
+                            if (($cleanSpGId -eq '13087' -or $cleanSpGId -eq 'bubblegum') -and ($cleanReqGId -eq '13087' -or $cleanReqGId -eq 'bubblegum')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Rose aliases
+                            if (($cleanSpGId -eq '5655' -or $cleanSpGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Ice Cream Cone aliases
+                            if (($cleanSpGId -eq '5827' -or $cleanSpGId -eq 'icecream' -or $cleanSpGId -eq 'icecreamcone') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream' -or $cleanReqGId -eq 'icecreamcone')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check Finger Heart aliases
+                            if (($cleanSpGId -eq '5487' -or $cleanSpGId -eq 'fingerheart') -and ($cleanReqGId -eq '5487' -or $cleanReqGId -eq 'fingerheart')) {
+                                $matchedSpinner = $sp; break
+                            }
+                            # Check giftName matching
+                            if ($giftName -and $sp.giftName) {
                                 $cleanReq = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                if ($cleanDG -and $cleanReq -and ($cleanDG -eq $cleanReq -or $cleanDG.Contains($cleanReq) -or $cleanReq.Contains($cleanDG))) {
-                                    $hasActiveDirectCard = $true; break
+                                $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                if ($cleanReq -and $cleanSp -and ($cleanReq -eq $cleanSp -or $cleanReq.Contains($cleanSp) -or $cleanSp.Contains($cleanReq))) {
+                                    $matchedSpinner = $sp; break
+                                }
+                            }
+                            # Check autoGift name matching
+                            if ($autoGift -and $autoGift.name -and $sp.giftName) {
+                                $cleanAuto = ($autoGift.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                if ($cleanAuto -and $cleanSp -and ($cleanAuto -eq $cleanSp -or $cleanAuto.Contains($cleanSp) -or $cleanSp.Contains($cleanAuto))) {
+                                    $matchedSpinner = $sp; break
+                                }
+                            }
+                            # Check verified catalog name
+                            if ($script:verifiedGiftsCatalog -and $reqGId) {
+                                $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $reqGId } | Select-Object -First 1
+                                if ($vg -and $vg.name -and $sp.giftName) {
+                                    $cleanVg = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
+                                    $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                    if ($cleanVg -and $cleanSp -and ($cleanVg -eq $cleanSp -or $cleanVg.Contains($cleanSp) -or $cleanSp.Contains($cleanVg))) {
+                                        $matchedSpinner = $sp; break
+                                    }
                                 }
                             }
                         }
                     }
-
-                    if (-not $hasActiveDirectCard -and -not $matchedSpinner -and $config -and $config.spinners) {
-                        foreach ($sp in $config.spinners) {
-                            if (-not $sp.enabled) { continue }
-                                $spGId = if ($sp.giftId) { [string]$sp.giftId.Trim() } else { "" }
-                                $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
-                                $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
-                                if ($reqGId -and $spGId -and ($spGId -eq $reqGId -or ($autoGId -and $spGId -eq $autoGId))) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check clean alphanumeric ID match
-                                $cleanSpGId = ($spGId -replace '[^a-zA-Z0-9]','').ToLower()
-                                $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
-                                $cleanAutoGId = ($autoGId -replace '[^a-zA-Z0-9]','').ToLower()
-                                if ($cleanSpGId -and (($cleanReqGId -and $cleanSpGId -eq $cleanReqGId) -or ($cleanAutoGId -and $cleanSpGId -eq $cleanAutoGId))) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check Perfume aliases
-                                if (($cleanSpGId -eq '5658' -or $cleanSpGId -eq '5585' -or $cleanSpGId -eq 'perfume') -and ($cleanReqGId -eq '5658' -or $cleanReqGId -eq '5585' -or $cleanReqGId -eq 'perfume')) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check Doughnut aliases
-                                if (($cleanSpGId -eq '5879' -or $cleanSpGId -eq 'doughnut' -or $cleanSpGId -eq 'donut') -and ($cleanReqGId -eq '5879' -or $cleanReqGId -eq 'doughnut' -or $cleanReqGId -eq 'donut')) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check Rose aliases
-                                if (($cleanSpGId -eq '5655' -or $cleanSpGId -eq 'rose') -and ($cleanReqGId -eq '5655' -or $cleanReqGId -eq 'rose')) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check Ice Cream Cone aliases
-                                if (($cleanSpGId -eq '5827' -or $cleanSpGId -eq 'icecream' -or $cleanSpGId -eq 'icecreamcone') -and ($cleanReqGId -eq '5827' -or $cleanReqGId -eq 'icecream' -or $cleanReqGId -eq 'icecreamcone')) {
-                                    $matchedSpinner = $sp; break
-                                }
-                                # Check giftName matching
-                                if ($giftName -and $sp.giftName) {
-                                    $cleanReq = ($giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                    $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                    if ($cleanReq -and $cleanSp -and ($cleanReq -eq $cleanSp -or $cleanReq.Contains($cleanSp) -or $cleanSp.Contains($cleanReq))) {
-                                        $matchedSpinner = $sp; break
-                                    }
-                                }
-                                # Check verified catalog name
-                                if ($script:verifiedGiftsCatalog -and $reqGId) {
-                                    $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq $reqGId } | Select-Object -First 1
-                                    if ($vg -and $vg.name -and $sp.giftName) {
-                                        $cleanVg = ($vg.name -replace '[^a-zA-Z0-9]','').ToLower()
-                                        $cleanSp = ($sp.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                        if ($cleanVg -and $cleanSp -and ($cleanVg -eq $cleanSp -or $cleanVg.Contains($cleanSp) -or $cleanSp.Contains($cleanVg))) {
-                                            $matchedSpinner = $sp; break
-                                        }
-                                    }
-                                }
-                            }
-                        }
 
                     if ($matchedSpinner) {
                         # Trigger that specific spinner!
@@ -6541,7 +6532,7 @@ INSTALLATION INSTRUCTIONS:
                                 foreach ($sc in $cardGameCmds) {
                                     $scAmt = if ($sc.amount) { [int]$sc.amount } else { 1 }
                                     $scAct = if ($sc.actionType) { $sc.actionType } else { $matchedGift.actionType }
-                                    $scFinalAmt = $scAmt * $repeatCount
+                                    $scFinalAmt = if ($matchedGift.repetitionMultiplier -eq $true -or $matchedGift.repetitionMultiplier -eq "true") { $scAmt } else { $scAmt * $repeatCount }
                                     SendToPvZGame $scAct $sc.command $scFinalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
                                 }
                             } else {

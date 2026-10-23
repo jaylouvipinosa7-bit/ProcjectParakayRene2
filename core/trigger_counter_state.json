@@ -1,13 +1,208 @@
 ﻿{
-    "totalTriggers":  0,
-    "streak":  0,
-    "lastTriggerTime":  1792587897289,
+    "totalTriggers":  37,
+    "streak":  1,
+    "lastTriggerTime":  1792747860230,
     "goal":  100,
     "goalTitle":  "Mega Wave Boss",
     "gifts":  {
-
+                  "fried_chicken":  {
+                                        "name":  "Fried Chicken",
+                                        "giftId":  "15328",
+                                        "count":  1,
+                                        "icon":  "images/game-icons/pvz/spawn_ultimate_machine_nut.webp",
+                                        "lastGifter":  "Barney D\u0027 Dinosaur"
+                                    },
+                  "love_you_so_much":  {
+                                           "name":  "Love you so much",
+                                           "giftId":  "15231",
+                                           "count":  1,
+                                           "icon":  "images/game-icons/pvz/spawn_supernutshooter.webp",
+                                           "lastGifter":  "Barney D\u0027 Dinosaur"
+                                       },
+                  "finger_heart":  {
+                                       "name":  "Finger Heart",
+                                       "giftId":  "5487",
+                                       "count":  1,
+                                       "icon":  "images/game-icons/pvz/spawn_super_black_horse.webp",
+                                       "lastGifter":  "Barney D\u0027 Dinosaur"
+                                   },
+                  "i_love_you":  {
+                                     "name":  "I love you",
+                                     "giftId":  "5779",
+                                     "count":  1,
+                                     "icon":  "images/game-icons/pvz/spawn_ultimate_paper_zombie.webp",
+                                     "lastGifter":  "Barney D\u0027 Dinosaur"
+                                 },
+                  "rose":  {
+                               "name":  "Rose",
+                               "giftId":  "5655",
+                               "count":  5,
+                               "icon":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+                               "lastGifter":  "Caryline"
+                           },
+                  "popular_vote":  {
+                                       "name":  "Popular Vote",
+                                       "giftId":  "13651",
+                                       "count":  2,
+                                       "icon":  "images/game-icons/pvz/spawn_ultimate_chomper.webp",
+                                       "lastGifter":  "S E A N N🍃"
+                                   },
+                  "goten":  {
+                                "name":  "GOten",
+                                "giftId":  "1228602",
+                                "count":  2,
+                                "icon":  "images/game-icons/pvz/spawn_squalour_zombie.webp",
+                                "lastGifter":  "S E A N N🍃"
+                            },
+                  "glow_stick":  {
+                                     "name":  "Glow Stick",
+                                     "giftId":  "6788",
+                                     "count":  11,
+                                     "icon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
+                                     "lastGifter":  "￴ⁱᵃᵐ|J O H N 💲_💲"
+                                 },
+                  "hamsa_protect":  {
+                                        "name":  "Hamsa Protect",
+                                        "giftId":  "1429010",
+                                        "count":  3,
+                                        "icon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                                        "lastGifter":  "aninggggggg"
+                                    },
+                  "heart_me":  {
+                                   "name":  "Heart Me",
+                                   "giftId":  "7934",
+                                   "count":  9,
+                                   "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                                   "lastGifter":  "Neyyy"
+                               },
+                  "palm_of_protection":  {
+                                             "name":  "Palm of Protection",
+                                             "giftId":  "1429010",
+                                             "count":  1,
+                                             "icon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                                             "lastGifter":  "Viewer_1435"
+                                         }
               },
     "recentTriggers":  [
-
+                           {
+                               "id":  "1792745400293_1024",
+                               "username":  "S E A N N🍃",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/72201c268a13898567c34095378b053b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=b9114e84\u0026x-expires=1792915200\u0026x-signature=kzwwdHHiqQ%2Fmll4OQwcmqz8a6GI%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1792745400293
+                           },
+                           {
+                               "id":  "1792745404219_4718",
+                               "username":  "S E A N N🍃",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/72201c268a13898567c34095378b053b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=b9114e84\u0026x-expires=1792915200\u0026x-signature=kzwwdHHiqQ%2Fmll4OQwcmqz8a6GI%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "Popular Vote",
+                               "giftIcon":  "images/game-icons/pvz/spawn_ultimate_chomper.webp",
+                               "commandLabel":  "Spawn Ultimate Chomper",
+                               "count":  1,
+                               "timestamp":  1792745404219
+                           },
+                           {
+                               "id":  "1792745409017_5704",
+                               "username":  "S E A N N🍃",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/72201c268a13898567c34095378b053b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=b9114e84\u0026x-expires=1792915200\u0026x-signature=kzwwdHHiqQ%2Fmll4OQwcmqz8a6GI%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "GOten",
+                               "giftIcon":  "images/game-icons/pvz/spawn_squalour_zombie.webp",
+                               "commandLabel":  "Ultimate Gold Gargantuar",
+                               "count":  1,
+                               "timestamp":  1792745409017
+                           },
+                           {
+                               "id":  "1792745421429_7607",
+                               "username":  "￴ⁱᵃᵐ|J O H N 💲_💲",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/02c26e1e98ac88a986f99531008a063f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=5f6dfab2\u0026x-expires=1792915200\u0026x-signature=8wRR7W4QIY%2B81LJAXxL6S3SZLbM%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "Glow Stick",
+                               "giftIcon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
+                               "commandLabel":  "Spawn SummonedHorse",
+                               "count":  1,
+                               "timestamp":  1792745421429
+                           },
+                           {
+                               "id":  "1792745444012_7734",
+                               "username":  "￴ⁱᵃᵐ|J O H N 💲_💲",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/02c26e1e98ac88a986f99531008a063f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=5f6dfab2\u0026x-expires=1792915200\u0026x-signature=8wRR7W4QIY%2B81LJAXxL6S3SZLbM%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "Glow Stick",
+                               "giftIcon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
+                               "commandLabel":  "Spawn SummonedHorse",
+                               "count":  1,
+                               "timestamp":  1792745444012
+                           },
+                           {
+                               "id":  "1792745452181_2173",
+                               "username":  "aninggggggg",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=9a9b0baa\u0026x-expires=1792915200\u0026x-signature=2hS2447j3r8xDtXwmoY24OKLe2s%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1792745452181
+                           },
+                           {
+                               "id":  "1792745482183_2965",
+                               "username":  "aninggggggg",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=9a9b0baa\u0026x-expires=1792915200\u0026x-signature=2hS2447j3r8xDtXwmoY24OKLe2s%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                               "giftName":  "Hamsa Protect",
+                               "giftIcon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                               "commandLabel":  "Spawn Starcaller Snipea (1429)",
+                               "count":  1,
+                               "timestamp":  1792745482183
+                           },
+                           {
+                               "id":  "1792745527754_3640",
+                               "username":  "aninggggggg",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=9a9b0baa\u0026x-expires=1792915200\u0026x-signature=2hS2447j3r8xDtXwmoY24OKLe2s%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                               "giftName":  "Hamsa Protect",
+                               "giftIcon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                               "commandLabel":  "Spawn Starcaller Snipea (1429)",
+                               "count":  1,
+                               "timestamp":  1792745527754
+                           },
+                           {
+                               "id":  "1792745531735_5251",
+                               "username":  "aninggggggg",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=9a9b0baa\u0026x-expires=1792915200\u0026x-signature=2hS2447j3r8xDtXwmoY24OKLe2s%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                               "giftName":  "Hamsa Protect",
+                               "giftIcon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                               "commandLabel":  "Spawn Starcaller Snipea (1429)",
+                               "count":  1,
+                               "timestamp":  1792745531735
+                           },
+                           {
+                               "id":  "1792745768524_2851",
+                               "username":  "Senn",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/af7b0db8e910d06974bddd5d4ed6a5d6~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=b3439382\u0026x-expires=1792915200\u0026x-signature=3pmLkb7sVPQ9SaJgYr7IWrMnh%2BM%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1792745768524
+                           },
+                           {
+                               "id":  "1792745789427_8435",
+                               "username":  "Neyyy",
+                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c90b9ee38aa75fcf0cda13f742f8e6fe~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=4c83b5fc\u0026x-expires=1792915200\u0026x-signature=q6MShiKogqIE6U2PYBGHn4maJl0%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1792745789427
+                           },
+                           {
+                               "id":  "1792747860230_7417",
+                               "username":  "Viewer_1435",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Palm of Protection",
+                               "giftIcon":  "images/game-icons/pvz/spawn_starsniper.webp",
+                               "commandLabel":  "Spawn Starcaller Snipea (1429)",
+                               "count":  1,
+                               "timestamp":  1792747860230
+                           }
                        ]
 }

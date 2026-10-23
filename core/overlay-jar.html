@@ -371,6 +371,33 @@
             color: #fef08a;
             margin-top: 2px;
         }
+
+        /* GOLD PREMIUM TAG (PIGGY BANK ONLY) */
+        .jar-premium-tag {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            background: linear-gradient(135deg, #f59e0b 0%, #eab308 50%, #fbbf24 100%);
+            color: #0f172a;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6), 0 0 16px rgba(245, 158, 11, 0.7);
+            border: 1.5px solid #fef08a;
+            z-index: 45;
+            text-transform: uppercase;
+            display: none;
+            pointer-events: none;
+            animation: goldShimmer 2.5s infinite ease-in-out;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(245, 158, 11, 0.6)); transform: scale(1); }
+            50% { filter: brightness(1.22) drop-shadow(0 0 14px rgba(251, 191, 36, 0.95)); transform: scale(1.04); }
+        }
     </style>
 </head>
 <body>
@@ -397,6 +424,7 @@
 
             <!-- JAR STAGE -->
             <div class="jar-stage" id="jarStage">
+                <div class="jar-premium-tag" id="jarPremiumTag">PREMIUM</div>
                 <img id="imgJarBack" class="jar-glass-back" src="images/jars/jar_mason.png" alt="Jar Back">
                 <canvas id="physicsCanvas" width="440" height="540"></canvas>
                 <div class="jar-trapdoor-lid" id="jarTrapdoorLid"></div>
@@ -541,7 +569,8 @@
             return img;
         }
 
-        // Immediately preload all popular gift art so images are complete right away
+        // Immediately preload all popular gift art and gold coin so images are complete right away
+        getCachedImage('images/jars/gold_coin.png');
         POPULAR_TIKTOK_GIFTS.forEach(g => {
             getCachedImage(g.icon);
         });
@@ -828,20 +857,20 @@
                 }
             } else if (skinName === 'piggy') {
                 const piggyContour = [
-                    [180, 85], [145, 95], [110, 120], [75, 145], [52, 180],
-                    [36, 220], [28, 270], [30, 320], [40, 360], [56, 400],
+                    [185, 92], [145, 102], [110, 126], [75, 150], [52, 185],
+                    [36, 225], [28, 270], [30, 320], [40, 360], [56, 400],
                     [78, 440], [92, 475], [105, 498],
                     [335, 498],
                     [348, 475], [362, 440], [384, 400], [400, 360], [410, 320],
-                    [412, 270], [404, 220], [388, 180], [365, 145], [330, 120],
-                    [295, 95], [260, 85]
+                    [412, 270], [404, 225], [388, 185], [365, 150], [330, 126],
+                    [295, 102], [255, 92]
                 ];
-                skinWalls = createContourWalls(piggyContour, 26, wallOpts);
-                if (isPriceMode) {
-                    const lipL = createWallSegment(145, 88, 195, 92, 22, wallOpts);
-                    const lipR = createWallSegment(295, 88, 245, 92, 22, wallOpts);
-                    skinWalls.push(lipL, lipR);
-                }
+                skinWalls = createContourWalls(piggyContour, 24, wallOpts);
+
+                // Top funnel guides to ensure 100% of coins slide straight through the slot into the piggy belly
+                const funnelL = createWallSegment(140, 0, 185, 92, 20, wallOpts);
+                const funnelR = createWallSegment(300, 0, 255, 92, 20, wallOpts);
+                skinWalls.push(funnelL, funnelR);
             } else if (skinName === 'crate') {
                 const crateContour = [
                     [42, 35], [55, 90],
@@ -857,20 +886,14 @@
                 }
             } else if (skinName === 'decanter') {
                 const decanterContour = [
-                    [145, 25], [158, 60], [160, 140], [158, 200],
-                    [142, 250], [115, 290], [82, 330], [58, 370],
-                    [50, 410], [52, 450], [64, 485], [85, 512],
-                    [355, 512],
-                    [376, 485], [388, 450], [390, 410],
-                    [382, 370], [358, 330], [325, 290], [298, 250],
-                    [282, 200], [280, 140], [282, 60], [295, 25]
+                    [150, 30], [165, 65], [168, 140], [165, 200],
+                    [148, 250], [120, 285], [92, 330], [78, 375],
+                    [78, 410], [86, 445], [105, 475], [130, 495], [155, 502],
+                    [285, 502], [310, 495], [335, 475], [354, 445],
+                    [362, 410], [362, 375], [348, 330], [320, 285],
+                    [292, 250], [275, 200], [272, 140], [275, 65], [290, 30]
                 ];
-                skinWalls = createContourWalls(decanterContour, 26, wallOpts);
-                if (isPriceMode) {
-                    const lipL = createWallSegment(145, 30, 190, 36, 20, wallOpts);
-                    const lipR = createWallSegment(295, 30, 250, 36, 20, wallOpts);
-                    skinWalls.push(lipL, lipR);
-                }
+                skinWalls = createContourWalls(decanterContour, 24, wallOpts);
             } else {
                 // Classic S2E Transparent Mason Jar
                 const masonContour = [
@@ -902,7 +925,17 @@
             const frontImg = document.getElementById('imgJarFront');
             if (backImg) backImg.src = imgSrc;
             if (frontImg) frontImg.src = imgSrc;
+
+            // Toggle gold PREMIUM badge for Piggy Bank and Decanter
+            const premTag = document.getElementById('jarPremiumTag');
+            if (premTag) {
+                premTag.style.display = (settings.skin === 'piggy' || settings.skin === 'decanter') ? 'block' : 'none';
+            }
+
             buildJarBoundaries(settings.skin);
+            if (settings.skin === 'decanter' && typeof updatePotionFillTarget === 'function') {
+                updatePotionFillTarget();
+            }
         }
 
         // Dynamic particle burst generators
@@ -975,18 +1008,374 @@
             return Math.max(10, Math.min(52, scaled));
         }
 
+        // Dedicated Piggy Bank Gold Coin sizing scale:
+        // Gift-based: 1 coin = small coin (9.5px radius, 19px diameter)
+        // High coins (e.g. Galaxy = 1000 coins) = big coin (21px radius, 42px diameter)
+        // Calibrated so all coins smoothly slide through the coin slot and fit inside the piggy bank belly
+        function calculatePiggyCoinRadius(coinVal, scaleMultiplier = 1.0) {
+            const c = Math.max(1, parseInt(coinVal, 10) || 1);
+            let baseR = 10;
+            if (c >= 20000) {
+                baseR = 25; // Universe / Lion (20k-35k coins)
+            } else if (c >= 2000) {
+                baseR = 23; // Whale Diving / Falcon (2k-10k coins)
+            } else if (c >= 1000) {
+                baseR = 21; // Galaxy / Fireworks / Rose Bear (1k coins) - big coin!
+            } else if (c >= 500) {
+                baseR = 18; // Money Gun / Swan (500 coins)
+            } else if (c >= 200) {
+                baseR = 16; // Corgi / Hearts / Galaxy's Bestest (200-300 coins)
+            } else if (c >= 100) {
+                baseR = 14; // Confetti / Hand Heart (100 coins)
+            } else if (c >= 50) {
+                baseR = 13; // Cap / Sunglasses (50-99 coins)
+            } else if (c >= 20) {
+                baseR = 12; // Perfume / Doughnut (20-30 coins)
+            } else if (c >= 5) {
+                baseR = 11; // Finger Heart (5 coins)
+            } else {
+                baseR = 9.5; // 1 Coin gifts: Rose, Heart Me, Ice Cream, GG (small coin!)
+            }
+            const scaled = Math.round(baseR * scaleMultiplier);
+            return Math.max(8, Math.min(26, scaled));
+        }
+
+        // ==========================================
+        // DECANTER RED HEALTH POTION DYNAMIC FLUID SYSTEM
+        // ==========================================
+        const POTION_MAX_POINTS = 36;
+        let potionWavePoints = [];
+        let potionFillLevel = 0.06; // current fill level (0.05 to 0.90)
+        let targetPotionFill = 0.06;
+        let potionSloshAngle = 0;
+        let potionSloshVelocity = 0;
+        let potionBubbles = [];
+        let potionStreams = []; // In-flight pouring liquid drops/streams
+        let potionSplashParticles = [];
+
+        // Decanter inner glass cavity clipping path
+        const DECANTER_INNER_CAVITY = [
+            [160, 35], [161, 50], [171, 65], [173, 80], [174, 95], [175, 110],
+            [170, 125], [175, 140], [175, 155], [174, 170], [172, 185], [170, 200],
+            [163, 215], [161, 230], [152, 245], [136, 260], [124, 275], [110, 290],
+            [100, 305], [92, 320], [86, 335], [83, 350], [81, 365], [81, 380],
+            [81, 395], [84, 410], [88, 425], [94, 440], [103, 455], [114, 470],
+            [129, 485], [151, 500],
+            // Bottom base floor
+            [289, 500],
+            // Right wall going up
+            [311, 485], [326, 470], [337, 455], [346, 440], [352, 425], [356, 410],
+            [359, 395], [359, 380], [359, 365], [357, 350], [353, 335], [347, 320],
+            [339, 305], [329, 290], [315, 275], [303, 260], [287, 245], [278, 230],
+            [277, 215], [269, 200], [267, 185], [265, 170], [265, 155], [264, 140],
+            [269, 125], [264, 110], [265, 95], [266, 80], [268, 65], [279, 50],
+            [280, 35]
+        ];
+
+        function initPotionWavePoints() {
+            potionWavePoints = [];
+            for (let i = 0; i < POTION_MAX_POINTS; i++) {
+                potionWavePoints.push({
+                    x: 65 + (i / (POTION_MAX_POINTS - 1)) * 310,
+                    h: 0,
+                    vh: 0
+                });
+            }
+        }
+        initPotionWavePoints();
+
+        function getSurfaceYAtX(x) {
+            const curSurfaceY = 500 - potionFillLevel * (500 - 140);
+            const sloshOffset = (x - 220) * Math.sin(potionSloshAngle);
+            let waveH = 0;
+            if (potionWavePoints.length > 0) {
+                const ratio = Math.max(0, Math.min(1, (x - 65) / 310));
+                const idx = Math.min(potionWavePoints.length - 1, Math.floor(ratio * (potionWavePoints.length - 1)));
+                waveH = potionWavePoints[idx].h;
+            }
+            return curSurfaceY + waveH + sloshOffset;
+        }
+
+        function triggerLiquidSplash(impactX, strength = 1.0) {
+            let bestIdx = 0;
+            let minDist = 9999;
+            for (let i = 0; i < potionWavePoints.length; i++) {
+                const d = Math.abs(potionWavePoints[i].x - impactX);
+                if (d < minDist) { minDist = d; bestIdx = i; }
+            }
+            
+            const force = (14 + strength * 16);
+            if (potionWavePoints[bestIdx]) {
+                potionWavePoints[bestIdx].vh -= force;
+                if (bestIdx > 0) potionWavePoints[bestIdx - 1].vh -= force * 0.7;
+                if (bestIdx < potionWavePoints.length - 1) potionWavePoints[bestIdx + 1].vh -= force * 0.7;
+            }
+
+            // Angular sloshing impulse (causes water surface to swing left and right!)
+            potionSloshVelocity += (Math.random() - 0.5) * 0.055 * strength;
+
+            // Splash particles (fly up and fall back)
+            const count = 5 + Math.floor(strength * 4);
+            const curY = getSurfaceYAtX(impactX);
+            for (let s = 0; s < count; s++) {
+                potionSplashParticles.push({
+                    x: impactX + (Math.random() - 0.5) * 18,
+                    y: curY - 2,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: -4 - Math.random() * 5.5,
+                    r: 2 + Math.random() * 2.5,
+                    life: 1.0
+                });
+            }
+
+            // Rising magical bubbles
+            for (let b = 0; b < 3 + Math.floor(strength * 3); b++) {
+                potionBubbles.push({
+                    x: 220 + (Math.random() - 0.5) * 80,
+                    y: Math.min(480, curY + 25 + Math.random() * 90),
+                    r: 2 + Math.random() * 3.5,
+                    vy: -1.2 - Math.random() * 1.6,
+                    wobble: Math.random() * Math.PI * 2,
+                    alpha: 0.85
+                });
+            }
+        }
+
+        function updatePotionFillTarget() {
+            const isInfinite = (settings.capacityMode === 'infinite' || settings.isInfiniteGoal === true || settings.coinGoal === 'infinite' || settings.coinGoal === 0);
+            const isPriceMode = (settings.capacityMode === 'price') || isInfinite;
+            const targetLimit = isPriceMode ? (settings.coinGoal || 500) : (settings.maxCapacity || 80);
+            const currentProgress = isPriceMode ? currentCoins : currentCount;
+
+            const ratio = isInfinite
+                ? Math.min(0.90, 0.06 + ((currentCoins % 1000) / 1000) * 0.84)
+                : Math.min(0.90, 0.06 + Math.min(1.0, currentProgress / Math.max(1, targetLimit)) * 0.84);
+            targetPotionFill = ratio;
+        }
+
+        function updatePotionSimulation() {
+            // 1. Smoothly rise liquid level towards target
+            potionFillLevel += (targetPotionFill - potionFillLevel) * 0.04;
+
+            // 2. Angular slosh swing (pendulum harmonic motion with spring torque and damping)
+            // Swings like real water in a decanter, then dampens and stops in ~1.5 - 2s
+            potionSloshAngle += potionSloshVelocity;
+            potionSloshVelocity += (-potionSloshAngle * 0.07); // Restoring gravity
+            potionSloshVelocity *= 0.94; // Velocity damping
+            potionSloshAngle *= 0.96; // Angle decay
+
+            // 3. Wave column spring physics
+            const tension = 0.028;
+            const damping = 0.94;
+            const spread = 0.22;
+
+            for (let i = 0; i < potionWavePoints.length; i++) {
+                const p = potionWavePoints[i];
+                p.vh += -p.h * tension;
+                p.h += p.vh;
+                p.vh *= damping;
+            }
+
+            // Neighbor wave propagation
+            for (let pass = 0; pass < 2; pass++) {
+                for (let i = 0; i < potionWavePoints.length; i++) {
+                    if (i > 0) {
+                        const dL = potionWavePoints[i].h - potionWavePoints[i - 1].h;
+                        potionWavePoints[i - 1].vh += dL * spread;
+                    }
+                    if (i < potionWavePoints.length - 1) {
+                        const dR = potionWavePoints[i].h - potionWavePoints[i + 1].h;
+                        potionWavePoints[i + 1].vh += dR * spread;
+                    }
+                }
+            }
+
+            // 4. Update falling pouring liquid streams/droplets
+            for (let i = potionStreams.length - 1; i >= 0; i--) {
+                const s = potionStreams[i];
+                s.y += s.vy;
+                s.vy += 0.5; // gravity
+                const curSurface = getSurfaceYAtX(s.x);
+                if (s.y >= curSurface) {
+                    triggerLiquidSplash(s.x, s.strength);
+                    potionStreams.splice(i, 1);
+                }
+            }
+
+            // 5. Update splash droplets
+            for (let i = potionSplashParticles.length - 1; i >= 0; i--) {
+                const p = potionSplashParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.35;
+                p.life -= 0.035;
+                if (p.life <= 0 || p.y > getSurfaceYAtX(p.x) + 5) {
+                    potionSplashParticles.splice(i, 1);
+                }
+            }
+
+            // 6. Update rising bubbles
+            for (let i = potionBubbles.length - 1; i >= 0; i--) {
+                const b = potionBubbles[i];
+                b.y += b.vy;
+                b.wobble += 0.08;
+                b.x += Math.sin(b.wobble) * 0.45;
+                if (b.y <= getSurfaceYAtX(b.x) || b.y < 120) {
+                    potionBubbles.splice(i, 1);
+                }
+            }
+        }
+
+        function renderDecanterLiquid(targetCtx) {
+            targetCtx.save();
+
+            // 1. Clip to Decanter Inner Cavity
+            targetCtx.beginPath();
+            targetCtx.moveTo(DECANTER_INNER_CAVITY[0][0], DECANTER_INNER_CAVITY[0][1]);
+            for (let i = 1; i < DECANTER_INNER_CAVITY.length; i++) {
+                targetCtx.lineTo(DECANTER_INNER_CAVITY[i][0], DECANTER_INNER_CAVITY[i][1]);
+            }
+            targetCtx.closePath();
+            targetCtx.clip();
+
+            const curSurfaceY = 500 - potionFillLevel * (500 - 140);
+
+            // 2. Liquid Body Polygon
+            targetCtx.beginPath();
+            targetCtx.moveTo(400, 520);
+            targetCtx.lineTo(40, 520);
+            targetCtx.lineTo(40, curSurfaceY);
+
+            for (let i = 0; i < potionWavePoints.length; i++) {
+                const wp = potionWavePoints[i];
+                const sloshOffset = (wp.x - 220) * Math.sin(potionSloshAngle);
+                const py = curSurfaceY + wp.h + sloshOffset;
+                targetCtx.lineTo(wp.x, py);
+            }
+            targetCtx.lineTo(400, curSurfaceY);
+            targetCtx.closePath();
+
+            // Rich Red Health Potion Gradient
+            const liquidGrad = targetCtx.createLinearGradient(0, 505, 0, Math.max(30, curSurfaceY - 30));
+            liquidGrad.addColorStop(0.0, '#7f1d1d'); // deep ruby base
+            liquidGrad.addColorStop(0.35, '#991b1b');
+            liquidGrad.addColorStop(0.70, '#dc2626');
+            liquidGrad.addColorStop(1.0, '#ef4444'); // glowing surface
+            targetCtx.fillStyle = liquidGrad;
+            targetCtx.fill();
+
+            // Inner volumetric ambient glow
+            const radialGlow = targetCtx.createRadialGradient(220, 385, 20, 220, 385, 140);
+            radialGlow.addColorStop(0.0, 'rgba(254, 202, 202, 0.45)');
+            radialGlow.addColorStop(0.5, 'rgba(239, 68, 68, 0.25)');
+            radialGlow.addColorStop(1.0, 'rgba(153, 27, 27, 0)');
+            targetCtx.fillStyle = radialGlow;
+            targetCtx.fill();
+
+            // 3. Glowing Surface Wave Line & Specular Foam
+            targetCtx.beginPath();
+            for (let i = 0; i < potionWavePoints.length; i++) {
+                const wp = potionWavePoints[i];
+                const sloshOffset = (wp.x - 220) * Math.sin(potionSloshAngle);
+                const py = curSurfaceY + wp.h + sloshOffset;
+                if (i === 0) targetCtx.moveTo(wp.x, py);
+                else targetCtx.lineTo(wp.x, py);
+            }
+            targetCtx.lineWidth = 3.5;
+            targetCtx.strokeStyle = 'rgba(254, 226, 226, 0.9)';
+            targetCtx.shadowColor = '#f87171';
+            targetCtx.shadowBlur = 10;
+            targetCtx.stroke();
+
+            // 4. Rising Magical Bubbles
+            targetCtx.shadowBlur = 5;
+            targetCtx.shadowColor = '#fecaca';
+            for (const b of potionBubbles) {
+                targetCtx.beginPath();
+                targetCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                targetCtx.fillStyle = `rgba(254, 202, 202, ${b.alpha})`;
+                targetCtx.fill();
+                targetCtx.beginPath();
+                targetCtx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.35, 0, Math.PI * 2);
+                targetCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                targetCtx.fill();
+            }
+
+            // 5. Falling Liquid Stream & Splash Droplets
+            for (const s of potionStreams) {
+                targetCtx.beginPath();
+                targetCtx.ellipse(s.x, s.y, s.r * 0.7, s.r * 1.6, 0, 0, Math.PI * 2);
+                targetCtx.fillStyle = '#ef4444';
+                targetCtx.shadowColor = '#f87171';
+                targetCtx.shadowBlur = 12;
+                targetCtx.fill();
+                targetCtx.beginPath();
+                targetCtx.moveTo(s.x - s.r * 0.5, s.y);
+                targetCtx.lineTo(s.x, s.y - 28);
+                targetCtx.lineTo(s.x + s.r * 0.5, s.y);
+                targetCtx.fillStyle = 'rgba(239, 68, 68, 0.65)';
+                targetCtx.fill();
+            }
+
+            for (const p of potionSplashParticles) {
+                targetCtx.beginPath();
+                targetCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                targetCtx.fillStyle = `rgba(254, 202, 202, ${p.life})`;
+                targetCtx.fill();
+            }
+
+            targetCtx.restore();
+        }
+
         // Add gift physical body
         function dropGiftItem(giftName, iconUrl, coinVal = 1) {
             if (isResetting) return;
 
+            // Decanter Potion Vial ONLY: Pours a glowing red fluid stream that swings the liquid!
+            if (settings.skin === 'decanter') {
+                const strength = Math.min(2.8, Math.max(0.8, Math.log10(coinVal + 1)));
+                const count = Math.min(5, Math.max(1, Math.round(coinVal > 50 ? 3 : 1)));
+                for (let k = 0; k < count; k++) {
+                    setTimeout(() => {
+                        potionStreams.push({
+                            x: 220 + (Math.random() - 0.5) * 8,
+                            y: 35,
+                            vy: 7.5 + Math.random() * 2.5,
+                            r: 5 + strength * 2.2,
+                            strength: strength
+                        });
+                    }, k * 110);
+                }
+                currentCount++;
+                currentCoins += (coinVal || 1);
+                updateHud();
+                updatePotionFillTarget();
+                playDropSound(coinVal > 10 ? 1.2 : 1.0);
+
+                const isInf = (settings.capacityMode === 'infinite' || settings.isInfiniteGoal === true || settings.coinGoal === 'infinite' || settings.coinGoal === 0);
+                const targetLimit = (settings.capacityMode === 'price') ? (settings.coinGoal || 500) : (settings.maxCapacity || 80);
+                const cur = (settings.capacityMode === 'price') ? currentCoins : currentCount;
+                if (!isInf && !isResetting && cur >= targetLimit) {
+                    setTimeout(triggerJarFullCelebration, 700);
+                }
+                return;
+            }
+
+            const isPiggySkin = (settings.skin === 'piggy');
+
             // Always resolve authentic TikTok gift asset (Rose, Heart Me, Finger Heart, etc.)
             const resolved = resolveGiftAsset(giftName, null, iconUrl, coinVal);
-            const actualName = resolved.name;
-            const actualIcon = resolved.icon;
+            
+            // Piggy Bank ONLY: Every gift drops a gold coin whose size is based on the gift!
+            // Other jars retain their original authentic TikTok gift icons.
+            const actualName = isPiggySkin ? (resolved.name ? `${resolved.name} (Coin)` : 'Gold Coin') : resolved.name;
+            const actualIcon = isPiggySkin ? 'images/jars/gold_coin.png' : resolved.icon;
 
             const isPriceMode = (settings.capacityMode === 'price');
             const scaleMultiplier = Math.max(0.7, Math.min(2.5, parseFloat(settings.giftScale || 1.0)));
-            const radius = calculateGiftRadius(coinVal, scaleMultiplier);
+            const radius = isPiggySkin
+                ? calculatePiggyCoinRadius(coinVal, scaleMultiplier)
+                : calculateGiftRadius(coinVal, scaleMultiplier);
             const cx = stageW / 2;
 
             let spawnSpread = 20;
@@ -1005,30 +1394,34 @@
                 spawnSpread = 16;
                 spawnY = 15;
             } else if (settings.skin === 'piggy') {
-                spawnSpread = 20;
-                spawnY = 35;
+                spawnSpread = 6;
+                spawnY = 55;
             }
 
             const spawnX = cx + (Math.random() - 0.5) * spawnSpread;
             const bounciness = (settings.bounciness !== undefined && settings.bounciness !== null) ? parseFloat(settings.bounciness) : 0.4;
 
             const giftBody = Bodies.circle(spawnX, spawnY, radius, {
-                restitution: bounciness,
-                friction: settings.friction || 0.1,
-                frictionAir: 0.015,
-                density: 0.0025,
-                angle: (Math.random() - 0.5) * 0.5
+                restitution: isPiggySkin ? 0.15 : bounciness,
+                friction: isPiggySkin ? 0.35 : (settings.friction || 0.1),
+                frictionAir: isPiggySkin ? 0.02 : 0.015,
+                density: 0.003,
+                angle: (Math.random() - 0.5) * 0.3
             });
 
+            const velX = isPiggySkin ? (Math.random() - 0.5) * 0.1 : ((Math.random() - 0.5) * 0.5);
+            const velY = isPiggySkin ? (5.0 + Math.random() * 1.5) : (3.5 + Math.random() * 1.5);
             Body.setVelocity(giftBody, {
-                x: (Math.random() - 0.5) * 0.5,
-                y: 3.5 + Math.random() * 1.5
+                x: velX,
+                y: velY
             });
-            Body.setAngularVelocity(giftBody, (Math.random() - 0.5) * 0.08);
+            Body.setAngularVelocity(giftBody, (Math.random() - 0.5) * 0.05);
 
             giftBody.customGift = {
                 name: actualName,
+                originalName: resolved.name,
                 iconUrl: actualIcon,
+                isCoin: isPiggySkin,
                 radius: radius,
                 coins: coinVal,
                 createdAt: Date.now()
@@ -1139,6 +1532,14 @@
                 } else {
                     fillEl.style.background = 'linear-gradient(90deg, #38bdf8, #10b981, #facc15)';
                 }
+            }
+
+            if (settings.skin === 'decanter') {
+                if (typeof updatePotionFillTarget === 'function') updatePotionFillTarget();
+                if (!settings.jarTitle) {
+                    titleEl.innerText = isInfinite ? '🧪 Health Potion Vial (Infinite)' : '🧪 Health Potion Decanter';
+                }
+                fillEl.style.background = 'linear-gradient(90deg, #991b1b, #dc2626, #ef4444, #f87171)';
             }
         }
 
@@ -1258,6 +1659,14 @@
             currentCoins = 0;
             updateHud();
 
+            // Reset potion liquid level
+            targetPotionFill = 0.06;
+            potionFillLevel = 0.06;
+            potionStreams = [];
+            potionSplashParticles = [];
+            potionBubbles = [];
+            if (typeof initPotionWavePoints === 'function') initPotionWavePoints();
+
             const stage = document.getElementById('jarStage');
             const banner = document.getElementById('fullBanner');
             if (stage) stage.classList.remove('shake', 'shattering', 'trapdoor-open');
@@ -1274,7 +1683,13 @@
 
             ctx.clearRect(0, 0, stageW, stageH);
 
-            // 1. Render all gift bodies
+            // 1. If Decanter skin is active, simulate and render animated red health potion
+            if (settings.skin === 'decanter') {
+                updatePotionSimulation();
+                renderDecanterLiquid(ctx);
+            }
+
+            // 2. Render all gift bodies (for Mason, Piggy, Fishbowl, Crate)
             const allBodies = Composite.allBodies(engine.world);
             allBodies.forEach(body => {
                 if (body.isStatic || !body.customGift) return;
@@ -1300,7 +1715,8 @@
                     ctx.restore();
                 }
 
-                let renderImg = (img && img.complete && img.naturalWidth > 0) ? img : null;
+                const isCoinItem = customGift.isCoin || (settings.skin === 'piggy');
+                let renderImg = isCoinItem ? getCachedImage('images/jars/gold_coin.png') : ((img && img.complete && img.naturalWidth > 0) ? img : null);
                 if (!renderImg) {
                     // Guaranteed instant preloaded legitimate TikTok gift image fallback (never draw numbered balls)
                     const c = customGift.coins || 1;
@@ -1327,9 +1743,9 @@
                 }
 
                 if (renderImg && renderImg.complete && renderImg.naturalWidth > 0) {
-                    const isRose = (customGift.name && customGift.name.toLowerCase().includes('rose')) ||
-                                   (customGift.iconUrl && customGift.iconUrl.toLowerCase().includes('rose'));
-                    const itemSize = r * (isRose ? 2.4 : 2.25);
+                    const isRose = !isCoinItem && ((customGift.name && customGift.name.toLowerCase().includes('rose')) ||
+                                   (customGift.iconUrl && customGift.iconUrl.toLowerCase().includes('rose')));
+                    const itemSize = r * (isCoinItem ? 2.05 : (isRose ? 2.4 : 2.25));
                     ctx.drawImage(renderImg, -itemSize / 2, -itemSize / 2, itemSize, itemSize);
                 }
 
@@ -1406,7 +1822,10 @@
                     b.restitution = bounciness;
                     const oldR = b.customGift.radius || 24;
                     const cCoins = b.customGift.coins || 1;
-                    const targetR = calculateGiftRadius(cCoins, scaleMultiplier);
+                    const isCoinItem = b.customGift.isCoin || (settings.skin === 'piggy');
+                    const targetR = isCoinItem
+                        ? calculatePiggyCoinRadius(cCoins, scaleMultiplier)
+                        : calculateGiftRadius(cCoins, scaleMultiplier);
                     if (targetR !== oldR && oldR > 0) {
                         const ratio = targetR / oldR;
                         Body.scale(b, ratio, ratio);
@@ -1641,8 +2060,8 @@
                 dropGiftItem('Rose', 'images/tiktok-gifts/5655_rose.webp', 1);
                 showDropToast('Tester', 'Rose', 1, 'images/tiktok-gifts/5655_rose.webp', 'images/renearn_icon.png');
             } else if (e.key === 'g' || e.key === 'G') {
-                dropGiftItem('Heart Me', 'images/tiktok-gifts/7934_heart_me.webp', 1);
-                showDropToast('Tester', 'Heart Me', 1, 'images/tiktok-gifts/7934_heart_me.webp', 'images/renearn_icon.png');
+                dropGiftItem('Galaxy', 'images/tiktok-gifts/11046_galaxy.webp', 1000);
+                showDropToast('Tester', 'Galaxy', 1, 'images/tiktok-gifts/11046_galaxy.webp', 'images/renearn_icon.png');
             }
         });
         document.querySelector('.jar-stage')?.addEventListener('click', () => {

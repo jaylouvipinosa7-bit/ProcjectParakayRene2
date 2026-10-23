@@ -17767,21 +17767,24 @@
                         <!-- TOP TOOLBAR (EXACT MATCH TO REFERENCE PHOTO 3) -->
                         <div
                             style="background: #161b22; padding: 12px 18px; border-bottom: 1px solid #30363d; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                                 <h3
                                     style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 6px;">
                                     <span>🏺</span> Gifts Jar
                                 </h3>
-                                <select id="selJarSkinInline" class="form-select"
-                                    style="background: #21262d; color: #fff; border: 1px solid #30363d; border-radius: 6px; padding: 5px 12px; font-size: 13px; font-weight: 700;"
-                                    onchange="onInlineJarSkinChanged(this.value)">
-                                    <option value="mason">Classic (Transparent Mason Jar)</option>
-                                    <option value="piggy">Piggy Bank (Glass Pig)</option>
-                                    <option value="fishbowl">Fishbowl (Round Glass)</option>
-                                    <option value="crate">Glass Crate (Wide Box)</option>
-                                    <option value="decanter">Decanter (Potion Vial)</option>
-                                    <option value="custom">Custom Uploaded Skin...</option>
-                                </select>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <select id="selJarSkinInline" class="form-select"
+                                        style="background: #21262d; color: #fff; border: 1px solid #30363d; border-radius: 6px; padding: 5px 12px; font-size: 13px; font-weight: 700;"
+                                        onchange="onInlineJarSkinChanged(this.value)">
+                                        <option value="mason">Classic (Transparent Mason Jar)</option>
+                                        <option value="fishbowl">Fishbowl (Round Glass)</option>
+                                        <option value="crate">Glass Crate (Wide Box)</option>
+                                        <option value="piggy" style="color: #fbbf24; font-weight: 800; background: #1c1917;">⭐ Piggy Bank (Glass Pig) - PREMIUM</option>
+                                        <option value="decanter" style="color: #fbbf24; font-weight: 800; background: #1c1917;">🧪 Health Potion Decanter - PREMIUM</option>
+                                        <option value="custom">Custom Uploaded Skin...</option>
+                                    </select>
+                                    <span id="jarSkinPremiumInlineBadge" style="display: none; background: linear-gradient(135deg, #f59e0b, #eab308, #fbbf24); color: #000; font-size: 11px; font-weight: 900; letter-spacing: 0.6px; padding: 3px 8px; border-radius: 6px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6); text-transform: uppercase;">PREMIUM</span>
+                                </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                                 <button type="button" class="btn btn-secondary btn-sm"
@@ -17807,6 +17810,12 @@
                                     style="background: #21262d; border-color: #a855f7; color: #c084fc; font-weight: 700; display: flex; align-items: center; gap: 6px;"
                                     title="Drop another genuine TikTok gift (Cap, GG, Doughnut, TikTok, etc.)">
                                     <span>🎁</span> Drop Other Gift
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    onclick="triggerInlineDrop('Galaxy', 'images/tiktok-gifts/11046_galaxy.webp', 1, 1000)"
+                                    style="background: #21262d; border-color: #eab308; color: #facc15; font-weight: 700; display: flex; align-items: center; gap: 6px;"
+                                    title="Drop a Galaxy (1,000 Coins) - Big Coin in Piggy Bank">
+                                    <span>🌌</span> Drop Galaxy
                                 </button>
                                 <button type="button" class="btn btn-secondary btn-sm"
                                     onclick="triggerInlineDropMulti(5)"
@@ -17868,19 +17877,13 @@
                                     </label>
                                     <div
                                         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px;">
+                                        <!-- Standard Jars First -->
                                         <div class="jar-skin-card active" id="inlineSkin_mason"
                                             onclick="onInlineJarSkinChanged('mason')">
                                             <div class="jar-skin-preview-wrap" style="width: 50px; height: 55px;"><img
                                                     src="images/jars/jar_mason.png" alt="Classic"></div>
                                             <div class="jar-skin-label">Classic</div>
                                             <span class="jar-skin-badge">Default</span>
-                                        </div>
-                                        <div class="jar-skin-card" id="inlineSkin_piggy"
-                                            onclick="onInlineJarSkinChanged('piggy')">
-                                            <div class="jar-skin-preview-wrap" style="width: 50px; height: 55px;"><img
-                                                    src="images/jars/jar_piggy.png" alt="Piggy"></div>
-                                            <div class="jar-skin-label">Piggy</div>
-                                            <span class="jar-skin-sub">Slot</span>
                                         </div>
                                         <div class="jar-skin-card" id="inlineSkin_fishbowl"
                                             onclick="onInlineJarSkinChanged('fishbowl')">
@@ -17896,12 +17899,20 @@
                                             <div class="jar-skin-label">Crate</div>
                                             <span class="jar-skin-sub">Box</span>
                                         </div>
-                                        <div class="jar-skin-card" id="inlineSkin_decanter"
-                                            onclick="onInlineJarSkinChanged('decanter')">
+                                        <!-- PREMIUM JARS AT THE BOTTOM -->
+                                        <div class="jar-skin-card jar-skin-card-premium" id="inlineSkin_piggy"
+                                            onclick="onInlineJarSkinChanged('piggy')" style="position: relative; border-color: rgba(245, 158, 11, 0.4);">
                                             <div class="jar-skin-preview-wrap" style="width: 50px; height: 55px;"><img
-                                                    src="images/jars/jar_decanter.png" alt="Decanter"></div>
-                                            <div class="jar-skin-label">Decanter</div>
-                                            <span class="jar-skin-sub">Potion</span>
+                                                    src="images/jars/jar_piggy.png" alt="Piggy"></div>
+                                            <div class="jar-skin-label" style="color: #fbbf24; font-weight: 700;">Piggy Bank</div>
+                                            <span class="jar-skin-badge jar-skin-badge-gold" style="background: linear-gradient(135deg, #f59e0b, #eab308, #fbbf24); color: #000; font-weight: 900; font-size: 9px; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); text-transform: uppercase; border: 1px solid #fef08a;">PREMIUM</span>
+                                        </div>
+                                        <div class="jar-skin-card jar-skin-card-premium" id="inlineSkin_decanter"
+                                            onclick="onInlineJarSkinChanged('decanter')" style="position: relative; border-color: rgba(245, 158, 11, 0.4);">
+                                            <div class="jar-skin-preview-wrap" style="width: 50px; height: 55px;"><img
+                                                    src="images/jars/jar_decanter.png" alt="Potion Decanter"></div>
+                                            <div class="jar-skin-label" style="color: #fbbf24; font-weight: 700;">Potion Vial</div>
+                                            <span class="jar-skin-badge jar-skin-badge-gold" style="background: linear-gradient(135deg, #f59e0b, #eab308, #fbbf24); color: #000; font-weight: 900; font-size: 9px; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); text-transform: uppercase; border: 1px solid #fef08a;">PREMIUM</span>
                                         </div>
                                     </div>
                                 </div>
@@ -22534,7 +22545,7 @@
                             </label>
                             <div
                                 style="display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; margin-top: 10px;">
-                                <!-- Mason (Default) -->
+                                <!-- Standard 1: Mason (Default) -->
                                 <div class="jar-skin-card active" id="skinCard_mason" onclick="selectJarSkin('mason')">
                                     <div class="jar-skin-preview-wrap">
                                         <img src="images/jars/jar_mason.png" alt="Classic Mason Jar">
@@ -22542,15 +22553,7 @@
                                     <div class="jar-skin-label">Classic Jar</div>
                                     <span class="jar-skin-badge">Default</span>
                                 </div>
-                                <!-- Piggy Bank -->
-                                <div class="jar-skin-card" id="skinCard_piggy" onclick="selectJarSkin('piggy')">
-                                    <div class="jar-skin-preview-wrap">
-                                        <img src="images/jars/jar_piggy.png" alt="Glass Piggy Bank">
-                                    </div>
-                                    <div class="jar-skin-label">Piggy Bank</div>
-                                    <span class="jar-skin-sub">Coin Slot</span>
-                                </div>
-                                <!-- Fishbowl -->
+                                <!-- Standard 2: Fishbowl -->
                                 <div class="jar-skin-card" id="skinCard_fishbowl" onclick="selectJarSkin('fishbowl')">
                                     <div class="jar-skin-preview-wrap">
                                         <img src="images/jars/jar_fishbowl.png" alt="Round Fishbowl">
@@ -22558,7 +22561,7 @@
                                     <div class="jar-skin-label">Fishbowl</div>
                                     <span class="jar-skin-sub">Round Glass</span>
                                 </div>
-                                <!-- Crate -->
+                                <!-- Standard 3: Crate -->
                                 <div class="jar-skin-card" id="skinCard_crate" onclick="selectJarSkin('crate')">
                                     <div class="jar-skin-preview-wrap">
                                         <img src="images/jars/jar_crate.png" alt="Glass Crate">
@@ -22566,13 +22569,21 @@
                                     <div class="jar-skin-label">Glass Crate</div>
                                     <span class="jar-skin-sub">Wide Box</span>
                                 </div>
-                                <!-- Decanter -->
-                                <div class="jar-skin-card" id="skinCard_decanter" onclick="selectJarSkin('decanter')">
+                                <!-- PREMIUM 1: Piggy Bank -->
+                                <div class="jar-skin-card jar-skin-card-premium" id="skinCard_piggy" onclick="selectJarSkin('piggy')" style="position: relative; border-color: rgba(245, 158, 11, 0.4);">
                                     <div class="jar-skin-preview-wrap">
-                                        <img src="images/jars/jar_decanter.png" alt="Decanter Potion">
+                                        <img src="images/jars/jar_piggy.png" alt="Glass Piggy Bank">
                                     </div>
-                                    <div class="jar-skin-label">Decanter</div>
-                                    <span class="jar-skin-sub">Potion Vial</span>
+                                    <div class="jar-skin-label" style="color: #fbbf24; font-weight: 700;">Piggy Bank</div>
+                                    <span class="jar-skin-badge jar-skin-badge-gold" style="background: linear-gradient(135deg, #f59e0b, #eab308, #fbbf24); color: #000; font-weight: 900; font-size: 10px; padding: 2px 7px; border-radius: 4px; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); text-transform: uppercase; border: 1px solid #fef08a;">PREMIUM</span>
+                                </div>
+                                <!-- PREMIUM 2: Decanter -->
+                                <div class="jar-skin-card jar-skin-card-premium" id="skinCard_decanter" onclick="selectJarSkin('decanter')" style="position: relative; border-color: rgba(245, 158, 11, 0.4);">
+                                    <div class="jar-skin-preview-wrap">
+                                        <img src="images/jars/jar_decanter.png" alt="Potion Decanter">
+                                    </div>
+                                    <div class="jar-skin-label" style="color: #fbbf24; font-weight: 700;">Potion Vial</div>
+                                    <span class="jar-skin-badge jar-skin-badge-gold" style="background: linear-gradient(135deg, #f59e0b, #eab308, #fbbf24); color: #000; font-weight: 900; font-size: 10px; padding: 2px 7px; border-radius: 4px; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); text-transform: uppercase; border: 1px solid #fef08a;">PREMIUM</span>
                                 </div>
                                 <!-- Custom Skin -->
                                 <div class="jar-skin-card" id="skinCard_custom" onclick="selectJarSkin('custom')">
@@ -23476,10 +23487,10 @@
 
                     const names = {
                         mason: 'Classic Clear Glass Jar (Default)',
-                        piggy: 'Glass Piggy Bank (Coin Slot)',
+                        piggy: 'Glass Piggy Bank (Coin Slot) - PREMIUM',
                         fishbowl: 'Round Glass Fishbowl',
                         crate: 'Reinforced Glass Crate Box',
-                        decanter: 'Glass Decanter Potion Vial',
+                        decanter: 'Health Potion Decanter (Liquid Vial) - PREMIUM',
                         custom: 'Custom Uploaded Jar Skin'
                     };
                     const lbl = document.getElementById('lblSelectedSkinName');
@@ -24271,6 +24282,9 @@
                                 const selSkin = document.getElementById('selJarSkinInline');
                                 if (selSkin) selSkin.value = currentJarSkin;
 
+                                const premBadge = document.getElementById('jarSkinPremiumInlineBadge');
+                                if (premBadge) premBadge.style.display = (currentJarSkin === 'piggy' || currentJarSkin === 'decanter') ? 'inline-block' : 'none';
+
                                 document.querySelectorAll('.jar-skin-card').forEach(c => c.classList.remove('active'));
                                 const activeCard = document.getElementById('inlineSkin_' + currentJarSkin);
                                 if (activeCard) activeCard.classList.add('active');
@@ -24406,6 +24420,9 @@
                     currentJarSkin = skin;
                     const selSkin = document.getElementById('selJarSkinInline');
                     if (selSkin) selSkin.value = skin;
+
+                    const premBadge = document.getElementById('jarSkinPremiumInlineBadge');
+                    if (premBadge) premBadge.style.display = (skin === 'piggy' || skin === 'decanter') ? 'inline-block' : 'none';
 
                     document.querySelectorAll('.jar-skin-card').forEach(c => c.classList.remove('active'));
                     const card = document.getElementById('inlineSkin_' + skin);
@@ -29519,6 +29536,7 @@
                                     type: (gift.triggerType === 'custom' ? 'custom' : (gift.triggerType || 'gift')),
                                     triggerType: gift.triggerType || 'gift',
                                     cardId: gift.id,
+                                    giftId: gift.giftId || '',
                                     giftName: testGiftName,
                                     label: testLabel,
                                     command: testCmd,

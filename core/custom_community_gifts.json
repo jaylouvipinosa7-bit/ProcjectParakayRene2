@@ -6307,5 +6307,50 @@
         "isCommunity":  true,
         "source":  "tiktok_live_room",
         "addedAt":  "2026-10-21T11:02:57.1400665Z"
+    },
+    {
+        "id":  "1462722",
+        "name":  "Spark Ring Earth",
+        "coins":  500,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/63a780b89c9dcf279eb4df6e8e7430f0.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T08:33:56.3873137Z"
+    },
+    {
+        "id":  "1462725",
+        "name":  "Legacy in Bloom",
+        "coins":  21000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/967109adfb8b72237bcc7afb7c0c3a4c.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T08:33:56.3913783Z"
+    },
+    {
+        "id":  "1462723",
+        "name":  "Spark Stage Earth",
+        "coins":  3999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/c7a259e14dc0f5694929f7fe69eecf3b.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T08:33:56.3923837Z"
+    },
+    {
+        "id":  "1462721",
+        "name":  "Live Up Earth",
+        "coins":  15,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0bdd0e3ac30573fbdfc32f1574e2131d.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T08:33:56.3923837Z"
+    },
+    {
+        "id":  "8391",
+        "name":  "Sam the Whale",
+        "coins":  30000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f48a1887eb88238738996bb997b31c0f.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-10-23T08:33:56.3931890Z"
     }
 ]

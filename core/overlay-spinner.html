@@ -3890,7 +3890,7 @@
                 if (Array.isArray(cachedServerConfig.gifts)) {
                     for (const g of cachedServerConfig.gifts) {
                         if (g.enabled === false) continue;
-                        const isSpinnerCard = (g.command === 'spin_wheel' || g.actionType === 'spinner' || (g.command && String(g.command).startsWith('spinner_')) || g.spinnerId);
+                        const isSpinnerCard = (g.command === 'spin_wheel' || g.actionType === 'spinner' || (g.command && String(g.command).startsWith('spinner_')) || g.spinnerId || g.triggerSpinner);
                         if (!isSpinnerCard) continue;
                         const gId = (g.giftId !== undefined && g.giftId !== null ? String(g.giftId).trim().toLowerCase() : '');
                         const gName = (g.giftName ? String(g.giftName).replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : '');

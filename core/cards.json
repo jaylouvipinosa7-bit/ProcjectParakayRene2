@@ -975,21 +975,6 @@
         "actionType":  "power"
     },
     {
-        "id":  "1792310064286",
-        "action":  "SelectedGift",
-        "giftId":  "",
-        "giftName":  "Plant Everywhere",
-        "funcName":  "Plant Everywhere",
-        "funcImg":  "images/game-icons/pvz/plant_everywahre.webp",
-        "trigImg":  "images/trig_3.svg",
-        "triggerValue":  "",
-        "commands":  "plant_everywahre",
-        "repetition":  1,
-        "hideInOverlay":  false,
-        "triggerType":  "custom",
-        "actionType":  "power"
-    },
-    {
         "id":  "63",
         "action":  "SelectedGift",
         "giftId":  "19443",
@@ -1003,5 +988,35 @@
         "hideInOverlay":  false,
         "triggerType":  "gift",
         "actionType":  "plant"
+    },
+    {
+        "id":  "1792744033842",
+        "action":  "SelectedGift",
+        "giftId":  "1429010",
+        "giftName":  "Palm of Protection",
+        "funcName":  "Spawn Starcaller Snipea (1429)",
+        "funcImg":  "images/game-icons/pvz/spawn_starsniper.webp",
+        "trigImg":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/abae8b31c06183b3ed0d7b9df01a800e.png~tplv-obj.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_star_sniper",
+        "repetition":  3,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
+    },
+    {
+        "id":  "1792310064286",
+        "action":  "SelectedGift",
+        "giftId":  "",
+        "giftName":  "Plant Everywhere",
+        "funcName":  "Plant Everywhere",
+        "funcImg":  "images/game-icons/pvz/plant_everywahre.webp",
+        "trigImg":  "images/trig_3.svg",
+        "triggerValue":  "",
+        "commands":  "plant_everywahre",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "custom",
+        "actionType":  "power"
     }
 ]
