@@ -13546,7 +13546,7 @@
                             <p class="section-desc">Choose which game engine receives live viewer commands & spawns.
                                 Hover over any game for details.</p>
                         </div>
-                        <div class="section-counter">5 Games Available</div>
+                        <div class="section-counter">6 Games Available</div>
                     </div>
                     <div class="game-cards-grid">
                         <!-- Card 1: Plants vs. Zombies: Fusion 4.0 -->
@@ -13632,6 +13632,22 @@
                                 <span class="game-card-tag">Universal Stream • Ready</span>
                                 <button type="button" class="btn-game-select" id="btnSelect_universal_stream">Switch
                                     Game</button>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Plants vs. Zombies 2 -->
+                        <div class="stream-game-card" id="gameCard_pvz2"
+                            onclick="selectStreamingGame('pvz2')">
+                            <div class="game-poster-box">
+                                <img src="images/pvz2_banner.png" alt="Plants vs. Zombies 2"
+                                    class="game-poster-img" style="object-fit: cover;">
+                                <div class="game-poster-gradient"></div>
+                                <span class="game-card-badge badge-ready" id="badge_pvz2">READY</span>
+                            </div>
+                            <div class="game-card-title">Plants vs. Zombies 2</div>
+                            <div class="game-card-footer">
+                                <span class="game-card-tag">PVZ2 Official • Ready</span>
+                                <button type="button" class="btn-game-select" id="btnSelect_pvz2">Switch Game</button>
                             </div>
                         </div>
                     </div>
@@ -13776,6 +13792,11 @@
                                 style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px #22c55e;"></span>
                             🌿 Plants vs. Zombies Fusion
                         </button>
+                        <button type="button" class="album-select-pill" id="albumPillpvz2"
+                            onclick="selectGameAlbum('pvz2')"
+                            style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                            🧟 Plants vs. Zombies 2
+                        </button>
                         <button type="button" class="album-select-pill" id="albumPillMinecraft"
                             onclick="selectGameAlbum('Minecraft')"
                             style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
@@ -13903,7 +13924,7 @@
                                     style="font-size: 18px; font-weight: 800; color: #fff; margin: 0 0 4px 0; display: flex; align-items: center; gap: 8px;">
                                     <span>🎮</span> Interactive Game Albums Library
                                     <span
-                                        style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 12px;">6
+                                        style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 12px;">7
                                         LIVE ENGINES</span>
                                 </h2>
                                 <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0;">Click on any game
@@ -14064,6 +14085,28 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Game 7: Plants vs. Zombies 2 -->
+                            <div class="pvz-game-album-card" id="albumCardpvz2"
+                                onclick="selectGameAlbum('pvz2', true)"
+                                title="Click to choose presets for Plants vs. Zombies 2">
+                                <div class="album-card-cover-wrap">
+                                    <img src="images/pvz2_banner.png"
+                                        onerror="this.src='images/games/pvz2_poster.jpg'" class="album-card-cover"
+                                        alt="Plants vs. Zombies 2" style="object-fit: cover;">
+                                    <div class="album-card-overlay-tag">READY</div>
+                                </div>
+                                <div class="album-card-body">
+                                    <div class="album-card-title">Plants vs. Zombies 2</div>
+                                    <div class="album-card-engine">🧟 TikToEarn PvZ2 Engine Bridge</div>
+                                    <div class="album-card-footer">
+                                        <span class="album-card-presets-badge">🎁 23+ Triggers</span>
+                                        <button type="button" class="album-card-action-btn"
+                                            onclick="event.stopPropagation(); openPvzPresetModal('pvz2')">Choose
+                                            Presets</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -14178,6 +14221,7 @@
                                 class="my-presets-game-select">
                                 <option value="ALL">ALL GAMES</option>
                                 <option value="PvZFusion">PvZFusion</option>
+                                <option value="pvz2">Plants vs. Zombies 2</option>
                                 <option value="Minecraft">Minecraft</option>
                                 <option value="left4dead2">Left4Dead2</option>
                                 <option value="tabs">TABS</option>
@@ -14465,6 +14509,8 @@
                                 style="cursor: pointer; font-size: 11.5px; font-weight: 800;">All Games</button>
                             <button class="pill" onclick="filterPresetsByGame('PvZFusion', this)"
                                 style="cursor: pointer; font-size: 11.5px; font-weight: 800;">PvZFusion</button>
+                            <button class="pill" onclick="filterPresetsByGame('pvz2', this)"
+                                style="cursor: pointer; font-size: 11.5px; font-weight: 800;">PvZ 2</button>
                             <button class="pill" onclick="filterPresetsByGame('Minecraft', this)"
                                 style="cursor: pointer; font-size: 11.5px; font-weight: 800;">Minecraft</button>
                             <button class="pill" onclick="filterPresetsByGame('tabs', this)"
@@ -27595,6 +27641,7 @@
                 'pvz_fusion_4': { short: 'PvZ Fusion', full: 'PvZ: Fusion 4.0' },
                 'pvz_hybrid': { short: 'PvZ Hybrid', full: 'PvZ: Hybrid Edition' },
                 'pvz_classic': { short: 'PvZ Classic', full: 'PvZ: Classic / GOTY' },
+                'pvz2': { short: 'PvZ 2', full: 'Plants vs. Zombies 2' },
                 'universal_stream': { short: 'Minecraft', full: 'Minecraft & Universal' },
                 'zombie_tsunami': { short: 'Zombie Tsunami', full: 'Zombie Tsunami (PC)' }
             };
@@ -27631,7 +27678,7 @@
                 currentActiveStreamingGame = gameId;
                 try { localStorage.setItem('active_streaming_game', gameId); } catch (e) { }
 
-                const gameCardIds = ['pvz_fusion_4', 'pvz_hybrid', 'pvz_classic', 'universal_stream', 'zombie_tsunami'];
+                const gameCardIds = ['pvz_fusion_4', 'pvz_hybrid', 'pvz_classic', 'pvz2', 'universal_stream', 'zombie_tsunami'];
                 const gInfo = getActiveGameInfo();
 
                 gameCardIds.forEach(id => {
@@ -27708,6 +27755,7 @@
                 let targetPresetGame = 'PvZFusion';
                 if (gameId === 'pvz_hybrid') targetPresetGame = 'pvz_hybrid';
                 else if (gameId === 'pvz_classic') targetPresetGame = 'pvz_classic';
+                else if (gameId === 'pvz2') targetPresetGame = 'pvz2';
                 else if (gameId === 'zombie_tsunami') targetPresetGame = 'zombie_tsunami';
                 else if (gameId === 'universal_stream') targetPresetGame = 'Minecraft';
                 else targetPresetGame = 'PvZFusion';
@@ -29146,6 +29194,14 @@
                     exe: 'ZombieTsunami.exe',
                     catalog: '18 Interactive Gifts, Giant Tsunami & Bonuses',
                     desc: 'Official interactive live runner game engine. TikTok live gifts summon giant waves, ninja zombies, UFO abductions, dragon hordes, and gold coin rain directly into your game in real time.'
+                },
+                'pvz2': {
+                    name: 'Plants vs. Zombies 2: It\'s About Time',
+                    poster: 'images/pvz2_banner.png',
+                    port: 'TikToEarn PvZ2 Bridge (Port 5850)',
+                    exe: 'PVZ2.exe',
+                    catalog: '23+ Authentic TikToEarn Commands & Bosses',
+                    desc: 'Official interactive live streaming album for Plants vs. Zombies 2. Viewers send gifts to spawn Parasol Zombies, Weasel Hoarders, Pirate Captains, Gargantuar Primes, Mecha-Football, and Add Coins & Gems boosts directly into your stream in real time.'
                 }
             };
 
@@ -29962,12 +30018,33 @@
                         { id: "zt4", giftName: "Lion / Whale (500 Coins)", coins: 500, label: "GIANT TSUNAMI WAVE!", actionType: "bomb", unitIcon: "images/games/zombie_tsunami_poster.jpg", command: "zt_giant_tsunami" }
                     ],
                     catLabels: { plant: '🧟 Swarm Upgrades', zombie: '🥷 Bonuses & Mutations', special: '🌊 Disasters & Waves' }
+                },
+                'pvz2': {
+                    name: 'Plants vs. Zombies 2',
+                    tag: 'PVZ2 Interactive',
+                    color: '#10b981',
+                    border: 'rgba(16,185,129,0.35)',
+                    bg: 'rgba(16,185,129,0.12)',
+                    engine: 'TikToEarn PvZ2 Engine Bridge (Port 5850)',
+                    desc: 'Official interactive live stream album for Plants vs. Zombies 2. Real-time zombie spawns, Gargantuar waves, Weasel Hoarders, and coin boosts from chat gifts.',
+                    defaultCover: 'images/pvz2_banner.png',
+                    fallbackIcon: 'images/pvz2_banner.png',
+                    sampleTriggers: [
+                        { id: "pvz2_s1", giftName: "Tik Coin (1 Coin)", coins: 1, label: "ADD COINS & GEMS (99999)", actionType: "special", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:add_coins?amount=99999" },
+                        { id: "pvz2_s2", giftName: "Rose (1 Coin)", coins: 1, label: "CONEHEAD ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_conehead_zombie&count=5&delay=50" },
+                        { id: "pvz2_s3", giftName: "Heart Me (1 Coin)", coins: 1, label: "PARASOL ZOMBIE (x10)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_lostcity_jane&count=10&delay=50" },
+                        { id: "pvz2_s4", giftName: "Finger Heart (5 Coins)", coins: 5, label: "WEASEL HOARDER (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder&count=5&delay=50" },
+                        { id: "pvz2_s5", giftName: "TikTok (10 Coins)", coins: 10, label: "PIRATE CAPTAIN ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_pirate_captain&count=5&delay=50" },
+                        { id: "pvz2_s6", giftName: "Leon the Kitten (488 Coins)", coins: 488, label: "GARGANTUAR PRIME", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_future_gargantuar&count=1&delay=50" }
+                    ],
+                    catLabels: { plant: '🌿 Plants & Boosts', zombie: '🧟 PvZ2 Zombies', special: '⚡ Coins & Effects' }
                 }
             };
 
             function normalizeGameKey(rawGame) {
                 if (!rawGame) return 'PvZFusion';
                 const g = rawGame.trim().toLowerCase();
+                if (g.includes('pvz2') || g.includes('pvz 2') || g.includes('plants vs zombies 2') || g.includes('plants vs. zombies 2')) return 'pvz2';
                 if (g.includes('hybrid')) return 'pvz_hybrid';
                 if (g.includes('classic') || g.includes('goty')) return 'pvz_classic';
                 if (g.includes('tsunami')) return 'zombie_tsunami';
@@ -30086,6 +30163,9 @@
                 let templateTriggers = [];
                 if (gameKey === 'PvZFusion') {
                     templateTriggers = getPvzFusionGiftList();
+                } else if (gameKey === 'pvz2') {
+                    const pvz2Preset = allPresets.find(p => p.id === 'preset_pvz2' || p.game === 'pvz2');
+                    templateTriggers = (pvz2Preset && pvz2Preset.events && pvz2Preset.events.length > 0) ? pvz2Preset.events : (info.sampleTriggers || []);
                 } else {
                     templateTriggers = info.sampleTriggers || [];
                 }
@@ -30602,6 +30682,14 @@
                 quickBar.innerHTML = '';
 
                 const templates = {
+                    'pvz2': [
+                        { label: '+ Add Coins (99999)', cmd: 'pvz2:add_coins?amount=99999', icon: 'images/games/pvz2_banner.png', type: 'special' },
+                        { label: '+ Conehead Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_conehead_zombie', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
+                        { label: '+ Parasol Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_lostcity_jane', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
+                        { label: '+ Weasel Hoarder', cmd: 'pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
+                        { label: '+ Pirate Captain', cmd: 'pvz2:spawnzombie?unit=pvz2_pirate_captain', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
+                        { label: '+ Gargantuar Prime', cmd: 'pvz2:spawnzombie?unit=pvz2_future_gargantuar', icon: 'images/games/pvz2_banner.png', type: 'zombie' }
+                    ],
                     'Minecraft': [
                         { label: '+ Summon Zombie', cmd: '/summon zombie ~ ~ ~', icon: 'images/games/sprites/mc_zombie.svg', type: 'zombie' },
                         { label: '+ Summon TNT', cmd: '/summon tnt ~ ~ ~', icon: 'images/games/sprites/mc_tnt.svg', type: 'bomb' },
