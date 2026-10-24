@@ -8280,6 +8280,9 @@ INSTALLATION INSTRUCTIONS:
             "/hud"                  = "groudon-hud-overlay.html"
             "/renearn"              = "app.html"
             "/app"                  = "app.html"
+            "/kingdom-siege"        = "kingdom-siege.html"
+            "/siege"                = "kingdom-siege.html"
+            "/castle"               = "kingdom-siege.html"
         }
 
         $normPath = $reqPath.ToLower().TrimEnd('/')

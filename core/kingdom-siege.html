@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kingdom Siege - TikTok LIVE Interactive Castle Defense</title>
+    <link rel="icon" type="image/png" href="images/renearn_icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@500;700;900&family=Bungee&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --crimson: #ef4444;
+            --crimson-dark: #991b1b;
+            --cyan: #06b6d4;
+            --purple: #8b5cf6;
+            --bg-dark: #0a0b10;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #050608;
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+        }
+
+        #gameViewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #131722 0%, #05070c 100%);
+            overflow: hidden;
+        }
+
+        canvas#canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        /* Top HUD Header */
+        .hud-top {
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .castle-status-card {
+            background: rgba(10, 14, 26, 0.82);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(245, 158, 11, 0.35);
+            border-radius: 16px;
+            padding: 12px 20px;
+            min-width: 290px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.15);
+        }
+
+        .castle-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--gold-light);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .hp-bar-outer {
+            width: 100%;
+            height: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hp-bar-inner {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #22c55e 0%, #4ade80 70%, #86efac 100%);
+            border-radius: 6px;
+            transition: width 0.25s ease-out, background 0.3s;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+        }
+
+        .hp-bar-inner.danger {
+            background: linear-gradient(90deg, #b91c1c 0%, #ef4444 70%, #f87171 100%);
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.8);
+        }
+
+        .hp-text {
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 4px;
+            color: #d1d5db;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Boss Banner Bar */
+        .boss-alert-container {
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(580px, 90vw);
+            background: linear-gradient(180deg, rgba(127, 29, 29, 0.92) 0%, rgba(30, 8, 8, 0.95) 100%);
+            border: 2px solid #ef4444;
+            border-radius: 14px;
+            padding: 10px 16px;
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.5), 0 10px 25px rgba(0, 0, 0, 0.9);
+            z-index: 30;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            animation: bossPulse 1.4s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes bossPulse {
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
+            100% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); }
+        }
+
+        .boss-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .boss-sender-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .boss-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #facc15;
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.7);
+        }
+
+        .boss-name {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 15px;
+            color: #fee2e2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+        }
+
+        .boss-summoner {
+            font-size: 12px;
+            color: #fca5a5;
+            font-weight: 700;
+        }
+
+        .boss-hp-outer {
+            width: 100%;
+            height: 14px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 7px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .boss-hp-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
+            transition: width 0.2s ease-out;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.8);
+        }
+
+        /* Top Right Donator Leaderboard */
+        .mvp-leaderboard {
+            background: rgba(10, 14, 26, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 12px 16px;
+            min-width: 240px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mvp-title {
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 4px;
+            margin-bottom: 2px;
+        }
+
+        .mvp-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 3px 0;
+        }
+
+        .mvp-rank {
+            font-weight: 900;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .mvp-row:nth-child(2) .mvp-rank { background: #f59e0b; color: #000; }
+        .mvp-row:nth-child(3) .mvp-rank { background: #94a3b8; color: #000; }
+        .mvp-row:nth-child(4) .mvp-rank { background: #b45309; color: #fff; }
+
+        .mvp-name {
+            flex: 1;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #f3f4f6;
+        }
+
+        .mvp-score {
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        /* Streamer Ultimate Skills Deck (Bottom Left) */
+        .skills-dock {
+            position: absolute;
+            bottom: 22px;
+            left: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 25;
+        }
+
+        .skill-btn {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .skill-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            border-color: var(--gold-light);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.35);
+        }
+
+        .skill-btn:active {
+            transform: translateY(0) scale(0.96);
+        }
+
+        .skill-icon {
+            font-size: 24px;
+        }
+
+        .skill-name {
+            font-size: 10px;
+            font-weight: 800;
+            color: #d1d5db;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        .skill-cooldown-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            color: #f87171;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .skill-btn.on-cd .skill-cooldown-overlay {
+            opacity: 1;
+        }
+
+        /* Test & Simulation Deck (Collapsible Bar) */
+        .test-deck {
+            position: absolute;
+            bottom: 22px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 25;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+        }
+
+        .test-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 4px;
+        }
+
+        .test-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            color: #fff;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .test-btn:hover {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .test-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Screen Orientation / Fullscreen Controls */
+        .controls-top {
+            position: absolute;
+            top: 14px;
+            right: 280px;
+            display: flex;
+            gap: 8px;
+            z-index: 25;
+        }
+
+        .icon-btn {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #cbd5e1;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* Floating Damage / Notification Numbers */
+        .floating-text {
+            position: absolute;
+            font-weight: 900;
+            pointer-events: none;
+            animation: floatUpFade 1s forwards ease-out;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            z-index: 15;
+        }
+
+        @keyframes floatUpFade {
+            0% { transform: translateY(0) scale(0.9); opacity: 1; }
+            100% { transform: translateY(-45px) scale(1.15); opacity: 0; }
+        }
+
+        /* Game Over / Victory Modal */
+        #endModal {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+        .end-card {
+            background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+            border: 3px solid var(--gold);
+            border-radius: 24px;
+            padding: 32px 40px;
+            text-align: center;
+            max-width: 440px;
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.4);
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .end-title {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+        }
+
+        .end-stats {
+            margin: 16px 0;
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .end-restart-btn {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 900;
+            padding: 12px 30px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+            transition: all 0.2s;
+        }
+
+        .end-restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gameViewport">
+        <!-- Canvas Renderer -->
+        <canvas id="canvas"></canvas>
+
+        <!-- Top HUD Elements -->
+        <div class="hud-top">
+            <!-- Castle HP Card -->
+            <div class="castle-status-card">
+                <div class="castle-title">
+                    <span>🏰 CASTLE CITADEL</span>
+                    <span id="waveDisplay" style="margin-left:auto; font-size:12px; color:#a3e635;">WAVE 1</span>
+                </div>
+                <div class="hp-bar-outer">
+                    <div class="hp-bar-inner" id="castleHpBar"></div>
+                </div>
+                <div class="hp-text">
+                    <span>HP: <strong id="castleHpText">5,000 / 5,000</strong></span>
+                    <span id="defenseStatus" style="color:#60a5fa;">Towers Active 🏹</span>
+                </div>
+            </div>
+
+            <!-- Top Right MVP Leaderboard -->
+            <div class="mvp-leaderboard">
+                <div class="mvp-title">
+                    <span>👑 TOP SIEGE GENERALS</span>
+                    <span id="enemyCountDisplay" style="color:#ef4444; font-size:11px;">0 ENEMIES</span>
+                </div>
+                <div id="mvpList">
+                    <div class="mvp-row"><span class="mvp-rank">1</span><span class="mvp-name">Waiting for gifts...</span><span class="mvp-score">-</span></div>
+                    <div class="mvp-row"><span class="mvp-rank">2</span><span class="mvp-name">-</span><span class="mvp-score">-</span></div>
+                    <div class="mvp-row"><span class="mvp-rank">3</span><span class="mvp-name">-</span><span class="mvp-score">-</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boss Health Bar (Appears when Whale / Lion / Galaxy arrives) -->
+        <div class="boss-alert-container" id="bossBar">
+            <div class="boss-header">
+                <div class="boss-sender-info">
+                    <img class="boss-avatar" id="bossAvatar" src="images/renearn_icon.png" alt="Avatar">
+                    <div>
+                        <div class="boss-name" id="bossName">COLOSSAL TITAN BOSS</div>
+                        <div class="boss-summoner" id="bossSummoner">Summoned by: @Viewer</div>
+                    </div>
+                </div>
+                <span style="font-weight:900; font-size:13px; color:#f87171;">⚠️ WARNING</span>
+            </div>
+            <div class="boss-hp-outer">
+                <div class="boss-hp-inner" id="bossHpInner"></div>
+            </div>
+        </div>
+
+        <!-- Top Orientation / Mode Controls -->
+        <div class="controls-top">
+            <button class="icon-btn" onclick="toggleLayoutMode()" id="layoutToggleBtn">📱 Vertical (TikTok)</button>
+            <button class="icon-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            <button class="icon-btn" onclick="toggleSound()" id="soundBtn">🔊 Sound: ON</button>
+        </div>
+
+        <!-- Streamer Defenses & Spells (Bottom Left) -->
+        <div class="skills-dock">
+            <div class="skill-btn" onclick="castSkill('cannon')" title="Mortar Cannon Blast">
+                <span class="skill-icon">💣</span>
+                <span class="skill-name">Cannon</span>
+                <div class="skill-cooldown-overlay" id="cdCannon">0</div>
+            </div>
+            <div class="skill-btn" onclick="castSkill('blizzard')" title="Freeze All Monsters">
+                <span class="skill-icon">❄️</span>
+                <span class="skill-name">Blizzard</span>
+                <div class="skill-cooldown-overlay" id="cdBlizzard">0</div>
+            </div>
+            <div class="skill-btn" onclick="castSkill('meteor')" title="Meteor Apocalypse">
+                <span class="skill-icon">☄️</span>
+                <span class="skill-name">Meteor</span>
+                <div class="skill-cooldown-overlay" id="cdMeteor">0</div>
+            </div>
+            <div class="skill-btn" onclick="castSkill('sanctuary')" title="Repair Castle HP & Shield">
+                <span class="skill-icon">🛡️</span>
+                <span class="skill-name">Repair</span>
+                <div class="skill-cooldown-overlay" id="cdSanctuary">0</div>
+            </div>
+        </div>
+
+        <!-- Streamer Test & Simulation Deck (Bottom Right) -->
+        <div class="test-deck">
+            <span class="test-label">🧪 Test Deck:</span>
+            <button class="test-btn" onclick="testSpawn('like')">👍 +50 Likes</button>
+            <button class="test-btn" onclick="testSpawn('rose')">🌹 Rose</button>
+            <button class="test-btn" onclick="testSpawn('donut')">🍩 Donut</button>
+            <button class="test-btn" onclick="testSpawn('dragon')">🐉 Dragon</button>
+            <button class="test-btn" onclick="testSpawn('boss')">👑 TITAN BOSS</button>
+            <button class="test-btn" onclick="resetGame()" style="background:rgba(239,68,68,0.2); border-color:#ef4444;">🔄 Reset</button>
+        </div>
+
+        <!-- Game End Modal -->
+        <div id="endModal">
+            <div class="end-card">
+                <div class="end-title" id="endTitle">CASTLE DEFEATED!</div>
+                <div class="end-stats" id="endStats">
+                    The viewer siege hordes broke through the fortress gates.<br>
+                    Total Monsters Defeated: <strong>48</strong><br>
+                    Top Siege General: <strong>@Viewer1</strong>
+                </div>
+                <button class="end-restart-btn" onclick="resetGame()">REBUILD CITADEL ⚔️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Web Audio & Synthesizer System (No missing audio assets!) -->
+    <script>
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundBtn').textContent = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+            if (soundEnabled) playSound('click');
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'arrow') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'hit') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(160, now);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'explosion') {
+                    // White noise blast for explosion
+                    const bufSize = audioCtx.sampleRate * 0.4;
+                    const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+
+                    const noise = audioCtx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(400, now);
+                    filter.frequency.linearRampToValueAtTime(60, now + 0.35);
+
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    noise.start(now);
+                } else if (type === 'bossAlarm') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.setValueAtTime(600, now + 0.15);
+                    osc.frequency.setValueAtTime(300, now + 0.3);
+                    osc.frequency.setValueAtTime(600, now + 0.45);
+                    gain.gain.setValueAtTime(0.35, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                } else if (type === 'freeze') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1200, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+            } catch(e) {}
+        }
+    </script>
+
+    <!-- Main Game Logic, Physics, Particle Engine & Canvas Renderer -->
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Layout modes: 'vertical' (TikTok) vs 'horizontal' (OBS standard)
+        let isVerticalMode = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            isVerticalMode = canvas.height > canvas.width;
+            const toggleBtn = document.getElementById('layoutToggleBtn');
+            if (toggleBtn) {
+                toggleBtn.textContent = isVerticalMode ? '🖥️ Horizontal (OBS)' : '📱 Vertical (TikTok)';
+            }
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function toggleLayoutMode() {
+            // Force viewport width for previewing vertical 1080x1920 style on widescreen
+            const vp = document.getElementById('gameViewport');
+            if (!vp.classList.contains('force-vertical')) {
+                vp.classList.add('force-vertical');
+                vp.style.maxWidth = '540px';
+                vp.style.margin = '0 auto';
+                vp.style.boxShadow = '0 0 50px rgba(0,0,0,0.9)';
+            } else {
+                vp.classList.remove('force-vertical');
+                vp.style.maxWidth = '100vw';
+                vp.style.margin = '0';
+                vp.style.boxShadow = 'none';
+            }
+            resizeCanvas();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // ==========================================
+        // GAME STATE
+        // ==========================================
+        const CASTLE_MAX_HP = 5000;
+        let castleHp = CASTLE_MAX_HP;
+        let castleShield = 0;
+        let isGameOver = false;
+        let wave = 1;
+        let totalDefeated = 0;
+
+        // Entities
+        const enemies = [];
+        const projectiles = [];
+        const particles = [];
+        const floatingTexts = [];
+
+        // MVP Gifters
+        const giftersMap = new Map();
+
+        // Streamer Skill Cooldowns
+        const skillCooldowns = {
+            cannon: 0,
+            blizzard: 0,
+            meteor: 0,
+            sanctuary: 0
+        };
+
+        // Active Boss Tracking
+        let activeBoss = null;
+
+        // Castle Position helper
+        function getCastleRect() {
+            if (isVerticalMode) {
+                // Castle at the bottom
+                const h = 130;
+                return { x: 0, y: canvas.height - h, w: canvas.width, h: h, cx: canvas.width / 2, cy: canvas.height - (h/2) };
+            } else {
+                // Castle on the left
+                const w = 180;
+                return { x: 0, y: 0, w: w, h: canvas.height, cx: w / 2, cy: canvas.height / 2 };
+            }
+        }
+
+        // ==========================================
+        // ENEMY DEFINITIONS
+        // ==========================================
+        const ENEMY_TYPES = {
+            goblin: {
+                name: 'Goblin Scout',
+                hp: 60,
+                speed: 1.8,
+                damage: 8,
+                attackSpeed: 1.0,
+                radius: 14,
+                color: '#22c55e',
+                score: 5
+            },
+            orc: {
+                name: 'Orc Berserker',
+                hp: 220,
+                speed: 1.1,
+                damage: 25,
+                attackSpeed: 1.2,
+                radius: 20,
+                color: '#ea580c',
+                score: 25
+            },
+            ram: {
+                name: 'Siege Ram',
+                hp: 600,
+                speed: 0.85,
+                damage: 75,
+                attackSpeed: 2.2,
+                radius: 28,
+                color: '#a855f7',
+                score: 75
+            },
+            catapult: {
+                name: 'Trebuchet',
+                hp: 450,
+                speed: 0.5,
+                damage: 120,
+                attackSpeed: 3.5,
+                radius: 26,
+                color: '#eab308',
+                score: 150
+            },
+            dragon: {
+                name: 'Shadow Wyvern',
+                hp: 1200,
+                speed: 1.4,
+                damage: 180,
+                attackSpeed: 2.0,
+                radius: 36,
+                color: '#38bdf8',
+                flying: true,
+                score: 400
+            },
+            boss: {
+                name: 'TITAN SIEGE LORD',
+                hp: 5000,
+                speed: 0.45,
+                damage: 400,
+                attackSpeed: 3.0,
+                radius: 54,
+                color: '#ef4444',
+                isBoss: true,
+                score: 1500
+            }
+        };
+
+        function spawnEnemy(typeKey, sender = 'Viewer', avatarUrl = 'images/renearn_icon.png') {
+            if (isGameOver) return;
+            const def = ENEMY_TYPES[typeKey] || ENEMY_TYPES.goblin;
+
+            let startX, startY;
+            if (isVerticalMode) {
+                // Spawn along top edge
+                startX = 40 + Math.random() * (canvas.width - 80);
+                startY = -def.radius - 10;
+            } else {
+                // Spawn along right edge
+                startX = canvas.width + def.radius + 10;
+                startY = 60 + Math.random() * (canvas.height - 120);
+            }
+
+            const enemy = {
+                id: Math.random().toString(36).substr(2, 9),
+                type: typeKey,
+                def: def,
+                x: startX,
+                y: startY,
+                hp: def.hp,
+                maxHp: def.hp,
+                speed: def.speed * (0.9 + Math.random() * 0.2),
+                radius: def.radius,
+                sender: sender,
+                avatar: avatarUrl,
+                avatarImg: null,
+                lastAttack: 0,
+                frozenUntil: 0,
+                burnTicks: 0,
+                scale: 0.2
+            };
+
+            // Preload avatar
+            if (avatarUrl) {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.src = avatarUrl;
+                img.onload = () => { enemy.avatarImg = img; };
+            }
+
+            if (def.isBoss) {
+                activeBoss = enemy;
+                showBossBar(enemy);
+                playSound('bossAlarm');
+                triggerScreenShake(20, 600);
+            }
+
+            enemies.push(enemy);
+            updateEnemyCountDisplay();
+        }
+
+        function showBossBar(boss) {
+            const bar = document.getElementById('bossBar');
+            if (!bar) return;
+            bar.style.display = 'flex';
+            document.getElementById('bossName').textContent = boss.def.name;
+            document.getElementById('bossSummoner').textContent = `Summoned by: @${boss.sender}`;
+            if (boss.avatar) document.getElementById('bossAvatar').src = boss.avatar;
+            document.getElementById('bossHpInner').style.width = '100%';
+        }
+
+        function hideBossBar() {
+            const bar = document.getElementById('bossBar');
+            if (bar) bar.style.display = 'none';
+            activeBoss = null;
+        }
+
+        // ==========================================
+        // ARCHER TOWERS & DEFENSE TURRETS
+        // ==========================================
+        let lastTowerShot = 0;
+        function updateCastleTowers(now) {
+            if (isGameOver) return;
+            const cRect = getCastleRect();
+
+            // Fire dual archer arrows every 450ms
+            if (now - lastTowerShot > 450 && enemies.length > 0) {
+                lastTowerShot = now;
+
+                // Pick target closest to castle
+                let closestEnemy = null;
+                let minDist = Infinity;
+
+                for (const e of enemies) {
+                    const dist = isVerticalMode ? (cRect.y - e.y) : (e.x - cRect.w);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closestEnemy = e;
+                    }
+                }
+
+                if (closestEnemy) {
+                    // Left turret & right turret
+                    if (isVerticalMode) {
+                        fireArrow(cRect.w * 0.25, cRect.y, closestEnemy);
+                        fireArrow(cRect.w * 0.75, cRect.y, closestEnemy);
+                    } else {
+                        fireArrow(cRect.w, cRect.h * 0.25, closestEnemy);
+                        fireArrow(cRect.w, cRect.h * 0.75, closestEnemy);
+                    }
+                    playSound('arrow');
+                }
+            }
+        }
+
+        function fireArrow(startX, startY, target) {
+            const dx = target.x - startX;
+            const dy = target.y - startY;
+            const dist = Math.hypot(dx, dy);
+            const speed = 12;
+
+            projectiles.push({
+                type: 'arrow',
+                x: startX,
+                y: startY,
+                vx: (dx / dist) * speed,
+                vy: (dy / dist) * speed,
+                damage: 45,
+                targetId: target.id,
+                life: 90
+            });
+        }
+
+        // ==========================================
+        // STREAMER ULTIMATE SKILLS
+        // ==========================================
+        function castSkill(skillKey) {
+            initAudio();
+            const now = Date.now();
+            if (skillCooldowns[skillKey] > now) {
+                playSound('click');
+                return;
+            }
+
+            if (skillKey === 'cannon') {
+                // Fire explosive cannonball at center of highest enemy cluster
+                if (enemies.length === 0) return;
+                const target = enemies[Math.floor(Math.random() * enemies.length)];
+                createExplosion(target.x, target.y, 140, 250);
+                playSound('explosion');
+                triggerScreenShake(12, 350);
+                setCooldown('cannon', 4);
+            } else if (skillKey === 'blizzard') {
+                // Freeze all enemies for 4.5 seconds
+                playSound('freeze');
+                for (const e of enemies) {
+                    e.frozenUntil = now + 4500;
+                }
+                for (let i = 0; i < 40; i++) {
+                    createParticle(Math.random() * canvas.width, Math.random() * canvas.height, '#67e8f9', 4, 1.5);
+                }
+                setCooldown('blizzard', 15);
+            } else if (skillKey === 'meteor') {
+                // Rain 4 massive meteors
+                playSound('explosion');
+                triggerScreenShake(18, 500);
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => {
+                        const mx = 60 + Math.random() * (canvas.width - 120);
+                        const my = 60 + Math.random() * (canvas.height - 120);
+                        createExplosion(mx, my, 180, 450);
+                        playSound('explosion');
+                    }, i * 220);
+                }
+                setCooldown('meteor', 22);
+            } else if (skillKey === 'sanctuary') {
+                // Heal castle HP by 1500
+                castleHp = Math.min(CASTLE_MAX_HP, castleHp + 1500);
+                castleShield = 1000;
+                updateCastleHpDisplay();
+                playSound('click');
+                for (let i = 0; i < 35; i++) {
+                    createParticle(Math.random() * 200, Math.random() * canvas.height, '#facc15', 5, 2);
+                }
+                setCooldown('sanctuary', 25);
+            }
+        }
+
+        function setCooldown(skillKey, seconds) {
+            const now = Date.now();
+            skillCooldowns[skillKey] = now + seconds * 1000;
+            const cdEl = document.getElementById('cd' + skillKey.charAt(0).toUpperCase() + skillKey.slice(1));
+            const btnEl = cdEl?.parentElement;
+            if (btnEl) btnEl.classList.add('on-cd');
+
+            const timer = setInterval(() => {
+                const remaining = Math.ceil((skillCooldowns[skillKey] - Date.now()) / 1000);
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    if (cdEl) cdEl.textContent = '0';
+                    if (btnEl) btnEl.classList.remove('on-cd');
+                } else {
+                    if (cdEl) cdEl.textContent = remaining;
+                }
+            }, 250);
+        }
+
+        // ==========================================
+        // CLICK TO BOMB / CANNON
+        // ==========================================
+        canvas.addEventListener('pointerdown', (e) => {
+            if (isGameOver) return;
+            initAudio();
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            // Manual mortar blast at click point
+            createExplosion(clickX, clickY, 85, 90);
+            playSound('hit');
+            triggerScreenShake(5, 150);
+        });
+
+        // ==========================================
+        // EXPLOSIONS & PARTICLES
+        // ==========================================
+        function createExplosion(x, y, radius, damage) {
+            // Apply damage to all enemies in radius
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                const d = Math.hypot(e.x - x, e.y - y);
+                if (d <= radius) {
+                    const dealt = Math.round(damage * (1 - (d / radius) * 0.5));
+                    applyDamage(e, dealt, i);
+                }
+            }
+
+            // Spawn visual fire & spark particles
+            for (let i = 0; i < 28; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 6;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    color: Math.random() > 0.4 ? '#f59e0b' : '#ef4444',
+                    radius: 3 + Math.random() * 5,
+                    alpha: 1,
+                    decay: 0.03 + Math.random() * 0.04
+                });
+            }
+        }
+
+        function createParticle(x, y, color, radius = 3, speed = 2) {
+            const angle = Math.random() * Math.PI * 2;
+            particles.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * (speed * Math.random()),
+                vy: Math.sin(angle) * (speed * Math.random()),
+                color: color,
+                radius: radius,
+                alpha: 1,
+                decay: 0.02 + Math.random() * 0.03
+            });
+        }
+
+        function applyDamage(enemy, damage, index) {
+            enemy.hp -= damage;
+            showFloatingText(`-${damage}`, enemy.x, enemy.y - 12, damage > 100 ? '#facc15' : '#ef4444');
+
+            if (enemy.hp <= 0) {
+                // Defeated!
+                totalDefeated++;
+                recordGifterScore(enemy.sender, enemy.def.score);
+
+                // Death particles
+                for (let p = 0; p < 12; p++) {
+                    createParticle(enemy.x, enemy.y, enemy.def.color, 4, 3);
+                }
+
+                if (enemy === activeBoss) {
+                    hideBossBar();
+                    playSound('explosion');
+                    showFloatingText(`👑 TITAN DOWN!`, canvas.width / 2, canvas.height / 2, '#facc15');
+                }
+
+                enemies.splice(index, 1);
+                updateEnemyCountDisplay();
+            } else if (enemy === activeBoss) {
+                const pct = Math.max(0, (enemy.hp / enemy.maxHp) * 100);
+                document.getElementById('bossHpInner').style.width = `${pct}%`;
+            }
+        }
+
+        function showFloatingText(text, x, y, color = '#ffffff') {
+            floatingTexts.push({
+                text: text,
+                x: x,
+                y: y,
+                color: color,
+                alpha: 1,
+                vy: -1.4,
+                life: 45
+            });
+        }
+
+        // ==========================================
+        // SCREEN SHAKE
+        // ==========================================
+        let shakeIntensity = 0;
+        let shakeEndTime = 0;
+
+        function triggerScreenShake(intensity, durationMs) {
+            shakeIntensity = intensity;
+            shakeEndTime = Date.now() + durationMs;
+        }
+
+        // ==========================================
+        // MVP LEADERBOARD
+        // ==========================================
+        function recordGifterScore(username, points) {
+            if (!username) return;
+            const current = giftersMap.get(username) || 0;
+            giftersMap.set(username, current + points);
+            renderMvpBoard();
+        }
+
+        function renderMvpBoard() {
+            const list = document.getElementById('mvpList');
+            if (!list) return;
+
+            const sorted = Array.from(giftersMap.entries()).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            if (sorted.length === 0) return;
+
+            let html = '';
+            sorted.forEach(([name, score], idx) => {
+                html += `
+                    <div class="mvp-row">
+                        <span class="mvp-rank">${idx + 1}</span>
+                        <span class="mvp-name">@${name}</span>
+                        <span class="mvp-score">${score.toLocaleString()} pts</span>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function updateEnemyCountDisplay() {
+            const el = document.getElementById('enemyCountDisplay');
+            if (el) el.textContent = `${enemies.length} SIEGE UNITS`;
+        }
+
+        function updateCastleHpDisplay() {
+            const pct = Math.max(0, (castleHp / CASTLE_MAX_HP) * 100);
+            const bar = document.getElementById('castleHpBar');
+            const txt = document.getElementById('castleHpText');
+
+            if (bar) {
+                bar.style.width = `${pct}%`;
+                if (pct < 30) bar.classList.add('danger');
+                else bar.classList.remove('danger');
+            }
+            if (txt) {
+                txt.textContent = `${Math.round(castleHp).toLocaleString()} / ${CASTLE_MAX_HP.toLocaleString()}`;
+            }
+
+            if (castleHp <= 0 && !isGameOver) {
+                triggerGameOver();
+            }
+        }
+
+        function triggerGameOver() {
+            isGameOver = true;
+            playSound('explosion');
+            triggerScreenShake(25, 1200);
+
+            const modal = document.getElementById('endModal');
+            if (modal) modal.style.display = 'flex';
+
+            const topGeneral = Array.from(giftersMap.entries()).sort((a,b) => b[1] - a[1])[0];
+            const genName = topGeneral ? `@${topGeneral[0]} (${topGeneral[1]} pts)` : 'None';
+
+            document.getElementById('endStats').innerHTML = `
+                The viewer siege hordes broke through the fortress gates!<br>
+                Total Monsters Defeated: <strong>${totalDefeated}</strong><br>
+                Top Siege General: <strong style="color:#f59e0b;">${genName}</strong>
+            `;
+        }
+
+        function resetGame() {
+            castleHp = CASTLE_MAX_HP;
+            castleShield = 0;
+            isGameOver = false;
+            totalDefeated = 0;
+            enemies.length = 0;
+            projectiles.length = 0;
+            particles.length = 0;
+            floatingTexts.length = 0;
+            giftersMap.clear();
+            hideBossBar();
+            updateCastleHpDisplay();
+            updateEnemyCountDisplay();
+            renderMvpBoard();
+
+            const modal = document.getElementById('endModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // ==========================================
+        // MAIN GAME UPDATE & RENDER LOOP
+        // ==========================================
+        let lastTime = performance.now();
+
+        function gameLoop(now) {
+            const dt = Math.min(40, now - lastTime) / 1000;
+            lastTime = now;
+
+            // Apply screen shake
+            ctx.save();
+            if (Date.now() < shakeEndTime) {
+                const ox = (Math.random() * 2 - 1) * shakeIntensity;
+                const oy = (Math.random() * 2 - 1) * shakeIntensity;
+                ctx.translate(ox, oy);
+            }
+
+            // 1. Draw Battlefield Terrain
+            drawBattlefield();
+
+            // 2. Draw Castle Citadel
+            drawCastle();
+
+            // 3. Update & Draw Towers
+            updateCastleTowers(now);
+
+            // 4. Update & Draw Enemies
+            updateEnemies(now, dt);
+
+            // 5. Update & Draw Projectiles
+            updateProjectiles(dt);
+
+            // 6. Update & Draw Particles
+            updateParticles();
+
+            // 7. Update & Draw Floating Texts
+            updateFloatingTexts();
+
+            ctx.restore();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Draw Battlefield (Stone, ground texture, grass)
+        function drawBattlefield() {
+            ctx.fillStyle = '#0f141c';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Path texture
+            ctx.fillStyle = '#161c28';
+            if (isVerticalMode) {
+                ctx.fillRect(canvas.width * 0.15, 0, canvas.width * 0.7, canvas.height);
+            } else {
+                ctx.fillRect(0, canvas.height * 0.15, canvas.width, canvas.height * 0.7);
+            }
+
+            // Decorative grid / paving lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            const step = 60;
+            for (let x = 0; x < canvas.width; x += step) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += step) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        // Draw Castle Fortress
+        function drawCastle() {
+            const c = getCastleRect();
+
+            // Castle Body
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(c.x, c.y, c.w, c.h);
+
+            // Castle Outer Border / Wall glow
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(c.x, c.y, c.w, c.h);
+
+            // Battlements / Parapets
+            ctx.fillStyle = '#334155';
+            const numTeeth = isVerticalMode ? 8 : 6;
+            const toothW = isVerticalMode ? (c.w / numTeeth) : 24;
+            const toothH = isVerticalMode ? 18 : (c.h / numTeeth);
+
+            if (isVerticalMode) {
+                for (let i = 0; i < numTeeth; i += 2) {
+                    ctx.fillRect(c.x + i * toothW, c.y - 12, toothW, 12);
+                }
+            } else {
+                for (let i = 0; i < numTeeth; i += 2) {
+                    ctx.fillRect(c.x + c.w, c.y + i * toothH, 12, toothH);
+                }
+            }
+
+            // Energy Shield effect if active
+            if (castleShield > 0) {
+                ctx.save();
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+                ctx.lineWidth = 6;
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 15;
+                ctx.strokeRect(c.x - 4, c.y - 4, c.w + 8, c.h + 8);
+                ctx.restore();
+            }
+        }
+
+        // Update & Render Enemies
+        function updateEnemies(now, dt) {
+            const cRect = getCastleRect();
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+
+                // Scale pop-in animation
+                if (e.scale < 1) e.scale = Math.min(1, e.scale + dt * 4);
+
+                // Frozen check
+                const isFrozen = e.frozenUntil > now;
+
+                if (!isFrozen) {
+                    // Move toward castle
+                    if (isVerticalMode) {
+                        e.y += e.speed * 60 * dt;
+                        if (e.y >= cRect.y - e.radius) {
+                            // Hit the castle wall!
+                            e.y = cRect.y - e.radius;
+                            if (now - e.lastAttack > e.def.attackSpeed * 1000) {
+                                e.lastAttack = now;
+                                attackCastle(e);
+                            }
+                        }
+                    } else {
+                        e.x -= e.speed * 60 * dt;
+                        if (e.x <= cRect.w + e.radius) {
+                            // Hit the castle wall!
+                            e.x = cRect.w + e.radius;
+                            if (now - e.lastAttack > e.def.attackSpeed * 1000) {
+                                e.lastAttack = now;
+                                attackCastle(e);
+                            }
+                        }
+                    }
+                }
+
+                // Draw Enemy
+                ctx.save();
+                ctx.translate(e.x, e.y);
+                ctx.scale(e.scale, e.scale);
+
+                // Frozen Ice Block effect
+                if (isFrozen) {
+                    ctx.fillStyle = 'rgba(103, 232, 249, 0.45)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, e.radius + 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#67e8f9';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                // Monster Body Circle
+                ctx.fillStyle = e.def.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // Draw Avatar in center if available
+                if (e.avatarImg) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(0, 0, e.radius * 0.75, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(e.avatarImg, -e.radius * 0.75, -e.radius * 0.75, e.radius * 1.5, e.radius * 1.5);
+                    ctx.restore();
+                } else {
+                    // Fallback face
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `${Math.round(e.radius)}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const icon = e.def.isBoss ? '👑' : (e.def.flying ? '🐉' : '🪓');
+                    ctx.fillText(icon, 0, 0);
+                }
+
+                // HP Bar above unit
+                const hpBarW = e.radius * 2.2;
+                const hpPct = Math.max(0, e.hp / e.maxHp);
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(-hpBarW / 2, -e.radius - 12, hpBarW, 4);
+                ctx.fillStyle = hpPct > 0.4 ? '#22c55e' : '#ef4444';
+                ctx.fillRect(-hpBarW / 2, -e.radius - 12, hpBarW * hpPct, 4);
+
+                // Viewer Username above unit
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px Outfit, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 4;
+                ctx.fillText(`@${e.sender}`, 0, -e.radius - 16);
+
+                ctx.restore();
+            }
+        }
+
+        function attackCastle(enemy) {
+            playSound('hit');
+            triggerScreenShake(enemy.def.isBoss ? 15 : 4, 180);
+
+            let dmg = enemy.def.damage;
+            if (castleShield > 0) {
+                const absorbed = Math.min(castleShield, dmg);
+                castleShield -= absorbed;
+                dmg -= absorbed;
+            }
+
+            castleHp = Math.max(0, castleHp - dmg);
+            updateCastleHpDisplay();
+
+            // Hit spark particles
+            const c = getCastleRect();
+            const px = isVerticalMode ? enemy.x : c.w;
+            const py = isVerticalMode ? c.y : enemy.y;
+            for (let i = 0; i < 8; i++) {
+                createParticle(px, py, '#f59e0b', 3, 3);
+            }
+        }
+
+        // Update Projectiles
+        function updateProjectiles(dt) {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const p = projectiles[i];
+                p.x += p.vx * 60 * dt;
+                p.y += p.vy * 60 * dt;
+                p.life--;
+
+                // Draw Arrow
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x - p.vx * 0.8, p.y - p.vy * 0.8);
+                ctx.stroke();
+
+                // Check collision against target
+                let hit = false;
+                for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+                    const e = enemies[eIdx];
+                    if (Math.hypot(e.x - p.x, e.y - p.y) < e.radius + 6) {
+                        applyDamage(e, p.damage, eIdx);
+                        playSound('hit');
+                        createParticle(p.x, p.y, '#f59e0b', 2, 2);
+                        hit = true;
+                        break;
+                    }
+                }
+
+                if (hit || p.life <= 0) {
+                    projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        // Update Particles
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const pt = particles[i];
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.alpha -= pt.decay;
+
+                if (pt.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, pt.alpha);
+                ctx.fillStyle = pt.color;
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Update Floating Text
+        function updateFloatingTexts() {
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y += ft.vy;
+                ft.life--;
+
+                if (ft.life <= 0) {
+                    floatingTexts.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.fillStyle = ft.color;
+                ctx.font = '900 15px Outfit, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 6;
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            }
+        }
+
+        // ==========================================
+        // TEST & SIMULATION BUTTONS
+        // ==========================================
+        const testUsernames = ['DragonSlayer', 'TikTokKing', 'GamerGirl99', 'RenEarnFan', 'BossHunter', 'StreamLegend'];
+
+        function testSpawn(type) {
+            initAudio();
+            const sender = testUsernames[Math.floor(Math.random() * testUsernames.length)];
+            const avatar = 'images/renearn_icon.png';
+
+            if (type === 'like') {
+                // Swarm of 3 goblins
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => spawnEnemy('goblin', sender, avatar), i * 180);
+                }
+            } else if (type === 'rose') {
+                spawnEnemy('orc', sender, avatar);
+            } else if (type === 'donut') {
+                spawnEnemy('catapult', sender, avatar);
+            } else if (type === 'dragon') {
+                spawnEnemy('dragon', sender, avatar);
+            } else if (type === 'boss') {
+                spawnEnemy('boss', sender, avatar);
+            }
+        }
+
+        // ==========================================
+        // TIKTOK LIVE BRIDGE AUTO-HOOK
+        // ==========================================
+        let lastEventTimestamp = Date.now();
+
+        async function pollTikTokBridge() {
+            try {
+                const res = await fetch(`/api/events?since=${lastEventTimestamp}`, { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.events && Array.isArray(data.events)) {
+                        for (const ev of data.events) {
+                            if (ev.timestamp && ev.timestamp > lastEventTimestamp) {
+                                lastEventTimestamp = ev.timestamp;
+                            }
+                            handleTikTokEvent(ev);
+                        }
+                    }
+                }
+            } catch(e) {}
+            setTimeout(pollTikTokBridge, 500);
+        }
+
+        function handleTikTokEvent(ev) {
+            const user = ev.nickname || ev.uniqueId || 'Viewer';
+            const avatar = ev.profilePictureUrl || 'images/renearn_icon.png';
+
+            if (ev.type === 'gift') {
+                const giftName = (ev.giftName || '').toLowerCase();
+                const coins = ev.diamondCount || 1;
+
+                if (coins >= 1000 || giftName.includes('galaxy') || giftName.includes('lion') || giftName.includes('whale')) {
+                    spawnEnemy('boss', user, avatar);
+                } else if (coins >= 300 || giftName.includes('dragon') || giftName.includes('swan') || giftName.includes('corgi')) {
+                    spawnEnemy('dragon', user, avatar);
+                } else if (coins >= 30 || giftName.includes('donut') || giftName.includes('crane')) {
+                    spawnEnemy('catapult', user, avatar);
+                } else if (coins >= 5 || giftName.includes('heart') || giftName.includes('ice cream')) {
+                    spawnEnemy('ram', user, avatar);
+                } else {
+                    // Rose or 1 coin
+                    spawnEnemy('orc', user, avatar);
+                }
+            } else if (ev.type === 'like') {
+                // Free likes spawn goblins
+                spawnEnemy('goblin', user, avatar);
+            }
+        }
+
+        // Start loop and bridge polling
+        requestAnimationFrame(gameLoop);
+        pollTikTokBridge();
+        updateCastleHpDisplay();
+    </script>
+</body>
+</html>
