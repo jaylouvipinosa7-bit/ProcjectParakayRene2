@@ -10,7 +10,11 @@ echo  [1/2] Checking Local Studio Server...
 netstat -ano | findstr /R /C:":8080 .*LISTENING" >nul
 if "%ERRORLEVEL%"=="1" (
     echo       Server not active. Starting background server on port 8080...
-    start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0core\server.ps1"
+    if exist "%~dp0core\server.ps1" (
+        start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0core\server.ps1"
+    ) else if exist "%~dp0..\core\server.ps1" (
+        start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0..\core\server.ps1"
+    )
     ping 127.0.0.1 -n 3 >nul
 ) else (
     echo       Server is active and ready on port 8080!
@@ -18,14 +22,14 @@ if "%ERRORLEVEL%"=="1" (
 
 echo.
 echo  [2/2] Launching Kingdom Siege Game Window...
-start msedge.exe --app=http://localhost:8080/kingdom-siege
+start msedge.exe --app=http://localhost:8080/kingdom-siege.html
 
 echo.
 echo ===============================================================================
 echo   GAME IS RUNNING AND READY FOR YOUR STREAM!
 echo.
-echo   * Direct Play / Window : http://localhost:8080/kingdom-siege
-echo   * OBS Browser Source   : http://localhost:8080/kingdom-siege
+echo   * Direct Play / Window : http://localhost:8080/kingdom-siege.html
+echo   * OBS Browser Source   : http://localhost:8080/kingdom-siege.html
 echo.
 echo   Recommended OBS Settings:
 echo    - Horizontal (YouTube/Twitch) : 1920 x 1080
