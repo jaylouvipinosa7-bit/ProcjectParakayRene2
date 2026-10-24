@@ -1136,10 +1136,13 @@
         const cellSpottedTexture = createCellSpottedTexture();
 
         // ==============================================================
-        // 3D SHENRON (DIVINE DRAGON) GLTF MODEL & DRAGON BALLS SYSTEM
+        // 3D SHENRON (DIVINE DRAGON) GLTF MODEL & DYNAMIC TAIL ANIMATION
         // ==============================================================
         let shenronGltfTemplate = null;
         let shenronLoadingPromise = null;
+        const dragonUniforms = {
+            uDragonTime: { value: 0 }
+        };
 
         function loadShenronGLTF() {
             if (shenronLoadingPromise) return shenronLoadingPromise;
@@ -1152,6 +1155,8 @@
                 const loader = new THREE.GLTFLoader();
                 loader.load('models/shenron.glb', (gltf) => {
                     const root = gltf.scene || gltf.scenes[0];
+                    const dragonBalls = [];
+
                     root.traverse((child) => {
                         if (child.isMesh) {
                             child.castShadow = true;
@@ -1162,17 +1167,44 @@
                                     child.material.map.encoding = THREE.sRGBEncoding;
                                     child.material.map.needsUpdate = true;
                                 }
-                                // Glowing Golden Dragon Balls with Star Emblems
+
                                 if (child.name.toLowerCase().includes('star')) {
+                                    // Glowing Golden Dragon Balls with Star Emblems
                                     child.material.emissive = new THREE.Color(0xf59e0b);
                                     child.material.emissiveIntensity = 0.95;
                                     child.material.roughness = 0.1;
                                     child.material.metalness = 0.85;
-                                }
-                                // Glowing Crimson Dragon Eyes
-                                if (child.name.toLowerCase().includes('eye') || child.name.toLowerCase().includes('08')) {
-                                    child.material.emissive = new THREE.Color(0xef4444);
-                                    child.material.emissiveIntensity = 1.0;
+                                    child.userData.basePos = child.position.clone();
+                                    dragonBalls.push(child);
+                                } else {
+                                    // Serpentine Body, Tail & Whiskers: GPU Real-Time Undulation Shader
+                                    child.material = child.material.clone();
+                                    child.material.onBeforeCompile = (shader) => {
+                                        shader.uniforms.uDragonTime = dragonUniforms.uDragonTime;
+                                        shader.vertexShader = `
+                                            uniform float uDragonTime;
+                                        ` + shader.vertexShader;
+
+                                        shader.vertexShader = shader.vertexShader.replace(
+                                            '#include <begin_vertex>',
+                                            `
+                                            #include <begin_vertex>
+                                            // Living serpentine wave: head stays steady, spine and tail flex organically
+                                            float zNorm = (position.z + 300.0) / 1100.0;
+                                            float tailWhip = smoothstep(0.1, 1.0, zNorm);
+                                            float waveA = sin(position.z * 0.009 + uDragonTime * 4.2) * (26.0 * tailWhip);
+                                            float waveB = cos(position.z * 0.007 + uDragonTime * 3.4) * (18.0 * tailWhip);
+                                            transformed.x += waveA;
+                                            transformed.y += waveB;
+                                            `
+                                        );
+                                    };
+
+                                    // Glowing Crimson Dragon Eyes
+                                    if (child.name.toLowerCase().includes('eye') || child.name.toLowerCase().includes('08')) {
+                                        child.material.emissive = new THREE.Color(0xef4444);
+                                        child.material.emissiveIntensity = 1.0;
+                                    }
                                 }
                             }
                         }
@@ -1192,8 +1224,13 @@
                     root.rotation.y = -Math.PI / 2;
                     container.add(root);
 
+                    container.userData = {
+                        dragonBalls: dragonBalls,
+                        animations: gltf.animations || []
+                    };
+
                     shenronGltfTemplate = container;
-                    console.log('⚡ Shenron 3D Model Loaded Successfully!');
+                    console.log('⚡ Shenron 3D Model with Dynamic Tail & Coils Loaded Successfully!');
                     resolve(container);
                 }, undefined, (err) => {
                     console.warn('Error loading models/shenron.glb, using procedural fallback:', err);
@@ -1353,11 +1390,18 @@
 
             let isGltf = false;
             let procData = null;
+            let gltfBalls = [];
 
             if (shenronGltfTemplate) {
                 const clone = shenronGltfTemplate.clone(true);
                 bodyContainer.add(clone);
                 isGltf = true;
+                clone.traverse((c) => {
+                    if (c.isMesh && c.name.toLowerCase().includes('star')) {
+                        c.userData.basePos = c.position.clone();
+                        gltfBalls.push(c);
+                    }
+                });
             } else {
                 procData = createProceduralShenlong();
                 bodyContainer.add(procData.group);
@@ -1369,6 +1413,14 @@
                         const clone = gltfRoot.clone(true);
                         bodyContainer.add(clone);
                         shenlongGroup.userData.isGltf = true;
+                        gltfBalls = [];
+                        clone.traverse((c) => {
+                            if (c.isMesh && c.name.toLowerCase().includes('star')) {
+                                c.userData.basePos = c.position.clone();
+                                gltfBalls.push(c);
+                            }
+                        });
+                        shenlongGroup.userData.dragonBalls = gltfBalls;
                     }
                 });
             }
@@ -1390,7 +1442,7 @@
                 halo: halo,
                 isGltf: isGltf,
                 segments: procData ? procData.segments : null,
-                dragonBalls: procData ? procData.dragonBalls : null
+                dragonBalls: isGltf ? gltfBalls : (procData ? procData.dragonBalls : null)
             };
 
             return shenlongGroup;
@@ -2171,12 +2223,25 @@
                         }
                     }
 
-                    // Shenlong Real-Time Flight & Dragon Ball Animation
+                    // Shenlong Real-Time Flight & Dynamic Undulating Dragon Animation
                     if (e.def.isShenlong) {
+                        dragonUniforms.uDragonTime.value = time;
                         if (e.mesh.userData.isGltf || !e.mesh.userData.segments) {
-                            e.mesh.position.y = 18 + Math.sin(time * 2.8) * 3.2;
-                            e.mesh.rotation.z = Math.sin(time * 2.2) * 0.12;
-                            e.mesh.rotation.x = Math.cos(time * 1.8) * 0.08;
+                            e.mesh.position.y = 18 + Math.sin(time * 2.6) * 3.6;
+                            e.mesh.rotation.z = Math.sin(time * 2.2) * 0.15;
+                            e.mesh.rotation.x = Math.cos(time * 1.8) * 0.09;
+
+                            // Orbit the 7 Dragon Balls
+                            if (Array.isArray(e.mesh.userData.dragonBalls)) {
+                                e.mesh.userData.dragonBalls.forEach((db, idx) => {
+                                    if (db.userData.basePos) {
+                                        const angle = time * 2.8 + (idx / 7) * Math.PI * 2;
+                                        db.position.x = db.userData.basePos.x + Math.cos(angle) * 32;
+                                        db.position.y = db.userData.basePos.y + Math.sin(angle) * 38;
+                                        db.position.z = db.userData.basePos.z + Math.sin(angle * 1.4) * 22;
+                                    }
+                                });
+                            }
                         } else if (e.mesh.userData.segments) {
                             const segs = e.mesh.userData.segments;
                             for (let s = 0; s < segs.length; s++) {
