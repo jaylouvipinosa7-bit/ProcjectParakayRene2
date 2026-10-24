@@ -9,17 +9,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@500;700;900&family=Bungee&family=Luckiest+Guy&display=swap" rel="stylesheet">
     
-    <!-- Three.js 3D WebGL Engine & GLTFLoader -->
+    <!-- Three.js 3D WebGL Engine & Loaders (GLTFLoader, FBXLoader, fflate) -->
     <script src="three.min.js"></script>
     <script>
         if (typeof THREE === 'undefined') {
             document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
         }
     </script>
+    <script src="fflate.min.js"></script>
+    <script>
+        if (typeof fflate === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/fflate@0.7.4/umd/index.js"><\/script>');
+        }
+    </script>
     <script src="GLTFLoader.js"></script>
     <script>
         if (typeof THREE !== 'undefined' && !THREE.GLTFLoader) {
             document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>');
+        }
+    </script>
+    <script src="FBXLoader.js"></script>
+    <script>
+        if (typeof THREE !== 'undefined' && !THREE.FBXLoader) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"><\/script>');
         }
     </script>
 
@@ -1136,7 +1148,7 @@
         const cellSpottedTexture = createCellSpottedTexture();
 
         // ==============================================================
-        // 3D SHENRON (DIVINE DRAGON) GLTF MODEL & DYNAMIC TAIL ANIMATION
+        // 3D SHENRON (DIVINE DRAGON) ANIMATED MODEL LOADER
         // ==============================================================
         let shenronGltfTemplate = null;
         let shenronLoadingPromise = null;
@@ -1147,105 +1159,154 @@
         function loadShenronGLTF() {
             if (shenronLoadingPromise) return shenronLoadingPromise;
             shenronLoadingPromise = new Promise((resolve) => {
-                if (typeof THREE.GLTFLoader === 'undefined') {
-                    console.warn('GLTFLoader not available');
-                    resolve(null);
-                    return;
-                }
-                const loader = new THREE.GLTFLoader();
-                loader.load('models/shenron.glb', (gltf) => {
-                    const root = gltf.scene || gltf.scenes[0];
-                    const dragonBalls = [];
+                function loadGLTFFallback(cb) {
+                    if (typeof THREE.GLTFLoader === 'undefined') {
+                        cb(null);
+                        return;
+                    }
+                    const loader = new THREE.GLTFLoader();
+                    loader.load('models/shenron.glb', (gltf) => {
+                        const root = gltf.scene || gltf.scenes[0];
+                        const dragonBalls = [];
 
-                    root.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                            if (child.material) {
-                                child.material.side = THREE.DoubleSide;
-                                if (child.material.map) {
-                                    child.material.map.encoding = THREE.sRGBEncoding;
-                                    child.material.map.needsUpdate = true;
-                                }
+                        root.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                if (child.material) {
+                                    child.material.side = THREE.DoubleSide;
+                                    if (child.material.map) {
+                                        child.material.map.encoding = THREE.sRGBEncoding;
+                                        child.material.map.needsUpdate = true;
+                                    }
 
-                                if (child.name.toLowerCase().includes('star')) {
-                                    // Glowing Golden Dragon Balls with Star Emblems
-                                    child.material.emissive = new THREE.Color(0xf59e0b);
-                                    child.material.emissiveIntensity = 0.95;
-                                    child.material.roughness = 0.1;
-                                    child.material.metalness = 0.85;
-                                    child.userData.basePos = child.position.clone();
-                                    dragonBalls.push(child);
-                                } else {
-                                    // Serpentine Body, Tail & Whiskers: GPU Real-Time Undulation Shader
-                                    child.material = child.material.clone();
-                                    child.material.onBeforeCompile = (shader) => {
-                                        shader.uniforms.uDragonTime = dragonUniforms.uDragonTime;
-                                        shader.vertexShader = `
-                                            uniform float uDragonTime;
-                                        ` + shader.vertexShader;
+                                    if (child.name.toLowerCase().includes('star')) {
+                                        child.material.emissive = new THREE.Color(0xf59e0b);
+                                        child.material.emissiveIntensity = 0.95;
+                                        child.material.roughness = 0.1;
+                                        child.material.metalness = 0.85;
+                                        child.userData.basePos = child.position.clone();
+                                        dragonBalls.push(child);
+                                    } else {
+                                        child.material = child.material.clone();
+                                        child.material.onBeforeCompile = (shader) => {
+                                            shader.uniforms.uDragonTime = dragonUniforms.uDragonTime;
+                                            shader.vertexShader = `uniform float uDragonTime;\n` + shader.vertexShader;
+                                            shader.vertexShader = shader.vertexShader.replace(
+                                                '#include <begin_vertex>',
+                                                `#include <begin_vertex>
+                                                float zNorm = (position.z + 300.0) / 1100.0;
+                                                float tailWhip = smoothstep(0.1, 1.0, zNorm);
+                                                float waveA = sin(position.z * 0.009 + uDragonTime * 4.2) * (26.0 * tailWhip);
+                                                float waveB = cos(position.z * 0.007 + uDragonTime * 3.4) * (18.0 * tailWhip);
+                                                transformed.x += waveA;
+                                                transformed.y += waveB;`
+                                            );
+                                        };
 
-                                        shader.vertexShader = shader.vertexShader.replace(
-                                            '#include <begin_vertex>',
-                                            `
-                                            #include <begin_vertex>
-                                            // Living serpentine wave: head stays steady, spine and tail flex organically
-                                            float zNorm = (position.z + 300.0) / 1100.0;
-                                            float tailWhip = smoothstep(0.1, 1.0, zNorm);
-                                            float waveA = sin(position.z * 0.009 + uDragonTime * 4.2) * (26.0 * tailWhip);
-                                            float waveB = cos(position.z * 0.007 + uDragonTime * 3.4) * (18.0 * tailWhip);
-                                            transformed.x += waveA;
-                                            transformed.y += waveB;
-                                            `
-                                        );
-                                    };
-
-                                    // Glowing Crimson Dragon Eyes
-                                    if (child.name.toLowerCase().includes('eye') || child.name.toLowerCase().includes('08')) {
-                                        child.material.emissive = new THREE.Color(0xef4444);
-                                        child.material.emissiveIntensity = 1.0;
+                                        if (child.name.toLowerCase().includes('eye') || child.name.toLowerCase().includes('08')) {
+                                            child.material.emissive = new THREE.Color(0xef4444);
+                                            child.material.emissiveIntensity = 1.0;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
-
-                    // Auto-normalize bounding box and size to match the siege battlefield
-                    const box = new THREE.Box3().setFromObject(root);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    const targetScale = 38 / maxDim;
-
-                    const container = new THREE.Group();
-                    root.scale.setScalar(targetScale);
-                    root.position.set(-center.x * targetScale, -center.y * targetScale, -center.z * targetScale);
-                    // Orient Shenron to face towards the castle (-X)
-                    root.rotation.y = -Math.PI / 2;
-                    container.add(root);
-
-                    container.userData = {
-                        dragonBalls: dragonBalls,
-                        animations: gltf.animations || []
-                    };
-
-                    if (gltf.animations && gltf.animations.length > 0) {
-                        const mixer = new THREE.AnimationMixer(root);
-                        gltf.animations.forEach(clip => {
-                            const action = mixer.clipAction(clip);
-                            action.play();
                         });
-                        activeMixers.push(mixer);
-                        console.log('⚡ Active Skeletal Animation Mixer started with', gltf.animations.length, 'animation clips!');
-                    }
 
-                    shenronGltfTemplate = container;
-                    console.log('⚡ Shenron 3D Model with Dynamic Tail & Coils Loaded Successfully!');
-                    resolve(container);
-                }, undefined, (err) => {
-                    console.warn('Error loading models/shenron.glb, using procedural fallback:', err);
-                    resolve(null);
-                });
+                        const box = new THREE.Box3().setFromObject(root);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const targetScale = 38 / (maxDim || 1);
+
+                        const container = new THREE.Group();
+                        root.scale.setScalar(targetScale);
+                        root.position.set(-center.x * targetScale, -center.y * targetScale, -center.z * targetScale);
+                        root.rotation.y = -Math.PI / 2;
+                        container.add(root);
+
+                        container.userData = {
+                            dragonBalls: dragonBalls,
+                            animations: gltf.animations || []
+                        };
+
+                        if (gltf.animations && gltf.animations.length > 0) {
+                            const mixer = new THREE.AnimationMixer(root);
+                            gltf.animations.forEach(clip => mixer.clipAction(clip).play());
+                            activeMixers.push(mixer);
+                        }
+
+                        shenronGltfTemplate = container;
+                        console.log('⚡ Shenron GLTF with Dynamic Coils Loaded Successfully!');
+                        cb(container);
+                    }, undefined, (err) => {
+                        console.warn('models/shenron.glb load error:', err);
+                        cb(null);
+                    });
+                }
+
+                // Try loading downloaded dragon-ball-z-shenlong FBX model
+                if (typeof THREE.FBXLoader !== 'undefined') {
+                    const fbxLoader = new THREE.FBXLoader();
+                    const texLoader = new THREE.TextureLoader();
+                    const diffMap = texLoader.load('models/shenlong_animated/textures/shenlong_diffuse_final.png');
+                    const normMap = texLoader.load('models/shenlong_animated/textures/shenlong_normal.png');
+                    diffMap.encoding = THREE.sRGBEncoding;
+
+                    fbxLoader.load('models/shenlong_animated/shenlong.fbx', (fbx) => {
+                        fbx.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                child.material = new THREE.MeshStandardMaterial({
+                                    map: diffMap,
+                                    normalMap: normMap,
+                                    roughness: 0.45,
+                                    metalness: 0.35,
+                                    side: THREE.DoubleSide
+                                });
+                                child.material.onBeforeCompile = (shader) => {
+                                    shader.uniforms.uDragonTime = dragonUniforms.uDragonTime;
+                                    shader.vertexShader = `uniform float uDragonTime;\n` + shader.vertexShader;
+                                    shader.vertexShader = shader.vertexShader.replace(
+                                        '#include <begin_vertex>',
+                                        `#include <begin_vertex>
+                                        float wave = sin(position.z * 0.05 + uDragonTime * 4.0) * 8.0;
+                                        transformed.x += wave;`
+                                    );
+                                };
+                            }
+                        });
+
+                        const box = new THREE.Box3().setFromObject(fbx);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const targetScale = 42 / (maxDim || 1);
+
+                        const container = new THREE.Group();
+                        fbx.scale.setScalar(targetScale);
+                        fbx.position.set(-center.x * targetScale, -center.y * targetScale, -center.z * targetScale);
+                        fbx.rotation.y = -Math.PI / 2;
+                        container.add(fbx);
+
+                        if (fbx.animations && fbx.animations.length > 0) {
+                            const mixer = new THREE.AnimationMixer(fbx);
+                            fbx.animations.forEach(clip => mixer.clipAction(clip).play());
+                            activeMixers.push(mixer);
+                            console.log('⚡ Shenlong FBX Skeletal Animation Mixer started with', fbx.animations.length, 'animation clips!');
+                        }
+
+                        shenronGltfTemplate = container;
+                        console.log('⚡ Dragon Ball Z SHENLONG (dragon-ball-z-shenlong.zip) Loaded Successfully!');
+                        resolve(container);
+                    }, undefined, (fbxErr) => {
+                        console.warn('Animated FBX not loaded, using GLTF fallback:', fbxErr);
+                        loadGLTFFallback(resolve);
+                    });
+                } else {
+                    loadGLTFFallback(resolve);
+                }
             });
             return shenronLoadingPromise;
         }
@@ -1459,10 +1520,13 @@
         }
 
         // ==============================================================
-        // DBFZ 3D PERFECT CELL GLTF MODEL & SOLID MESH CONVERTER
+        // DBFZ 3D PERFECT CELL GLTF MODEL & DYNAMIC COMBAT ANIMATOR
         // ==============================================================
         let cellGltfTemplate = null;
         let cellLoadingPromise = null;
+        const cellUniforms = {
+            uCellTime: { value: 0 }
+        };
 
         function loadCellGLTF() {
             if (cellLoadingPromise) return cellLoadingPromise;
@@ -1476,7 +1540,7 @@
                 loader.load('models/cell.glb', (gltf) => {
                     const root = gltf.scene || gltf.scenes[0];
 
-                    // Extract all 5 meshes into clean, rock-solid standard THREE.Mesh objects
+                    // Extract all 5 meshes into clean, rock-solid standard THREE.Mesh objects with GPU animation
                     const cleanModel = new THREE.Group();
 
                     root.traverse((child) => {
@@ -1507,6 +1571,78 @@
                                 mat.polygonOffsetFactor = -1;
                             }
 
+                            // GPU DYNAMIC COMBAT MARCH & FLIGHT LIMB DEFORMATION (Arms, Legs, Wings, Torso)
+                            mat.onBeforeCompile = (shader) => {
+                                shader.uniforms.uCellTime = cellUniforms.uCellTime;
+                                shader.vertexShader = `
+                                    uniform float uCellTime;
+                                ` + shader.vertexShader;
+
+                                shader.vertexShader = shader.vertexShader.replace(
+                                    '#include <begin_vertex>',
+                                    `
+                                    #include <begin_vertex>
+                                    
+                                    // -------------------------------------------------------------
+                                    // DYNAMIC PERFECT CELL COMBAT MARCH & FLIGHT LIMB DEFORMATION
+                                    // Model-space: Front is +Z, Top is +Y, Left is +X, Right is -X, Back is -Z
+                                    // -------------------------------------------------------------
+                                    
+                                    // 1. LEGS: DYNAMIC ADVANCING STRIDE CYCLE (Thighs, Knees & Pointed Boots)
+                                    if (position.y < 10.5) {
+                                        float legFrac = clamp((10.5 - position.y) / 10.5, 0.0, 1.0);
+                                        float legWeight = smoothstep(0.0, 1.0, legFrac);
+                                        // Left leg vs Right leg alternating phase (180 deg out of phase)
+                                        float legPhase = position.x > 0.35 ? (uCellTime * 4.2) : (uCellTime * 4.2 + 3.14159);
+                                        float legSwing = sin(legPhase);
+                                        
+                                        // Forward/backward stride along +Z/-Z
+                                        transformed.z += legSwing * (legWeight * 2.8);
+                                        // Natural foot & knee lift when swinging forward
+                                        transformed.y += max(0.0, legSwing) * (legWeight * 0.95);
+                                        // Dynamic knee articulation
+                                        transformed.x += sin(legPhase * 0.5) * (legWeight * 0.25);
+                                    }
+                                    
+                                    // 2. ARMS: MENACING COMBAT STANCE & POWER PUMP (Shoulders, Pauldrons, Elbows & Fists)
+                                    if (abs(position.x) > 2.6 && position.y >= 9.0 && position.y <= 16.5) {
+                                        float armDist = (abs(position.x) - 2.6) / 5.8;
+                                        float armWeight = clamp(armDist, 0.0, 1.0);
+                                        float armPhase = position.x > 0.0 ? (uCellTime * 4.2 + 3.14159) : (uCellTime * 4.2);
+                                        
+                                        // Break out of rigid T-pose: Bring forearms and fists forward and inward into combat stance
+                                        transformed.z += armWeight * 3.2; // Angle forearms and hands forward towards target (+Z)
+                                        transformed.x += (position.x > 0.0 ? -1.0 : 1.0) * (armWeight * 1.6); // Bring hands inward towards combat ready center
+                                        
+                                        // Counter-marching combat arm pump / Ki charging rhythm
+                                        transformed.z += sin(armPhase) * (armWeight * 1.8);
+                                        transformed.y += cos(armPhase) * (armWeight * 0.5);
+                                        
+                                        // High-frequency Ki vibration crackling through fists & claws
+                                        transformed.x += sin(uCellTime * 22.0 + position.y * 3.0) * (armWeight * 0.08);
+                                    }
+                                    
+                                    // 3. INSECTOID WINGS: DYNAMIC CARAPACE FLUTTER & FLAP
+                                    if (position.z < -0.6 && position.y > 8.0) {
+                                        float wingExt = abs(position.z + 0.6);
+                                        float wingWeight = smoothstep(0.0, 6.0, wingExt);
+                                        float wingFlutter = sin(uCellTime * 8.5 + abs(position.x) * 0.4) * (wingWeight * 1.8);
+                                        transformed.z += wingFlutter;
+                                        transformed.x += (position.x > 0.0 ? 1.0 : -1.0) * wingFlutter * 0.4;
+                                    }
+                                    
+                                    // 4. TORSO & SPINE: ATHLETIC WEIGHT TRANSFER & KI BREATHING
+                                    if (position.y >= 10.5 && position.y <= 17.0 && abs(position.x) <= 3.0) {
+                                        float spineFrac = (position.y - 10.5) / 6.5;
+                                        float torsoSway = sin(uCellTime * 4.2) * (spineFrac * 0.35);
+                                        transformed.x += torsoSway;
+                                        // Chest breathing pulsation
+                                        transformed.z += sin(uCellTime * 3.0) * 0.15;
+                                    }
+                                    `
+                                );
+                            };
+
                             const cleanMesh = new THREE.Mesh(child.geometry, mat);
                             cleanMesh.castShadow = true;
                             cleanMesh.receiveShadow = true;
@@ -1523,7 +1659,7 @@
                     container.add(cleanModel);
 
                     cellGltfTemplate = container;
-                    console.log('⚡ DBFZ Perfect Cell 3D Mesh Solidified, Centered & Loaded Successfully!');
+                    console.log('⚡ DBFZ Perfect Cell 3D Animated Mesh Loaded Successfully!');
                     resolve(container);
                 }, undefined, (err) => {
                     console.warn('Error loading models/cell.glb, using procedural fallback:', err);
@@ -2282,21 +2418,60 @@
                         }
                     }
 
-                    // Perfect Cell Floating & Smooth Ki Energy Pulse
+                    // Perfect Cell Dynamic Advancing Movement & Ki Energy Surge
                     if (e.def.isCell) {
-                        if (e.mesh.userData.aura) {
-                            e.mesh.userData.aura.rotation.y = time * 2.5;
-                            e.mesh.userData.aura.material.opacity = 0.22 + Math.sin(time * 8) * 0.08;
+                        cellUniforms.uCellTime.value = time;
+
+                        const isAdvancing = e.mesh.position.x > -20;
+                        if (isAdvancing) {
+                            // 1. Aggressive forward predatory pitch (lean into the charge towards the fortress)
+                            // Faces -X, so leaning forward corresponds to rotation around Z:
+                            e.mesh.rotation.z = -0.20 + Math.sin(time * 4.2) * 0.04;
+
+                            // 2. Dynamic predatory roll & yaw sway as he surges forward with each stride
+                            e.mesh.rotation.y = Math.sin(time * 2.1) * 0.07;
+                            e.mesh.rotation.x = Math.cos(time * 2.1) * 0.05;
+
+                            // 3. Powerful flight hover & forward propulsion bob
+                            e.mesh.position.y = 1.4 + Math.sin(time * 4.2) * 0.65;
+
+                            // 4. Ki Aura Streaming & Tilting Backward behind his forward thrust
+                            if (e.mesh.userData.aura) {
+                                e.mesh.userData.aura.rotation.y = time * 3.5;
+                                e.mesh.userData.aura.rotation.z = 0.16; // Trail backward behind him
+                                e.mesh.userData.aura.material.opacity = 0.26 + Math.sin(time * 10) * 0.09;
+                            }
+                            if (e.mesh.userData.innerAura) {
+                                e.mesh.userData.innerAura.rotation.y = -time * 5.0;
+                                e.mesh.userData.innerAura.rotation.z = 0.16;
+                                e.mesh.userData.innerAura.material.opacity = 0.22 + Math.cos(time * 12) * 0.07;
+                            }
+                            if (e.mesh.userData.groundRing) {
+                                e.mesh.userData.groundRing.rotation.z = time * 4.0;
+                                e.mesh.userData.groundRing.scale.setScalar(1 + Math.sin(time * 8) * 0.18);
+                            }
+                        } else {
+                            // Reached castle gate: Stand tall in devastating attack stance
+                            e.mesh.rotation.z = 0.0;
+                            e.mesh.rotation.y = 0.0;
+                            e.mesh.rotation.x = 0.0;
+                            e.mesh.position.y = 1.0 + Math.sin(time * 6) * 0.3;
+
+                            if (e.mesh.userData.aura) {
+                                e.mesh.userData.aura.rotation.y = time * 6.0;
+                                e.mesh.userData.aura.rotation.z = 0.0;
+                                e.mesh.userData.aura.material.opacity = 0.38 + Math.sin(time * 16) * 0.15;
+                            }
+                            if (e.mesh.userData.innerAura) {
+                                e.mesh.userData.innerAura.rotation.y = -time * 7.0;
+                                e.mesh.userData.innerAura.rotation.z = 0.0;
+                                e.mesh.userData.innerAura.material.opacity = 0.32 + Math.cos(time * 18) * 0.12;
+                            }
+                            if (e.mesh.userData.groundRing) {
+                                e.mesh.userData.groundRing.rotation.z = time * 6.0;
+                                e.mesh.userData.groundRing.scale.setScalar(1.2 + Math.sin(time * 12) * 0.25);
+                            }
                         }
-                        if (e.mesh.userData.innerAura) {
-                            e.mesh.userData.innerAura.rotation.y = -time * 3.5;
-                            e.mesh.userData.innerAura.material.opacity = 0.18 + Math.cos(time * 10) * 0.06;
-                        }
-                        if (e.mesh.userData.groundRing) {
-                            e.mesh.userData.groundRing.rotation.z = time * 3;
-                            e.mesh.userData.groundRing.scale.setScalar(1 + Math.sin(time * 6) * 0.12);
-                        }
-                        e.mesh.position.y = 0.8 + Math.sin(time * 3) * 0.5;
                     }
                 }
             }
@@ -2498,6 +2673,13 @@
         animate();
         pollTikTokBridge();
         updateCastleHpDisplay();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('test')) {
+            setTimeout(() => {
+                focusEntity(urlParams.get('test'));
+            }, 1000);
+        }
     </script>
 </body>
 </html>
