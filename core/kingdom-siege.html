@@ -1449,8 +1449,7 @@
         }
 
         // ==============================================================
-        // ==============================================================
-        // DBFZ 3D PERFECT CELL GLTF MODEL & SMOOTH ANIME KI SYSTEM
+        // DBFZ 3D PERFECT CELL GLTF MODEL & SOLID MESH CONVERTER
         // ==============================================================
         let cellGltfTemplate = null;
         let cellLoadingPromise = null;
@@ -1466,56 +1465,58 @@
                 const loader = new THREE.GLTFLoader();
                 loader.load('models/cell.glb', (gltf) => {
                     const root = gltf.scene || gltf.scenes[0];
+
+                    // Extract all 5 meshes into clean, rock-solid standard THREE.Mesh objects
+                    const cleanModel = new THREE.Group();
+
                     root.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                            if (child.material) {
-                                child.material.side = THREE.DoubleSide;
-                                if (child.material.map) {
-                                    child.material.map.encoding = THREE.sRGBEncoding;
-                                    child.material.map.needsUpdate = true;
-                                }
-                                if (child.name.toLowerCase().includes('shiny')) {
-                                    child.material.metalness = 0.85;
-                                    child.material.roughness = 0.18;
-                                }
-                                if (child.name.toLowerCase().includes('eye')) {
-                                    child.material.emissive = new THREE.Color(0xd946ef);
-                                    child.material.emissiveIntensity = 0.9;
-                                }
-                                if (child.name.toLowerCase().includes('decal') || child.name.toLowerCase().includes('shadow')) {
-                                    child.material.transparent = true;
-                                    child.material.depthWrite = true;
-                                    child.material.polygonOffset = true;
-                                    child.material.polygonOffsetFactor = -1;
-                                }
+                        if (child.isMesh && child.geometry) {
+                            const mat = child.material ? child.material.clone() : new THREE.MeshStandardMaterial();
+                            // Disable skeletal bone skinning so vertices render with 100% solidity
+                            mat.skinning = false;
+                            mat.side = THREE.DoubleSide;
+
+                            if (mat.map) {
+                                mat.map.encoding = THREE.sRGBEncoding;
+                                mat.map.needsUpdate = true;
                             }
+
+                            // DBFZ Shaders
+                            if (child.name.toLowerCase().includes('shiny')) {
+                                mat.metalness = 0.85;
+                                mat.roughness = 0.15;
+                            }
+                            if (child.name.toLowerCase().includes('eye')) {
+                                mat.emissive = new THREE.Color(0xd946ef);
+                                mat.emissiveIntensity = 1.0;
+                            }
+                            if (child.name.toLowerCase().includes('decal') || child.name.toLowerCase().includes('shadow')) {
+                                mat.transparent = true;
+                                mat.depthWrite = true;
+                                mat.polygonOffset = true;
+                                mat.polygonOffsetFactor = -1;
+                            }
+
+                            const cleanMesh = new THREE.Mesh(child.geometry, mat);
+                            cleanMesh.castShadow = true;
+                            cleanMesh.receiveShadow = true;
+                            cleanModel.add(cleanMesh);
                         }
                     });
 
-                    // Accurate Bounding Box normalization
-                    const box = new THREE.Box3().setFromObject(root);
-                    const size = box.getSize(new THREE.Vector3());
-                    const center = box.getCenter(new THREE.Vector3());
-
-                    // Desired Colossal Boss height: 24 units
-                    const targetHeight = 24;
-                    const scaleFactor = targetHeight / (size.y || 1);
-
+                    // Raw geometry is naturally 22.4 units tall!
+                    // Center and orient directly facing the castle (-X)
                     const container = new THREE.Group();
-                    root.scale.setScalar(scaleFactor);
-                    // Center horizontally (X, Z) and position feet right on the ground plane (Y = 0)
-                    root.position.set(-center.x * scaleFactor, -box.min.y * scaleFactor, -center.z * scaleFactor);
-                    // Face towards the castle (-X)
-                    root.rotation.y = -Math.PI / 2;
-                    container.add(root);
+                    cleanModel.scale.set(1.05, 1.05, 1.05);
+                    cleanModel.position.set(0, 0, 2.0); // Center mass on Z
+                    cleanModel.rotation.y = -Math.PI / 2; // Face towards castle gate (-X)
+                    container.add(cleanModel);
 
                     cellGltfTemplate = container;
-                    console.log('⚡ DBFZ Perfect Cell 3D Model Normalized & Loaded Successfully! Height:', targetHeight);
+                    console.log('⚡ DBFZ Perfect Cell 3D Mesh Solidified, Centered & Loaded Successfully!');
                     resolve(container);
                 }, undefined, (err) => {
-                    console.warn('Error loading models/cell.glb, will use procedural fallback:', err);
+                    console.warn('Error loading models/cell.glb, using procedural fallback:', err);
                     resolve(null);
                 });
             });
