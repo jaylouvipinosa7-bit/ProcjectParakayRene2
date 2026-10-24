@@ -1,5 +1,5 @@
-﻿{
-    "skin":  "piggy",
+{
+    "skin":  "decanter",
     "customSkinUrl":  "",
     "capacityMode":  "infinite",
     "isInfiniteGoal":  true,
@@ -12,7 +12,7 @@
     "soundEnabled":  true,
     "soundVolume":  0.5,
     "showGifterBadge":  true,
-    "showCounterBar":  true,
+    "showCounterBar":  false,
     "showGiftBorder":  false,
     "resetBehavior":  "explosion",
     "triggerGameEventOnFull":  false,

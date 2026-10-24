@@ -88,13 +88,13 @@
             pointer-events: auto;
         }
 
-        /* TOP COUNTER & CAPACITY BAR */
+        /* TOP COUNTER & CAPACITY BAR (Hidden by default - overlay displays pure jar only) */
         .jar-header-hud {
             position: absolute;
             top: 14px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 6px;
@@ -467,7 +467,7 @@
             soundEnabled: true,
             soundVolume: 0.5,
             showGifterBadge: true,
-            showCounterBar: true,
+            showCounterBar: false,
             showGiftBorder: false,
             resetBehavior: 'explosion',
             triggerGameEventOnFull: false,
@@ -1509,11 +1509,17 @@
             const titleEl = document.getElementById('txtJarTitle');
             const hudEl = document.getElementById('jarHud');
 
-            if (!settings.showCounterBar) {
-                hudEl.style.opacity = '0';
+            if (!settings.showCounterBar && urlParams.get('hud') !== 'true') {
+                if (hudEl) {
+                    hudEl.style.display = 'none';
+                    hudEl.style.opacity = '0';
+                }
                 return;
             } else {
-                hudEl.style.opacity = '1';
+                if (hudEl) {
+                    hudEl.style.display = 'flex';
+                    hudEl.style.opacity = '1';
+                }
             }
 
             if (isInfinite) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,15 +40,15 @@
         .overlay-control-bar {
             width: 100%;
             max-width: 1200px;
-            background: rgba(18, 9, 11, 0.95);
-            border: 1px solid rgba(255, 30, 66, 0.28);
+            background: #11141a;
+            border: 1px solid #30363d;
             border-radius: 8px;
             padding: 6px 12px;
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 12px rgba(255, 30, 66, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
             transition: all 0.3s ease;
         }
 
@@ -56,8 +57,8 @@
         }
 
         .dropdown-badge {
-            background: #180d10;
-            border: 1px solid rgba(255, 30, 66, 0.25);
+            background: #1a1e26;
+            border: 1px solid #30363d;
             color: #ffffff;
             font-size: 12px;
             font-weight: 700;
@@ -71,11 +72,11 @@
 
         .url-display-box {
             flex: 1;
-            background: #0a0506;
-            border: 1px solid rgba(255, 30, 66, 0.25);
+            background: #090c10;
+            border: 1px solid #30363d;
             border-radius: 6px;
             padding: 6px 12px;
-            color: #cbd5e1;
+            color: #8b949e;
             font-size: 12px;
             font-family: monospace;
             white-space: nowrap;
@@ -97,14 +98,29 @@
             transition: all 0.15s ease;
         }
 
-        .btn-copy-url { background: #0969da; }
-        .btn-copy-url:hover { background: #218bff; }
+        .btn-copy-url {
+            background: #0969da;
+        }
 
-        .btn-split { background: #238636; }
-        .btn-split:hover { background: #2ea043; }
+        .btn-copy-url:hover {
+            background: #218bff;
+        }
 
-        .btn-settings { background: #30363d; }
-        .btn-settings:hover { background: #484f58; }
+        .btn-split {
+            background: #238636;
+        }
+
+        .btn-split:hover {
+            background: #2ea043;
+        }
+
+        .btn-settings {
+            background: #30363d;
+        }
+
+        .btn-settings:hover {
+            background: #484f58;
+        }
 
         .btn-toggle-bar {
             background: transparent;
@@ -234,6 +250,7 @@
             backdrop-filter: blur(8px) !important;
             border: 1px solid rgba(255, 255, 255, 0.14) !important;
         }
+
         .theme-blackhole .grid-cell:hover,
         .theme-bluegalaxy .grid-cell:hover,
         .theme-gargantua .grid-cell:hover,
@@ -308,7 +325,7 @@
 
         .grid-cell.active-trigger .cell-label {
             color: #ffffff !important;
-            text-shadow: 0 0 10px #38bdf8, 0 0 16px #a855f7, 0 1px 3px rgba(0,0,0,1) !important;
+            text-shadow: 0 0 10px #38bdf8, 0 0 16px #a855f7, 0 1px 3px rgba(0, 0, 0, 1) !important;
             font-weight: 900 !important;
             letter-spacing: 0.2px;
         }
@@ -319,26 +336,31 @@
                 box-shadow: 0 0 0 rgba(56, 189, 248, 0);
                 filter: brightness(1);
             }
+
             15% {
                 transform: scale(1.22);
                 box-shadow: 0 0 45px #38bdf8, 0 0 80px rgba(168, 85, 247, 0.9), inset 0 0 25px rgba(255, 255, 255, 0.9);
                 filter: brightness(1.6);
             }
+
             35% {
                 transform: scale(1.10);
                 box-shadow: 0 0 30px #38bdf8, 0 0 55px rgba(56, 189, 248, 0.75), inset 0 0 18px rgba(56, 189, 248, 0.6);
                 filter: brightness(1.35);
             }
+
             55% {
                 transform: scale(1.15);
                 box-shadow: 0 0 38px #a855f7, 0 0 70px rgba(56, 189, 248, 0.85), inset 0 0 22px rgba(255, 255, 255, 0.85);
                 filter: brightness(1.45);
             }
+
             75% {
                 transform: scale(1.05);
                 box-shadow: 0 0 22px rgba(56, 189, 248, 0.7), 0 0 40px rgba(168, 85, 247, 0.55), inset 0 0 14px rgba(56, 189, 248, 0.4);
                 filter: brightness(1.2);
             }
+
             100% {
                 transform: scale(1);
                 box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
@@ -347,19 +369,51 @@
         }
 
         @keyframes unitBounceGlow {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.28) rotate(-6deg); }
-            35% { transform: scale(1.12) rotate(4deg); }
-            55% { transform: scale(1.20) rotate(-3deg); }
-            75% { transform: scale(1.06); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            15% {
+                transform: scale(1.28) rotate(-6deg);
+            }
+
+            35% {
+                transform: scale(1.12) rotate(4deg);
+            }
+
+            55% {
+                transform: scale(1.20) rotate(-3deg);
+            }
+
+            75% {
+                transform: scale(1.06);
+            }
         }
 
         @keyframes triggerIconPop {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.38) rotate(12deg); }
-            35% { transform: scale(1.15) rotate(-6deg); }
-            55% { transform: scale(1.24) rotate(6deg); }
-            75% { transform: scale(1.08); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            15% {
+                transform: scale(1.38) rotate(12deg);
+            }
+
+            35% {
+                transform: scale(1.15) rotate(-6deg);
+            }
+
+            55% {
+                transform: scale(1.24) rotate(6deg);
+            }
+
+            75% {
+                transform: scale(1.08);
+            }
         }
 
         .cell-top-row {
@@ -374,7 +428,7 @@
             font-size: 9.5px;
             font-weight: 800;
             color: #ef4444;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
@@ -390,7 +444,7 @@
             width: 38px;
             height: 38px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
             transition: transform 0.2s;
             flex-shrink: 0;
         }
@@ -412,7 +466,7 @@
             width: 28px;
             height: 28px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
         }
 
         /* Numeric Like Pill */
@@ -423,8 +477,8 @@
             padding: 2px 6px;
             border-radius: 12px;
             border: 1.5px solid #ffffff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
             white-space: nowrap;
         }
 
@@ -458,13 +512,17 @@
         .settings-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
         }
-        .settings-modal.active { display: flex; }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
         .settings-box {
             background: #161b22;
             border: 1px solid #30363d;
@@ -475,6 +533,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- TOP OBS CONTROLS BAR (Exact match to Photo 2) -->
@@ -485,18 +544,33 @@
         </div>
         <div class="url-display-box" id="urlDisplay">http://localhost:8080/overlay-grid.html</div>
         <button type="button" class="btn-obs btn-copy-url" onclick="copyOverlayUrl()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
             Copy URL
         </button>
         <button type="button" class="btn-obs btn-split" onclick="toggleSplitMode()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
             Split
         </button>
         <button type="button" class="btn-obs btn-settings" onclick="toggleSettingsModal()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
             Overlay Settings
         </button>
-        <button type="button" class="btn-toggle-bar" onclick="hideControlBar()" title="Hide toolbar (for OBS)">▲</button>
+        <button type="button" class="btn-toggle-bar" onclick="hideControlBar()"
+            title="Hide toolbar (for OBS)">▲</button>
     </div>
 
     <!-- THE AUTHENTIC STREAMTOEARN PANORAMIC GRID OVERLAY -->
@@ -520,18 +594,23 @@
         <div class="settings-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="font-size:15px; font-weight:800;">Overlay Settings</h3>
-                <button type="button" onclick="toggleSettingsModal()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+                <button type="button" onclick="toggleSettingsModal()"
+                    style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
             </div>
             <div style="display:flex; flex-direction:column; gap:10px;">
                 <div>
                     <label style="font-size:12px; color:#8b949e; display:block; margin-bottom:4px;">Scale Size</label>
-                    <input type="range" min="0.5" max="1.5" step="0.05" value="1" oninput="setScale(this.value)" style="width:100%;">
+                    <input type="range" min="0.5" max="1.5" step="0.05" value="1" oninput="setScale(this.value)"
+                        style="width:100%;">
                 </div>
                 <div>
-                    <label style="font-size:12px; color:#8b949e; display:block; margin-bottom:4px;">Grid Columns (Default: 14)</label>
-                    <input type="number" id="colsInput" min="6" max="20" value="14" onchange="setCols(this.value)" style="width:100%; background:#0d1117; border:1px solid #30363d; border-radius:4px; padding:6px; color:#fff;">
+                    <label style="font-size:12px; color:#8b949e; display:block; margin-bottom:4px;">Grid Columns
+                        (Default: 14)</label>
+                    <input type="number" id="colsInput" min="6" max="20" value="14" onchange="setCols(this.value)"
+                        style="width:100%; background:#0d1117; border:1px solid #30363d; border-radius:4px; padding:6px; color:#fff;">
                 </div>
-                <button type="button" class="btn-obs btn-copy-url" onclick="toggleSettingsModal()" style="margin-top:8px; justify-content:center;">Done</button>
+                <button type="button" class="btn-obs btn-copy-url" onclick="toggleSettingsModal()"
+                    style="margin-top:8px; justify-content:center;">Done</button>
             </div>
         </div>
     </div>
@@ -840,7 +919,7 @@
                 if (st && st.common && st.common.theme && !urlParams.get('theme')) {
                     setTheme(st.common.theme);
                 }
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         // Realtime Theme Listener: BroadcastChannel 'renearn_side_overlay'
@@ -884,4 +963,5 @@
         });
     </script>
 </body>
+
 </html>
