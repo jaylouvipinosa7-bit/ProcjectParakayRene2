@@ -156,6 +156,110 @@
             background: linear-gradient(135deg, rgba(56, 189, 248, 0.6) 0%, rgba(14, 165, 233, 0.4) 100%);
         }
 
+        /* ==================== PHOTO 2 THEMES SUPPORT ==================== */
+        /* 1. Black Hole Monochrome */
+        .s2e-panoramic-container.theme-blackhole {
+            background: #000 url('images/backgrounds/wide_monochrome_blackhole.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(255, 255, 255, 0.45) !important;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.25), 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+        }
+
+        /* 2. Blue Starry Galaxy / Nebula */
+        .s2e-panoramic-container.theme-bluegalaxy {
+            background: #020617 url('images/backgrounds/wide_blue_nebula_galaxy.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(56, 189, 248, 0.55) !important;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.45), 0 10px 40px rgba(2, 6, 23, 0.95) !important;
+        }
+
+        /* 3. Golden Gargantua Black Hole (Photo 2 Highlighted) */
+        .s2e-panoramic-container.theme-gargantua {
+            background: #000 url('images/backgrounds/wide_gargantua_blackhole.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(245, 158, 11, 0.55) !important;
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.45), 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+        }
+
+        /* 4. Purple Supernova Galaxy */
+        .s2e-panoramic-container.theme-purplesupernova {
+            background: #0b0217 url('images/backgrounds/purple_supernova_galaxy.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(168, 85, 247, 0.55) !important;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.45), 0 10px 40px rgba(11, 2, 23, 0.95) !important;
+        }
+
+        /* 5. Cyber Neon Cosmos */
+        .s2e-panoramic-container.theme-cybercosmos {
+            background: #040814 url('images/backgrounds/cyber_neon_cosmos.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(6, 182, 212, 0.55) !important;
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.4), 0 10px 40px rgba(6, 182, 212, 0.4) !important;
+        }
+
+        /* 6. Golden Solar Nebula */
+        .s2e-panoramic-container.theme-goldennebula {
+            background: #080501 url('images/backgrounds/golden_solar_nebula.jpg') center/cover no-repeat !important;
+            border: 2px solid rgba(234, 179, 8, 0.55) !important;
+            box-shadow: 0 0 35px rgba(234, 179, 8, 0.45), 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+        }
+
+        /* 7. Dark Glass (Sleek) */
+        .s2e-panoramic-container.theme-glass-dark {
+            background: rgba(13, 17, 23, 0.92) !important;
+            backdrop-filter: blur(16px);
+            border: 1.5px solid #30363d !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9) !important;
+        }
+
+        /* 8. Cyber Neon */
+        .s2e-panoramic-container.theme-cyber-neon {
+            background: rgba(10, 10, 18, 0.95) !important;
+            border: 2px solid #00f0ff !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.2) !important;
+        }
+
+        /* 9. Transparent OBS Clean */
+        .s2e-panoramic-container.theme-transparent {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Translucent glass cards for cosmic themes */
+        .theme-blackhole .grid-cell,
+        .theme-bluegalaxy .grid-cell,
+        .theme-gargantua .grid-cell,
+        .theme-purplesupernova .grid-cell,
+        .theme-cybercosmos .grid-cell,
+        .theme-goldennebula .grid-cell,
+        .theme-glass-dark .grid-cell,
+        .theme-cyber-neon .grid-cell {
+            background: rgba(12, 16, 26, 0.72) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        }
+        .theme-blackhole .grid-cell:hover,
+        .theme-bluegalaxy .grid-cell:hover,
+        .theme-gargantua .grid-cell:hover,
+        .theme-purplesupernova .grid-cell:hover,
+        .theme-cybercosmos .grid-cell:hover,
+        .theme-goldennebula .grid-cell:hover,
+        .theme-glass-dark .grid-cell:hover,
+        .theme-cyber-neon .grid-cell:hover {
+            background: rgba(22, 28, 44, 0.88) !important;
+            border-color: rgba(255, 255, 255, 0.45) !important;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.25) !important;
+        }
+
+        /* Hide static color bands when a custom theme is active */
+        .theme-blackhole .color-zones-layer,
+        .theme-bluegalaxy .color-zones-layer,
+        .theme-gargantua .color-zones-layer,
+        .theme-purplesupernova .color-zones-layer,
+        .theme-cybercosmos .color-zones-layer,
+        .theme-goldennebula .color-zones-layer,
+        .theme-glass-dark .color-zones-layer,
+        .theme-cyber-neon .color-zones-layer,
+        .theme-transparent .color-zones-layer {
+            display: none !important;
+        }
+
         /* Grid of cells */
         .grid-cells-table {
             position: relative;
@@ -699,6 +803,80 @@
         function setCols(cols) {
             document.documentElement.style.setProperty('--grid-cols', cols);
         }
+
+        let currentTheme = 's2e-gradient';
+
+        function setTheme(theme) {
+            currentTheme = (theme && theme.trim()) ? theme.trim() : 's2e-gradient';
+            const container = document.getElementById('gridContainer');
+            if (!container) return;
+            container.className = container.className.replace(/\btheme-[^\s]+\b/g, '').trim();
+            container.classList.add(`theme-${currentTheme}`);
+            const colorZones = document.querySelector('.color-zones-layer');
+            if (colorZones) {
+                if (currentTheme === 's2e-gradient' || currentTheme === 'classic') {
+                    colorZones.style.display = 'flex';
+                } else {
+                    colorZones.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize Theme from URL, LocalStorage or Backend
+        if (urlParams.get('theme')) {
+            setTheme(urlParams.get('theme'));
+        } else {
+            try {
+                const saved = localStorage.getItem('renearn_side_overlay_settings');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.common && parsed.common.theme) {
+                        setTheme(parsed.common.theme);
+                    }
+                }
+            } catch (e) { }
+            // Also check server settings if not yet set
+            fetch('/api/overlay-side/settings').then(r => r.json()).then(st => {
+                if (st && st.common && st.common.theme && !urlParams.get('theme')) {
+                    setTheme(st.common.theme);
+                }
+            }).catch(() => {});
+        }
+
+        // Realtime Theme Listener: BroadcastChannel 'renearn_side_overlay'
+        try {
+            const bcSide = new BroadcastChannel('renearn_side_overlay');
+            bcSide.onmessage = (e) => {
+                if (!e || !e.data) return;
+                if (e.data.type === 'overlay_side_settings_updated' && e.data.settings) {
+                    const th = e.data.settings.common?.theme;
+                    if (th) setTheme(th);
+                }
+            };
+        } catch (e) { }
+
+        // Realtime Theme Listener: BroadcastChannel 'renearn_overlay_events'
+        try {
+            const bcEvents = new BroadcastChannel('renearn_overlay_events');
+            bcEvents.onmessage = (e) => {
+                if (!e || !e.data) return;
+                if (e.data.type === 'overlay_side_settings_updated' && e.data.settings) {
+                    const th = e.data.settings.common?.theme;
+                    if (th) setTheme(th);
+                }
+            };
+        } catch (e) { }
+
+        // Realtime PostMessage listener from in-app preview iframe
+        window.addEventListener('message', (e) => {
+            if (!e || !e.data) return;
+            if (e.data.type === 'live_customizer_update' && e.data.theme) {
+                setTheme(e.data.theme);
+            }
+            if (e.data.cols) {
+                setCols(e.data.cols);
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             loadCards();

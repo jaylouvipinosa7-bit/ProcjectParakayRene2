@@ -4,12 +4,18 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const GIFTS_DIR = path.join(__dirname, 'images', 'tiktok-gifts');
-const VERIFIED_JSON_PATH = path.join(__dirname, 'tiktok_gifts_verified.json');
-const CATALOG_PATH = path.join(__dirname, 'pvz_units_catalog.json');
+const CORE_DIR = path.resolve(__dirname, '..');
+const GIFTS_DIR = path.join(CORE_DIR, 'images', 'tiktok-gifts');
+const ROOT_GIFTS_DIR = path.join(path.resolve(__dirname, '../..'), 'images', 'tiktok-gifts');
+const COMMUNITY_GIFTS_PATH = path.join(CORE_DIR, 'custom_community_gifts.json');
+const VERIFIED_JSON_PATH = path.join(CORE_DIR, 'tiktok_gifts_verified.json');
+const CATALOG_PATH = path.join(CORE_DIR, 'pvz_units_catalog.json');
 
 if (!fs.existsSync(GIFTS_DIR)) {
     fs.mkdirSync(GIFTS_DIR, { recursive: true });
+}
+if (!fs.existsSync(ROOT_GIFTS_DIR)) {
+    fs.mkdirSync(ROOT_GIFTS_DIR, { recursive: true });
 }
 
 function downloadFile(url, destPath) {
@@ -122,13 +128,83 @@ async function main() {
             }
         }
 
+        const isComm = Boolean(
+            g.is_community || 
+            g.is_custom || 
+            (g.gift_sub_type && g.gift_sub_type !== 0) ||
+            (g.tracker_params && g.tracker_params.is_custom)
+        );
+
         giftsMap.set(gId, {
             id: gId,
             name: name,
             coins: coins,
             icon: iconPath || cdnUrl,
-            cdnIcon: cdnUrl
+            cdnIcon: cdnUrl,
+            isCommunity: isComm || (giftsMap.has(gId) && giftsMap.get(gId).isCommunity)
         });
+    }
+
+    // Ensure Encore Ticket is preserved
+    if (!giftsMap.has('1137702')) {
+        giftsMap.set('1137702', {
+            id: '1137702',
+            name: 'Encore Ticket',
+            coins: 5,
+            icon: 'images/tiktok-gifts/1137702_encore_ticket.webp',
+            cdnIcon: 'https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f305f6e80b27bb9007fbf82f42a2e4dc.png~tplv-obj.webp',
+            isCommunity: true
+        });
+    }
+
+    // Load custom community gifts captured from recent TikTok LIVE stream rooms
+    if (fs.existsSync(COMMUNITY_GIFTS_PATH)) {
+        try {
+            const rawComm = fs.readFileSync(COMMUNITY_GIFTS_PATH, 'utf8').replace(/^\uFEFF/, '');
+            const commGifts = JSON.parse(rawComm);
+            console.log(`Loaded ${commGifts.length} community gifts from stream.`);
+            for (const cg of commGifts) {
+                if (!cg || !cg.id || !cg.name) continue;
+                const cgId = String(cg.id);
+                const cCoins = parseInt(cg.coins) || 1;
+                const cUrl = cg.icon || '';
+                let iconPath = '';
+                if (localFileMap.has(cgId)) {
+                    iconPath = localFileMap.get(cgId);
+                } else if (giftsMap.has(cgId) && giftsMap.get(cgId).icon && giftsMap.get(cgId).icon.startsWith('images/')) {
+                    iconPath = giftsMap.get(cgId).icon;
+                }
+
+                const isModern = parseInt(cgId) >= 100000;
+                if (!giftsMap.has(cgId)) {
+                    giftsMap.set(cgId, {
+                        id: cgId,
+                        name: cg.name.trim(),
+                        coins: cCoins,
+                        icon: iconPath || cUrl,
+                        cdnIcon: cUrl,
+                        isNew: isModern,
+                        isCommunity: true
+                    });
+                } else {
+                    const existing = giftsMap.get(cgId);
+                    if (!existing.cdnIcon && cUrl) existing.cdnIcon = cUrl;
+                    if (iconPath) existing.icon = iconPath;
+                    existing.isCommunity = true;
+                    if (isModern) existing.isNew = true;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not read community gifts:', e.message);
+        }
+    }
+
+    // Flag any other high-id or modern gifts as isNew
+    for (const g of giftsMap.values()) {
+        const numId = parseInt(g.id);
+        if (!isNaN(numId) && numId >= 100000) {
+            g.isNew = true;
+        }
     }
 
     // Ensure essential special presets exist (Perfume, Doughnut, Rose, etc.)
@@ -176,6 +252,10 @@ async function main() {
 
             if (fs.existsSync(destPath) && fs.statSync(destPath).size > 100) {
                 g.icon = `images/tiktok-gifts/${fileName}`;
+                const rPath = path.join(ROOT_GIFTS_DIR, fileName);
+                if (!fs.existsSync(rPath)) {
+                    try { fs.copyFileSync(destPath, rPath); } catch (e) {}
+                }
                 return;
             }
 
@@ -183,6 +263,10 @@ async function main() {
                 const res = await downloadFile(g.cdnIcon, destPath);
                 if (res && fs.existsSync(destPath) && fs.statSync(destPath).size > 100) {
                     g.icon = `images/tiktok-gifts/${fileName}`;
+                    const rPath = path.join(ROOT_GIFTS_DIR, fileName);
+                    if (!fs.existsSync(rPath)) {
+                        try { fs.copyFileSync(destPath, rPath); } catch (e) {}
+                    }
                     downloadedCount++;
                 } else {
                     g.icon = g.cdnIcon; // fallback to CDN url

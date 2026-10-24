@@ -45,7 +45,116 @@ try {
         console.log(`[GIFTS CATALOG] Loaded ${verifiedGiftsMap.size} verified TikTok gifts into bridge dictionary.`);
     }
 } catch (e) {
-    console.warn(`[GIFTS CATALOG] Note: Could not load tiktok_gifts_verified.json:`, e.message);
+const https = require('https');
+
+const GIFTS_DIR = path.join(__dirname, 'images', 'tiktok-gifts');
+const ROOT_GIFTS_DIR = path.join(path.resolve(__dirname, '..'), 'images', 'tiktok-gifts');
+const VERIFIED_GIFTS_PATH = path.join(__dirname, 'tiktok_gifts_verified.json');
+const CATALOG_PATH = path.join(__dirname, 'pvz_units_catalog.json');
+
+if (!fs.existsSync(GIFTS_DIR)) {
+    try { fs.mkdirSync(GIFTS_DIR, { recursive: true }); } catch (e) {}
+}
+if (!fs.existsSync(ROOT_GIFTS_DIR)) {
+    try { fs.mkdirSync(ROOT_GIFTS_DIR, { recursive: true }); } catch (e) {}
+}
+
+const pendingDownloads = new Set();
+let catalogUpdateTimer = null;
+
+function downloadGiftIconAsync(url, giftId, giftName, coins) {
+    if (!url || typeof url !== 'string' || !url.startsWith('http')) return;
+    const gId = String(giftId || '').trim();
+    if (!gId) return;
+
+    const cleanSlug = (giftName || 'gift').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'gift';
+    const fileName = `${gId}_${cleanSlug}.webp`;
+    const coreDest = path.join(GIFTS_DIR, fileName);
+    const rootDest = path.join(ROOT_GIFTS_DIR, fileName);
+
+    // If local file already exists and is non-empty, ensure it's recorded
+    if (fs.existsSync(coreDest) && fs.statSync(coreDest).size > 100) {
+        updateGiftInLocalCatalog(gId, giftName, `images/tiktok-gifts/${fileName}`, url, coins);
+        return;
+    }
+
+    if (pendingDownloads.has(gId)) return;
+    pendingDownloads.add(gId);
+
+    const protocol = url.startsWith('https') ? https : http;
+    const req = protocol.get(url, (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+            pendingDownloads.delete(gId);
+            return downloadGiftIconAsync(res.headers.location, gId, giftName, coins);
+        }
+        if (res.statusCode !== 200) {
+            pendingDownloads.delete(gId);
+            return;
+        }
+        const fileStream = fs.createWriteStream(coreDest);
+        res.pipe(fileStream);
+        fileStream.on('finish', () => {
+            fileStream.close(() => {
+                pendingDownloads.delete(gId);
+                try {
+                    if (fs.existsSync(coreDest) && fs.statSync(coreDest).size > 100) {
+                        if (fs.existsSync(ROOT_GIFTS_DIR)) {
+                            try { fs.copyFileSync(coreDest, rootDest); } catch (e) {}
+                        }
+                        const localPath = `images/tiktok-gifts/${fileName}`;
+                        console.log(`[AUTO-DOWNLOAD] Saved new TikTok gift icon: ${giftName} (${fileName})`);
+                        updateGiftInLocalCatalog(gId, giftName, localPath, url, coins);
+                    }
+                } catch (e) {}
+            });
+        });
+    });
+    req.on('error', () => {
+        pendingDownloads.delete(gId);
+    });
+    req.setTimeout(8000, () => {
+        req.abort();
+        pendingDownloads.delete(gId);
+    });
+}
+
+function updateGiftInLocalCatalog(giftId, giftName, localPath, cdnUrl, coins) {
+    if (!giftId || !giftName) return;
+    const gId = String(giftId);
+    const cNum = parseInt(coins) || 1;
+    const existing = verifiedGiftsMap.get(gId);
+    if (!existing) {
+        verifiedGiftsMap.set(gId, {
+            id: gId,
+            name: giftName,
+            coins: cNum,
+            icon: localPath || cdnUrl,
+            cdnIcon: cdnUrl,
+            isNew: true,
+            isCommunity: true
+        });
+    } else {
+        if (localPath && (!existing.icon || existing.icon.startsWith('http'))) {
+            existing.icon = localPath;
+        }
+        if (cdnUrl && !existing.cdnIcon) existing.cdnIcon = cdnUrl;
+        if (cNum > 1 && (!existing.coins || existing.coins <= 1)) existing.coins = cNum;
+    }
+
+    clearTimeout(catalogUpdateTimer);
+    catalogUpdateTimer = setTimeout(() => {
+        try {
+            const arr = Array.from(verifiedGiftsMap.values());
+            fs.writeFileSync(VERIFIED_GIFTS_PATH, JSON.stringify(arr, null, 2), 'utf8');
+            if (fs.existsSync(CATALOG_PATH)) {
+                let catRaw = fs.readFileSync(CATALOG_PATH, 'utf8').replace(/^\uFEFF/, '');
+                const cat = JSON.parse(catRaw);
+                cat.tiktokGifts = arr;
+                fs.writeFileSync(CATALOG_PATH, JSON.stringify(cat, null, 2), 'utf8');
+            }
+            console.log(`[CATALOG AUTO-SAVED] Verified catalog updated with ${arr.length} gifts.`);
+        } catch (e) {}
+    }, 2000);
 }
 
 function saveState() {
@@ -192,14 +301,23 @@ function startConnection() {
                 const roomGifts = await tiktokConnection.fetchAvailableGifts();
                 if (Array.isArray(roomGifts) && roomGifts.length > 0) {
                     console.log(`[GIFTS DISCOVERY] Discovered ${roomGifts.length} available gifts for room from TikTok Webcast.`);
-                    const formattedGifts = roomGifts.map(g => ({
-                        id: String(g.id || ''),
-                        name: g.name || '',
-                        coins: g.diamond_count || g.coins || 1,
-                        icon: (g.image && g.image.url_list && g.image.url_list[0]) || (g.icon) || '',
-                        isCommunity: true,
-                        source: 'tiktok_live_room'
-                    })).filter(g => g.name && g.id);
+                    const formattedGifts = roomGifts.map(g => {
+                        const gId = String(g.id || '');
+                        const gName = g.name || '';
+                        const gCoins = g.diamond_count || g.coins || 1;
+                        const cdnUrl = (g.image && g.image.url_list && g.image.url_list[0]) || (g.icon) || '';
+                        if (gId && cdnUrl) {
+                            downloadGiftIconAsync(cdnUrl, gId, gName, gCoins);
+                        }
+                        return {
+                            id: gId,
+                            name: gName,
+                            coins: gCoins,
+                            icon: cdnUrl,
+                            isCommunity: true,
+                            source: 'tiktok_live_room'
+                        };
+                    }).filter(g => g.name && g.id);
 
                     postWebhook({
                         event: 'community_gifts_sync',
@@ -526,6 +644,11 @@ function startConnection() {
         const logMsg = `[${new Date().toLocaleTimeString()}] GIFT: ${user} sent ${deltaCount}x ${giftName} (ID: ${giftId}, ${unitCoins} coins each = ${deltaCoins} coins, streak: ${totalCount}, repeatEnd: ${!!data.repeatEnd})\n`;
         console.log(logMsg.trim());
         try { fs.appendFileSync(path.join(__dirname, 'tiktok_gifts_debug.log'), logMsg, 'utf8'); } catch (e) {}
+
+        // AUTO-DETECT & DOWNLOAD NEW GIFT ICON IN BACKGROUND:
+        if (giftPic && giftPic.startsWith('http') && giftId) {
+            downloadGiftIconAsync(giftPic, giftId, giftName, unitCoins);
+        }
 
         postWebhook(payload);
         saveState();

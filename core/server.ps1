@@ -43,14 +43,17 @@ function Save-Subscriptions($subsObj) {
     } catch {}
 }
 
-function Get-UserSubscriptionInfo($userIdentifier) {
+function Get-UserSubscriptionInfo($userIdentifier, $userEmail = "") {
     $rawId = if ($userIdentifier) { [string]$userIdentifier.ToString().Trim().TrimStart('@').ToLower() } else { "" }
+    $rawEmail = if ($userEmail) { [string]$userEmail.ToString().Trim().ToLower() } else { "" }
     
     # 1. Primary Owner Guarantee (Jaylou Vipinosa / gohanmalunggay)
     $isPrimaryOwner = (
         $rawId -eq "jaylouvipinosa7@gmail.com" -or
         $rawId.Contains("jaylouvipinosa7") -or
-        $rawId -eq "gohanmalunggay"
+        $rawId -eq "gohanmalunggay" -or
+        $rawEmail -eq "jaylouvipinosa7@gmail.com" -or
+        $rawEmail.Contains("jaylouvipinosa7")
     )
     if ($isPrimaryOwner) {
         return @{
@@ -67,9 +70,10 @@ function Get-UserSubscriptionInfo($userIdentifier) {
         }
     }
 
-    # 2. Permissions Registry Check (Admin / Tester)
+    # 2. Permissions Registry Check (Admin / Editor / Tester)
     $perms = Load-Permissions
-    $isAdmin = ($perms.admin -and $rawId -eq $perms.admin.ToLower()) -or ($perms.admins -and ($perms.admins -contains $rawId))
+    $isAdmin = ($perms.admin -and ($rawId -eq $perms.admin.ToLower() -or $rawEmail -eq $perms.admin.ToLower())) -or 
+               ($perms.admins -and ($perms.admins -contains $rawId -or $perms.admins -contains $rawEmail))
     if ($isAdmin) {
         return @{
             tier = "owner"
@@ -85,7 +89,23 @@ function Get-UserSubscriptionInfo($userIdentifier) {
         }
     }
 
-    $isTester = ($perms.testers -and ($perms.testers -contains $rawId))
+    $isEditor = ($perms.editors -and ($perms.editors -contains $rawId -or $perms.editors -contains $rawEmail))
+    if ($isEditor) {
+        return @{
+            tier = "editor"
+            name = "Staff Editor (Unlimited)"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "Staff Editor"
+            badgeColor = "#06b6d4"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    $isTester = ($perms.testers -and ($perms.testers -contains $rawId -or $perms.testers -contains $rawEmail))
     if ($isTester) {
         return @{
             tier = "tester"
@@ -101,16 +121,61 @@ function Get-UserSubscriptionInfo($userIdentifier) {
         }
     }
 
-    # 3. Subscriptions Registry Check (Expert / Premium / Free)
+    # 3. Subscriptions Registry Check (Owner / Editor / Tester / Expert / Premium / Free)
     $subs = Load-Subscriptions
     $matchedTier = "free"
     if ($subs -and $subs.userSubscriptions) {
         foreach ($prop in $subs.userSubscriptions.PSObject.Properties) {
             $key = $prop.Name.Trim().TrimStart('@').ToLower()
-            if ($key -eq $rawId -and $prop.Value.tier) {
+            if (($key -eq $rawId -or ($rawEmail -and $key -eq $rawEmail)) -and $prop.Value.tier) {
                 $matchedTier = [string]$prop.Value.tier.ToLower()
                 break
             }
+        }
+    }
+
+    if ($matchedTier -eq "owner") {
+        return @{
+            tier = "owner"
+            name = "Owner Lifetime"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "Owner Lifetime"
+            badgeColor = "#e11d48"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    if ($matchedTier -eq "editor") {
+        return @{
+            tier = "editor"
+            name = "Staff Editor (Unlimited)"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "Staff Editor"
+            badgeColor = "#06b6d4"
+            price = 0
+            isUnlimited = $true
+        }
+    }
+
+    if ($matchedTier -eq "tester") {
+        return @{
+            tier = "tester"
+            name = "Beta Tester"
+            commandLimit = 999999
+            hasSpinner = $true
+            hasJar = $true
+            hasOverlays = $true
+            badge = "Beta Tester"
+            badgeColor = "#a855f7"
+            price = 0
+            isUnlimited = $true
         }
     }
 
@@ -1924,14 +1989,18 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
 
     $lastResult = @{ success = $true; message = "OK" }
 
-    # REPETITION & SUMMON CALCULATION:
-    # When repetition is configured (e.g. Repetition: 3, Amount: 1), total intended summons is reps * amount = 3.
-    # Fast batch mode (interval <= 100ms) delivers all intended summons in 1 rapid non-blocking packet to the mod.
-    # Staggered mode (interval > 100ms) dispatches sequential waves with interval spacing.
-    $totalIntendedSummons = [int]($reps * $rawAmt)
-    $useDirectBatch = ($reps -gt 1 -or $interval -le 100)
-    $actualReps = if ($useDirectBatch) { 1 } else { $reps }
-    $batchCount = if ($useDirectBatch) { $totalIntendedSummons } else { $rawAmt }
+    # REPETITION & SUMMON CALCULATION (1=1 COMMAND RATIO):
+    # When repetition is configured (e.g. Repetition: 5), 1 gift = 1 command execution of 5 units.
+    # If both $reps and $rawAmt are set to values > 1 (e.g. repetition: 5 and amount: 5 from duplicate card properties),
+    # do NOT square or multiply them together! Use the exact intended count.
+    $totalIntendedSummons = if ($reps -gt 1 -and $rawAmt -gt 1) {
+        if ($reps -eq $rawAmt) { $reps } else { [Math]::Max($reps, $rawAmt) }
+    } else {
+        [int]($reps * $rawAmt)
+    }
+    $useDirectBatch = ($totalIntendedSummons -gt 1 -or $interval -le 100)
+    $actualReps = if ($useDirectBatch) { 1 } else { $totalIntendedSummons }
+    $batchCount = if ($useDirectBatch) { $totalIntendedSummons } else { 1 }
 
     for ($r = 0; $r -lt $actualReps; $r++) {
         foreach ($sub in $subCmds) {
@@ -2932,6 +3001,28 @@ INSTALLATION INSTRUCTIONS:
             [System.IO.File]::WriteAllText($userCfgFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
             [System.IO.File]::WriteAllText($configFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
             Start-TikTokBridge $user
+
+            # Auto-detect streamer's specific community gifts in background
+            [System.Threading.ThreadPool]::QueueUserWorkItem({
+                param($state)
+                try {
+                    $f = $state.Folder
+                    $u = $state.User
+                    $n = Join-Path $f "bin\node.exe"
+                    $s = Join-Path $f "tools\sync_tiktok_gifts.js"
+                    if ((Test-Path $n) -and (Test-Path $s)) {
+                        $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+                        $pinfo.FileName = $n
+                        $pinfo.Arguments = "`"$s`" `"$u`""
+                        $pinfo.WorkingDirectory = $f
+                        $pinfo.UseShellExecute = $false
+                        $pinfo.CreateNoWindow = $true
+                        $p = [System.Diagnostics.Process]::Start($pinfo)
+                        $p.WaitForExit(15000)
+                    }
+                } catch {}
+            }, @{ Folder = $folder; User = $user }) | Out-Null
+
             Send-JsonResponse $response @{ status = "ok"; message = "Connecting to @$user"; username = $user }
             continue
         }
@@ -3052,6 +3143,8 @@ INSTALLATION INSTRUCTIONS:
 
                 if ($isNewUser) {
                     # Preload full 64 gift commands and multi-spinners pool for new user/streamer
+                    $subInfo = Get-UserSubscriptionInfo $email $email
+                    $initialGifts = if ($subInfo.tier -eq "free") { @() } else { $tmplGifts }
                     $userConfig = @{
                         streamer = @{
                             tiktokUsername = ""
@@ -3064,8 +3157,8 @@ INSTALLATION INSTRUCTIONS:
                             role = $role
                         }
                         overlay = if ($master.overlay) { $master.overlay } else { @{ zoom = 1; columns = 1; showGoals = $true; alertDuration = 4000; soundAlerts = $true; wheelPosition = "center" } }
-                        gifts = $tmplGifts
-                        spinners = $tmplSpinners
+                        gifts = $initialGifts
+                        spinners = if ($subInfo.hasSpinner) { $tmplSpinners } else { @() }
                     }
                     $userJson = $userConfig | ConvertTo-Json -Depth 8
                     [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
@@ -3078,13 +3171,16 @@ INSTALLATION INSTRUCTIONS:
                         try {
                             $uObj = $userJson | ConvertFrom-Json
                             $repaired = $false
-                            if (-not $uObj.gifts -or $uObj.gifts.Count -eq 0) {
+                            $subInfo = Get-UserSubscriptionInfo $email $email
+                            if ($subInfo.tier -ne "free" -and (-not $uObj.gifts -or $uObj.gifts.Count -eq 0)) {
                                 $uObj.gifts = $tmplGifts
                                 $repaired = $true
                             }
                             if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
-                                $uObj.spinners = $tmplSpinners
-                                $repaired = $true
+                                if ($subInfo.hasSpinner) {
+                                    $uObj.spinners = $tmplSpinners
+                                    $repaired = $true
+                                }
                             }
                             if ($repaired) {
                                 $userJson = $uObj | ConvertTo-Json -Depth 8
@@ -3252,7 +3348,8 @@ INSTALLATION INSTRUCTIONS:
                 $tmplSpinners = $master.spinners
 
                 if ($isNewUser) {
-                    # Preload full 64 working gift commands and multi-spinners pool for TikTok streamer
+                    $subInfo = Get-UserSubscriptionInfo $username $email
+                    $initialGifts = if ($subInfo.tier -eq "free") { @() } else { $tmplGifts }
                     $userConfig = @{
                         streamer = @{
                             tiktokUsername = $username
@@ -3266,8 +3363,8 @@ INSTALLATION INSTRUCTIONS:
                             platform = "tiktok"
                         }
                         overlay = if ($master.overlay) { $master.overlay } else { @{ zoom = 1; columns = 1; showGoals = $true; alertDuration = 4000; soundAlerts = $true; wheelPosition = "center" } }
-                        gifts = $tmplGifts
-                        spinners = $tmplSpinners
+                        gifts = $initialGifts
+                        spinners = if ($subInfo.hasSpinner) { $tmplSpinners } else { @() }
                     }
                     $userJson = $userConfig | ConvertTo-Json -Depth 8
                     [System.IO.File]::WriteAllText($userCfgPath, $userJson, [System.Text.Encoding]::UTF8)
@@ -3278,13 +3375,16 @@ INSTALLATION INSTRUCTIONS:
                     try {
                         $uObj = $userJson | ConvertFrom-Json
                         $repaired = $false
-                        if (-not $uObj.gifts -or $uObj.gifts.Count -eq 0) {
+                        $subInfo = Get-UserSubscriptionInfo $username $email
+                        if ($subInfo.tier -ne "free" -and (-not $uObj.gifts -or $uObj.gifts.Count -eq 0)) {
                             $uObj.gifts = $tmplGifts
                             $repaired = $true
                         }
                         if (-not $uObj.spinners -or $uObj.spinners.Count -eq 0) {
-                            $uObj.spinners = $tmplSpinners
-                            $repaired = $true
+                            if ($subInfo.hasSpinner) {
+                                $uObj.spinners = $tmplSpinners
+                                $repaired = $true
+                            }
                         }
                         if (-not $uObj.streamer) {
                             $uObj | Add-Member -NotePropertyName streamer -NotePropertyValue ([PSCustomObject]@{}) -Force
@@ -3543,20 +3643,22 @@ INSTALLATION INSTRUCTIONS:
         # 1g. Subscription & Licensing Endpoints (Free, 999 Premium, 3999 Expert, Owner/Tester)
         if ($reqPath -eq '/api/subscription/status' -and $request.HttpMethod -eq 'GET') {
             $caller = Get-CallerUser $request
-            $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } elseif ($request.QueryString['email']) { [string]$request.QueryString['email'] } elseif ($caller -and $caller.email) { [string]$caller.email } else { "" }
+            $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
+            $emailParam = if ($request.QueryString['email']) { [string]$request.QueryString['email'] } elseif ($caller -and $caller.email) { [string]$caller.email } else { "" }
             
             # Check if desktop local streamer without explicit login
             $remoteIp = if ($request.RemoteEndPoint) { $request.RemoteEndPoint.Address.ToString() } else { "127.0.0.1" }
             $isLocal = ($remoteIp -eq "127.0.0.1" -or $remoteIp -eq "::1" -or $request.Url.Host -eq "localhost" -or $request.Url.Host -eq "127.0.0.1")
-            if (-not $userParam -and $isLocal) {
+            if (-not $userParam -and -not $emailParam -and $isLocal) {
                 # Fallback to local streamer's saved TikTok or primary email
                 $userParam = if ($script:config -and $script:config.tiktokUsername) { $script:config.tiktokUsername } else { "jaylouvipinosa7@gmail.com" }
             }
 
-            $subInfo = Get-UserSubscriptionInfo $userParam
+            $subInfo = Get-UserSubscriptionInfo $userParam $emailParam
             Send-JsonResponse $response @{
                 success = $true
-                user = $userParam
+                user = if ($userParam) { $userParam } else { $emailParam }
+                email = $emailParam
                 tier = $subInfo.tier
                 name = $subInfo.name
                 commandLimit = $subInfo.commandLimit
@@ -3650,15 +3752,49 @@ INSTALLATION INSTRUCTIONS:
                         continue
                     }
                 } elseif ($refNo) {
-                    # Manual GCash / Maya Reference number redemption
+                    # GCash / Maya / PayPal Reference number -> goes to PENDING APPROVAL queue
                     $targetPlan = if ($data.targetPlan) { [string]$data.targetPlan.ToLower() } else { "premium" }
-                    if ($targetPlan -eq "expert") {
-                        $grantedTier = "expert"
-                        $grantedLimit = 150
-                    } else {
-                        $grantedTier = "premium"
-                        $grantedLimit = 60
+                    $payMethod = if ($data.paymentMethod) { [string]$data.paymentMethod.ToLower() } else { "gcash" }
+
+                    # Create pending payments array if not exists
+                    if (-not $subs.pendingPayments) {
+                        $subs | Add-Member -MemberType NoteProperty -Name "pendingPayments" -Value @() -Force
                     }
+
+                    # Check for duplicate ref number
+                    $isDuplicate = $false
+                    foreach ($pp in $subs.pendingPayments) {
+                        if ($pp.referenceNo -eq $refNo) { $isDuplicate = $true; break }
+                    }
+                    if ($isDuplicate) {
+                        Send-JsonResponse $response @{ success = $false; message = "This reference number has already been submitted. Please wait for owner approval." } 400
+                        continue
+                    }
+
+                    $pendingObj = [PSCustomObject]@{
+                        id = [System.Guid]::NewGuid().ToString().Substring(0,8)
+                        user = $userKey
+                        referenceNo = $refNo
+                        paymentMethod = $payMethod
+                        targetPlan = $targetPlan
+                        amount = if ($targetPlan -eq "expert") { 3999 } else { 999 }
+                        status = "pending"
+                        submittedAt = (Get-Date -Format "o")
+                        reviewedAt = $null
+                        reviewedBy = $null
+                    }
+
+                    $currentPending = @($subs.pendingPayments)
+                    $currentPending += $pendingObj
+                    $subs.pendingPayments = $currentPending
+                    Save-Subscriptions $subs
+
+                    Send-JsonResponse $response @{
+                        success = $true
+                        pending = $true
+                        message = "Your payment reference has been submitted for verification! The owner will review and approve your payment shortly. You will be activated once confirmed."
+                    }
+                    continue
                 } else {
                     Send-JsonResponse $response @{ success = $false; message = "License key or Payment Reference Number required." } 400
                     continue
@@ -3689,11 +3825,12 @@ INSTALLATION INSTRUCTIONS:
                 Save-Subscriptions $subs
                 
                 # Also notify via toast and SSE
+                $activatedTierLabel = if ($grantedTier -eq 'expert') { 'Streamer Expert (150 Commands)' } else { 'Streamer Premium (60 Commands)' }
                 Send-JsonResponse $response @{
                     success = $true
                     tier = $grantedTier
                     commandLimit = $grantedLimit
-                    message = "🎉 Subscription successfully activated! Tier: $(if ($grantedTier -eq 'expert') { 'Streamer Expert (150 Commands)' } else { 'Streamer Premium (60 Commands)' }) with 3D Spinner & Jar Unlocked!"
+                    message = "Subscription successfully activated! Tier: $activatedTierLabel with 3D Spinner & Jar Unlocked!"
                 }
                 continue
             } catch {
@@ -3733,6 +3870,171 @@ INSTALLATION INSTRUCTIONS:
                 Send-JsonResponse $response @{ success = $true; licenseKey = $newKey; tier = $tier; commandLimit = $limit }
             } else {
                 Send-JsonResponse $response @{ success = $false; message = "Unable to access license database." } 500
+            }
+            continue
+        }
+
+        # ── Owner Pending Payments Queue (List / Approve / Reject) ──
+        if ($reqPath -eq '/api/admin/pending-payments' -and $request.HttpMethod -eq 'GET') {
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+            $role = if ($callerEmail) { Get-UserRole $callerEmail } else { Get-CallerRole $request }
+            if ($role -ne "admin" -and (Get-CallerRole $request) -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden" } 403
+                continue
+            }
+
+            $subs = Load-Subscriptions
+            $pending = @()
+            if ($subs -and $subs.pendingPayments) {
+                $pending = @($subs.pendingPayments)
+            }
+            Send-JsonResponse $response @{ success = $true; pendingPayments = $pending; total = $pending.Count }
+            continue
+        }
+
+        if ($reqPath -eq '/api/admin/approve-payment' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+            $role = if ($callerEmail) { Get-UserRole $callerEmail } else { Get-CallerRole $request }
+            if ($role -ne "admin" -and (Get-CallerRole $request) -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden" } 403
+                continue
+            }
+
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $paymentId = if ($data.id) { [string]$data.id.Trim() } else { "" }
+
+            if (-not $paymentId) {
+                Send-JsonResponse $response @{ success = $false; message = "Payment ID required." } 400
+                continue
+            }
+
+            $subs = Load-Subscriptions
+            if (-not $subs -or -not $subs.pendingPayments) {
+                Send-JsonResponse $response @{ success = $false; message = "No pending payments found." } 404
+                continue
+            }
+
+            $foundPayment = $null
+            foreach ($pp in $subs.pendingPayments) {
+                if ($pp.id -eq $paymentId) { $foundPayment = $pp; break }
+            }
+
+            if (-not $foundPayment) {
+                Send-JsonResponse $response @{ success = $false; message = "Payment not found." } 404
+                continue
+            }
+
+            # Grant the subscription
+            $userKey = [string]$foundPayment.user
+            $grantedTier = [string]$foundPayment.targetPlan
+            $grantedLimit = if ($grantedTier -eq "expert") { 150 } else { 60 }
+
+            if (-not $subs.userSubscriptions) {
+                $subs | Add-Member -MemberType NoteProperty -Name "userSubscriptions" -Value ([PSCustomObject]@{}) -Force
+            }
+
+            $userSubObj = [PSCustomObject]@{
+                tier = $grantedTier
+                commandLimit = $grantedLimit
+                hasSpinner = $true
+                hasJar = $true
+                hasOverlays = $true
+                activatedAt = (Get-Date -Format "o")
+                licenseKey = ""
+                referenceNo = [string]$foundPayment.referenceNo
+                paymentMethod = [string]$foundPayment.paymentMethod
+                approvedBy = $callerEmail
+            }
+
+            if ($subs.userSubscriptions.PSObject.Properties[$userKey]) {
+                $subs.userSubscriptions.PSObject.Properties[$userKey].Value = $userSubObj
+            } else {
+                $subs.userSubscriptions | Add-Member -MemberType NoteProperty -Name $userKey -Value $userSubObj
+            }
+
+            # Update payment status to approved
+            $foundPayment.status = "approved"
+            if ($foundPayment.PSObject.Properties['reviewedAt']) {
+                $foundPayment.reviewedAt = (Get-Date -Format "o")
+            } else {
+                $foundPayment | Add-Member -MemberType NoteProperty -Name "reviewedAt" -Value (Get-Date -Format "o") -Force
+            }
+            if ($foundPayment.PSObject.Properties['reviewedBy']) {
+                $foundPayment.reviewedBy = $callerEmail
+            } else {
+                $foundPayment | Add-Member -MemberType NoteProperty -Name "reviewedBy" -Value $callerEmail -Force
+            }
+
+            Save-Subscriptions $subs
+            $tierLabel = if ($grantedTier -eq "expert") { "Streamer Expert (150 Commands)" } else { "Streamer Premium (60 Commands)" }
+            Send-JsonResponse $response @{
+                success = $true
+                message = "Payment approved! $userKey has been activated as $tierLabel."
+                user = $userKey
+                tier = $grantedTier
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/admin/reject-payment' -and $request.HttpMethod -eq 'POST') {
+            $caller = Get-CallerUser $request
+            $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+            $role = if ($callerEmail) { Get-UserRole $callerEmail } else { Get-CallerRole $request }
+            if ($role -ne "admin" -and (Get-CallerRole $request) -ne "admin") {
+                Send-JsonResponse $response @{ success = $false; message = "Forbidden" } 403
+                continue
+            }
+
+            $body = ReadRequestBody $request
+            $data = $body | ConvertFrom-Json
+            $paymentId = if ($data.id) { [string]$data.id.Trim() } else { "" }
+            $reason = if ($data.reason) { [string]$data.reason.Trim() } else { "Payment not verified" }
+
+            if (-not $paymentId) {
+                Send-JsonResponse $response @{ success = $false; message = "Payment ID required." } 400
+                continue
+            }
+
+            $subs = Load-Subscriptions
+            if (-not $subs -or -not $subs.pendingPayments) {
+                Send-JsonResponse $response @{ success = $false; message = "No pending payments found." } 404
+                continue
+            }
+
+            $foundPayment = $null
+            foreach ($pp in $subs.pendingPayments) {
+                if ($pp.id -eq $paymentId) { $foundPayment = $pp; break }
+            }
+
+            if (-not $foundPayment) {
+                Send-JsonResponse $response @{ success = $false; message = "Payment not found." } 404
+                continue
+            }
+
+            $foundPayment.status = "rejected"
+            if ($foundPayment.PSObject.Properties['reviewedAt']) {
+                $foundPayment.reviewedAt = (Get-Date -Format "o")
+            } else {
+                $foundPayment | Add-Member -MemberType NoteProperty -Name "reviewedAt" -Value (Get-Date -Format "o") -Force
+            }
+            if ($foundPayment.PSObject.Properties['reviewedBy']) {
+                $foundPayment.reviewedBy = $callerEmail
+            } else {
+                $foundPayment | Add-Member -MemberType NoteProperty -Name "reviewedBy" -Value $callerEmail -Force
+            }
+            if (-not $foundPayment.PSObject.Properties['rejectReason']) {
+                $foundPayment | Add-Member -MemberType NoteProperty -Name "rejectReason" -Value $reason -Force
+            } else {
+                $foundPayment.rejectReason = $reason
+            }
+
+            Save-Subscriptions $subs
+            Send-JsonResponse $response @{
+                success = $true
+                message = "Payment from $($foundPayment.user) has been rejected. Reason: $reason"
             }
             continue
         }
@@ -3783,8 +4085,12 @@ INSTALLATION INSTRUCTIONS:
                 $tmplGifts = $master.gifts
                 $tmplSpinners = $master.spinners
 
+                $caller = Get-CallerUser $request
+                $callerEmail = if ($caller -and $caller.email) { $caller.email } else { "" }
+                $subInfo = Get-UserSubscriptionInfo $userParam $callerEmail
+
                 if (-not (Test-Path $targetPath)) {
-                    # Auto-initialize configuration with full 64 gift commands and multi-spinners pool
+                    $initialGifts = if ($subInfo.tier -eq "free") { @() } else { $tmplGifts }
                     $userConfig = @{
                         streamer = @{
                             tiktokUsername = ""
@@ -3794,8 +4100,8 @@ INSTALLATION INSTRUCTIONS:
                             userEmail = if ($userParam) { $userParam } else { "" }
                         }
                         overlay = if ($master.overlay) { $master.overlay } else { @{ zoom = 1; columns = 1; showGoals = $true; alertDuration = 4000; soundAlerts = $true; wheelPosition = "center" } }
-                        gifts = $tmplGifts
-                        spinners = $tmplSpinners
+                        gifts = $initialGifts
+                        spinners = if ($subInfo.hasSpinner) { $tmplSpinners } else { @() }
                     }
                     $userJson = $userConfig | ConvertTo-Json -Depth 8
                     [System.IO.File]::WriteAllText($targetPath, $userJson, [System.Text.Encoding]::UTF8)
@@ -3806,15 +4112,17 @@ INSTALLATION INSTRUCTIONS:
                 try {
                     $parsedCfg = $content | ConvertFrom-Json
                     $cfgModified = $false
-                    if ($parsedCfg -and (-not $parsedCfg.gifts -or $parsedCfg.gifts.Count -eq 0)) {
+                    if ($subInfo.tier -ne "free" -and $parsedCfg -and ($null -eq $parsedCfg.gifts -or $parsedCfg.gifts.Count -eq 0)) {
                         $parsedCfg | Add-Member -MemberType NoteProperty -Name gifts -Value $tmplGifts -Force
                         $cfgModified = $true
                     }
                     if ($parsedCfg -and (-not $parsedCfg.spinners -or $parsedCfg.spinners.Count -eq 0)) {
-                        $parsedCfg | Add-Member -MemberType NoteProperty -Name spinners -Value $tmplSpinners -Force
-                        $cfgModified = $true
+                        if ($subInfo.hasSpinner) {
+                            $parsedCfg | Add-Member -MemberType NoteProperty -Name spinners -Value $tmplSpinners -Force
+                            $cfgModified = $true
+                        }
                     }
-                    if ($parsedCfg -and $parsedCfg.gifts -and -not ($parsedCfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
+                    if ($subInfo.tier -ne "free" -and $parsedCfg -and $parsedCfg.gifts -and $parsedCfg.gifts.Count -gt 0 -and -not ($parsedCfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
                         $card3Obj = [PSCustomObject]@{
                             id = "3"
                             giftName = "Total Likes"
@@ -3868,6 +4176,33 @@ INSTALLATION INSTRUCTIONS:
                     continue
                 }
                 $body = ReadRequestBody $request
+
+                # Enforce subscription command limits (Free=10, Premium=60, Expert=150, Owner/Editor=Unlimited)
+                $caller = Get-CallerUser $request
+                $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
+                $emailParam = if ($request.QueryString['email']) { [string]$request.QueryString['email'] } elseif ($caller -and $caller.email) { [string]$caller.email } else { "" }
+                $subInfo = Get-UserSubscriptionInfo $userParam $emailParam
+
+                if (-not $subInfo.isUnlimited) {
+                    try {
+                        $parsedConfig = $body | ConvertFrom-Json
+                        if ($parsedConfig -and $parsedConfig.gifts) {
+                            $giftCount = $parsedConfig.gifts.Count
+                            $maxLimit = if ($subInfo.commandLimit) { [int]$subInfo.commandLimit } else { 10 }
+                            if ($giftCount -gt $maxLimit) {
+                                Send-JsonResponse $response @{
+                                    status = "error"
+                                    message = "Command Limit Reached! Your plan ($($subInfo.name)) allows up to $maxLimit commands (you submitted $giftCount). Upgrade to Streamer Premium (₱999) for 60 commands or Expert (₱3,999) for 150 commands!"
+                                    limit = $maxLimit
+                                    currentCount = $giftCount
+                                    tier = $subInfo.tier
+                                } 403
+                                continue
+                            }
+                        }
+                    } catch {}
+                }
+
                 [System.IO.File]::WriteAllText($targetPath, $body, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $body, [System.Text.Encoding]::UTF8)
                 $rootCfg = Join-Path (Split-Path -Parent $folder) "pvz_fusion_config.json"
@@ -3896,6 +4231,21 @@ INSTALLATION INSTRUCTIONS:
             $srcTemplate = if (Test-Path $templateConfigFile) { $templateConfigFile } else { $configFile }
             if (Test-Path $srcTemplate) {
                 $templateContent = [System.IO.File]::ReadAllText($srcTemplate, [System.Text.Encoding]::UTF8)
+
+                # Cap template gifts to user subscription limit if not unlimited
+                $caller = Get-CallerUser $request
+                $emailParam = if ($request.QueryString['email']) { [string]$request.QueryString['email'] } elseif ($caller -and $caller.email) { [string]$caller.email } else { "" }
+                $subInfo = Get-UserSubscriptionInfo $userParam $emailParam
+                if (-not $subInfo.isUnlimited -and $subInfo.commandLimit) {
+                    try {
+                        $parsedTpl = $templateContent | ConvertFrom-Json
+                        if ($parsedTpl -and $parsedTpl.gifts -and $parsedTpl.gifts.Count -gt $subInfo.commandLimit) {
+                            $parsedTpl.gifts = @($parsedTpl.gifts | Select-Object -First $subInfo.commandLimit)
+                            $templateContent = $parsedTpl | ConvertTo-Json -Depth 10
+                        }
+                    } catch {}
+                }
+
                 [System.IO.File]::WriteAllText($targetPath, $templateContent, [System.Text.Encoding]::UTF8)
                 [System.IO.File]::WriteAllText($configFile, $templateContent, [System.Text.Encoding]::UTF8)
                 Sync-ConfigToCards
@@ -4441,6 +4791,15 @@ INSTALLATION INSTRUCTIONS:
                 # Normalize preset events to guarantee full standard working schema
                 $normalizedEvents = Normalize-PresetEvents $foundPreset.events $foundPreset.name
 
+                # Enforce subscription command limits on preset activation (Owner & Editor are Unlimited)
+                $caller = Get-CallerUser $request
+                $userParam = if ($payload.user) { [string]$payload.user } elseif ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
+                $emailParam = if ($caller -and $caller.email) { [string]$caller.email } elseif ($request.QueryString['email']) { [string]$request.QueryString['email'] } else { "" }
+                $subInfo = Get-UserSubscriptionInfo $userParam $emailParam
+                if (-not $subInfo.isUnlimited -and $subInfo.commandLimit -and $normalizedEvents.Count -gt $subInfo.commandLimit) {
+                    $normalizedEvents = @($normalizedEvents | Select-Object -First $subInfo.commandLimit)
+                }
+
                 # Update active config
                 $targetPath = Get-UserConfigPath $null
                 $cfgObj = if (Test-Path $targetPath) { Get-Content $targetPath -Raw -Encoding UTF8 | ConvertFrom-Json } else {
@@ -4878,6 +5237,51 @@ INSTALLATION INSTRUCTIONS:
                 Send-JsonResponse $response @{ status = "ok"; added = $addedCount; total = $commList.Count }
             } catch {
                 Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+            }
+            continue
+        }
+
+        # 3f. Auto-Detect & Sync Online TikTok Gifts API
+        if ($reqPath -eq '/api/gifts/sync') {
+            try {
+                $targetU = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } elseif ($script:tiktokConnectedUser) { [string]$script:tiktokConnectedUser } else { "gohanmalunggay" }
+                $nodeExe = Join-Path $folder "bin\node.exe"
+                $syncScript = Join-Path $folder "tools\sync_tiktok_gifts.js"
+                
+                if ((Test-Path $nodeExe) -and (Test-Path $syncScript)) {
+                    $prevCount = if ($script:verifiedGiftsCatalog) { $script:verifiedGiftsCatalog.Count } else { 0 }
+                    
+                    $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+                    $pinfo.FileName = $nodeExe
+                    $pinfo.Arguments = "`"$syncScript`" `"$targetU`""
+                    $pinfo.WorkingDirectory = $folder
+                    $pinfo.RedirectStandardOutput = $true
+                    $pinfo.RedirectStandardError = $true
+                    $pinfo.UseShellExecute = $false
+                    $pinfo.CreateNoWindow = $true
+                    $p = [System.Diagnostics.Process]::Start($pinfo)
+                    $p.WaitForExit(20000)
+                    
+                    if (Test-Path $verifiedGiftsFile) {
+                        try {
+                            $script:verifiedGiftsCatalog = Get-Content $verifiedGiftsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+                        } catch {}
+                    }
+                    $newCount = if ($script:verifiedGiftsCatalog) { $script:verifiedGiftsCatalog.Count } else { 0 }
+                    $diff = [Math]::Max(0, ($newCount - $prevCount))
+                    
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        success = $true
+                        totalGifts = $newCount
+                        newGifts = $diff
+                        message = "TikTok gifts successfully checked & synced!"
+                    }
+                } else {
+                    Send-JsonResponse $response @{ status = "error"; message = "Sync engine missing" } 500
+                }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
             }
             continue
         }
@@ -7026,13 +7430,22 @@ INSTALLATION INSTRUCTIONS:
                                 Add-SpinnerHistoryRecord $user $avatar $picked $cardSpName $cardSpId
                             }
                         } else {
-                            $totalAmt = [int]$matchedGift.amount
-                            $giftReps = if ($matchedGift.repetition) { [int]$matchedGift.repetition } else { 1 }
-                            if ($matchedGift.repetitionMultiplier -eq $true -or $matchedGift.repetitionMultiplier -eq "true") {
-                                $giftReps = $giftReps * $repeatCount
+                            # 1=1 COMMAND INTEGRITY:
+                            # 1 gift sent = exactly 1 command execution of the configured card count!
+                            # If card has Repetition: 5, then 1 gift spawns 5.
+                            # If someone sends x2 gifts, it spawns 2 * 5 = 10.
+                            $baseUnitCount = if ($matchedGift.repetition -and [int]$matchedGift.repetition -gt 0) {
+                                [int]$matchedGift.repetition
+                            } elseif ($matchedGift.amount -and [int]$matchedGift.amount -gt 0) {
+                                [int]$matchedGift.amount
                             } else {
-                                $totalAmt = $totalAmt * $repeatCount
+                                1
                             }
+
+                            $isMultiplierActive = if ($null -eq $matchedGift.repetitionMultiplier) { $true } elseif ($matchedGift.repetitionMultiplier -is [bool]) { [bool]$matchedGift.repetitionMultiplier } else { (([string]$matchedGift.repetitionMultiplier).Trim().ToLower() -eq "true" -or ([string]$matchedGift.repetitionMultiplier).Trim() -eq "1") }
+                            $giftRepeatQty = [Math]::Max(1, [int]$repeatCount)
+                            $totalSpawns = if ($isMultiplierActive) { $baseUnitCount * $giftRepeatQty } else { $baseUnitCount }
+
                             $giftDelay = if ($matchedGift.delay) { [int]$matchedGift.delay } else { 0 }
                             $giftInterval = if ($matchedGift.interval) { [int]$matchedGift.interval } else { 100 }
                             $giftHide = ($matchedGift.hideInOverlay -eq $true -or $matchedGift.hideInOverlay -eq "true")
@@ -7054,7 +7467,7 @@ INSTALLATION INSTRUCTIONS:
                                 repeatEnd = $repEnd
                                 isStreak = $isStreak
                                 command = $matchedGift.command
-                                amount = $totalAmt
+                                amount = $totalSpawns
                                 username = $user
                                 icon = $icon
                                 hideInOverlay = $giftHide
@@ -7063,13 +7476,12 @@ INSTALLATION INSTRUCTIONS:
 
                             if ($cardGameCmds.Count -gt 0) {
                                 foreach ($sc in $cardGameCmds) {
-                                    $scAmt = if ($sc.amount) { [int]$sc.amount } else { 1 }
                                     $scAct = if ($sc.actionType) { $sc.actionType } else { $matchedGift.actionType }
-                                    $scFinalAmt = if ($matchedGift.repetitionMultiplier -eq $true -or $matchedGift.repetitionMultiplier -eq "true") { $scAmt } else { $scAmt * $repeatCount }
-                                    SendToPvZGame $scAct $sc.command $scFinalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
+                                    # Enforce 1=1 command ratio: Send $totalSpawns directly with repetition 1 to prevent double multiplication!
+                                    SendToPvZGame $scAct $sc.command $totalSpawns $user "" 1 $giftDelay $giftInterval | Out-Null
                                 }
                             } else {
-                                SendToPvZGame $matchedGift.actionType $matchedGift.command $totalAmt $user "" $giftReps $giftDelay $giftInterval | Out-Null
+                                SendToPvZGame $matchedGift.actionType $matchedGift.command $totalSpawns $user "" 1 $giftDelay $giftInterval | Out-Null
                             }
 
                             # ROUTE TRIGGER EVENT TO DEDICATED ON-SCREEN COUNTER!

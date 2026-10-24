@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENEarn Studio - Opening Splash Animation Preview</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/renearn_icon_32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Oxanium:wght@600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background: #080506;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Top control bar for previewing & replaying */
+        .preview-controls {
+            position: fixed;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999999999;
+            background: rgba(18, 12, 14, 0.85);
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 30, 66, 0.35);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-preview {
+            background: linear-gradient(135deg, #ff1e42, #99001f);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 14px rgba(255, 30, 66, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preview:hover {
+            filter: brightness(1.15);
+            transform: scale(1.03);
+        }
+
+        .btn-preview-sec {
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-preview-sec:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        /* ==================== AAA STUDIO OPENING SPLASH SCREEN (GROUDON EDITION) ==================== */
+        #appSplashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #080506;
+            background-image: 
+                radial-gradient(circle, rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px),
+                radial-gradient(circle at 50% 48%, rgba(255, 30, 66, 0.22) 0%, rgba(245, 158, 11, 0.06) 42%, transparent 70%);
+            background-size: 26px 26px, 100% 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999999;
+            overflow: hidden;
+            user-select: none;
+            transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #appSplashScreen.splash-dismissed {
+            opacity: 0;
+            transform: scale(1.05);
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        .splash-ambient-glow {
+            position: absolute;
+            width: 640px;
+            height: 640px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 30, 66, 0.28) 0%, rgba(249, 115, 22, 0.12) 45%, transparent 72%);
+            filter: blur(55px);
+            animation: splashGlowPulse 2.8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .splash-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Unified Brand Badge: Floating Icon (No Background) + Word 'renearn' */
+        .splash-brand-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 26px;
+            position: relative;
+            animation: splashHeroEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards, splashLevitate 3.4s ease-in-out infinite alternate 0.75s;
+        }
+
+        /* Ambient Aura behind the logo */
+        .splash-brand-hero::before {
+            content: '';
+            position: absolute;
+            inset: -20px -30px;
+            background: radial-gradient(ellipse at center, rgba(255, 30, 66, 0.35) 0%, rgba(245, 158, 11, 0.1) 50%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            z-index: 1;
+            pointer-events: none;
+            animation: splashAuraPulse 3s ease-in-out infinite alternate;
+        }
+
+        /* Transparent Icon with NO background box */
+        .splash-icon-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 82px;
+            height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .splash-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: drop-shadow(0 8px 22px rgba(255, 30, 66, 0.75)) drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
+            animation: splashIconShine 3s ease-in-out infinite alternate;
+        }
+
+        /* 3D Stylized Word 'renearn' */
+        .splash-word-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .splash-wordmark {
+            font-family: 'Oxanium', 'Outfit', sans-serif;
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            text-transform: lowercase;
+            background: linear-gradient(180deg, #ffffff 15%, #ffd4dc 38%, #ff2a4b 72%, #99001f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 3px 0 #570012) drop-shadow(0 8px 20px rgba(255, 30, 66, 0.8));
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Sleek Slim Progress Track from Screenshot */
+        .splash-progress-track {
+            width: 290px;
+            height: 3.5px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 14px;
+        }
+
+        .splash-progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff1e42 0%, #f97316 60%, #ffd13b 100%);
+            box-shadow: 0 0 14px rgba(255, 30, 66, 0.95), 0 0 8px #ffd13b;
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .splash-status-text {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #847577;
+            letter-spacing: 0.2px;
+            transition: color 0.25s, opacity 0.25s;
+        }
+
+        @keyframes splashHeroEntrance {
+            0% { opacity: 0; transform: scale(0.84) translateY(12px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes splashLevitate {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-7px); }
+        }
+
+        @keyframes splashAuraPulse {
+            0% { transform: scale(0.92); opacity: 0.6; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes splashIconShine {
+            0% { filter: drop-shadow(0 8px 20px rgba(255, 30, 66, 0.7)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.4)); }
+            100% { filter: drop-shadow(0 10px 28px rgba(255, 30, 66, 0.95)) drop-shadow(0 0 18px rgba(255, 209, 59, 0.7)); }
+        }
+
+        @keyframes splashGlowPulse {
+            0% { transform: scale(0.92); opacity: 0.55; }
+            100% { transform: scale(1.08); opacity: 0.95; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Preview Controls -->
+    <div class="preview-controls">
+        <span style="font-size: 12px; font-weight: 800; color: #ff1e42; letter-spacing: 0.5px;">🌋 SPLASH PREVIEW</span>
+        <button type="button" class="btn-preview" onclick="replaySplash()">
+            <span>🔄 Replay Animation</span>
+        </button>
+        <a href="/app.html" class="btn-preview-sec">
+            <span>Open app.html</span>
+        </a>
+        <a href="/runetify-groudon.html" class="btn-preview-sec">
+            <span>Open Groudon UI</span>
+        </a>
+    </div>
+
+    <!-- AAA STUDIO OPENING SPLASH SCREEN -->
+    <div id="appSplashScreen">
+        <div class="splash-ambient-glow"></div>
+        <div class="splash-content">
+            <!-- Unified Brand: Floating Transparent Icon (NO BACKGROUND) + Word renearn -->
+            <div class="splash-brand-hero">
+                <div class="splash-icon-wrapper">
+                    <img src="images/renearn_icon_clean.png" alt="RENEarn" class="splash-icon-img" onerror="this.src='images/renearn_icon_256.png'">
+                </div>
+                <div class="splash-word-container">
+                    <div class="splash-wordmark">
+                        renearn
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleek Slim Progress Track from Screenshot -->
+            <div class="splash-progress-track">
+                <div id="splashProgressBar" class="splash-progress-bar"></div>
+            </div>
+            <div id="splashStatusText" class="splash-status-text">Loading games &amp; overlay profiles...</div>
+        </div>
+    </div>
+
+    <script>
+        let splashTimers = [];
+
+        function clearSplashTimers() {
+            splashTimers.forEach(t => clearTimeout(t));
+            splashTimers = [];
+        }
+
+        function replaySplash() {
+            clearSplashTimers();
+            const splash = document.getElementById('appSplashScreen');
+            const bar = document.getElementById('splashProgressBar');
+            const txt = document.getElementById('splashStatusText');
+
+            splash.classList.remove('splash-dismissed');
+            splash.style.display = 'flex';
+            splash.dataset.dismissed = '';
+            bar.style.transition = 'none';
+            bar.style.width = '0%';
+            txt.textContent = 'Loading games & overlay profiles...';
+            txt.style.color = '#847577';
+
+            // Trigger reflow
+            void splash.offsetWidth;
+            bar.style.transition = 'width 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+
+            // Stage 1
+            splashTimers.push(setTimeout(() => {
+                bar.style.width = '42%';
+                txt.textContent = 'Loading games & overlay profiles...';
+            }, 100));
+
+            // Stage 2
+            splashTimers.push(setTimeout(() => {
+                bar.style.width = '78%';
+                txt.textContent = 'Synchronizing TikTok LIVE gifts...';
+            }, 450));
+
+            // Stage 3
+            splashTimers.push(setTimeout(() => {
+                bar.style.width = '94%';
+                txt.textContent = 'Initializing Groudon Studio Engine...';
+            }, 800));
+
+            // Finish
+            splashTimers.push(setTimeout(() => {
+                bar.style.width = '100%';
+                txt.textContent = 'Ready';
+                txt.style.color = '#4ade80';
+
+                splashTimers.push(setTimeout(() => {
+                    splash.classList.add('splash-dismissed');
+                }, 180));
+            }, 1250));
+        }
+
+        // Run on start
+        window.addEventListener('DOMContentLoaded', replaySplash);
+    </script>
+</body>
+</html>

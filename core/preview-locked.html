@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription & Command Limit UI Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: #070b13; color: #f1f5f9; padding: 24px; min-height: 100vh; }
+        .preview-container { max-width: 1100px; margin: 0 auto; }
+        .demo-bar {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .demo-bar button {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .demo-bar button.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+        .cmd-row {
+            background: #0b1120;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <!-- Interactive Mode Switcher for the User to test all states -->
+        <div class="demo-bar">
+            <div style="font-size: 13px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                <span>👁️ LIVE PREVIEW CONTROLLER:</span>
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 500;">(Click any state to preview what the streamer sees)</span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="active" onclick="setDemoState('free_zero')">🌱 Free Starter (0/10 Fresh User)</button>
+                <button type="button" onclick="setDemoState('free_partial')">⚡ Free Starter (6/10 In Progress)</button>
+                <button type="button" onclick="setDemoState('free_full')">🚨 Free Starter (10/10 Max Reached)</button>
+                <button type="button" onclick="setDemoState('premium')">💎 Streamer Premium (42/60)</button>
+                <button type="button" onclick="setDemoState('owner')">👑 Owner Lifetime (Unlimited)</button>
+            </div>
+        </div>
+
+        <h3 style="font-size: 14px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;">
+            Command Management Deck
+        </h3>
+
+        <!-- This is the exact dynamic banner placed in app.html -->
+        <div id="commandUsageQuotaBanner"></div>
+
+        <!-- Sample Mock Command Rows below it matching Picture 4 -->
+        <div id="mockCommandRowsContainer" style="margin-top: 14px;">
+            <div class="cmd-row">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #e11d48; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 13px;">50</div>
+                <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 800; color: #f8fafc;">Spawn Knight Captain Zombie (70)</div>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Anyone • TikTok Likes Every 50 Likes • Repetition: 1 • Delay: 0</div>
+                </div>
+                <span style="font-size: 11px; font-family: monospace; background: #0f172a; padding: 4px 8px; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.2);">spawn_knight_captain</span>
+            </div>
+
+            <div class="cmd-row">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #0284c7; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 13px;">1</div>
+                <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 800; color: #f8fafc;">Spawn Giga Gargantuar Boss</div>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Anyone • Rose (1 Coin) • Repetition: 1 • Delay: 0</div>
+                </div>
+                <span style="font-size: 11px; font-family: monospace; background: #0f172a; padding: 4px 8px; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.2);">spawn_giga_gargantuar</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDemoState(state) {
+            document.querySelectorAll('.demo-bar button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const banner = document.getElementById('commandUsageQuotaBanner');
+            const mockRows = document.getElementById('mockCommandRowsContainer');
+
+            if (state === 'free_zero') {
+                renderState(banner, 0, 10, 'free', false, 'Free Starter');
+                mockRows.innerHTML = `
+                    <div style="text-align: center; padding: 48px 20px; background: rgba(15, 23, 42, 0.4); border: 1.5px dashed rgba(56, 189, 248, 0.25); border-radius: 14px; margin: 12px 0;">
+                        <div style="font-size: 38px; margin-bottom: 10px;">⚡</div>
+                        <div style="font-size: 16px; font-weight: 800; color: #ffffff;">No Command Triggers Yet (0 / 10 Used)</div>
+                        <div style="font-size: 12.5px; margin-top: 6px; color: #94a3b8; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+                            You are on the <b>Free Starter</b> plan with up to <b>10 commands maximum</b>. Click below to add your first command trigger!
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <button type="button" style="background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; font-weight: 800; font-size: 13px; padding: 9px 22px; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4);">
+                                + Add First Command
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                mockRows.innerHTML = `
+                    <div class="cmd-row">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #e11d48; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 13px;">50</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 800; color: #f8fafc;">Spawn Knight Captain Zombie (70)</div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Anyone • TikTok Likes Every 50 Likes • Repetition: 1 • Delay: 0</div>
+                        </div>
+                        <span style="font-size: 11px; font-family: monospace; background: #0f172a; padding: 4px 8px; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.2);">spawn_knight_captain</span>
+                    </div>
+
+                    <div class="cmd-row">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #0284c7; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 13px;">1</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 800; color: #f8fafc;">Spawn Giga Gargantuar Boss</div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Anyone • Rose (1 Coin) • Repetition: 1 • Delay: 0</div>
+                        </div>
+                        <span style="font-size: 11px; font-family: monospace; background: #0f172a; padding: 4px 8px; border-radius: 4px; color: #38bdf8; border: 1px solid rgba(56,189,248,0.2);">spawn_giga_gargantuar</span>
+                    </div>
+                `;
+                if (state === 'free_full') {
+                    renderState(banner, 10, 10, 'free', false, 'Free Starter');
+                } else if (state === 'free_partial') {
+                    renderState(banner, 6, 10, 'free', false, 'Free Starter');
+                } else if (state === 'premium') {
+                    renderState(banner, 42, 60, 'premium', false, 'Streamer Premium');
+                } else if (state === 'owner') {
+                    renderState(banner, 68, 999999, 'owner', true, 'Owner Lifetime');
+                }
+            }
+        }
+
+        function renderState(banner, curCount, limit, tier, isUnlimited, tierName) {
+            if (isUnlimited) {
+                banner.style.display = 'block';
+                banner.style.padding = '12px 18px';
+                banner.style.border = '1.5px solid rgba(225, 29, 72, 0.35)';
+                banner.style.borderRadius = '12px';
+                banner.style.background = 'linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))';
+                banner.style.boxShadow = '0 6px 20px rgba(0,0,0,0.45)';
+
+                banner.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 18px;">👑</span>
+                                <span style="font-size: 13px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px;">COMMANDS:</span>
+                                <span style="font-size: 17px; font-weight: 900; color: #10b981; font-family: monospace;">${curCount}</span>
+                                <span style="color: #64748b; font-size: 13px; font-weight: 600;">/ Unlimited</span>
+                                <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: rgba(225, 29, 72, 0.15); color: #e11d48; border: 1px solid rgba(225, 29, 72, 0.35);">
+                                    Owner Lifetime
+                                </span>
+                            </div>
+                            <div style="width: 140px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 999px;"></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 11.5px; color: #94a3b8; font-weight: 600;">
+                                <span style="color: #10b981;">✓ 3D Spinner Unlocked</span>
+                                <span style="color: #64748b;">•</span>
+                                <span style="color: #10b981;">✓ Matter.js Jar Unlocked</span>
+                                <span style="color: #64748b;">•</span>
+                                <span style="color: #38bdf8;">✓ Unlimited Command Slots</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 12px; font-weight: 800; color: #10b981; display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Unlimited Commands Active</span>
+                            </span>
+                            <button type="button" onclick="alert('Opens Manage Subscription Modal')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #e2e8f0; font-size: 12px; font-weight: 700; padding: 6px 13px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s ease;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <span>Manage Subscription</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const pct = Math.min(100, Math.round((curCount / limit) * 100));
+            const isFull = (curCount >= limit);
+            const slotsLeft = Math.max(0, limit - curCount);
+            const isFree = (tier === 'free');
+
+            const barBg = isFull
+                ? 'linear-gradient(90deg, #ef4444, #b91c1c)'
+                : (pct >= 80 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #38bdf8, #818cf8)');
+
+            banner.style.display = 'block';
+            banner.style.padding = '14px 18px';
+            banner.style.borderRadius = '12px';
+            banner.style.border = isFull ? '1.5px solid rgba(239, 68, 68, 0.5)' : '1.5px solid rgba(56, 189, 248, 0.35)';
+            banner.style.background = isFull
+                ? 'radial-gradient(circle at 10% 20%, rgba(69, 10, 10, 0.95), rgba(15, 23, 42, 0.98))'
+                : 'radial-gradient(circle at 10% 20%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98))';
+            banner.style.boxShadow = isFull ? '0 8px 24px rgba(239, 68, 68, 0.25)' : '0 8px 24px rgba(0, 0, 0, 0.5)';
+
+            banner.innerHTML = `
+                <!-- Top Status Bar -->
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div style="display: inline-flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 20px; filter: drop-shadow(0 0 6px ${isFull ? '#ef4444' : '#38bdf8'});">${isFull ? '🚨' : '⚡'}</span>
+                            <span style="font-size: 13px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px;">COMMAND LIMIT:</span>
+                            <span style="font-size: 18px; font-weight: 900; color: ${isFull ? '#ef4444' : '#38bdf8'}; font-family: monospace;">${curCount} / ${limit}</span>
+                            <span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: ${isFull ? 'rgba(239, 68, 68, 0.18)' : 'rgba(56, 189, 248, 0.15)'}; color: ${isFull ? '#ef4444' : '#38bdf8'}; border: 1px solid ${isFull ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.3)'};">
+                                ${tierName}
+                            </span>
+                        </div>
+
+                        <!-- Mini Progress Track -->
+                        <div style="width: 140px; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+                            <div style="width: ${Math.max(4, pct)}%; height: 100%; background: ${barBg}; border-radius: 999px; transition: width 0.3s ease;"></div>
+                        </div>
+
+                        <span style="font-size: 12px; color: ${isFull ? '#f87171' : '#94a3b8'}; font-weight: 700;">
+                            ${isFull ? '⚠️ Limit Reached! Cannot add or duplicate commands.' : `${slotsLeft} slot(s) available on this tier`}
+                        </span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 12px; color: #fbbf24; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                            <span>🔒</span>
+                            <span>${isFree ? 'Free Account (3D Spinner & Jar Locked)' : 'Upgrade to Expand Capacity'}</span>
+                        </span>
+                        <button type="button" onclick="alert('Opens Manage Subscription Modal')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #cbd5e1; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span>Manage Subscription</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Unlock Options & Subscription CTA Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 12px; margin-top: 12px;">
+                    <!-- Option 1: Streamer Premium (₱999 - 60 Commands) -->
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.05);">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 7px;">
+                                <span style="font-size: 14px; font-weight: 900; color: #38bdf8;">Streamer Premium</span>
+                                <span style="font-size: 11px; font-weight: 900; color: #10b981; background: rgba(16,185,129,0.18); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(16,185,129,0.3);">₱999</span>
+                            </div>
+                            <div style="font-size: 11px; color: #94a3b8; margin-top: 3px; line-height: 1.4;">
+                                ✓ <b style="color: #ffffff;">60 Commands</b> • 🎡 3D Spinner & 🏺 Jar Unlocked
+                            </div>
+                        </div>
+                        <button type="button" onclick="alert('Opens GCash QR for Streamer Premium (₱999 - 60 Commands)')" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);">
+                            <span>⚡</span>
+                            <span>Unlock 60 Cmds</span>
+                        </button>
+                    </div>
+
+                    <!-- Option 2: Streamer Expert (₱3,999 - 150 Commands) -->
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.05);">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 7px;">
+                                <span style="font-size: 14px; font-weight: 900; color: #f59e0b;">Streamer Expert</span>
+                                <span style="font-size: 11px; font-weight: 900; color: #10b981; background: rgba(16,185,129,0.18); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(16,185,129,0.3);">₱3,999</span>
+                            </div>
+                            <div style="font-size: 11px; color: #94a3b8; margin-top: 3px; line-height: 1.4;">
+                                ✓ <b style="color: #ffffff;">150 Commands</b> • 🚀 All Macros & Priority VIP
+                            </div>
+                        </div>
+                        <button type="button" onclick="alert('Opens GCash QR for Streamer Expert (₱3,999 - 150 Commands)')" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #d97706, #ea580c); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);">
+                            <span>🔥</span>
+                            <span>Unlock 150 Cmds</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize with Free Full (Locked)
+        renderState(document.getElementById('commandUsageQuotaBanner'), 10, 10, 'free', false, 'Free Starter');
+    </script>
+</body>
+</html>

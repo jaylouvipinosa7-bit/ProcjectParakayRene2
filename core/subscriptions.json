@@ -1,138 +1,162 @@
 {
-    "plans": {
-        "free": {
-            "id": "free",
-            "name": "Free Starter",
-            "price": 0,
-            "currency": "PHP",
-            "commandLimit": 10,
-            "hasSpinner": false,
-            "hasJar": false,
-            "hasOverlays": true,
-            "badge": "Free Starter",
-            "badgeColor": "#94a3b8"
-        },
-        "premium": {
-            "id": "premium",
-            "name": "Streamer Premium",
-            "price": 999,
-            "currency": "PHP",
-            "commandLimit": 60,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "badge": "Streamer Premium",
-            "badgeColor": "#38bdf8"
-        },
-        "expert": {
-            "id": "expert",
-            "name": "Streamer Expert",
-            "price": 3999,
-            "currency": "PHP",
-            "commandLimit": 150,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "badge": "Streamer Expert",
-            "badgeColor": "#f59e0b"
-        },
-        "owner": {
-            "id": "owner",
-            "name": "Owner Lifetime",
-            "price": 0,
-            "currency": "PHP",
-            "commandLimit": 999999,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "badge": "Owner Lifetime",
-            "badgeColor": "#e11d48"
-        },
-        "tester": {
-            "id": "tester",
-            "name": "Beta Tester",
-            "price": 0,
-            "currency": "PHP",
-            "commandLimit": 999999,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "badge": "Beta Tester",
-            "badgeColor": "#a855f7"
-        }
-    },
-    "userSubscriptions": {
-        "jaylouvipinosa7@gmail.com": {
-            "tier": "owner",
-            "commandLimit": 999999,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "activatedAt": "2026-10-23T00:00:00Z",
-            "note": "Primary System Owner"
-        },
-        "gohanmalunggay": {
-            "tier": "owner",
-            "commandLimit": 999999,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "activatedAt": "2026-10-23T00:00:00Z",
-            "note": "Owner TikTok Channel"
-        },
-        "newstreamer_random": {
-            "tier": "premium",
-            "commandLimit": 60,
-            "hasSpinner": true,
-            "hasJar": true,
-            "hasOverlays": true,
-            "activatedAt": "2026-10-23T19:07:37.6026609+08:00",
-            "licenseKey": "PREM-999-START-DEMO",
-            "referenceNo": ""
-        }
-    },
-    "licenseKeys": {
-        "PREM-999-START-DEMO": {
-            "tier": "premium",
-            "commandLimit": 60,
-            "claimed": true,
-            "claimedBy": "newstreamer_random",
-            "createdAt": "2026-10-23T10:00:00Z",
-            "claimedAt": "2026-10-23T19:07:37.5983103+08:00"
-        },
-        "EXPERT-3999-VIP-DEMO": {
-            "tier": "expert",
-            "commandLimit": 150,
-            "claimed": false,
-            "claimedBy": null,
-            "createdAt": "2026-10-23T10:00:00Z"
-        },
-        "PREM-999-3D9123BB": {
-            "tier": "premium",
-            "commandLimit": 60,
-            "claimed": false,
-            "claimedBy": null,
-            "createdAt": "2026-10-23T20:42:14.0395788+08:00"
-        }
-    },
-    "paymentMethods": {
-        "gcash": {
-            "name": "GCash",
-            "enabled": true,
-            "paymentUrl": "",
-            "instructions": "Send via GCash and enter your GCash reference number to activate."
-        },
-        "maya": {
-            "name": "Maya",
-            "enabled": true,
-            "paymentUrl": "",
-            "instructions": "Send via Maya and enter your Maya reference number to activate."
-        },
-        "paypal": {
-            "name": "PayPal",
-            "enabled": true,
-            "paymentUrl": "",
-            "instructions": "Pay via PayPal checkout / PayPal.Me and enter your transaction ID to activate."
-        }
-    }
+    "plans":  {
+                  "free":  {
+                               "id":  "free",
+                               "name":  "Free Starter",
+                               "price":  0,
+                               "currency":  "PHP",
+                               "commandLimit":  10,
+                               "hasSpinner":  false,
+                               "hasJar":  false,
+                               "hasOverlays":  true,
+                               "badge":  "Free Starter",
+                               "badgeColor":  "#94a3b8"
+                           },
+                  "premium":  {
+                                  "id":  "premium",
+                                  "name":  "Streamer Premium",
+                                  "price":  999,
+                                  "currency":  "PHP",
+                                  "commandLimit":  60,
+                                  "hasSpinner":  true,
+                                  "hasJar":  true,
+                                  "hasOverlays":  true,
+                                  "badge":  "Streamer Premium",
+                                  "badgeColor":  "#38bdf8"
+                              },
+                  "expert":  {
+                                 "id":  "expert",
+                                 "name":  "Streamer Expert",
+                                 "price":  3999,
+                                 "currency":  "PHP",
+                                 "commandLimit":  150,
+                                 "hasSpinner":  true,
+                                 "hasJar":  true,
+                                 "hasOverlays":  true,
+                                 "badge":  "Streamer Expert",
+                                 "badgeColor":  "#f59e0b"
+                             },
+                  "owner":  {
+                                "id":  "owner",
+                                "name":  "Owner Lifetime",
+                                "price":  0,
+                                "currency":  "PHP",
+                                "commandLimit":  999999,
+                                "hasSpinner":  true,
+                                "hasJar":  true,
+                                "hasOverlays":  true,
+                                "badge":  "Owner Lifetime",
+                                "badgeColor":  "#e11d48"
+                            },
+                  "tester":  {
+                                 "id":  "tester",
+                                 "name":  "Beta Tester",
+                                 "price":  0,
+                                 "currency":  "PHP",
+                                 "commandLimit":  999999,
+                                 "hasSpinner":  true,
+                                 "hasJar":  true,
+                                 "hasOverlays":  true,
+                                 "badge":  "Beta Tester",
+                                 "badgeColor":  "#a855f7"
+                             },
+                  "editor":  {
+                                 "id":  "editor",
+                                 "name":  "Staff Editor",
+                                 "price":  0,
+                                 "currency":  "PHP",
+                                 "commandLimit":  999999,
+                                 "hasSpinner":  true,
+                                 "hasJar":  true,
+                                 "hasOverlays":  true,
+                                 "badge":  "Staff Editor",
+                                 "badgeColor":  "#06b6d4"
+                             }
+              },
+    "userSubscriptions":  {
+                              "claudiokhyleandrei@gmail.com":  {
+                                                                   "tier":  "editor",
+                                                                   "commandLimit":  999999,
+                                                                   "hasSpinner":  true,
+                                                                   "hasJar":  true,
+                                                                   "hasOverlays":  true,
+                                                                   "activatedAt":  "2026-10-24T00:00:00Z",
+                                                                   "note":  "Staff Editor (Unlimited)"
+                                                               },
+                              "jaylouvipinosa7@gmail.com":  {
+                                                                "tier":  "owner",
+                                                                "commandLimit":  999999,
+                                                                "hasSpinner":  true,
+                                                                "hasJar":  true,
+                                                                "hasOverlays":  true,
+                                                                "activatedAt":  "2026-10-23T00:00:00Z",
+                                                                "note":  "Primary System Owner"
+                                                            },
+                              "gohanmalunggay":  {
+                                                     "tier":  "owner",
+                                                     "commandLimit":  999999,
+                                                     "hasSpinner":  true,
+                                                     "hasJar":  true,
+                                                     "hasOverlays":  true,
+                                                     "activatedAt":  "2026-10-23T00:00:00Z",
+                                                     "note":  "Owner TikTok Channel"
+                                                 },
+                              "newstreamer_random":  {
+                                                         "tier":  "premium",
+                                                         "commandLimit":  60,
+                                                         "hasSpinner":  true,
+                                                         "hasJar":  true,
+                                                         "hasOverlays":  true,
+                                                         "activatedAt":  "2026-10-23T19:07:37.6026609+08:00",
+                                                         "licenseKey":  "PREM-999-START-DEMO",
+                                                         "referenceNo":  ""
+                                                     }
+                          },
+    "licenseKeys":  {
+                        "PREM-999-START-DEMO":  {
+                                                    "tier":  "premium",
+                                                    "commandLimit":  60,
+                                                    "claimed":  true,
+                                                    "claimedBy":  "newstreamer_random",
+                                                    "createdAt":  "2026-10-23T10:00:00Z",
+                                                    "claimedAt":  "2026-10-23T19:07:37.5983103+08:00"
+                                                },
+                        "EXPERT-3999-VIP-DEMO":  {
+                                                     "tier":  "expert",
+                                                     "commandLimit":  150,
+                                                     "claimed":  false,
+                                                     "claimedBy":  null,
+                                                     "createdAt":  "2026-10-23T10:00:00Z"
+                                                 },
+                        "PREM-999-3D9123BB":  {
+                                                  "tier":  "premium",
+                                                  "commandLimit":  60,
+                                                  "claimed":  false,
+                                                  "claimedBy":  null,
+                                                  "createdAt":  "2026-10-23T20:42:14.0395788+08:00"
+                                              }
+                    },
+    "paymentMethods":  {
+                           "gcash":  {
+                                         "name":  "GCash",
+                                         "enabled":  true,
+                                         "paymentUrl":  "",
+                                         "instructions":  "Send via GCash and enter your GCash reference number to activate."
+                                     },
+                           "maya":  {
+                                        "name":  "Maya",
+                                        "enabled":  true,
+                                        "paymentUrl":  "",
+                                        "instructions":  "Send via Maya and enter your Maya reference number to activate."
+                                    },
+                           "paypal":  {
+                                          "name":  "PayPal",
+                                          "enabled":  true,
+                                          "paymentUrl":  "",
+                                          "instructions":  "Pay via PayPal checkout / PayPal.Me and enter your transaction ID to activate."
+                                      }
+                       },
+    "pendingPayments":  [
+
+                        ]
 }
