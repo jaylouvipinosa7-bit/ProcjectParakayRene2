@@ -372,31 +372,31 @@
             margin-top: 2px;
         }
 
-        /* GOLD PREMIUM TAG (PIGGY BANK ONLY) */
+        /* HOT FLAME TAG (PIGGY BANK & POTION VIAL) */
         .jar-premium-tag {
             position: absolute;
             top: 24px;
             right: 28px;
-            background: linear-gradient(135deg, #f59e0b 0%, #eab308 50%, #fbbf24 100%);
-            color: #0f172a;
+            background: linear-gradient(135deg, #ff1e42 0%, #ff5722 50%, #f59e0b 100%);
+            color: #ffffff;
             font-size: 11px;
             font-weight: 900;
             letter-spacing: 1px;
             padding: 3px 10px;
             border-radius: 9999px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.6), 0 0 16px rgba(245, 158, 11, 0.7);
-            border: 1.5px solid #fef08a;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6), 0 0 16px rgba(255, 30, 66, 0.7);
+            border: 1.5px solid #ff758f;
             z-index: 45;
             text-transform: uppercase;
             display: none;
             pointer-events: none;
-            animation: goldShimmer 2.5s infinite ease-in-out;
+            animation: hotFlameShimmer 2s infinite ease-in-out;
             font-family: 'Outfit', sans-serif;
         }
 
-        @keyframes goldShimmer {
-            0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(245, 158, 11, 0.6)); transform: scale(1); }
-            50% { filter: brightness(1.22) drop-shadow(0 0 14px rgba(251, 191, 36, 0.95)); transform: scale(1.04); }
+        @keyframes hotFlameShimmer {
+            0%, 100% { filter: brightness(1) drop-shadow(0 0 6px rgba(255, 30, 66, 0.6)); transform: scale(1); }
+            50% { filter: brightness(1.22) drop-shadow(0 0 14px rgba(255, 87, 34, 0.95)); transform: scale(1.05); }
         }
     </style>
 </head>
@@ -424,7 +424,7 @@
 
             <!-- JAR STAGE -->
             <div class="jar-stage" id="jarStage">
-                <div class="jar-premium-tag" id="jarPremiumTag">PREMIUM</div>
+                <div class="jar-premium-tag" id="jarPremiumTag">HOT 🔥</div>
                 <img id="imgJarBack" class="jar-glass-back" src="images/jars/jar_mason.png" alt="Jar Back">
                 <canvas id="physicsCanvas" width="440" height="540"></canvas>
                 <div class="jar-trapdoor-lid" id="jarTrapdoorLid"></div>
