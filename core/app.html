@@ -18615,13 +18615,13 @@
                                 <div class="runetify-url-box">
                                     <span class="runetify-url-prefix">connect</span>
                                     <input type="text" class="runetify-url-input" readonly
-                                        value="http://127.0.0.1:8080/overlay-jar.html" id="urlJarSim"
+                                        value="http://127.0.0.1:8080/RENEarn/jar" id="urlJarSim"
                                         onclick="this.select()">
                                 </div>
 
                                 <!-- Buttons -->
                                 <button type="button" class="runetify-btn-gold"
-                                    onclick="copyRunetifyLink('http://127.0.0.1:8080/overlay-jar.html')">
+                                    onclick="copyRunetifyLink('http://127.0.0.1:8080/RENEarn/jar')">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2.5">
                                         <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -19083,11 +19083,11 @@
                             </div>
                         </div>
 
-                        <!-- URL BAR (EXACT MATCH TO REFERENCE PHOTO 3) -->
+                        <!-- URL BAR (CLEAN BRANDED ROUTE: /RENEarn/jar) -->
                         <div
                             style="background: #11141a; padding: 10px 18px; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 8px;">
                             <input type="text" id="inlineJarUrlDisplay" class="form-input" readonly
-                                value="http://localhost:8080/overlay-jar.html"
+                                value="http://localhost:8080/RENEarn/jar"
                                 style="flex: 1; font-family: monospace; font-size: 13px; background: #090c10; color: #8b949e; border: 1px solid #30363d;">
                             <button type="button" class="btn btn-secondary btn-sm" onclick="copyJarStandaloneUrl()"
                                 style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
@@ -25404,7 +25404,8 @@
             let currentJarSettings = null;
 
             function copyJarStandaloneUrl() {
-                const url = window.location.origin + '/overlay-jar.html';
+                const input = document.getElementById('inlineJarUrlDisplay');
+                const url = input?.value || (window.location.origin + '/RENEarn/jar');
                 navigator.clipboard.writeText(url).then(() => {
                     showToast("Copied Gift Jar Overlay URL: " + url, "OK");
                 }).catch(() => {
@@ -26432,7 +26433,7 @@
 
                 const urlInput = document.getElementById('inlineJarUrlDisplay');
                 if (urlInput) {
-                    urlInput.value = window.location.origin + '/overlay-jar.html?skin=' + skin;
+                    urlInput.value = window.location.origin + '/RENEarn/jar?skin=' + skin;
                 }
 
                 // Update embedded preview frame immediately via both postMessage and direct invocation

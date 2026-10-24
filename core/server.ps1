@@ -8182,8 +8182,35 @@ INSTALLATION INSTRUCTIONS:
         }
 
         # ----------------- HIGH-PERFORMANCE STATIC FILE SERVING ----------------- #
-        $localRelPath = $reqPath.TrimStart('/').Replace('/', '\')
-        $filePath = Join-Path $folder $localRelPath
+        # Clean Branded RENEarn Overlay Route Aliases
+        $cleanRoutes = @{
+            "/renearn/jar"          = "overlay-jar.html"
+            "/jar"                  = "overlay-jar.html"
+            "/renearn/spinner"      = "overlay-spinner.html"
+            "/spinner"              = "overlay-spinner.html"
+            "/renearn/leaderboard"  = "overlay-leaderboard.html"
+            "/leaderboard"          = "overlay-leaderboard.html"
+            "/renearn/overlay"      = "stream-overlay.html"
+            "/overlay"              = "stream-overlay.html"
+            "/renearn/goal"         = "overlay-goal.html"
+            "/goal"                 = "overlay-goal.html"
+            "/renearn/gacha"        = "overlay-gacha.html"
+            "/gacha"                = "overlay-gacha.html"
+            "/renearn/grid"         = "overlay-grid.html"
+            "/grid"                 = "overlay-grid.html"
+            "/renearn/hud"          = "groudon-hud-overlay.html"
+            "/hud"                  = "groudon-hud-overlay.html"
+            "/renearn"              = "app.html"
+            "/app"                  = "app.html"
+        }
+
+        $normPath = $reqPath.ToLower().TrimEnd('/')
+        if ($cleanRoutes.ContainsKey($normPath)) {
+            $filePath = Join-Path $folder $cleanRoutes[$normPath]
+        } else {
+            $localRelPath = $reqPath.TrimStart('/').Replace('/', '\')
+            $filePath = Join-Path $folder $localRelPath
+        }
 
         if (Test-Path $filePath -PathType Leaf) {
             $ext = [System.IO.Path]::GetExtension($filePath).ToLower()
