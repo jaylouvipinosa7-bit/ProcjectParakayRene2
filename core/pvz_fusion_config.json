@@ -2271,29 +2271,29 @@
     },
     {
       "id": "5",
-      "giftName": "You're awesome",
-      "giftId": "15232",
+      "giftName": "Rose",
+      "giftId": "5655",
       "coins": 1,
-      "icon": "images/tiktok-gifts/15232_you_re_awesome.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+      "icon": "images/tiktok-gifts/5655_rose.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_burglar_bungee.webp",
       "actionType": "zombie",
-      "command": "spawn_ultimate_football_zombie",
+      "command": "spawn_burglar_bungee",
       "label": "Spawn Ultimate Football Zombie",
-      "amount": 1,
+      "amount": 20,
       "enabled": true,
       "likeThreshold": 50,
       "commands": [
         {
           "name": "Commands #1",
-          "command": "spawn_ultimate_football_zombie",
-          "label": "Spawn Ultimate Football Zombie",
-          "icon": "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+          "command": "spawn_burglar_bungee",
+          "label": "Spawn Burglar Bungee Zombie (63)",
+          "icon": "images/game-icons/pvz/spawn_burglar_bungee.webp",
           "actionType": "zombie",
-          "amount": 1
+          "amount": 20
         }
       ],
       "functionName": "Spawn Ultimate Football Zombie",
-      "repetition": 1,
+      "repetition": 20,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
@@ -2311,9 +2311,9 @@
         "playerType": "Short"
       },
       "allowImport": true,
-      "trigImg": "images/tiktok-gifts/15232_you_re_awesome.webp",
+      "trigImg": "images/tiktok-gifts/5655_rose.webp",
       "action": "SelectedGift",
-      "funcImg": "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
+      "funcImg": "images/game-icons/pvz/spawn_burglar_bungee.webp",
       "funcName": "Spawn Ultimate Football Zombie",
       "eventType": "gift"
     },
@@ -2441,7 +2441,7 @@
       "likeThreshold": 50,
       "giftId": "5827",
       "actionType": "zombie",
-      "command": "spawn_snow_crab",
+      "command": "spawn_snow_crab;spawn_lost_penguin",
       "commands": [
         {
           "name": "Commands #1",
@@ -2449,7 +2449,15 @@
           "label": "Spawn Snow Crab (97)",
           "icon": "images/game-icons/pvz/spawn_snow_crab.webp",
           "actionType": "zombie",
-          "amount": 1
+          "amount": 5
+        },
+        {
+          "name": "Commands #2",
+          "command": "spawn_lost_penguin",
+          "label": "Spawn Lost Penguin",
+          "icon": "images/game-icons/pvz/spawn_lost_penguin.webp",
+          "actionType": "zombie",
+          "amount": 5
         }
       ],
       "functionName": "Spawn Snow Crab (97)",
@@ -2541,76 +2549,6 @@
       "trigImg": "images/tiktok-gifts/59881_a_shard_of_hope.webp",
       "funcImg": "images/game-icons/pvz/spawn_legion_zombie.webp",
       "funcName": "Spawn Alpha Assassin Squad (226)"
-    },
-    {
-      "id": "9",
-      "giftName": "Clap Clap",
-      "giftId": "231956",
-      "coins": 1,
-      "icon": "images/tiktok-gifts/231956_clap_clap.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_lost_penguin.webp",
-      "actionType": "zombie",
-      "command": "spawn_lost_penguin",
-      "label": "Spawn Lost Penguin",
-      "amount": 4,
-      "enabled": true,
-      "audio": {
-        "file": "sounds/cartoon-jump.mp3",
-        "title": "Cartoon Jump",
-        "duration": "00:01:00",
-        "volume": 1,
-        "multiplier": true,
-        "playerType": "Short"
-      },
-      "trigImg": "images/tiktok-gifts/231956_clap_clap.webp",
-      "funcImg": "images/game-icons/pvz/spawn_lost_penguin.webp",
-      "funcName": "Spawn Lost Penguin"
-    },
-    {
-      "id": "10",
-      "giftName": "GG",
-      "giftId": "6064",
-      "coins": 1,
-      "icon": "images/tiktok-gifts/6064_gg.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_kirov_c.webp",
-      "actionType": "zombie",
-      "command": "spawn_kirov_c",
-      "label": "Spawn Squalour Zombie",
-      "amount": 1,
-      "enabled": true,
-      "likeThreshold": 50,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_kirov_c",
-          "label": "Spawn Kirov_c",
-          "icon": "images/game-icons/pvz/spawn_kirov_c.webp",
-          "actionType": "zombie",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn Squalour Zombie",
-      "repetition": 1,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "audio": {
-        "file": "sounds/bark-fart_XRsy1HE.mp3",
-        "title": "Bark Fart Xrsy1he",
-        "duration": "00:01:00",
-        "volume": 1,
-        "multiplier": true,
-        "playerType": "Short"
-      },
-      "allowImport": true,
-      "trigImg": "images/tiktok-gifts/6064_gg.webp",
-      "funcImg": "images/game-icons/pvz/spawn_kirov_c.webp",
-      "funcName": "Spawn Squalour Zombie"
     },
     {
       "id": "64",
@@ -2738,7 +2676,7 @@
       "icon": "images/tiktok-gifts/9005_rafflesia.webp",
       "unitIcon": "images/game-icons/pvz/spawn_lost_snow_monster.webp",
       "actionType": "zombie",
-      "command": "spawn_lost_snow_monster",
+      "command": "spawn_lost_snow_monster;spawn_lost_machine_iv",
       "label": "Spawn Lost Snow Monster",
       "amount": 5,
       "enabled": true,
@@ -2752,23 +2690,37 @@
       },
       "trigImg": "images/tiktok-gifts/9005_rafflesia.webp",
       "funcImg": "images/game-icons/pvz/spawn_lost_snow_monster.webp",
-      "funcName": "Spawn Lost Snow Monster"
-    },
-    {
-      "id": "13",
-      "giftName": "Shining Starlight",
-      "giftId": "12963",
-      "coins": 5,
-      "icon": "images/tiktok-gifts/12963_shining_starlight.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_lost_machine_iv.webp",
-      "actionType": "zombie",
-      "command": "spawn_lost_machine_iv",
-      "label": "Spawn Lost Machine IV",
-      "amount": 5,
-      "enabled": true,
-      "trigImg": "images/tiktok-gifts/12963_shining_starlight.webp",
-      "funcImg": "images/game-icons/pvz/spawn_lost_machine_iv.webp",
-      "funcName": "Spawn Lost Machine IV"
+      "funcName": "Spawn Lost Snow Monster",
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_lost_snow_monster",
+          "label": "Spawn Lost Snow Monster",
+          "icon": "images/game-icons/pvz/spawn_lost_snow_monster.webp",
+          "actionType": "zombie",
+          "amount": 5
+        },
+        {
+          "name": "Commands #2",
+          "command": "spawn_lost_machine_iv",
+          "label": "Spawn Lost Machine IV",
+          "icon": "images/game-icons/pvz/spawn_lost_machine_iv.webp",
+          "actionType": "zombie",
+          "amount": 5
+        }
+      ],
+      "functionName": "Spawn Lost Snow Monster",
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "allowImport": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "5",
+      "platform": "tiktok",
+      "availableFor": "Anyone"
     },
     {
       "id": "14",
@@ -2933,6 +2885,43 @@
       "trigImg": "images/tiktok-gifts/626056_kudos_for_my_star.webp",
       "funcImg": "images/game-icons/pvz/spawn_submarine_c2.webp",
       "funcName": "Spawn Submarine_c2"
+    },
+    {
+      "id": "1792826023324",
+      "giftName": "Rage Mode",
+      "coins": 20,
+      "likeThreshold": 50,
+      "giftId": "1473095",
+      "actionType": "zombie",
+      "command": "spawn_football_boss",
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_football_boss",
+          "label": "Spawn <u><i>Last Striker</i></u> (260)",
+          "icon": "images/game-icons/pvz/spawn_football_boss.webp",
+          "actionType": "zombie",
+          "amount": 10
+        }
+      ],
+      "functionName": "Spawn <u><i>Last Striker</i></u> (260)",
+      "label": "Spawn <u><i>Last Striker</i></u> (260)",
+      "unitIcon": "images/game-icons/pvz/spawn_football_boss.webp",
+      "amount": 10,
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "allowImport": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "enabled": true,
+      "icon": "images/tiktok-gifts/1473095_rage_mode.webp",
+      "funcImg": "images/game-icons/pvz/spawn_football_boss.webp",
+      "funcName": "Spawn <u><i>Last Striker</i></u> (260)"
     },
     {
       "id": "24",
@@ -3339,15 +3328,37 @@
       "giftId": "919346",
       "coins": 1,
       "icon": "images/tiktok-gifts/919346_welcome_dallah.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimate_gloom.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_super_gatling_fume.webp",
       "actionType": "plant",
-      "command": "spawn_ultimate_gloom",
-      "label": "Spawn Ultimate Gloom",
-      "amount": 1,
+      "command": "spawn_super_gatling_fume",
+      "label": "Spawn Flurry Commando (1445)",
+      "amount": 5,
       "enabled": true,
       "trigImg": "images/tiktok-gifts/919346_welcome_dallah.webp",
-      "funcImg": "images/game-icons/pvz/spawn_ultimate_gloom.webp",
-      "funcName": "Spawn Ultimate Gloom"
+      "funcImg": "images/game-icons/pvz/spawn_super_gatling_fume.webp",
+      "funcName": "Spawn Flurry Commando (1445)",
+      "functionName": "Spawn Flurry Commando (1445)",
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_super_gatling_fume",
+          "label": "Spawn Flurry Commando (1445)",
+          "icon": "images/game-icons/pvz/spawn_super_gatling_fume.webp",
+          "actionType": "plant",
+          "amount": 5
+        }
+      ],
+      "likeThreshold": 50,
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "allowImport": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone"
     },
     {
       "id": "35",
@@ -3743,6 +3754,52 @@
       "funcName": "Spawn Obsidian Jugger-nut (997)"
     },
     {
+      "id": "10",
+      "giftName": "GG",
+      "giftId": "6064",
+      "coins": 1,
+      "icon": "images/tiktok-gifts/6064_gg.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimatesunflower.webp",
+      "actionType": "plant",
+      "command": "spawn_ultimate_sunflower",
+      "label": "Spawn Squalour Zombie",
+      "amount": 1,
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_sunflower",
+          "label": "Spawn Princess Solarnova (954)",
+          "icon": "images/game-icons/pvz/spawn_ultimatesunflower.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Squalour Zombie",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "audio": {
+        "file": "sounds/bark-fart_XRsy1HE.mp3",
+        "title": "Bark Fart Xrsy1he",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      },
+      "allowImport": true,
+      "trigImg": "images/tiktok-gifts/6064_gg.webp",
+      "funcImg": "images/game-icons/pvz/spawn_ultimatesunflower.webp",
+      "funcName": "Spawn Squalour Zombie"
+    },
+    {
       "id": "44",
       "giftName": "Love you so much",
       "giftId": "15231",
@@ -3972,6 +4029,44 @@
       "funcName": "Spawn Ultimate Spring"
     },
     {
+      "id": "1792325308925",
+      "giftName": "Mantap",
+      "coins": 1,
+      "likeThreshold": 50,
+      "giftId": "1167779",
+      "actionType": "plant",
+      "command": "spawn_ultimate_winter_melon",
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_winter_melon",
+          "label": "Spawn Maelonstorm (957)",
+          "icon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Maelonstorm (957)",
+      "label": "Spawn Maelonstorm (957)",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+      "amount": 5,
+      "repetition": 5,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "allowImport": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "enabled": true,
+      "icon": "images/tiktok-gifts/1167779_mantap.webp",
+      "trigImg": "images/tiktok-gifts/1167779_mantap.webp",
+      "funcImg": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+      "funcName": "Spawn Maelonstorm (957)"
+    },
+    {
       "id": "51",
       "giftName": "Mystic Ney",
       "giftId": "919332",
@@ -4090,44 +4185,6 @@
       "funcName": "Start LawnMower"
     },
     {
-      "id": "1792325308925",
-      "giftName": "Mantap",
-      "coins": 1,
-      "likeThreshold": 50,
-      "giftId": "1167779",
-      "actionType": "plant",
-      "command": "spawn_ultimate_winter_melon",
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_ultimate_winter_melon",
-          "label": "Spawn Maelonstorm (957)",
-          "icon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn Maelonstorm (957)",
-      "label": "Spawn Maelonstorm (957)",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
-      "amount": 5,
-      "repetition": 5,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "allowImport": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "enabled": true,
-      "icon": "images/tiktok-gifts/1167779_mantap.webp",
-      "trigImg": "images/tiktok-gifts/1167779_mantap.webp",
-      "funcImg": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
-      "funcName": "Spawn Maelonstorm (957)"
-    },
-    {
       "id": "57",
       "giftName": "Slow motion",
       "giftId": "19448",
@@ -4204,43 +4261,6 @@
       "trigImg": "images/tiktok-gifts/19443_bravo.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
       "funcName": "Spawn UltimateSniperGatling"
-    },
-    {
-      "id": "1792744033842",
-      "giftName": "Club Cheers",
-      "coins": 1,
-      "likeThreshold": 50,
-      "giftId": "12355",
-      "actionType": "plant",
-      "command": "spawn_star_sniper",
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_star_sniper",
-          "label": "Spawn Starcaller Snipea (1429)",
-          "icon": "images/game-icons/pvz/spawn_starsniper.webp",
-          "actionType": "plant",
-          "amount": 3
-        }
-      ],
-      "functionName": "Spawn Starcaller Snipea (1429)",
-      "label": "Spawn Starcaller Snipea (1429)",
-      "unitIcon": "images/game-icons/pvz/spawn_starsniper.webp",
-      "amount": 3,
-      "repetition": 3,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "allowImport": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "enabled": true,
-      "icon": "images/tiktok-gifts/12355_club_cheers.webp",
-      "funcImg": "images/game-icons/pvz/spawn_starsniper.webp",
-      "funcName": "Spawn Starcaller Snipea (1429)"
     },
     {
       "id": "1792310064286",

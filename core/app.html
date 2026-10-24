@@ -25,53 +25,63 @@
     <script src="three.min.js" defer></script>
     <style>
         :root {
-            --bg-deep: #0a0a0c;
-            --bg-sidebar: #0e0e12;
-            --bg-surface: #131318;
-            --bg-surface-elevated: #181820;
-            --bg-card: #131318;
-            --bg-card-hover: #1c1c24;
-            --bg-input: #07070a;
-            --border-color: rgba(255, 255, 255, 0.07);
-            --border-light: rgba(255, 255, 255, 0.12);
-            --border-glow: rgba(225, 29, 72, 0.35);
+            /* ==========================================================================
+               PRIMAL GROUDON MAGMA RED & OBSIDIAN BLACK DESIGN SYSTEM
+               Deep Obsidian Slate (#080506), Magma Crimson (#ff1e42), Molten Gold (#ffd13b)
+               ========================================================================== */
+            --bg-deep: #080506;
+            --bg-sidebar: #0e0709;
+            --bg-surface: #12090b;
+            --bg-surface-elevated: #1a0d10;
+            --bg-card: #140a0d;
+            --bg-card-hover: #221015;
+            --bg-input: #0a0506;
+            --border-color: rgba(255, 30, 66, 0.16);
+            --border-light: rgba(255, 30, 66, 0.32);
+            --border-glow: rgba(255, 30, 66, 0.55);
 
-            --brand-primary: #e11d48;
-            --brand-primary-hover: #f43f5e;
-            --brand-primary-glow: rgba(225, 29, 72, 0.4);
+            --brand-primary: #ff1e42;
+            --brand-primary-hover: #ff3366;
+            --brand-primary-glow: rgba(255, 30, 66, 0.55);
 
             --brand-green: #10b981;
             --brand-green-light: #34d399;
             --brand-green-bg: rgba(16, 185, 129, 0.12);
 
-            --brand-blue: #e11d48;
-            --brand-blue-hover: #f43f5e;
-            --brand-blue-bg: rgba(225, 29, 72, 0.12);
+            --brand-blue: #ff1e42;
+            --brand-blue-hover: #ff3366;
+            --brand-blue-bg: rgba(255, 30, 66, 0.15);
 
-            --brand-red: #e11d48;
-            --brand-red-light: #f43f5e;
+            --brand-red: #ff1e42;
+            --brand-red-light: #ff3366;
             --brand-orange: #f97316;
-            --brand-gold: #f59e0b;
+            --brand-gold: #ffd13b;
 
             --pvz-green: #10b981;
             --pvz-green-light: #34d399;
             --pvz-green-glow: rgba(16, 185, 129, 0.2);
 
-            --pvz-purple: #e11d48;
-            --pvz-gold: #f59e0b;
-            --pvz-cyan: #f43f5e;
-            --pvz-rose: #f43f5e;
-            --pvz-red: #e11d48;
+            --pvz-purple: #ff1e42;
+            --pvz-gold: #ffd13b;
+            --pvz-cyan: #ff3366;
+            --pvz-rose: #ff1e42;
+            --pvz-red: #ff1e42;
+
+            --groudon-red: #ff1e42;
+            --groudon-bright: #ff3366;
+            --groudon-deep: #99001f;
+            --groudon-glow: rgba(255, 30, 66, 0.6);
+            --groudon-gold: #ffd13b;
 
             --text-primary: #f8fafc;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
+            --text-secondary: #cbd5e1;
+            --text-muted: #8c7377;
 
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 14px;
             --radius-full: 9999px;
-            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 30, 66, 0.08);
             --transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -93,6 +103,10 @@
 
         body {
             background-color: var(--bg-deep);
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(255, 30, 66, 0.09) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(249, 115, 22, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(153, 0, 31, 0.04) 0%, transparent 60%);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -101,9 +115,10 @@
         }
 
         header {
-            background: rgba(10, 10, 14, 0.92);
+            background: rgba(14, 7, 9, 0.94);
             backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 30, 66, 0.15);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -14357,17 +14372,17 @@
                     </div>
 
                     <!-- Command Usage Quota Tracker & Subscription Indicator -->
-                    <div id="commandUsageQuotaBanner" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95)); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 10px 16px; margin: 12px 0 14px 0; box-shadow: 0 4px 16px rgba(0,0,0,0.4); backdrop-filter: blur(8px);">
+                    <div id="commandUsageQuotaBanner" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: linear-gradient(90deg, rgba(14, 7, 9, 0.98), rgba(28, 12, 16, 0.96)); border: 1.5px solid rgba(255, 30, 66, 0.35); border-radius: 10px; padding: 10px 16px; margin: 12px 0 14px 0; box-shadow: 0 4px 18px rgba(255, 30, 66, 0.14), 0 4px 16px rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
                         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">⚡</span>
-                                <span style="font-size: 12.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Commands:</span>
-                                <span id="quotaCountDisplay" style="font-size: 15px; font-weight: 900; color: #38bdf8; font-family: monospace;">0 / 10</span>
-                                <span id="quotaPlanPill" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">Free Starter</span>
+                                <span style="font-size: 16px; filter: drop-shadow(0 0 6px #ff1e42);">⚡</span>
+                                <span style="font-size: 12.5px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px;">Commands:</span>
+                                <span id="quotaCountDisplay" style="font-size: 15px; font-weight: 900; color: #ff1e42; font-family: monospace; text-shadow: 0 0 10px rgba(255, 30, 66, 0.5);">0 / 10</span>
+                                <span id="quotaPlanPill" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: rgba(255, 30, 66, 0.15); color: #ff3366; border: 1px solid rgba(255, 30, 66, 0.35);">Free Starter</span>
                             </div>
                             <!-- Mini Progress Track -->
-                            <div style="width: 130px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); position: relative;">
-                                <div id="quotaProgressBarFill" style="width: 10%; height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); border-radius: 999px; transition: width 0.3s ease, background 0.3s ease;"></div>
+                            <div style="width: 130px; height: 7px; background: rgba(0,0,0,0.6); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,30,66,0.3); position: relative;">
+                                <div id="quotaProgressBarFill" style="width: 10%; height: 100%; background: linear-gradient(90deg, #ff1e42, #ff5722); border-radius: 999px; transition: width 0.3s ease, background 0.3s ease; box-shadow: 0 0 8px rgba(255,30,66,0.6);"></div>
                             </div>
                         </div>
 
@@ -26877,51 +26892,51 @@
 
                     if (isUnlimited) {
                         const isEditor = (tier === 'editor');
-                        const badgeColor = isEditor ? '#06b6d4' : '#e11d48';
-                        const badgeBorder = isEditor ? 'rgba(6, 182, 212, 0.35)' : 'rgba(225, 29, 72, 0.35)';
-                        const badgeBg = isEditor ? 'rgba(6, 182, 212, 0.15)' : 'rgba(225, 29, 72, 0.15)';
-                        const barGrad = isEditor ? 'linear-gradient(90deg, #06b6d4, #3b82f6)' : 'linear-gradient(90deg, #10b981, #059669)';
+                        const badgeColor = isEditor ? '#ffd13b' : '#ff3366';
+                        const badgeBorder = isEditor ? 'rgba(255, 209, 59, 0.45)' : 'rgba(255, 30, 66, 0.5)';
+                        const badgeBg = isEditor ? 'rgba(255, 209, 59, 0.12)' : 'rgba(255, 30, 66, 0.16)';
+                        const barGrad = isEditor ? 'linear-gradient(90deg, #ffd13b, #f97316)' : 'linear-gradient(90deg, #ff1e42, #ff5722, #ffd13b)';
                         const roleTitle = isEditor ? 'Staff Editor' : 'Owner Lifetime';
 
                         banner.style.display = 'block';
                         banner.style.padding = '12px 18px';
-                        banner.style.border = `1.5px solid ${badgeBorder}`;
-                        banner.style.background = 'linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))';
-                        banner.style.boxShadow = '0 6px 20px rgba(0,0,0,0.45)';
+                        banner.style.border = '1.5px solid rgba(255, 30, 66, 0.45)';
+                        banner.style.background = 'linear-gradient(90deg, rgba(14, 7, 9, 0.98), rgba(28, 12, 16, 0.96))';
+                        banner.style.boxShadow = '0 6px 24px rgba(255, 30, 66, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.06)';
 
                         banner.innerHTML = `
                             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                                 <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="font-size: 18px;">${isEditor ? '🛡️' : '👑'}</span>
-                                        <span style="font-size: 13px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px;">COMMANDS:</span>
-                                        <span style="font-size: 17px; font-weight: 900; color: #10b981; font-family: monospace;">${curCount}</span>
-                                        <span style="color: #64748b; font-size: 13px; font-weight: 600;">/ Unlimited</span>
-                                        <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder};">
+                                        <span style="font-size: 19px; filter: drop-shadow(0 0 6px rgba(255, 30, 66, 0.6));">${isEditor ? '🛡️' : '👑'}</span>
+                                        <span style="font-size: 13px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.8px;">COMMANDS:</span>
+                                        <span style="font-size: 17px; font-weight: 900; color: #ff1e42; font-family: monospace; text-shadow: 0 0 10px rgba(255, 30, 66, 0.5);">${curCount}</span>
+                                        <span style="color: #8c7377; font-size: 13px; font-weight: 600;">/ Unlimited</span>
+                                        <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; letter-spacing: 0.3px;">
                                             ${roleTitle}
                                         </span>
                                     </div>
-                                    <!-- Mini Track -->
-                                    <div style="width: 140px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
-                                        <div style="width: 100%; height: 100%; background: ${barGrad}; border-radius: 999px;"></div>
+                                    <!-- Groudon Magma Track -->
+                                    <div style="width: 140px; height: 7px; background: rgba(0,0,0,0.6); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,30,66,0.3); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);">
+                                        <div style="width: 100%; height: 100%; background: ${barGrad}; border-radius: 999px; box-shadow: 0 0 8px rgba(255,30,66,0.6);"></div>
                                     </div>
                                     <!-- Status Perks -->
-                                    <div style="display: flex; align-items: center; gap: 10px; font-size: 11.5px; color: #94a3b8; font-weight: 600;">
-                                        <span style="color: #10b981;">✓ 3D Spinner Unlocked</span>
-                                        <span style="color: #64748b;">•</span>
-                                        <span style="color: #10b981;">✓ Matter.js Jar Unlocked</span>
-                                        <span style="color: #64748b;">•</span>
-                                        <span style="color: #38bdf8;">✓ Unlimited Command Slots</span>
+                                    <div style="display: flex; align-items: center; gap: 10px; font-size: 11.5px; color: #cbd5e1; font-weight: 600;">
+                                        <span style="color: #ff3366;">✓ 3D Spinner Unlocked</span>
+                                        <span style="color: #8c7377;">•</span>
+                                        <span style="color: #ff3366;">✓ Matter.js Jar Unlocked</span>
+                                        <span style="color: #8c7377;">•</span>
+                                        <span style="color: #ffd13b;">✓ Unlimited Command Slots</span>
                                     </div>
                                 </div>
 
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 12px; font-weight: 800; color: #10b981; display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.12); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                                    <span style="font-size: 12px; font-weight: 800; color: #ff3366; display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 30, 66, 0.12); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255, 30, 66, 0.4); box-shadow: 0 0 12px rgba(255, 30, 66, 0.2);">
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                         <span>Unlimited Commands Active</span>
                                     </span>
-                                    <button type="button" onclick="openManageSubscriptionModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #e2e8f0; font-size: 12px; font-weight: 700; padding: 6px 13px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(245,158,11,0.5)';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.14)';">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    <button type="button" onclick="openManageSubscriptionModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255, 30, 66, 0.35); color: #f8fafc; font-size: 12px; font-weight: 700; padding: 6px 13px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,30,66,0.18)'; this.style.borderColor='#ff1e42';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,30,66,0.35)';">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffd13b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                         <span>Manage Subscription</span>
                                     </button>
                                 </div>
@@ -26937,47 +26952,47 @@
                     const isFree = (tier === 'free');
 
                     const barBg = isFull
-                        ? 'linear-gradient(90deg, #ef4444, #b91c1c)'
-                        : (pct >= 80 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #38bdf8, #818cf8)');
+                        ? 'linear-gradient(90deg, #ff1e42, #99001f)'
+                        : (pct >= 80 ? 'linear-gradient(90deg, #ffd13b, #ff1e42)' : 'linear-gradient(90deg, #ff1e42, #ff758f)');
 
                     banner.style.display = 'block';
                     banner.style.padding = '14px 18px';
-                    banner.style.border = isFull ? '1.5px solid rgba(239, 68, 68, 0.5)' : '1.5px solid rgba(56, 189, 248, 0.35)';
+                    banner.style.border = isFull ? '1.5px solid rgba(255, 30, 66, 0.65)' : '1.5px solid rgba(255, 30, 66, 0.35)';
                     banner.style.background = isFull
-                        ? 'radial-gradient(circle at 10% 20%, rgba(69, 10, 10, 0.95), rgba(15, 23, 42, 0.98))'
-                        : 'radial-gradient(circle at 10% 20%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98))';
-                    banner.style.boxShadow = isFull ? '0 8px 24px rgba(239, 68, 68, 0.25)' : '0 8px 24px rgba(0, 0, 0, 0.5)';
+                        ? 'radial-gradient(circle at 10% 20%, rgba(85, 10, 16, 0.98), rgba(14, 7, 9, 0.98))'
+                        : 'radial-gradient(circle at 10% 20%, rgba(32, 12, 16, 0.98), rgba(14, 7, 9, 0.98))';
+                    banner.style.boxShadow = isFull ? '0 8px 24px rgba(255, 30, 66, 0.3)' : '0 8px 24px rgba(0, 0, 0, 0.6)';
 
                     banner.innerHTML = `
                         <!-- Top Status Bar -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255, 30, 66, 0.18); padding-bottom: 12px;">
                             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                 <div style="display: inline-flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 20px; filter: drop-shadow(0 0 6px ${isFull ? '#ef4444' : '#38bdf8'});">${isFull ? '🚨' : '⚡'}</span>
-                                    <span style="font-size: 13px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px;">COMMAND LIMIT:</span>
-                                    <span style="font-size: 18px; font-weight: 900; color: ${isFull ? '#ef4444' : '#38bdf8'}; font-family: monospace;">${curCount} / ${limit}</span>
-                                    <span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: ${isFull ? 'rgba(239, 68, 68, 0.18)' : 'rgba(56, 189, 248, 0.15)'}; color: ${isFull ? '#ef4444' : '#38bdf8'}; border: 1px solid ${isFull ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.3)'};">
+                                    <span style="font-size: 20px; filter: drop-shadow(0 0 6px ${isFull ? '#ff1e42' : '#ff3366'});">${isFull ? '🚨' : '⚡'}</span>
+                                    <span style="font-size: 13px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.8px;">COMMAND LIMIT:</span>
+                                    <span style="font-size: 18px; font-weight: 900; color: ${isFull ? '#ff1e42' : '#ff3366'}; font-family: monospace; text-shadow: 0 0 8px rgba(255, 30, 66, 0.4);">${curCount} / ${limit}</span>
+                                    <span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: ${isFull ? 'rgba(255, 30, 66, 0.22)' : 'rgba(255, 30, 66, 0.15)'}; color: ${isFull ? '#ff1e42' : '#ff3366'}; border: 1px solid ${isFull ? 'rgba(255, 30, 66, 0.45)' : 'rgba(255, 30, 66, 0.3)'};">
                                         ${isFree ? 'Free Starter' : (tier === 'premium' ? 'Streamer Premium' : 'Streamer Expert')}
                                     </span>
                                 </div>
 
                                 <!-- Mini Progress Track -->
-                                <div style="width: 140px; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
-                                    <div style="width: ${Math.max(4, pct)}%; height: 100%; background: ${barBg}; border-radius: 999px; transition: width 0.3s ease;"></div>
+                                <div style="width: 140px; height: 8px; background: rgba(0,0,0,0.6); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,30,66,0.3);">
+                                    <div style="width: ${Math.max(4, pct)}%; height: 100%; background: ${barBg}; border-radius: 999px; transition: width 0.3s ease; box-shadow: 0 0 8px rgba(255,30,66,0.5);"></div>
                                 </div>
 
-                                <span style="font-size: 12px; color: ${isFull ? '#f87171' : '#94a3b8'}; font-weight: 700;">
+                                <span style="font-size: 12px; color: ${isFull ? '#ff758f' : '#8c7377'}; font-weight: 700;">
                                     ${isFull ? '⚠️ Limit Reached! Cannot add or duplicate commands.' : `${slotsLeft} slot(s) available on this tier`}
                                 </span>
                             </div>
 
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 12px; color: #fbbf24; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                                <span style="font-size: 12px; color: #ffd13b; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
                                     <span>🔒</span>
                                     <span>${isFree ? 'Free Account (3D Spinner & Jar Locked)' : 'Upgrade to Expand Capacity'}</span>
                                 </span>
-                                <button type="button" onclick="openManageSubscriptionModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #cbd5e1; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(245,158,11,0.5)';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.14)';">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <button type="button" onclick="openManageSubscriptionModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255, 30, 66, 0.3); color: #cbd5e1; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(255,30,66,0.18)'; this.style.borderColor='#ff1e42';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,30,66,0.3)';">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffd13b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                     <span>Manage Subscription</span>
                                 </button>
                             </div>
@@ -26986,34 +27001,34 @@
                         <!-- Bottom Unlock Options & Subscription CTA Grid -->
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 12px; margin-top: 12px;">
                             <!-- Option 1: Streamer Premium (₱999 - 60 Commands) -->
-                            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.05);">
+                            <div style="background: rgba(22, 10, 14, 0.9); border: 1px solid rgba(255, 30, 66, 0.45); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(255, 30, 66, 0.08);">
                                 <div>
                                     <div style="display: flex; align-items: center; gap: 7px;">
-                                        <span style="font-size: 14px; font-weight: 900; color: #38bdf8;">Streamer Premium</span>
-                                        <span style="font-size: 11px; font-weight: 900; color: #10b981; background: rgba(16,185,129,0.18); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(16,185,129,0.3);">₱999</span>
+                                        <span style="font-size: 14px; font-weight: 900; color: #ff3366;">Streamer Premium</span>
+                                        <span style="font-size: 11px; font-weight: 900; color: #ffd13b; background: rgba(255,209,59,0.15); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(255,209,59,0.3);">₱999</span>
                                     </div>
-                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 3px; line-height: 1.4;">
+                                    <div style="font-size: 11px; color: #cbd5e1; margin-top: 3px; line-height: 1.4;">
                                         ✓ <b style="color: #ffffff;">60 Commands</b> • 🎡 3D Spinner & 🏺 Jar Unlocked
                                     </div>
                                 </div>
-                                <button type="button" onclick="selectPlanForPayment('premium'); openManageSubscriptionModal(); showPaymentQRCode();" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); transition: transform 0.15s ease;">
+                                <button type="button" onclick="selectPlanForPayment('premium'); openManageSubscriptionModal(); showPaymentQRCode();" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #ff1e42, #b91c1c); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 14px rgba(255, 30, 66, 0.4); transition: transform 0.15s ease;">
                                     <span>⚡</span>
                                     <span>Unlock 60 Cmds</span>
                                 </button>
                             </div>
 
                             <!-- Option 2: Streamer Expert (₱3,999 - 150 Commands) -->
-                            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.05);">
+                            <div style="background: rgba(22, 10, 14, 0.9); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.08);">
                                 <div>
                                     <div style="display: flex; align-items: center; gap: 7px;">
-                                        <span style="font-size: 14px; font-weight: 900; color: #f59e0b;">Streamer Expert</span>
-                                        <span style="font-size: 11px; font-weight: 900; color: #10b981; background: rgba(16,185,129,0.18); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(16,185,129,0.3);">₱3,999</span>
+                                        <span style="font-size: 14px; font-weight: 900; color: #ffd13b;">Streamer Expert</span>
+                                        <span style="font-size: 11px; font-weight: 900; color: #ffd13b; background: rgba(255,209,59,0.15); padding: 1px 7px; border-radius: 5px; border: 1px solid rgba(255,209,59,0.3);">₱3,999</span>
                                     </div>
-                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 3px; line-height: 1.4;">
+                                    <div style="font-size: 11px; color: #cbd5e1; margin-top: 3px; line-height: 1.4;">
                                         ✓ <b style="color: #ffffff;">150 Commands</b> • 🚀 All Macros & Priority VIP
                                     </div>
                                 </div>
-                                <button type="button" onclick="selectPlanForPayment('expert'); openManageSubscriptionModal(); showPaymentQRCode();" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #d97706, #ea580c); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4); transition: transform 0.15s ease;">
+                                <button type="button" onclick="selectPlanForPayment('expert'); openManageSubscriptionModal(); showPaymentQRCode();" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4); transition: transform 0.15s ease;">
                                     <span>🔥</span>
                                     <span>Unlock 150 Cmds</span>
                                 </button>
