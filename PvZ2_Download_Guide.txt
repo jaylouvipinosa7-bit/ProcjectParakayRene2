@@ -1,0 +1,61 @@
+===============================================================================
+       PLANTS VS. ZOMBIES 2 - PC DOWNLOAD & INSTALLATION GUIDE
+===============================================================================
+
+Plants vs. Zombies 2: It's About Time was officially developed for mobile 
+(Android/iOS). Because there is no native standalone Windows PC installer from EA, 
+the standard and best ways to play PvZ 2 on PC with full mouse & keyboard controls 
+are listed below:
+
+-------------------------------------------------------------------------------
+OPTION 1: BLUESTACKS 5 (RECOMMENDED FOR MOST PC PLAYERS)
+-------------------------------------------------------------------------------
+BlueStacks includes pre-configured keyboard shortcuts and smooth mouse clicking 
+specifically tuned for PvZ 2.
+
+* Download Link:
+  https://www.bluestacks.com/apps/casual/plants-vs-zombies-2-on-pc.html
+
+* How to Install:
+  1. Click the link or download BlueStacks from the official site.
+  2. Run the installer (.exe) and follow the prompts.
+  3. Open BlueStacks and sign in with your Google Account.
+  4. Search "Plants vs. Zombies 2" in the search bar and click "Install".
+  5. Click the game icon on your desktop or inside BlueStacks to play!
+  * Tip: Press Ctrl + Shift + A to customize your keyboard plant shortcuts.
+
+-------------------------------------------------------------------------------
+OPTION 2: GOOGLE PLAY GAMES ON PC (OFFICIAL GOOGLE WINDOWS APP)
+-------------------------------------------------------------------------------
+Google's official PC software that runs Android games directly on Windows 10/11.
+
+* Download Link:
+  https://play.google.com/googleplaygames
+
+* Requirements:
+  - Windows 10 (v2004) or Windows 11
+  - Solid state drive (SSD)
+  - 4 CPU physical cores
+
+-------------------------------------------------------------------------------
+OPTION 3: LDPLAYER 9 (LIGHTWEIGHT & FAST FPS)
+-------------------------------------------------------------------------------
+Great if your PC has lower specs or if you want higher frame rates (up to 120 FPS).
+
+* Download Link:
+  https://www.ldplayer.net/games/plants-vs-zombies-2-on-pc.html
+
+-------------------------------------------------------------------------------
+OPTION 4: PVZ 2 REFLOURISHED (POPULAR COMMUNITY PC EXPANSION)
+-------------------------------------------------------------------------------
+A massive community mod for PvZ 2 with no microtransactions, widescreen support, 
+rebalanced levels, and all plants unlockable through gameplay.
+
+* Download / Info Link:
+  https://pvz2reflourished.fandom.com/wiki/Plants_vs._Zombies_2:_Reflourished
+
+-------------------------------------------------------------------------------
+QUICK LAUNCHER:
+-------------------------------------------------------------------------------
+You can double-click "Download_PvZ2_PC.bat" in this folder anytime to open any 
+of these download links with one click!
