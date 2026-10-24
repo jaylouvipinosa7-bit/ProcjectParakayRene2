@@ -13792,31 +13792,6 @@
 
             <!-- TAB 1: GIFTS -->
             <div id="tab-gifts" class="tab-pane">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-                    <div>
-                        <h2 style="font-size: 20px; font-weight: 800;">TikTok Gift Commands</h2>
-                        <p style="font-size: 13px; color: var(--text-secondary);">When viewers send these gifts or
-                            triggers, their mapped action executes directly in PvZ Fusion 4.0!</p>
-                    </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                        <button class="btn btn-secondary btn-sm btn-import-event" id="btnMainImportEvent"
-                            onclick="openImportEventModal(null)"
-                            title="Import events or triggers from TikFinity, JSON, and preset files"
-                            style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 8px; padding: 7px 14px;">
-                            <span>📥</span> Import Event
-                        </button>
-                        <button class="btn btn-secondary btn-sm" id="btnMainExportEvents" onclick="exportEvents()"
-                            title="Export triggers to JSON file or preset"
-                            style="color: #60a5fa; border-color: rgba(96, 165, 250, 0.4); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; padding: 7px 14px;">
-                            <span>📤</span> Export Events
-                        </button>
-                        <button class="btn btn-primary btn-sm" id="btnAddGiftTrigger" onclick="openAddGiftModal()"
-                            style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 6px; padding: 7px 16px; cursor: pointer;">
-                            <span>➕</span> Add Trigger
-                        </button>
-                    </div>
-                </div>
 
                 <!-- ==================== WIN / LOSE WIDGET CONTROLLER (MATCHES USER IMAGE 3) ==================== -->
                 <div class="win-widget-panel" id="winWidgetDashboardPanel"
@@ -14375,6 +14350,27 @@
                     <!-- Command Rows Container (Horizontal rows matching Picture 4) -->
                     <div id="commandRowsContainer">
                         <!-- Populated dynamically via renderDetailedCommandRows() -->
+                    </div>
+
+                    <!-- Bottom Action Bar: Import & Export Events -->
+                    <div id="commandsBottomBar"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 12px 18px; background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                            <span>📦 Preset & Trigger Configuration Backup</span>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm btn-import-event" id="btnMainImportEvent"
+                                onclick="openImportEventModal(null)"
+                                title="Import events or triggers from TikFinity, JSON, and preset files"
+                                style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; border-radius: 8px; padding: 6px 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: #f1f5f9; cursor: pointer; font-size: 12px;">
+                                <span>📥</span> Import Event
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnMainExportEvents" onclick="exportEvents()"
+                                title="Export triggers to JSON file or preset"
+                                style="color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.08); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; padding: 6px 14px; cursor: pointer;">
+                                <span>📤</span> Export Events
+                            </button>
+                        </div>
                     </div>
                 </div>
 
