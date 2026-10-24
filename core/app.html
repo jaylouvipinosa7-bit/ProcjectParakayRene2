@@ -25387,7 +25387,10 @@
                 const cmdIframe = document.getElementById('commandsLiveOverlayIframe');
                 if (cmdIframe) loadDeferredIframe(cmdIframe);
             }
-            window.addEventListener('DOMContentLoaded', initCommandsLiveOverlay);
+            window.addEventListener('DOMContentLoaded', () => {
+                initCommandsLiveOverlay();
+                if (typeof loadPublicTunnelInfo === 'function') loadPublicTunnelInfo();
+            });
 
             function openAboutSpinnerModal() {
                 const modal = document.getElementById('aboutSpinnerModal');
@@ -25402,8 +25405,37 @@
             // ==================== INTERACTIVE GIFT JAR OVERLAY STUDIO ====================
             let currentJarSkin = 'mason';
             let currentJarSettings = null;
+            let publicTunnelInfo = null;
+
+            async function loadPublicTunnelInfo() {
+                try {
+                    const res = await fetch('/api/tunnel/info');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.active && data.publicUrl) {
+                            publicTunnelInfo = data;
+                            updateInlineJarUrlDisplay();
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            function updateInlineJarUrlDisplay() {
+                const input = document.getElementById('inlineJarUrlDisplay');
+                if (!input) return;
+                const skin = currentJarSkin || 'mason';
+                let url = '';
+                if (publicTunnelInfo && publicTunnelInfo.publicUrl) {
+                    const token = publicTunnelInfo.userToken || '6a7037f3324251772e699846';
+                    url = `${publicTunnelInfo.publicUrl}/overlay/${token}/jar${skin && skin !== 'mason' ? '?skin=' + skin : ''}`;
+                } else {
+                    url = `${window.location.origin}/RENEarn/jar${skin && skin !== 'mason' ? '?skin=' + skin : ''}`;
+                }
+                input.value = url;
+            }
 
             function copyJarStandaloneUrl() {
+                updateInlineJarUrlDisplay();
                 const input = document.getElementById('inlineJarUrlDisplay');
                 const url = input?.value || (window.location.origin + '/RENEarn/jar');
                 navigator.clipboard.writeText(url).then(() => {
@@ -26274,6 +26306,7 @@
 
             async function loadInlineJarSettings() {
                 try {
+                    if (typeof loadPublicTunnelInfo === 'function') loadPublicTunnelInfo();
                     const res = await fetch('/api/jar/settings');
                     if (res.ok) {
                         const st = await res.json();
@@ -26431,10 +26464,8 @@
                 const card = document.getElementById('inlineSkin_' + skin);
                 if (card) card.classList.add('active');
 
-                const urlInput = document.getElementById('inlineJarUrlDisplay');
-                if (urlInput) {
-                    urlInput.value = window.location.origin + '/RENEarn/jar?skin=' + skin;
-                }
+                currentJarSkin = skin;
+                updateInlineJarUrlDisplay();
 
                 // Update embedded preview frame immediately via both postMessage and direct invocation
                 const frame = document.getElementById('inlineJarPreviewFrame');

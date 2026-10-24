@@ -2178,6 +2178,65 @@ try {
 
 Sync-ConfigToCards
 
+function Start-CloudflareTunnel {
+    try {
+        $cfExe = Join-Path $folder "bin\cloudflared.exe"
+        if (-not (Test-Path $cfExe)) { return $null }
+
+        # Generate or load persistent user token matching S2E 24-hex format
+        $tokenFile = Join-Path $folder "overlay_token.txt"
+        $userToken = ""
+        if (Test-Path $tokenFile) {
+            $userToken = (Get-Content $tokenFile -Raw -ErrorAction SilentlyContinue).Trim()
+        }
+        if (-not $userToken -or $userToken.Length -lt 16) {
+            $bytes = [byte[]]::new(12)
+            [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+            $userToken = ($bytes | ForEach-Object { $_.ToString("x2") }) -join ""
+            [System.IO.File]::WriteAllText($tokenFile, $userToken, [System.Text.Encoding]::UTF8)
+        }
+
+        $logFile = Join-Path $folder "tunnel.log"
+        Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        if (Test-Path $logFile) { Remove-Item $logFile -Force -ErrorAction SilentlyContinue }
+
+        # Launch Cloudflare Tunnel in background
+        Start-Process -FilePath $cfExe -ArgumentList "tunnel --url http://localhost:8080 --no-autoupdate" -RedirectStandardError $logFile -WindowStyle Hidden
+        
+        # Async reader for public URL
+        [powershell]::Create().AddScript({
+            param($logPath, $infoPath, $token)
+            $pubUrl = ""
+            for ($i = 0; $i -lt 30; $i++) {
+                if (Test-Path $logPath) {
+                    $lines = Get-Content $logPath -ErrorAction SilentlyContinue
+                    foreach ($l in $lines) {
+                        if ($l -match '(https://[a-zA-Z0-9-]+\.trycloudflare\.com)') {
+                            $pubUrl = $Matches[1]
+                            break
+                        }
+                    }
+                }
+                if ($pubUrl) { break }
+                Start-Sleep -Milliseconds 600
+            }
+
+            $info = @{
+                active = [bool]$pubUrl
+                publicUrl = $pubUrl
+                userToken = $token
+                jarOverlayUrl = if ($pubUrl) { "$pubUrl/overlay/$token/jar" } else { "http://localhost:8080/RENEarn/jar" }
+                mainOverlayUrl = if ($pubUrl) { "$pubUrl/overlay/$token" } else { "http://localhost:8080/overlay.html" }
+                updatedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+            }
+            $info | ConvertTo-Json -Depth 3 | Set-Content -Path $infoPath -Encoding UTF8
+        }).AddArgument($logFile).AddArgument((Join-Path $folder "tunnel_info.json")).AddArgument($userToken).BeginInvoke()
+    } catch {}
+}
+
+# Auto-start Cloudflare Tunnel for public HTTPS overlay links (Zero-localhost)
+Start-CloudflareTunnel
+
 Write-Host "==========================================================" -ForegroundColor Green
 Write-Host "  RENEarn - PvZ Fusion Live Stream Studio running!" -ForegroundColor Cyan
 Write-Host "  -> Control Dashboard : http://localhost:$port/app.html" -ForegroundColor Yellow
@@ -2415,6 +2474,25 @@ while ($true) {
         if ($request.HttpMethod -eq "OPTIONS") {
             $response.StatusCode = 200
             $response.Close()
+            continue
+        }
+
+        # 0.0 Tunnel Info API (Public Cloudflare URL & User Overlay Token)
+        if ($reqPath -eq '/api/tunnel/info') {
+            $infoFile = Join-Path $folder "tunnel_info.json"
+            if (Test-Path $infoFile) {
+                try {
+                    $tJson = Get-Content $infoFile -Raw -Encoding UTF8
+                    Send-JsonResponse $response $tJson
+                    continue
+                } catch {}
+            }
+            Send-JsonResponse $response @{
+                active = $false
+                publicUrl = ""
+                userToken = "6a7037f3324251772e699846"
+                jarOverlayUrl = "http://localhost:8080/RENEarn/jar"
+            }
             continue
         }
 
@@ -8207,6 +8285,10 @@ INSTALLATION INSTRUCTIONS:
         $normPath = $reqPath.ToLower().TrimEnd('/')
         if ($cleanRoutes.ContainsKey($normPath)) {
             $filePath = Join-Path $folder $cleanRoutes[$normPath]
+        } elseif ($normPath -match '^/overlay/([a-f0-9]{16,64})/jar$' -or $normPath -match '^/overlay/jar/([a-f0-9]{16,64})$') {
+            $filePath = Join-Path $folder "overlay-jar.html"
+        } elseif ($normPath -match '^/overlay/([a-f0-9]{16,64})$') {
+            $filePath = Join-Path $folder "overlay.html"
         } else {
             $localRelPath = $reqPath.TrimStart('/').Replace('/', '\')
             $filePath = Join-Path $folder $localRelPath

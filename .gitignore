@@ -16,6 +16,8 @@ core/permissions_registry.json
 permissions_registry.json
 core/game_directory.txt
 game_directory.txt
+core/tunnel_info.json
+core/overlay_token.txt
 
 # Temporary logs & task files
 *.log
