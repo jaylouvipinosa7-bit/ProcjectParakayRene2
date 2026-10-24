@@ -1229,6 +1229,16 @@
                         animations: gltf.animations || []
                     };
 
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        const mixer = new THREE.AnimationMixer(root);
+                        gltf.animations.forEach(clip => {
+                            const action = mixer.clipAction(clip);
+                            action.play();
+                        });
+                        activeMixers.push(mixer);
+                        console.log('⚡ Active Skeletal Animation Mixer started with', gltf.animations.length, 'animation clips!');
+                    }
+
                     shenronGltfTemplate = container;
                     console.log('⚡ Shenron 3D Model with Dynamic Tail & Coils Loaded Successfully!');
                     resolve(container);
@@ -2181,6 +2191,7 @@
         // MAIN 3D ANIMATION LOOP (60 FPS)
         // ==============================================================
         let clock = new THREE.Clock();
+        const activeMixers = [];
 
         let screenShakeTime = 0;
         function triggerScreenShake(duration = 0.45) {
@@ -2191,6 +2202,13 @@
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
             const time = clock.getElapsedTime();
+
+            // Update skeletal bone animations for any loaded animated GLTF model
+            if (activeMixers.length > 0) {
+                for (let m = 0; m < activeMixers.length; m++) {
+                    activeMixers[m].update(delta);
+                }
+            }
 
             // Smooth 3D Orbit Camera Update
             updateCameraMatrix();
