@@ -922,7 +922,7 @@
             }).catch(() => { });
         }
 
-        // Realtime Theme Listener: BroadcastChannel 'renearn_side_overlay'
+        // Realtime Theme & Cards Listener: BroadcastChannel 'renearn_side_overlay'
         try {
             const bcSide = new BroadcastChannel('renearn_side_overlay');
             bcSide.onmessage = (e) => {
@@ -931,10 +931,13 @@
                     const th = e.data.settings.common?.theme;
                     if (th) setTheme(th);
                 }
+                if (e.data.type === 'cards_updated' || e.data.type === 'config_updated') {
+                    loadCards(true);
+                }
             };
         } catch (e) { }
 
-        // Realtime Theme Listener: BroadcastChannel 'renearn_overlay_events'
+        // Realtime Theme & Cards Listener: BroadcastChannel 'renearn_overlay_events'
         try {
             const bcEvents = new BroadcastChannel('renearn_overlay_events');
             bcEvents.onmessage = (e) => {
@@ -942,6 +945,9 @@
                 if (e.data.type === 'overlay_side_settings_updated' && e.data.settings) {
                     const th = e.data.settings.common?.theme;
                     if (th) setTheme(th);
+                }
+                if (e.data.type === 'cards_updated' || e.data.type === 'config_updated' || e.data.type === 'cards_refresh') {
+                    loadCards(true);
                 }
             };
         } catch (e) { }

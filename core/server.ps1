@@ -5,8 +5,8 @@
 $port = 8080
 $folder = $PSScriptRoot
 
-# Mod listens on 55001 (or 5003 backup)
-$gamePorts = @(55001, 5003)
+# Game mods listen on 55001 (PvZ Fusion), 5003 (backup), or 5850 (PvZ2 / Gardenless Bridge)
+$gamePorts = @(55001, 5003, 5850)
 
 # Disable Expect100Continue to eliminate HTTP POST stall delays
 [System.Net.ServicePointManager]::Expect100Continue = $false
@@ -1388,60 +1388,64 @@ function LoadConfig($optionalUser = "") {
         }
     }
 
-    if ($cfg -and $cfg.gifts -and -not ($cfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
-        $c3 = [PSCustomObject]@{
-            id = "3"
-            giftName = "Total Likes"
-            giftId = ""
-            coins = 0
-            icon = "images/trig_7.svg"
-            unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-            actionType = "zombie"
-            command = "spawn_ultimatehorse"
-            label = "Spawn UltimateHorse"
-            amount = 20
-            enabled = $true
-            likeThreshold = 50000
-            commands = @([PSCustomObject]@{
-                name = "Commands #1"
+    # Only inject Card 2 and 3 into standard PvZ Fusion presets (do not contaminate PvZ 2 or other game presets)
+    $isPvZ1Fusion = (-not $cfg.activePresetId -or $cfg.activePresetId -eq "preset_pvz_custom" -or $cfg.activePresetId -like "*fusion*")
+    if ($isPvZ1Fusion) {
+        if ($cfg -and $cfg.gifts -and -not ($cfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
+            $c3 = [PSCustomObject]@{
+                id = "3"
+                giftName = "Total Likes"
+                giftId = ""
+                coins = 0
+                icon = "images/trig_7.svg"
+                unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                actionType = "zombie"
                 command = "spawn_ultimatehorse"
                 label = "Spawn UltimateHorse"
-                icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-                actionType = "zombie"
-                amount = 1
-            })
-            functionName = "spawn summon horse"
-            repetition = 20
-            delay = 0
-            interval = 100
-            repetitionMultiplier = $true
-            hideInOverlay = $false
-            triggerType = "likes_all"
-            triggerValue = "50000"
-            platform = "tiktok"
-            availableFor = "Anyone"
-        }
-        $gList = [System.Collections.ArrayList]@($cfg.gifts)
-        $gList.Insert([Math]::Min(2, $gList.Count), $c3)
-        $cfg.gifts = $gList
-    }
-
-    # Ensure Card 2 exists if missing, but NEVER overwrite user's saved command/unit
-    if ($cfg -and $cfg.gifts) {
-        $g2 = $cfg.gifts | Where-Object { [string]$_.id -eq "2" -or ($_.giftName -and $_.giftName -match "team\s*zombies\s*likes") }
-        if (-not $g2) {
-            $newCard2 = [PSCustomObject]@{
-                id = "2"
-                giftName = "Team zombies likes"
-                coins = 0
-                likeThreshold = 50
-                command = "spawn_knight_captain"
-                label = "Spawn Knight Captain Zombie (70)"
-                unitIcon = "images/game-icons/pvz/spawn_knight_captain.webp"
-                actionType = "zombie"
+                amount = 20
                 enabled = $true
+                likeThreshold = 50000
+                commands = @([PSCustomObject]@{
+                    name = "Commands #1"
+                    command = "spawn_ultimatehorse"
+                    label = "Spawn UltimateHorse"
+                    icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
+                    actionType = "zombie"
+                    amount = 1
+                })
+                functionName = "spawn summon horse"
+                repetition = 20
+                delay = 0
+                interval = 100
+                repetitionMultiplier = $true
+                hideInOverlay = $false
+                triggerType = "likes_all"
+                triggerValue = "50000"
+                platform = "tiktok"
+                availableFor = "Anyone"
             }
-            $cfg.gifts += $newCard2
+            $gList = [System.Collections.ArrayList]@($cfg.gifts)
+            $gList.Insert([Math]::Min(2, $gList.Count), $c3)
+            $cfg.gifts = $gList
+        }
+
+        # Ensure Card 2 exists if missing, but NEVER overwrite user's saved command/unit
+        if ($cfg -and $cfg.gifts) {
+            $g2 = $cfg.gifts | Where-Object { [string]$_.id -eq "2" -or ($_.giftName -and $_.giftName -match "team\s*zombies\s*likes") }
+            if (-not $g2) {
+                $newCard2 = [PSCustomObject]@{
+                    id = "2"
+                    giftName = "Team zombies likes"
+                    coins = 0
+                    likeThreshold = 50
+                    command = "spawn_knight_captain"
+                    label = "Spawn Knight Captain Zombie (70)"
+                    unitIcon = "images/game-icons/pvz/spawn_knight_captain.webp"
+                    actionType = "zombie"
+                    enabled = $true
+                }
+                $cfg.gifts += $newCard2
+            }
         }
     }
 
@@ -1536,6 +1540,8 @@ function Normalize-PresetEvents($events, $presetName = "") {
         $uIcon = ""
         if ($ev.unitIcon) {
             $uIcon = [string]$ev.unitIcon
+        } elseif ($ev.funcImg) {
+            $uIcon = [string]$ev.funcImg
         } elseif ($ev.function -and $ev.function.image) {
             $uIcon = [string]$ev.function.image
         } else {
@@ -1630,9 +1636,11 @@ function Normalize-PresetEvents($events, $presetName = "") {
             coins = $coins
             icon = $tIcon
             unitIcon = $uIcon
+            funcImg = $uIcon
             actionType = $act
             command = $cmd
             label = $lbl
+            targetGame = if ($ev.targetGame) { [string]$ev.targetGame } elseif ($presetName -like "*PvZ 2*" -or $presetName -like "*pvz2*") { "pvz2" } else { "PvZFusion" }
             amount = if ($ev.amount) { [int]$ev.amount } else { $reps }
             enabled = $true
             likeThreshold = $likeThresh
@@ -1960,6 +1968,121 @@ function SendSinglePvZCommand($endpoint, $payloadObj) {
     return @{ success = $dispatched; message = "Dispatched to game engine" }
 }
 
+# Master router for Plants vs. Zombies 2 (TikToEarn Edition / Gardenless PC)
+function SendToPvZ2Game($rawCmd, $actionType = "zombie", $batchCount = 1, $username = "RENEarn", $repetition = 1, $delay = 0, $interval = 0) {
+    try {
+        $cleanCmd = [string]$rawCmd.Trim()
+        $action = "spawnzombie"
+        $queryParams = @{}
+
+        if ($cleanCmd -match '^pvz2:([^\?]+)\??(.*)$') {
+            $action = $matches[1].ToLower().Trim()
+            $queryString = $matches[2]
+            if ($queryString) {
+                $pairs = $queryString -split '&'
+                foreach ($pair in $pairs) {
+                    $parts = $pair -split '='
+                    if ($parts.Length -eq 2) {
+                        $queryParams[$parts[0].Trim()] = $parts[1].Trim()
+                    } elseif ($parts.Length -eq 1) {
+                        $queryParams[$parts[0].Trim()] = "true"
+                    }
+                }
+            }
+        } elseif ($cleanCmd -like "*pvz2_*") {
+            $action = "spawnzombie"
+            $queryParams["unit"] = $cleanCmd
+        }
+
+        $unit = if ($queryParams.ContainsKey("unit")) { [string]$queryParams["unit"] } else { "" }
+        $count = if ($queryParams.ContainsKey("count")) { [int]$queryParams["count"] } else { [int]$batchCount }
+        $amount = if ($queryParams.ContainsKey("amount")) { [int]$queryParams["amount"] } else { [int]$batchCount }
+
+        $payload = @{
+            action = $action
+            unit = $unit
+            count = $count
+            amount = $amount
+            username = $username
+            timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+            rawCommand = $cleanCmd
+        }
+
+        # 1. Forward directly to PvZ2 Engine Bridge (Port 5850 & Port 7180) if listening
+        $dispatchedToPort = $false
+        $endpoints = @(
+            "http://127.0.0.1:5850/api/tikhub/effect/$action",
+            "http://127.0.0.1:5850/tikhub/command",
+            "http://127.0.0.1:5850/$action",
+            "http://127.0.0.1:7180/api/tikhub/effect/$action",
+            "http://127.0.0.1:7180/tikhub/command",
+            "http://127.0.0.1:7180/$action"
+        )
+        foreach ($ep in $endpoints) {
+            try {
+                $req = [System.Net.HttpWebRequest]::Create($ep)
+                $req.Timeout = 250
+                $req.Method = "POST"
+                $req.ContentType = "application/json"
+                $jsonBytes = [System.Text.Encoding]::UTF8.GetBytes(($payload | ConvertTo-Json -Compress))
+                $req.ContentLength = $jsonBytes.Length
+                $st = $req.GetRequestStream()
+                $st.Write($jsonBytes, 0, $jsonBytes.Length)
+                $st.Close()
+                $resp = $req.GetResponse()
+                $resp.Close()
+                $dispatchedToPort = $true
+                break
+            } catch { }
+        }
+
+        # 2. Append to PvZ2 local command queue files for game engine / bridge consumption
+        $queueFiles = @(
+            (Join-Path $folder "pvz2_commands_queue.json"),
+            (Join-Path (Split-Path -Parent $folder) "pvz2_commands_queue.json"),
+            (Join-Path $folder "pvz2\commands_queue.json"),
+            "C:\Users\pc\AppData\Local\com.pvzge.game\commands.json",
+            "C:\Users\pc\AppData\Local\com.pvzge.game\EBWebView\Default\commands.json"
+        )
+        foreach ($qFile in $queueFiles) {
+            try {
+                $qDir = Split-Path -Parent $qFile
+                if (-not (Test-Path $qDir)) { New-Item -ItemType Directory -Path $qDir -Force | Out-Null }
+                $existingQueue = @()
+                if (Test-Path $qFile) {
+                    try {
+                        $existingQueue = @(Get-Content $qFile -Raw -Encoding UTF8 | ConvertFrom-Json)
+                    } catch { $existingQueue = @() }
+                }
+                $existingQueue += $payload
+                if ($existingQueue.Count -gt 50) {
+                    $existingQueue = @($existingQueue | Select-Object -Last 50)
+                }
+                [System.IO.File]::WriteAllText($qFile, ($existingQueue | ConvertTo-Json -Depth 5), [System.Text.Encoding]::UTF8)
+            } catch { }
+        }
+
+        # 3. Add to live event log for overlays
+        AddEventLog @{
+            type = "pvz2_command"
+            label = "PvZ2: $action ($unit x$count)"
+            action = $action
+            unit = $unit
+            count = $count
+            amount = $amount
+            username = $username
+            command = $cleanCmd
+            status = "dispatched"
+            success = $true
+            timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+        }
+
+        return @{ success = $true; message = "PvZ2 command dispatched: $action ($unit x$count)"; portBridge = $dispatchedToPort }
+    } catch {
+        return @{ success = $true; message = "PvZ2 command queued: $($_.Exception.Message)" }
+    }
+}
+
 # Master router for all PvZ Fusion commands (supports sub-commands, repetition, delay, interval)
 function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn", $avatarUrl = "", $repetition = 1, $delay = 0, $interval = 0) {
     if (-not $command) { return @{ success = $false; message = "Empty command" } }
@@ -1990,9 +2113,6 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
     $lastResult = @{ success = $true; message = "OK" }
 
     # REPETITION & SUMMON CALCULATION (1=1 COMMAND RATIO):
-    # When repetition is configured (e.g. Repetition: 5), 1 gift = 1 command execution of 5 units.
-    # If both $reps and $rawAmt are set to values > 1 (e.g. repetition: 5 and amount: 5 from duplicate card properties),
-    # do NOT square or multiply them together! Use the exact intended count.
     $totalIntendedSummons = if ($reps -gt 1 -and $rawAmt -gt 1) {
         if ($reps -eq $rawAmt) { $reps } else { [Math]::Max($reps, $rawAmt) }
     } else {
@@ -2006,6 +2126,12 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
         foreach ($sub in $subCmds) {
             $rawCmd = $sub.Trim()
             if (-not $rawCmd) { continue }
+
+        # Check if this is a PvZ 2 command (prevent alien commands from reaching PvZ Fusion!)
+        if ($rawCmd -like "pvz2:*" -or $actionType -eq "pvz2" -or $rawCmd -like "*pvz2_*") {
+            $lastResult = SendToPvZ2Game $rawCmd $actionType $batchCount $username $repetition $delay $interval
+            continue
+        }
 
         $clean = $rawCmd.TrimStart('/').ToLower() -replace '[^a-z0-9]', ''
         $cleanRaw = $rawCmd.TrimStart('/').ToLower()
@@ -2586,13 +2712,17 @@ while ($true) {
             $config = LoadConfig
             $cards = LoadCards
             
-            # Check if game is responding
+            # Check if game is responding (via port or running process)
             $gameActive = $false
             foreach ($p in $gamePorts) {
                 if (Test-GamePort $p) {
                     $gameActive = $true
                     break
                 }
+            }
+            if (-not $gameActive) {
+                $runningProc = Get-Process -Name "pvzge*", "PVZ2*", "PvZ_Fusion*" -ErrorAction SilentlyContinue | Select-Object -First 1
+                if ($runningProc) { $gameActive = $true }
             }
 
             $stateFile = Join-Path $folder "tiktok_live_state.json"
@@ -2955,6 +3085,47 @@ INSTALLATION INSTRUCTIONS:
                         modInfo = $modInfo
                         connected = $true
                         gameRunning = $false
+                    }
+                    continue
+                }
+
+                # Special handler for Plants vs. Zombies 2 (TikToEarn / Gardenless PC Bridge)
+                if ($gameId -eq 'pvz2') {
+                    $pvz2Proc = Get-Process -Name "pvzge*", "PVZ2*" -ErrorAction SilentlyContinue | Select-Object -First 1
+                    $isGameRunning = ($pvz2Proc -ne $null)
+                    $pvz2DefaultDir = Join-Path $folder "pvz2"
+                    $effectiveDir = if ($gameDir -and (Test-Path $gameDir)) { $gameDir } elseif (Test-Path $pvz2DefaultDir) { $pvz2DefaultDir } else { "C:\Users\pc\Downloads\ano na\pvz2" }
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        gameId = "pvz2"
+                        directory = $effectiveDir
+                        hasMelonLoader = $false
+                        isBridge = $true
+                        connected = $true
+                        gameRunning = $isGameRunning
+                        gamePid = if ($isGameRunning) { $pvz2Proc.Id } else { 0 }
+                        gameTitle = if ($isGameRunning) { "PvZ2 Gardenless (PID: $($pvz2Proc.Id))" } else { "PvZ2 Gardenless (Standby)" }
+                        modsInstalled = @(@{ name = "PvZ2GardenlessBridge"; isRENEarn = $true })
+                        modInfo = @{
+                            name = "Plants vs. Zombies 2 (PC / Gardenless)"
+                            version = "0.16.0"
+                            status = if ($isGameRunning) { "Connected & Ready (PvZ2 Gardenless Active)" } else { "Bridge Ready (Waiting for Game...)" }
+                        }
+                    }
+                    continue
+                }
+
+                # Special handler for other interactive games
+                if ($gameId -in @('tabs', 'uebs2', 'crown_clash')) {
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        gameId = $gameId
+                        directory = if ($gameDir) { $gameDir } else { "" }
+                        hasMelonLoader = $false
+                        isBridge = $true
+                        connected = $true
+                        gameRunning = $false
+                        modsInstalled = @(@{ name = "RENEarnUniversalBridge"; isRENEarn = $true })
                     }
                     continue
                 }
@@ -4874,7 +5045,7 @@ INSTALLATION INSTRUCTIONS:
                 $userParam = if ($payload.user) { [string]$payload.user } elseif ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
                 $emailParam = if ($caller -and $caller.email) { [string]$caller.email } elseif ($request.QueryString['email']) { [string]$request.QueryString['email'] } else { "" }
                 $subInfo = Get-UserSubscriptionInfo $userParam $emailParam
-                if (-not $subInfo.isUnlimited -and $subInfo.commandLimit -and $normalizedEvents.Count -gt $subInfo.commandLimit) {
+                if ($userParam -and -not $subInfo.isUnlimited -and $subInfo.commandLimit -and $normalizedEvents.Count -gt $subInfo.commandLimit) {
                     $normalizedEvents = @($normalizedEvents | Select-Object -First $subInfo.commandLimit)
                 }
 

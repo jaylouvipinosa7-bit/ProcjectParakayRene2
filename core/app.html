@@ -8759,6 +8759,36 @@
             font-size: 13px;
         }
 
+        .cmd-action-btn.delay-btn {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            width: auto;
+            min-width: 38px;
+            padding: 0 6px;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            box-shadow: 0 2px 6px rgba(109, 40, 217, 0.35);
+        }
+
+        .cmd-action-btn.delay-btn:hover {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            border-color: rgba(167, 139, 250, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .cmd-action-btn.delay-btn.delay-active {
+            background: linear-gradient(135deg, #ec4899, #be185d) !important;
+            border-color: #f472b6 !important;
+            animation: pulseDelayBtn 1s infinite alternate;
+        }
+
+        @keyframes pulseDelayBtn {
+            0% { transform: scale(1); box-shadow: 0 0 4px rgba(236, 72, 153, 0.5); }
+            100% { transform: scale(1.08); box-shadow: 0 0 12px rgba(236, 72, 153, 0.9); }
+        }
+
         .cmd-action-btn.play-btn {
             background: #f97316;
             color: #ffffff;
@@ -14537,21 +14567,21 @@
 
                 <!-- ==================== VIEW 2: DETAILED COMMAND ROWS (PICTURE 4 LAYOUT) ==================== -->
                 <div id="giftsCommandsView" class="gifts-panel-view" style="display: none;">
-                    <!-- PVZ FUSION MOD DIRECTORY & CONNECTION BAR (ONLY SHOWN FOR PVZ FUSION) -->
+                    <!-- UNIVERSAL GAME ENGINE / MOD DIRECTORY & CONNECTION BAR (DYNAMIC FOR ALL GAMES) -->
                     <div class="renearn-mod-bar" id="pvzFusionModBar"
                         style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; backdrop-filter: blur(12px); margin-bottom: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.45);">
                         <div style="display: flex; align-items: center; gap: 10px; min-width: 290px;">
-                            <img src="images/renearn_icon.png"
-                                style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.4); object-fit: cover; box-shadow: 0 0 8px rgba(239,68,68,0.3);">
+                            <img src="images/renearn_icon.png" id="pvzFusionBarIconImg"
+                                style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.4); object-fit: cover; box-shadow: 0 0 8px rgba(56,189,248,0.3);" onerror="this.src='images/renearn_icon.png'">
                             <div>
                                 <div
                                     style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;">
-                                    <span style="color: #cbd5e1;">PvZFusion Mod Version:</span>
-                                    <span style="color: #38bdf8; font-weight: 800;">47v</span>
+                                    <span style="color: #cbd5e1;" id="pvzFusionBarGameTitle">PvZFusion Mod Version:</span>
+                                    <span style="color: #38bdf8; font-weight: 800;" id="pvzFusionBarGameVer">47v</span>
                                     <span
-                                        style="background: #2563eb; color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase;">Active</span>
-                                    <span style="color: #94a3b8; font-size: 11px;">Installed Version: <strong
-                                            style="color: #4ade80;">47v (BETA)</strong></span>
+                                        style="background: #2563eb; color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase;" id="pvzFusionBarBadge">Active</span>
+                                    <span style="color: #94a3b8; font-size: 11px;" id="pvzFusionBarInstalledVer">Installed Version: <strong
+                                            style="color: #4ade80;" id="pvzFusionBarInstalledVerVal">47v (BETA)</strong></span>
                                 </div>
                                 <div
                                     style="font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; margin-top: 1px;">
@@ -29492,9 +29522,9 @@
                 });
             }
 
-            function switchPresetFromDropdown(presetId) {
+            async function switchPresetFromDropdown(presetId) {
                 currentEditingPresetId = presetId;
-                const currentPreset = allPresetsList.find(p => p.id === presetId);
+                const currentPreset = allPresetsList.find(p => p.id === presetId || p._id === presetId || p._key === presetId);
                 if (currentPreset && currentPreset.events && currentPreset.events.length > 0) {
                     config.gifts = currentPreset.events;
                 }
@@ -29502,15 +29532,20 @@
                 const sideSelect = document.getElementById('sideCustPreset');
                 if (sideSelect && presetId) {
                     const pid = String(presetId).toLowerCase();
-                    if (pid.includes('zombie')) sideSelect.value = 'zombie_tsunami';
+                    if (pid.includes('pvz2') || pid.includes('pvz 2')) sideSelect.value = 'pvz2';
+                    else if (pid.includes('zombie')) sideSelect.value = 'zombie_tsunami';
                     else if (pid.includes('mine')) sideSelect.value = 'minecraft';
                     else if (pid.includes('crown') || pid.includes('clash')) sideSelect.value = 'crown_clash';
                     else if (pid.includes('tabs')) sideSelect.value = 'tabs';
                     else if (pid.includes('uebs')) sideSelect.value = 'uebs2';
                     else sideSelect.value = 'pvz';
                 }
+                // Auto-activate preset live so stream overlay updates immediately for all games
+                await activatePreset(presetId);
+                updateEncircledGameStatusBar(currentPreset ? currentPreset.game : '', currentPreset ? currentPreset.name : '');
                 renderDetailedCommandRows();
                 renderGifts();
+                if (typeof reloadCommandsLiveOverlay === 'function') reloadCommandsLiveOverlay();
                 // If customizer modal is open, update iframe in realtime
                 const modal = document.getElementById('modalSideOverlayCustomizer');
                 if (modal && (modal.classList.contains('active') || modal.style.display === 'flex')) {
@@ -29673,9 +29708,27 @@
                     if (data.status === 'ok') {
                         activePresetId = presetId;
                         currentEditingPresetId = presetId;
-                        showToast(`🎮 Preset "${data.presetName || presetId}" is now live on stream!`, "SUCCESS");
+                        const matchedPreset = allPresetsList.find(p => p.id === presetId || p._id === presetId || p._key === presetId);
+                        const gameName = data.game || (matchedPreset ? matchedPreset.game : '');
+                        const presetName = data.presetName || (matchedPreset ? matchedPreset.name : presetId);
+                        updateEncircledGameStatusBar(gameName, presetName);
+                        showToast(`🎮 Preset "${presetName}" is now active live on stream!`, "SUCCESS");
                         await loadConfig();
                         loadAndRenderPresets();
+                        renderDetailedCommandRows();
+                        renderGifts();
+                        if (typeof reloadCommandsLiveOverlay === 'function') reloadCommandsLiveOverlay();
+                        try {
+                            const bc = new BroadcastChannel('renearn_overlay_events');
+                            bc.postMessage({ type: 'cards_updated', presetId: presetId, game: gameName });
+                        } catch (e) { }
+                        try {
+                            const bc2 = new BroadcastChannel('renearn_side_overlay');
+                            bc2.postMessage({ type: 'cards_updated', presetId: presetId, game: gameName });
+                        } catch (e) { }
+                        try {
+                            localStorage.setItem('renearn_cards_updated', String(Date.now()));
+                        } catch (e) { }
                     } else {
                         showToast(data.message || "Failed to activate preset", "ERROR");
                     }
@@ -29684,12 +29737,14 @@
                 }
             }
 
-            function openPresetInCommandsView(presetId) {
+            async function openPresetInCommandsView(presetId) {
                 currentEditingPresetId = presetId;
                 const currentPreset = allPresetsList.find(p => p.id === presetId || p._id === presetId || p._key === presetId);
                 if (currentPreset && currentPreset.events && currentPreset.events.length > 0) {
                     config.gifts = currentPreset.events;
                 }
+                // Automatically activate preset live so overlay and commands reflect it immediately
+                await activatePreset(presetId);
                 switchTab('gifts');
                 if (typeof setGiftsViewMode === 'function') {
                     setGiftsViewMode('commands');
@@ -29697,10 +29752,11 @@
                 if (typeof updatePresetDropdown === 'function') {
                     updatePresetDropdown();
                 }
+                updateEncircledGameStatusBar(currentPreset ? currentPreset.game : '', currentPreset ? currentPreset.name : '');
                 renderDetailedCommandRows();
                 renderGifts();
                 if (typeof reloadCommandsLiveOverlay === 'function') reloadCommandsLiveOverlay();
-                showToast(`✏️ Editing preset "${currentPreset ? currentPreset.name : presetId}" triggers`, "INFO");
+                showToast(`🎮 Active: "${currentPreset ? currentPreset.name : presetId}" - Overlay Live!`, "SUCCESS");
             }
 
             async function duplicatePreset(presetId) {
@@ -30973,6 +31029,96 @@
                 }
             }
 
+            // Dynamically updates the top status bar (Encircle in User Screenshot 3) for ANY game
+            function updateEncircledGameStatusBar(gameName = '', presetName = '') {
+                const pvzModBar = document.getElementById('pvzFusionModBar');
+                if (pvzModBar) pvzModBar.style.display = 'flex';
+
+                const gTitle = document.getElementById('pvzFusionBarGameTitle');
+                const gVer = document.getElementById('pvzFusionBarGameVer');
+                const gBadge = document.getElementById('pvzFusionBarBadge');
+                const gInstalledVal = document.getElementById('pvzFusionBarInstalledVerVal');
+                const gStatus = document.getElementById('renearnEngineStatus');
+                const gDot = document.getElementById('renearnEngineDot');
+                const gIcon = document.getElementById('pvzFusionBarIconImg');
+                const gInput = document.getElementById('gameDirectoryInput');
+
+                const gLower = (gameName || '').toLowerCase();
+                const pLower = (presetName || '').toLowerCase();
+
+                if (gLower.includes('pvz2') || gLower.includes('plants vs zombies 2') || gLower.includes('pvz 2') || pLower.includes('pvz2') || pLower.includes('pvz 2') || pLower.includes('gardenless')) {
+                    if (gTitle) gTitle.innerText = 'Plants vs. Zombies 2 Bridge:';
+                    if (gVer) gVer.innerText = 'v2.4';
+                    if (gBadge) {
+                        gBadge.innerText = 'Active';
+                        gBadge.style.background = '#2563eb';
+                    }
+                    if (gInstalledVal) gInstalledVal.innerText = 'Gardenless PC Port';
+                    if (gStatus) gStatus.innerText = 'PvZ2 Gardenless Bridge: Ready (Port 5850 / Local Engine)';
+                    if (gDot) {
+                        gDot.style.background = '#22c55e';
+                        gDot.style.boxShadow = '0 0 6px #22c55e';
+                    }
+                    if (gIcon) gIcon.src = 'images/pvz2/pvz2_badge.png';
+                    if (gInput && (!gInput.value || gInput.value.includes('Game Files') || gInput.value.includes('pvzge'))) {
+                        gInput.placeholder = 'PvZ2 Gardenless files directory...';
+                        gInput.value = 'C:\\Users\\pc\\Downloads\\ano na\\pvz2';
+                    }
+                } else if (gLower.includes('zombie') || gLower.includes('tsunami')) {
+                    if (gTitle) gTitle.innerText = 'Zombie Tsunami Bridge:';
+                    if (gVer) gVer.innerText = 'v1.2';
+                    if (gBadge) {
+                        gBadge.innerText = 'Active';
+                        gBadge.style.background = '#16a34a';
+                    }
+                    if (gInstalledVal) gInstalledVal.innerText = 'Direct Bridge';
+                    if (gStatus) gStatus.innerText = 'Zombie Tsunami Bridge: Ready';
+                    if (gIcon) gIcon.src = 'images/games/zombie_tsunami.jpg';
+                    if (gInput) gInput.placeholder = 'Zombie Tsunami game directory...';
+                } else if (gLower.includes('minecraft')) {
+                    if (gTitle) gTitle.innerText = 'Minecraft Bridge:';
+                    if (gVer) gVer.innerText = 'v1.20';
+                    if (gBadge) {
+                        gBadge.innerText = 'Active';
+                        gBadge.style.background = '#0284c7';
+                    }
+                    if (gInstalledVal) gInstalledVal.innerText = 'RCON / Mod';
+                    if (gStatus) gStatus.innerText = 'Minecraft RCON Server: Ready';
+                    if (gIcon) gIcon.src = 'images/games/minecraft.jpg';
+                    if (gInput) gInput.placeholder = 'Minecraft server directory...';
+                } else if (gLower.includes('tabs')) {
+                    if (gTitle) gTitle.innerText = 'TABS Mod Version:';
+                    if (gVer) gVer.innerText = 'v1.1';
+                    if (gBadge) gBadge.innerText = 'Active';
+                    if (gInstalledVal) gInstalledVal.innerText = 'TABS Bridge';
+                    if (gStatus) gStatus.innerText = 'TABS Bridge: Ready';
+                    if (gIcon) gIcon.src = 'images/games/tabs.svg';
+                } else if (gLower.includes('crown') || gLower.includes('clash')) {
+                    if (gTitle) gTitle.innerText = 'Crown Clash Bridge:';
+                    if (gVer) gVer.innerText = 'v1.0';
+                    if (gBadge) gBadge.innerText = 'Active';
+                    if (gInstalledVal) gInstalledVal.innerText = 'Bridge Active';
+                    if (gStatus) gStatus.innerText = 'Crown Clash Bridge: Ready';
+                    if (gIcon) gIcon.src = 'images/games/crown_clash.svg';
+                } else {
+                    // Default PvZFusion
+                    const displayName = gameName || 'PvZFusion';
+                    if (gTitle) gTitle.innerText = `${displayName} Mod Version:`;
+                    if (gVer) gVer.innerText = '47v';
+                    if (gBadge) {
+                        gBadge.innerText = 'Active';
+                        gBadge.style.background = '#2563eb';
+                    }
+                    if (gInstalledVal) gInstalledVal.innerText = '47v (BETA)';
+                    if (gStatus) gStatus.innerText = 'MelonLoader Mod: Ready';
+                    if (gIcon) gIcon.src = 'images/renearn_icon.png';
+                    if (gInput && (!gInput.value || gInput.value.includes('pvz2'))) {
+                        gInput.placeholder = 'Path to PvZ Fusion game files directory...';
+                        gInput.value = 'C:\\Users\\pc\\Desktop\\games ko to ya\\Game Files';
+                    }
+                }
+            }
+
             // Render Detailed Horizontal Command Rows (Pixel-perfect to Picture 4)
             function renderDetailedCommandRows() {
                 const container = document.getElementById('commandRowsContainer');
@@ -31006,14 +31152,8 @@
                 const frontGameBadge = document.getElementById('commandsFrontGameBadge');
                 if (frontGameBadge) frontGameBadge.innerText = currentPreset.game || 'PvZFusion';
 
-                // ONLY show PvZFusion Mod Bar if this preset is for PvZ Fusion ("that file is only for pvz fusion")
-                const isPvZ = !currentPreset.game ||
-                    currentPreset.game.toLowerCase().includes('pvz') ||
-                    (currentPreset.name && currentPreset.name.toLowerCase().includes('pvz'));
-                const pvzModBar = document.getElementById('pvzFusionModBar');
-                if (pvzModBar) {
-                    pvzModBar.style.display = isPvZ ? 'flex' : 'none';
-                }
+                // Dynamically sync Encircled Top Status Bar to this preset's game
+                updateEncircledGameStatusBar(currentPreset.game, currentPreset.name);
 
                 const pKey = currentPreset._key || currentPreset.id || currentPreset._id;
                 const isCurrentPresetActive = (currentPreset.id === activePresetId || currentPreset._id === activePresetId || currentPreset._key === activePresetId);
@@ -31221,6 +31361,7 @@
                     </div>
 
                     <div class="cmd-actions-col">
+                        <button type="button" class="cmd-action-btn delay-btn" onclick="testGiftWithDelay('${gift.id}', 5, this)" title="Summon in 5 Seconds (Delayed Play)">⏱️ 5s</button>
                         <button type="button" class="cmd-action-btn play-btn" onclick="testGift('${gift.id}')" title="Test Trigger">▶</button>
                         <button type="button" class="cmd-action-btn edit-btn" onclick="openEditGiftModal('${gift.id}')" title="Edit Trigger">✏️</button>
                         <button type="button" class="cmd-action-btn copy-btn" onclick="duplicateGift('${gift.id}')" title="Duplicate Trigger">📑</button>
@@ -32281,6 +32422,9 @@
                         <div class="action-count">${gift.actionType === 'spinner' ? 'Wheel' : 'x' + ((gift.repetition !== undefined && gift.repetition !== null && gift.repetition > 0) ? gift.repetition : (gift.amount || 1))}</div>
                     </div>
                     <div class="command-card-footer">
+                        <button class="btn-test-delay" type="button" title="Summon in 5 Seconds" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); color: #c084fc; border-radius: var(--radius-md); padding: 7px 8px; cursor: pointer; font-size: 11px; font-weight: 700;">
+                            ⏱️ 5s
+                        </button>
                         <button class="btn-test" type="button">
                             Test ${gift.giftName}
                         </button>
@@ -32302,6 +32446,9 @@
                     // Event Listeners
                     const chk = card.querySelector('.card-toggle-chk');
                     if (chk) chk.addEventListener('change', (e) => toggleGift(gift.id, e.target.checked));
+
+                    const testDelayBtn = card.querySelector('.btn-test-delay');
+                    if (testDelayBtn) testDelayBtn.addEventListener('click', (e) => { e.stopPropagation(); testGiftWithDelay(gift.id, 5, testDelayBtn); });
 
                     const testBtn = card.querySelector('.btn-test');
                     if (testBtn) testBtn.addEventListener('click', (e) => { e.stopPropagation(); testGift(gift.id); });
@@ -32535,6 +32682,53 @@
 
             function getTesterProfile() {
                 return { name: 'RENEarn', avatar: 'images/default_avatar.svg' };
+            }
+
+            // Delayed Test Gift (Summons command after a 5-second countdown delay)
+            const activeDelayTimers = {};
+            async function testGiftWithDelay(giftId, delaySeconds = 5, btnEl = null) {
+                const gift = config && config.gifts ? config.gifts.find(g => String(g.id) === String(giftId)) : null;
+                const giftLabel = gift ? (gift.label || gift.giftName || gift.id) : ('Trigger ' + giftId);
+
+                // If already counting down on this trigger, cancel it
+                if (activeDelayTimers[giftId]) {
+                    clearInterval(activeDelayTimers[giftId].timer);
+                    if (btnEl) {
+                        btnEl.textContent = '⏱️ 5s';
+                        btnEl.classList.remove('delay-active');
+                    }
+                    delete activeDelayTimers[giftId];
+                    showToast(`❌ Cancelled 5s delay for ${giftLabel}`);
+                    return;
+                }
+
+                let remaining = delaySeconds;
+                if (btnEl) {
+                    btnEl.classList.add('delay-active');
+                    btnEl.textContent = `⏳ ${remaining}s`;
+                }
+
+                showToast(`⏱️ Summoning "${giftLabel}" in ${remaining}s... (Click ⏱️ to cancel)`);
+
+                const timer = setInterval(() => {
+                    remaining--;
+                    if (remaining > 0) {
+                        if (btnEl) btnEl.textContent = `⏳ ${remaining}s`;
+                    } else {
+                        clearInterval(timer);
+                        delete activeDelayTimers[giftId];
+                        if (btnEl) {
+                            btnEl.textContent = '🚀 GO!';
+                            setTimeout(() => {
+                                btnEl.textContent = '⏱️ 5s';
+                                btnEl.classList.remove('delay-active');
+                            }, 1200);
+                        }
+                        testGift(giftId);
+                    }
+                }, 1000);
+
+                activeDelayTimers[giftId] = { timer, btnEl };
             }
 
             // Test Single Gift (Executes ALL sub-commands and plays attached audio simultaneously with zero delay)
