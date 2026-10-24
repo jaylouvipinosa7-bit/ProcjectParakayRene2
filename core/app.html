@@ -13639,7 +13639,7 @@
                         <div class="stream-game-card" id="gameCard_pvz2"
                             onclick="selectStreamingGame('pvz2')">
                             <div class="game-poster-box">
-                                <img src="images/pvz2_banner.png" alt="Plants vs. Zombies 2"
+                                <img src="images/pvz2_cover.jpg" alt="Plants vs. Zombies 2"
                                     class="game-poster-img" style="object-fit: cover;">
                                 <div class="game-poster-gradient"></div>
                                 <span class="game-card-badge badge-ready" id="badge_pvz2">READY</span>
@@ -14091,7 +14091,7 @@
                                 onclick="selectGameAlbum('pvz2', true)"
                                 title="Click to choose presets for Plants vs. Zombies 2">
                                 <div class="album-card-cover-wrap">
-                                    <img src="images/pvz2_banner.png"
+                                    <img src="images/pvz2_cover.jpg"
                                         onerror="this.src='images/games/pvz2_poster.jpg'" class="album-card-cover"
                                         alt="Plants vs. Zombies 2" style="object-fit: cover;">
                                     <div class="album-card-overlay-tag">READY</div>
@@ -29197,7 +29197,7 @@
                 },
                 'pvz2': {
                     name: 'Plants vs. Zombies 2: It\'s About Time',
-                    poster: 'images/pvz2_banner.png',
+                    poster: 'images/pvz2_cover.jpg',
                     port: 'TikToEarn PvZ2 Bridge (Port 5850)',
                     exe: 'PVZ2.exe',
                     catalog: '23+ Authentic TikToEarn Commands & Bosses',
@@ -30027,15 +30027,15 @@
                     bg: 'rgba(16,185,129,0.12)',
                     engine: 'TikToEarn PvZ2 Engine Bridge (Port 5850)',
                     desc: 'Official interactive live stream album for Plants vs. Zombies 2. Real-time zombie spawns, Gargantuar waves, Weasel Hoarders, and coin boosts from chat gifts.',
-                    defaultCover: 'images/pvz2_banner.png',
-                    fallbackIcon: 'images/pvz2_banner.png',
+                    defaultCover: 'images/pvz2_cover.jpg',
+                    fallbackIcon: 'images/pvz2_cover.jpg',
                     sampleTriggers: [
-                        { id: "pvz2_s1", giftName: "Tik Coin (1 Coin)", coins: 1, label: "ADD COINS & GEMS (99999)", actionType: "special", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:add_coins?amount=99999" },
-                        { id: "pvz2_s2", giftName: "Rose (1 Coin)", coins: 1, label: "CONEHEAD ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_conehead_zombie&count=5&delay=50" },
-                        { id: "pvz2_s3", giftName: "Heart Me (1 Coin)", coins: 1, label: "PARASOL ZOMBIE (x10)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_lostcity_jane&count=10&delay=50" },
-                        { id: "pvz2_s4", giftName: "Finger Heart (5 Coins)", coins: 5, label: "WEASEL HOARDER (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder&count=5&delay=50" },
-                        { id: "pvz2_s5", giftName: "TikTok (10 Coins)", coins: 10, label: "PIRATE CAPTAIN ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_pirate_captain&count=5&delay=50" },
-                        { id: "pvz2_s6", giftName: "Leon the Kitten (488 Coins)", coins: 488, label: "GARGANTUAR PRIME", actionType: "zombie", unitIcon: "images/games/pvz2_banner.png", command: "pvz2:spawnzombie?unit=pvz2_future_gargantuar&count=1&delay=50" }
+                        { id: "pvz2_s1", giftName: "Tik Coin (1 Coin)", coins: 1, label: "ADD COINS & GEMS (99999)", actionType: "special", unitIcon: "images/pvz2/coins_gems.jpg", command: "pvz2:add_coins?amount=99999" },
+                        { id: "pvz2_s2", giftName: "Rose (1 Coin)", coins: 1, label: "CONEHEAD ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/game-icons/pvz/spawn_cone_zombie.webp", command: "pvz2:spawnzombie?unit=pvz2_conehead_zombie&count=5&delay=50" },
+                        { id: "pvz2_s3", giftName: "Heart Me (1 Coin)", coins: 1, label: "PARASOL ZOMBIE (x10)", actionType: "zombie", unitIcon: "images/pvz2/parasol_zombie.jpg", command: "pvz2:spawnzombie?unit=pvz2_lostcity_jane&count=10&delay=50" },
+                        { id: "pvz2_s4", giftName: "Finger Heart (5 Coins)", coins: 5, label: "WEASEL HOARDER (x5)", actionType: "zombie", unitIcon: "images/pvz2/weasel_hoarder.jpg", command: "pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder&count=5&delay=50" },
+                        { id: "pvz2_s5", giftName: "TikTok (10 Coins)", coins: 10, label: "PIRATE CAPTAIN ZOMBIE (x5)", actionType: "zombie", unitIcon: "images/pvz2/pirate_captain.jpg", command: "pvz2:spawnzombie?unit=pvz2_pirate_captain&count=5&delay=50" },
+                        { id: "pvz2_s6", giftName: "Leon the Kitten (488 Coins)", coins: 488, label: "GARGANTUAR PRIME", actionType: "zombie", unitIcon: "images/game-icons/pvz/spawn_gargantuar.webp", command: "pvz2:spawnzombie?unit=pvz2_future_gargantuar&count=1&delay=50" }
                     ],
                     catLabels: { plant: '🌿 Plants & Boosts', zombie: '🧟 PvZ2 Zombies', special: '⚡ Coins & Effects' }
                 }
@@ -30683,12 +30683,12 @@
 
                 const templates = {
                     'pvz2': [
-                        { label: '+ Add Coins (99999)', cmd: 'pvz2:add_coins?amount=99999', icon: 'images/games/pvz2_banner.png', type: 'special' },
-                        { label: '+ Conehead Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_conehead_zombie', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
-                        { label: '+ Parasol Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_lostcity_jane', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
-                        { label: '+ Weasel Hoarder', cmd: 'pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
-                        { label: '+ Pirate Captain', cmd: 'pvz2:spawnzombie?unit=pvz2_pirate_captain', icon: 'images/games/pvz2_banner.png', type: 'zombie' },
-                        { label: '+ Gargantuar Prime', cmd: 'pvz2:spawnzombie?unit=pvz2_future_gargantuar', icon: 'images/games/pvz2_banner.png', type: 'zombie' }
+                        { label: '+ Add Coins (99999)', cmd: 'pvz2:add_coins?amount=99999', icon: 'images/pvz2/coins_gems.jpg', type: 'special' },
+                        { label: '+ Conehead Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_conehead_zombie', icon: 'images/game-icons/pvz/spawn_cone_zombie.webp', type: 'zombie' },
+                        { label: '+ Parasol Zombie', cmd: 'pvz2:spawnzombie?unit=pvz2_lostcity_jane', icon: 'images/pvz2/parasol_zombie.jpg', type: 'zombie' },
+                        { label: '+ Weasel Hoarder', cmd: 'pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder', icon: 'images/pvz2/weasel_hoarder.jpg', type: 'zombie' },
+                        { label: '+ Pirate Captain', cmd: 'pvz2:spawnzombie?unit=pvz2_pirate_captain', icon: 'images/pvz2/pirate_captain.jpg', type: 'zombie' },
+                        { label: '+ Gargantuar Prime', cmd: 'pvz2:spawnzombie?unit=pvz2_future_gargantuar', icon: 'images/game-icons/pvz/spawn_gargantuar.webp', type: 'zombie' }
                     ],
                     'Minecraft': [
                         { label: '+ Summon Zombie', cmd: '/summon zombie ~ ~ ~', icon: 'images/games/sprites/mc_zombie.svg', type: 'zombie' },
