@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kingdom Siege 3D - TikTok LIVE Interactive Castle Defense</title>
+    <title>Kingdom Siege 3D: Dragon Ball Edition (Shenlong & Perfect Cell)</title>
     <link rel="icon" type="image/png" href="images/renearn_icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@500;700;900&family=Bungee&family=Luckiest+Guy&display=swap" rel="stylesheet">
     
-    <!-- Three.js 3D WebGL Engine (Local with CDN fallback) -->
+    <!-- Three.js 3D WebGL Engine -->
     <script src="three.min.js"></script>
     <script>
         if (typeof THREE === 'undefined') {
@@ -22,9 +22,9 @@
             --gold: #f59e0b;
             --gold-light: #fbbf24;
             --crimson: #ef4444;
-            --crimson-dark: #991b1b;
-            --cyan: #06b6d4;
-            --purple: #8b5cf6;
+            --cell-green: #22c55e;
+            --cell-purple: #8b5cf6;
+            --shenlong-green: #10b981;
         }
 
         * {
@@ -39,7 +39,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #030407;
+            background: #020307;
             font-family: 'Outfit', sans-serif;
             color: #ffffff;
         }
@@ -50,7 +50,11 @@
             width: 100vw;
             height: 100vh;
             display: block;
-            cursor: crosshair;
+            cursor: grab;
+        }
+
+        #canvasContainer:active {
+            cursor: grabbing;
         }
 
         /* 3D Vignette & Atmosphere Overlays */
@@ -58,8 +62,8 @@
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle at center, transparent 40%, rgba(5, 7, 12, 0.75) 100%);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+            background: radial-gradient(circle at center, transparent 45%, rgba(2, 4, 8, 0.8) 100%);
+            box-shadow: inset 0 0 120px rgba(0,0,0,0.85);
             z-index: 5;
         }
 
@@ -67,7 +71,7 @@
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle at center, transparent 40%, rgba(185, 28, 28, 0.45) 100%);
+            background: radial-gradient(circle at center, transparent 40%, rgba(185, 28, 28, 0.5) 100%);
             opacity: 0;
             transition: opacity 0.4s ease-out;
             z-index: 6;
@@ -80,7 +84,7 @@
 
         @keyframes dangerPulse {
             0% { opacity: 0.3; }
-            100% { opacity: 0.8; }
+            100% { opacity: 0.85; }
         }
 
         /* Top HUD Header */
@@ -97,13 +101,13 @@
         }
 
         .castle-status-card {
-            background: rgba(10, 14, 26, 0.85);
+            background: rgba(10, 14, 26, 0.88);
             backdrop-filter: blur(14px);
-            border: 2px solid rgba(245, 158, 11, 0.45);
-            border-radius: 16px;
-            padding: 12px 20px;
-            min-width: 300px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.2);
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 18px;
+            padding: 12px 22px;
+            min-width: 310px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.25);
         }
 
         .castle-title {
@@ -122,8 +126,8 @@
         .hp-bar-outer {
             width: 100%;
             height: 18px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 9px;
             overflow: hidden;
             position: relative;
@@ -153,29 +157,29 @@
             justify-content: space-between;
         }
 
-        /* Boss Alert Banner */
+        /* DBZ Boss Alert Banner (Perfect Cell) */
         .boss-alert-container {
             position: absolute;
             top: 85px;
             left: 50%;
             transform: translateX(-50%);
-            width: min(600px, 90vw);
-            background: linear-gradient(180deg, rgba(127, 29, 29, 0.95) 0%, rgba(26, 6, 6, 0.96) 100%);
-            border: 2px solid #ef4444;
-            border-radius: 16px;
-            padding: 12px 20px;
-            box-shadow: 0 0 45px rgba(239, 68, 68, 0.6), 0 12px 30px rgba(0, 0, 0, 0.95);
+            width: min(620px, 92vw);
+            background: linear-gradient(180deg, rgba(88, 28, 135, 0.95) 0%, rgba(20, 5, 35, 0.96) 100%);
+            border: 2px solid #a855f7;
+            border-radius: 18px;
+            padding: 12px 22px;
+            box-shadow: 0 0 45px rgba(168, 85, 247, 0.6), 0 12px 30px rgba(0, 0, 0, 0.95);
             z-index: 30;
             display: none;
             flex-direction: column;
             gap: 8px;
-            animation: bossPulse 1.4s infinite alternate ease-in-out;
+            animation: cellPulse 1.4s infinite alternate ease-in-out;
             pointer-events: none;
         }
 
-        @keyframes bossPulse {
-            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
-            100% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 55px rgba(239, 68, 68, 0.85); }
+        @keyframes cellPulse {
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px rgba(168, 85, 247, 0.5); }
+            100% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 60px rgba(168, 85, 247, 0.9); }
         }
 
         .boss-header {
@@ -191,8 +195,8 @@
         }
 
         .boss-avatar {
-            width: 44px;
-            height: 44px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             border: 2.5px solid #facc15;
             object-fit: cover;
@@ -202,15 +206,15 @@
         .boss-name {
             font-family: 'Cinzel', serif;
             font-weight: 900;
-            font-size: 16px;
-            color: #fee2e2;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            font-size: 17px;
+            color: #f3e8ff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.9);
             letter-spacing: 1px;
         }
 
         .boss-summoner {
             font-size: 12px;
-            color: #fca5a5;
+            color: #d8b4fe;
             font-weight: 700;
         }
 
@@ -226,17 +230,17 @@
         .boss-hp-inner {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
+            background: linear-gradient(90deg, #9333ea 0%, #ec4899 50%, #facc15 100%);
             transition: width 0.2s ease-out;
-            box-shadow: 0 0 14px rgba(220, 38, 38, 0.9);
+            box-shadow: 0 0 16px rgba(236, 72, 153, 0.9);
         }
 
         /* Top Right Donator Leaderboard */
         .mvp-leaderboard {
-            background: rgba(10, 14, 26, 0.85);
+            background: rgba(10, 14, 26, 0.88);
             backdrop-filter: blur(14px);
-            border: 1.5px solid rgba(255, 255, 255, 0.14);
-            border-radius: 16px;
+            border: 1.5px solid rgba(255, 255, 255, 0.16);
+            border-radius: 18px;
             padding: 12px 18px;
             min-width: 250px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.7);
@@ -308,8 +312,8 @@
         }
 
         .skill-btn {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(12px);
             border: 2px solid rgba(255, 255, 255, 0.18);
             border-radius: 16px;
             width: 68px;
@@ -375,7 +379,7 @@
             background: rgba(15, 23, 42, 0.94);
             backdrop-filter: blur(14px);
             border: 1.5px solid rgba(255, 255, 255, 0.16);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 10px 16px;
             display: flex;
             align-items: center;
@@ -396,7 +400,7 @@
         .test-btn {
             background: rgba(255, 255, 255, 0.09);
             border: 1px solid rgba(255, 255, 255, 0.16);
-            border-radius: 9px;
+            border-radius: 10px;
             color: #fff;
             padding: 7px 12px;
             font-size: 11px;
@@ -414,20 +418,20 @@
             transform: translateY(-2px);
         }
 
-        /* Top Orientation & Camera Controls */
+        /* Top Controls: Camera Mode & Viewport */
         .controls-top {
             position: absolute;
             top: 14px;
-            right: 300px;
+            right: 290px;
             display: flex;
             gap: 8px;
             z-index: 25;
         }
 
         .icon-btn {
-            background: rgba(15, 23, 42, 0.88);
+            background: rgba(15, 23, 42, 0.9);
             border: 1.5px solid rgba(255, 255, 255, 0.18);
-            border-radius: 10px;
+            border-radius: 12px;
             color: #cbd5e1;
             padding: 7px 14px;
             font-size: 12px;
@@ -436,12 +440,34 @@
             transition: all 0.2s;
         }
 
+        .icon-btn.active {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: var(--gold);
+            color: #fff;
+        }
+
         .icon-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             color: #fff;
         }
 
-        /* Game Over / Victory Modal */
+        /* Instructions Toast for Movable Camera */
+        .camera-tip {
+            position: absolute;
+            bottom: 96px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 11px;
+            color: #94a3b8;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* Game Over Modal */
         #endModal {
             position: absolute;
             inset: 0;
@@ -462,12 +488,6 @@
             text-align: center;
             max-width: 480px;
             box-shadow: 0 0 60px rgba(245, 158, 11, 0.45);
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
 
         .end-title {
@@ -508,18 +528,21 @@
 </head>
 <body>
 
-    <!-- 3D WebGL Canvas Layer -->
+    <!-- 3D Canvas Container -->
     <div id="canvasContainer"></div>
 
     <!-- Vignette Atmosphere -->
     <div class="cinematic-vignette"></div>
     <div class="crimson-danger-vignette" id="dangerVignette"></div>
 
+    <!-- Camera Drag Tip -->
+    <div class="camera-tip" id="camTip">🎥 Camera: Left-Click Drag = Rotate 360° | Right-Click = Pan | Scroll = Zoom</div>
+
     <!-- Top HUD Elements -->
     <div class="hud-top">
         <div class="castle-status-card">
             <div class="castle-title">
-                <span>🏰 CITADEL OF VALOR</span>
+                <span>🏰 CITADEL DEFENSE</span>
                 <span id="waveDisplay" style="margin-left:auto; font-size:12px; color:#a3e635;">WAVE 1</span>
             </div>
             <div class="hp-bar-outer">
@@ -538,24 +561,24 @@
                 <span id="enemyCountDisplay" style="color:#ef4444; font-size:11px;">0 ENEMIES</span>
             </div>
             <div id="mvpList">
-                <div class="mvp-row"><span class="mvp-rank">1</span><span class="mvp-name">Waiting for siege gifts...</span><span class="mvp-score">-</span></div>
+                <div class="mvp-row"><span class="mvp-rank">1</span><span class="mvp-name">Waiting for DBZ gifts...</span><span class="mvp-score">-</span></div>
                 <div class="mvp-row"><span class="mvp-rank">2</span><span class="mvp-name">-</span><span class="mvp-score">-</span></div>
                 <div class="mvp-row"><span class="mvp-rank">3</span><span class="mvp-name">-</span><span class="mvp-score">-</span></div>
             </div>
         </div>
     </div>
 
-    <!-- 3D Boss Health Bar -->
+    <!-- DBZ Perfect Cell Boss Alert Banner -->
     <div class="boss-alert-container" id="bossBar">
         <div class="boss-header">
             <div class="boss-sender-info">
                 <img class="boss-avatar" id="bossAvatar" src="images/renearn_icon.png" alt="Avatar">
                 <div>
-                    <div class="boss-name" id="bossName">COLOSSAL TITAN LORD</div>
+                    <div class="boss-name" id="bossName">PERFECT CELL (DRAGON BALL Z)</div>
                     <div class="boss-summoner" id="bossSummoner">Summoned by: @Viewer</div>
                 </div>
             </div>
-            <span style="font-weight:900; font-size:13px; color:#f87171;">⚠️ TITAN DETECTED</span>
+            <span style="font-weight:900; font-size:13px; color:#ec4899;">⚠️ PERFECTION AWAKENED</span>
         </div>
         <div class="boss-hp-outer">
             <div class="boss-hp-inner" id="bossHpInner"></div>
@@ -564,7 +587,8 @@
 
     <!-- Top Mode & Camera Controls -->
     <div class="controls-top">
-        <button class="icon-btn" onclick="toggleCameraView()" id="camBtn">🎥 View: Isometric</button>
+        <button class="icon-btn active" onclick="setCamMode('free')" id="camFreeBtn">🎥 Free Orbit (Drag/Zoom)</button>
+        <button class="icon-btn" onclick="setCamMode('fix')" id="camFixBtn">🔒 Fixed Stream POV</button>
         <button class="icon-btn" onclick="toggleLayoutMode()" id="layoutToggleBtn">📱 Vertical (TikTok)</button>
         <button class="icon-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
         <button class="icon-btn" onclick="toggleSound()" id="soundBtn">🔊 Sound: ON</button>
@@ -597,22 +621,22 @@
     <!-- Streamer Simulation Test Deck (Bottom Right) -->
     <div class="test-deck">
         <span class="test-label">🧪 Test Deck:</span>
-        <button class="test-btn" onclick="testSpawn('like')">👍 +50 Likes</button>
-        <button class="test-btn" onclick="testSpawn('rose')">🌹 Rose</button>
+        <button class="test-btn" onclick="testSpawn('like')">👍 Likes (Saibamen)</button>
+        <button class="test-btn" onclick="testSpawn('rose')">🌹 Rose (Frieza Soldier)</button>
         <button class="test-btn" onclick="testSpawn('donut')">🍩 Catapult</button>
-        <button class="test-btn" onclick="testSpawn('dragon')">🐉 3D Dragon</button>
-        <button class="test-btn" onclick="testSpawn('boss')">👑 3D Titan Boss</button>
+        <button class="test-btn" onclick="testSpawn('shenlong')" style="background:rgba(16,185,129,0.3); border-color:#10b981;">🐉 SHENLONG</button>
+        <button class="test-btn" onclick="testSpawn('cell')" style="background:rgba(168,85,247,0.3); border-color:#a855f7;">👑 PERFECT CELL</button>
         <button class="test-btn" onclick="resetGame()" style="background:rgba(239,68,68,0.25); border-color:#ef4444;">🔄 Reset</button>
     </div>
 
     <!-- Game Over Modal -->
     <div id="endModal">
         <div class="end-card">
-            <div class="end-title" id="endTitle">CITADEL OVERTHROWN!</div>
+            <div class="end-title" id="endTitle">CITADEL OBLITERATED!</div>
             <div class="end-stats" id="endStats">
-                The viewer siege army overwhelmed the castle walls.<br>
-                Total Monsters Defeated: <strong>0</strong><br>
-                Top Siege General: <strong>None</strong>
+                Perfect Cell and the viewer forces breached the fortress gates.<br>
+                Total Units Defeated: <strong>0</strong><br>
+                Top Siege Commander: <strong>None</strong>
             </div>
             <button class="end-restart-btn" onclick="resetGame()">REBUILD CITADEL ⚔️</button>
         </div>
@@ -685,33 +709,34 @@
                     filter.connect(gain);
                     gain.connect(audioCtx.destination);
                     noise.start(now);
-                } else if (type === 'dragonRoar') {
+                } else if (type === 'shenlongRoar') {
+                    // Mystical Eastern Dragon Roar & Chime
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(120, now);
-                    osc.frequency.linearRampToValueAtTime(240, now + 0.25);
-                    osc.frequency.exponentialRampToValueAtTime(60, now + 0.7);
-                    gain.gain.setValueAtTime(0.4, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.7);
+                    osc.frequency.setValueAtTime(80, now);
+                    osc.frequency.linearRampToValueAtTime(320, now + 0.35);
+                    osc.frequency.exponentialRampToValueAtTime(40, now + 1.2);
+                    gain.gain.setValueAtTime(0.45, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 1.2);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start(now);
-                    osc.stop(now + 0.7);
-                } else if (type === 'bossAlarm') {
+                    osc.stop(now + 1.2);
+                } else if (type === 'cellAura') {
+                    // High-pitch DBZ Energy Powerup Hum
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(350, now);
-                    osc.frequency.setValueAtTime(700, now + 0.18);
-                    osc.frequency.setValueAtTime(350, now + 0.36);
-                    osc.frequency.setValueAtTime(700, now + 0.54);
+                    osc.frequency.setValueAtTime(140, now);
+                    osc.frequency.linearRampToValueAtTime(680, now + 0.4);
+                    osc.frequency.linearRampToValueAtTime(300, now + 0.9);
                     gain.gain.setValueAtTime(0.4, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.75);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.9);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start(now);
-                    osc.stop(now + 0.75);
+                    osc.stop(now + 0.9);
                 } else if (type === 'freeze') {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -740,42 +765,114 @@
         }
     </script>
 
-    <!-- REAL 3D WEBGL GRAPHICS & SHADER SYSTEM -->
+    <!-- REAL 3D WEBGL GRAPHICS: SHENLONG, PERFECT CELL & MOVABLE CAMERA -->
     <script>
         const container = document.getElementById('canvasContainer');
 
         // Scene, Camera, Renderer
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0e17, 0.009);
+        scene.fog = new THREE.FogExp2(0x070b14, 0.008);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 500);
-        let cameraMode = 'iso'; // 'iso' or 'top'
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 600);
 
-        function setCameraPosition() {
-            if (cameraMode === 'iso') {
-                camera.position.set(-35, 42, 55);
-                camera.lookAt(8, 6, 0);
+        // ==============================================================
+        // MOVABLE ORBIT CAMERA & FIXED STREAM POV
+        // ==============================================================
+        const defaultCamPos = new THREE.Vector3(-36, 42, 54);
+        const defaultTarget = new THREE.Vector3(6, 6, 0);
+
+        let camTarget = defaultTarget.clone();
+        let camRadius = 75;
+        let camTheta = Math.PI * 0.72; // Azimuth angle
+        let camPhi = Math.PI * 0.32;   // Polar angle
+
+        let cameraMode = 'free'; // 'free' or 'fix'
+        let isPointerDown = false;
+        let pointerButton = 0; // 0 = left, 2 = right
+        let previousPointerX = 0;
+        let previousPointerY = 0;
+
+        function updateCamera() {
+            if (cameraMode === 'fix') {
+                camera.position.copy(defaultCamPos);
+                camera.lookAt(defaultTarget);
             } else {
-                camera.position.set(0, 75, 20);
-                camera.lookAt(0, 0, 0);
+                // Free orbit calculations
+                camPhi = Math.max(0.1, Math.min(Math.PI / 2 - 0.05, camPhi));
+                camera.position.x = camTarget.x + camRadius * Math.sin(camPhi) * Math.cos(camTheta);
+                camera.position.y = camTarget.y + camRadius * Math.cos(camPhi);
+                camera.position.z = camTarget.z + camRadius * Math.sin(camPhi) * Math.sin(camTheta);
+                camera.lookAt(camTarget);
             }
         }
-        setCameraPosition();
+        updateCamera();
 
-        function toggleCameraView() {
-            cameraMode = cameraMode === 'iso' ? 'top' : 'iso';
-            setCameraPosition();
-            document.getElementById('camBtn').textContent = cameraMode === 'iso' ? '🎥 View: Isometric' : '🎥 View: Top-Down';
+        function setCamMode(mode) {
+            cameraMode = mode;
+            document.getElementById('camFreeBtn').classList.toggle('active', mode === 'free');
+            document.getElementById('camFixBtn').classList.toggle('active', mode === 'fix');
+            document.getElementById('camTip').textContent = mode === 'free'
+                ? '🎥 Camera: Left-Click Drag = Rotate 360° | Right-Click = Pan | Scroll = Zoom'
+                : '🔒 Fixed Stream POV Active (Optimal for OBS Stream Recording)';
+            if (mode === 'fix') {
+                camTarget.copy(defaultTarget);
+                camRadius = 75;
+            }
+            updateCamera();
             playSound('click');
         }
 
+        // Pointer / Drag Controls for Movable 3D Camera
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('.hud-top, .boss-alert-container, .skills-dock, .test-deck, .controls-top, #endModal')) return;
+            isPointerDown = true;
+            pointerButton = e.button;
+            previousPointerX = e.clientX;
+            previousPointerY = e.clientY;
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isPointerDown || cameraMode !== 'free') return;
+            const deltaX = e.clientX - previousPointerX;
+            const deltaY = e.clientY - previousPointerY;
+            previousPointerX = e.clientX;
+            previousPointerY = e.clientY;
+
+            if (pointerButton === 0) {
+                // Left Click: Rotate Orbit 360
+                camTheta -= deltaX * 0.008;
+                camPhi -= deltaY * 0.008;
+            } else {
+                // Right Click: Pan Camera Target
+                const panSpeed = 0.06;
+                const forward = new THREE.Vector3().subVectors(camTarget, camera.position).normalize();
+                const right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+                camTarget.addScaledVector(right, -deltaX * panSpeed);
+                camTarget.y += deltaY * panSpeed;
+            }
+            updateCamera();
+        });
+
+        window.addEventListener('pointerup', () => { isPointerDown = false; });
+        window.addEventListener('contextmenu', (e) => {
+            if (e.target.closest('#canvasContainer')) e.preventDefault();
+        });
+
+        // Mouse Wheel Zoom In / Out
+        window.addEventListener('wheel', (e) => {
+            if (cameraMode !== 'free') return;
+            camRadius = Math.max(15, Math.min(180, camRadius + e.deltaY * 0.05));
+            updateCamera();
+        }, { passive: true });
+
+        // Renderer Setup
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
+        renderer.toneMappingExposure = 1.2;
         container.appendChild(renderer.domElement);
 
         function onWindowResize() {
@@ -809,425 +906,462 @@
         // ==============================================================
         // 3D LIGHTING & ATMOSPHERE
         // ==============================================================
-        // Ambient moonlight
-        const ambientLight = new THREE.AmbientLight(0x1c2438, 1.4);
+        const ambientLight = new THREE.AmbientLight(0x1c2438, 1.5);
         scene.add(ambientLight);
 
-        // Directional Moonlight / Key Shadow Light
-        const dirLight = new THREE.DirectionalLight(0xa5c4e8, 2.2);
+        const dirLight = new THREE.DirectionalLight(0xa5c4e8, 2.3);
         dirLight.position.set(-40, 60, 40);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 2048;
         dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.camera.near = 10;
-        dirLight.shadow.camera.far = 160;
-        dirLight.shadow.camera.left = -50;
-        dirLight.shadow.camera.right = 50;
-        dirLight.shadow.camera.top = 50;
-        dirLight.shadow.camera.bottom = -50;
         dirLight.shadow.bias = -0.0005;
         scene.add(dirLight);
 
-        // Warm Fortress Torch Lights
-        const torchLight1 = new THREE.PointLight(0xf59e0b, 2.5, 30);
+        const torchLight1 = new THREE.PointLight(0xf59e0b, 2.5, 32);
         torchLight1.position.set(-26, 12, 10);
         scene.add(torchLight1);
 
-        const torchLight2 = new THREE.PointLight(0xf59e0b, 2.5, 30);
+        const torchLight2 = new THREE.PointLight(0xf59e0b, 2.5, 32);
         torchLight2.position.set(-26, 12, -10);
         scene.add(torchLight2);
 
         // ==============================================================
         // 3D BATTLEFIELD TERRAIN & ROAD
         // ==============================================================
-        // Ground Plane with PBR Stone Shader
-        const groundGeo = new THREE.PlaneGeometry(160, 100, 32, 32);
-        const groundMat = new THREE.MeshStandardMaterial({
-            color: 0x0f1522,
-            roughness: 0.9,
-            metalness: 0.1
-        });
+        const groundGeo = new THREE.PlaneGeometry(180, 110, 32, 32);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x0c111a, roughness: 0.9, metalness: 0.1 });
         const ground = new THREE.Mesh(groundGeo, groundMat);
         ground.rotation.x = -Math.PI / 2;
         ground.receiveShadow = true;
         scene.add(ground);
 
-        // Main Cobblestone Warpath
-        const roadGeo = new THREE.PlaneGeometry(160, 24);
-        const roadMat = new THREE.MeshStandardMaterial({
-            color: 0x182030,
-            roughness: 0.75,
-            metalness: 0.2
-        });
+        const roadGeo = new THREE.PlaneGeometry(180, 26);
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0x161e2c, roughness: 0.75, metalness: 0.2 });
         const road = new THREE.Mesh(roadGeo, roadMat);
         road.rotation.x = -Math.PI / 2;
         road.position.y = 0.05;
         road.receiveShadow = true;
         scene.add(road);
 
-        // Road Border Torches & Stones
-        for (let x = -20; x <= 65; x += 15) {
-            // Left & Right braziers
-            [-13, 13].forEach(z => {
-                const poleGeo = new THREE.CylinderGeometry(0.2, 0.3, 4, 8);
-                const poleMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.8 });
-                const pole = new THREE.Mesh(poleGeo, poleMat);
-                pole.position.set(x, 2, z);
-                pole.castShadow = true;
-                scene.add(pole);
-
-                const fireGeo = new THREE.SphereGeometry(0.5, 8, 8);
-                const fireMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
-                const fire = new THREE.Mesh(fireGeo, fireMat);
-                fire.position.set(x, 4.2, z);
-                scene.add(fire);
-            });
-        }
-
         // ==============================================================
-        // REAL 3D CASTLE CITADEL
+        // 3D CASTLE CITADEL
         // ==============================================================
         const castleGroup = new THREE.Group();
         castleGroup.position.set(-26, 0, 0);
 
-        // Stone Wall Material
-        const wallMat = new THREE.MeshStandardMaterial({
-            color: 0x334155,
-            roughness: 0.85,
-            metalness: 0.15
-        });
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.85, metalness: 0.15 });
+        const wall = new THREE.Mesh(new THREE.BoxGeometry(6, 12, 34), wallMat);
+        wall.position.y = 6;
+        wall.castShadow = true;
+        wall.receiveShadow = true;
+        castleGroup.add(wall);
 
-        const stoneAccentMat = new THREE.MeshStandardMaterial({
-            color: 0x475569,
-            roughness: 0.7,
-            metalness: 0.25
-        });
-
-        const goldAccentMat = new THREE.MeshStandardMaterial({
-            color: 0xf59e0b,
-            roughness: 0.3,
-            metalness: 0.8,
-            emissive: 0x78350f,
-            emissiveIntensity: 0.3
-        });
-
-        // 1. Central Fortress Wall
-        const wallGeo = new THREE.BoxGeometry(6, 12, 34);
-        const wallMesh = new THREE.Mesh(wallGeo, wallMat);
-        wallMesh.position.y = 6;
-        wallMesh.castShadow = true;
-        wallMesh.receiveShadow = true;
-        castleGroup.add(wallMesh);
-
-        // Battlements / Crenellations
-        for (let z = -15; z <= 15; z += 3.5) {
-            const toothGeo = new THREE.BoxGeometry(2, 2.2, 2);
-            const tooth = new THREE.Mesh(toothGeo, wallMat);
-            tooth.position.set(2, 13, z);
-            tooth.castShadow = true;
-            castleGroup.add(tooth);
-        }
-
-        // 2. North & South Guard Towers
+        // Guard Towers
         [-17, 17].forEach(z => {
-            const towerGeo = new THREE.CylinderGeometry(4.5, 5.5, 18, 12);
-            const tower = new THREE.Mesh(towerGeo, wallMat);
+            const tower = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 5.5, 18, 12), wallMat);
             tower.position.set(0, 9, z);
             tower.castShadow = true;
             tower.receiveShadow = true;
             castleGroup.add(tower);
 
-            // Tower Roof Cone
-            const roofGeo = new THREE.ConeGeometry(5.5, 7, 12);
-            const roofMat = new THREE.MeshStandardMaterial({ color: 0x1e1b4b, roughness: 0.6 });
-            const roof = new THREE.Mesh(roofGeo, roofMat);
+            const roof = new THREE.Mesh(new THREE.ConeGeometry(5.5, 7, 12), new THREE.MeshStandardMaterial({ color: 0x1e1b4b, roughness: 0.6 }));
             roof.position.set(0, 21.5, z);
             roof.castShadow = true;
             castleGroup.add(roof);
-
-            // Tower Gold Finial
-            const finialGeo = new THREE.SphereGeometry(0.7, 8, 8);
-            const finial = new THREE.Mesh(finialGeo, goldAccentMat);
-            finial.position.set(0, 25.5, z);
-            castleGroup.add(finial);
         });
 
-        // 3. Central Keep & Iron Portcullis Gates
-        const gateGeo = new THREE.BoxGeometry(1.5, 8, 8);
-        const gateMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.9, roughness: 0.3 });
-        const gate = new THREE.Mesh(gateGeo, gateMat);
-        gate.position.set(3, 4, 0);
-        castleGroup.add(gate);
-
-        // 4. Glowing 3D Forcefield Shield Dome
+        // Golden Shield Dome
         const shieldGeo = new THREE.SphereGeometry(22, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-        const shieldMat = new THREE.MeshBasicMaterial({
-            color: 0x38bdf8,
-            transparent: true,
-            opacity: 0.0,
-            wireframe: true
-        });
+        const shieldMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.0, wireframe: true });
         const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
-        shieldMesh.position.set(0, 0, 0);
         castleGroup.add(shieldMesh);
-
         scene.add(castleGroup);
 
         // ==============================================================
-        // PROCEDURAL 3D DRAGON (SHADOW WYVERN) MODEL BUILDER
+        // PROCEDURAL TEXTURE GENERATORS (CELL SPOTS & SHENLONG SCALES)
         // ==============================================================
-        function create3DDragon() {
-            const dragonGroup = new THREE.Group();
+        function createCellSpottedTexture() {
+            const canvas2d = document.createElement('canvas');
+            canvas2d.width = 512;
+            canvas2d.height = 512;
+            const ctx2d = canvas2d.getContext('2d');
+
+            // Vibrant Cell Green Base
+            ctx2d.fillStyle = '#16a34a';
+            ctx2d.fillRect(0, 0, 512, 512);
+
+            // Iconic Dark Spots & Speckles
+            ctx2d.fillStyle = '#0f172a';
+            for (let i = 0; i < 90; i++) {
+                const x = Math.random() * 512;
+                const y = Math.random() * 512;
+                const rx = 10 + Math.random() * 18;
+                const ry = 8 + Math.random() * 14;
+                const angle = Math.random() * Math.PI;
+
+                ctx2d.save();
+                ctx2d.translate(x, y);
+                ctx2d.rotate(angle);
+                ctx2d.beginPath();
+                ctx2d.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+                ctx2d.fill();
+                ctx2d.restore();
+            }
+
+            const tex = new THREE.CanvasTexture(canvas2d);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(2, 2);
+            return tex;
+        }
+
+        const cellSpottedTexture = createCellSpottedTexture();
+
+        // ==============================================================
+        // 3D MODEL 1: SHENLONG (EASTERN DRAGON FROM DRAGON BALL)
+        // ==============================================================
+        function create3DShenlong() {
+            const shenlongGroup = new THREE.Group();
 
             // Materials
             const scaleMat = new THREE.MeshStandardMaterial({
-                color: 0x1e293b,
-                roughness: 0.6,
-                metalness: 0.4,
-                emissive: 0x0f172a
+                color: 0x10b981,
+                roughness: 0.5,
+                metalness: 0.35,
+                emissive: 0x064e3b,
+                emissiveIntensity: 0.3
             });
 
-            const wingMat = new THREE.MeshStandardMaterial({
-                color: 0x3b82f6,
+            const bellyMat = new THREE.MeshStandardMaterial({
+                color: 0xfef08a,
                 roughness: 0.7,
-                metalness: 0.2,
-                side: THREE.DoubleSide
+                metalness: 0.15
             });
 
-            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
-            const hornMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.3, metalness: 0.7 });
+            const antlerMat = new THREE.MeshStandardMaterial({
+                color: 0x78350f,
+                roughness: 0.8,
+                metalness: 0.2
+            });
 
-            // 1. Dragon Body
-            const bodyGeo = new THREE.ConeGeometry(2.5, 9, 8);
-            const body = new THREE.Mesh(bodyGeo, scaleMat);
-            body.rotation.z = Math.PI / 2;
-            body.castShadow = true;
-            dragonGroup.add(body);
+            const redEyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const whiskerMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.4 });
+            const spineSpikeMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.5 });
 
-            // 2. Head & Neck
+            // 1. Serpentine Segmented Body (14 Segments along a curving sine path)
+            const segments = [];
+            const numSegments = 16;
+            for (let i = 0; i < numSegments; i++) {
+                const segGroup = new THREE.Group();
+                const radius = 2.4 * (1 - (i / numSegments) * 0.45);
+
+                // Upper Green Back
+                const back = new THREE.Mesh(new THREE.SphereGeometry(radius, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), scaleMat);
+                back.castShadow = true;
+                segGroup.add(back);
+
+                // Lower Yellow Belly Plate
+                const belly = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.95, 10, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), bellyMat);
+                belly.castShadow = true;
+                segGroup.add(belly);
+
+                // Dorsal Spikes (Spines along back)
+                const spine = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2.2, 5), spineSpikeMat);
+                spine.position.y = radius + 0.6;
+                segGroup.add(spine);
+
+                shenlongGroup.add(segGroup);
+                segments.push(segGroup);
+            }
+
+            // 2. Iconic Shenlong Head
             const headGroup = new THREE.Group();
-            headGroup.position.set(-5, 1.2, 0);
+            headGroup.position.set(-6, 2, 0);
 
-            const skullGeo = new THREE.ConeGeometry(1.6, 4, 6);
-            const skull = new THREE.Mesh(skullGeo, scaleMat);
-            skull.rotation.z = Math.PI / 2;
-            skull.castShadow = true;
-            headGroup.add(skull);
+            // Main Snout & Jaws
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.6, 3.2), scaleMat);
+            snout.position.set(-2, 0, 0);
+            snout.castShadow = true;
+            headGroup.add(snout);
 
-            // Horns
-            [-0.7, 0.7].forEach(z => {
-                const hornGeo = new THREE.ConeGeometry(0.4, 2.5, 6);
-                const horn = new THREE.Mesh(hornGeo, hornMat);
-                horn.rotation.z = -Math.PI / 3;
-                horn.position.set(0.8, 1.5, z);
-                headGroup.add(horn);
-            });
+            const jaw = new THREE.Mesh(new THREE.BoxGeometry(4, 1.2, 2.8), bellyMat);
+            jaw.position.set(-2, -1.4, 0);
+            jaw.castShadow = true;
+            headGroup.add(jaw);
 
-            // Glowing Eyes
-            [-0.7, 0.7].forEach(z => {
-                const eyeGeo = new THREE.SphereGeometry(0.3, 8, 8);
-                const eye = new THREE.Mesh(eyeGeo, eyeMat);
-                eye.position.set(-1.2, 0.6, z);
+            // Sharp White Teeth
+            for (let t = -3.2; t <= -0.5; t += 0.8) {
+                const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+                tooth.position.set(t, -0.7, 1.3);
+                tooth.rotation.x = Math.PI;
+                headGroup.add(tooth);
+                const toothR = tooth.clone();
+                toothR.position.z = -1.3;
+                headGroup.add(toothR);
+            }
+
+            // Glowing Red Eyes with PointLight
+            [-1.4, 1.4].forEach(z => {
+                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 8), redEyeMat);
+                eye.position.set(-1.6, 1.2, z);
                 headGroup.add(eye);
             });
 
-            dragonGroup.add(headGroup);
+            const eyeLight = new THREE.PointLight(0xef4444, 3, 12);
+            eyeLight.position.set(-2, 1.2, 0);
+            headGroup.add(eyeLight);
 
-            // 3. Wings (Articulated Left & Right)
-            const leftWing = new THREE.Group();
-            leftWing.position.set(0, 1.5, 1.5);
-            const wingGeoL = new THREE.PlaneGeometry(10, 6);
-            const wingMeshL = new THREE.Mesh(wingGeoL, wingMat);
-            wingMeshL.rotation.x = Math.PI / 2;
-            wingMeshL.position.set(0, 0, 4);
-            wingMeshL.castShadow = true;
-            leftWing.add(wingMeshL);
-            dragonGroup.add(leftWing);
+            // Brown Antler Horns (Branching)
+            [-1.2, 1.2].forEach(z => {
+                const hornMain = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.45, 5.5, 6), antlerMat);
+                hornMain.rotation.z = -Math.PI / 3;
+                hornMain.rotation.x = (z > 0 ? 0.3 : -0.3);
+                hornMain.position.set(1.2, 3.2, z);
+                headGroup.add(hornMain);
 
-            const rightWing = new THREE.Group();
-            rightWing.position.set(0, 1.5, -1.5);
-            const wingGeoR = new THREE.PlaneGeometry(10, 6);
-            const wingMeshR = new THREE.Mesh(wingGeoR, wingMat);
-            wingMeshR.rotation.x = Math.PI / 2;
-            wingMeshR.position.set(0, 0, -4);
-            wingMeshR.castShadow = true;
-            rightWing.add(wingMeshR);
-            dragonGroup.add(rightWing);
+                const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.3, 2.8, 6), antlerMat);
+                branch.rotation.z = -Math.PI / 5;
+                branch.position.set(1.8, 4.2, z * 1.3);
+                headGroup.add(branch);
+            });
 
-            // 4. Tail
-            const tailGeo = new THREE.CylinderGeometry(0.4, 1.8, 8, 6);
-            const tail = new THREE.Mesh(tailGeo, scaleMat);
-            tail.rotation.z = Math.PI / 2;
-            tail.position.set(6, 0.5, 0);
-            tail.castShadow = true;
-            dragonGroup.add(tail);
+            // Long Flowing Whiskers (Waving in the wind)
+            const leftWhisker = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 8, 6), whiskerMat);
+            leftWhisker.position.set(-3.5, -0.4, 3.8);
+            leftWhisker.rotation.x = Math.PI / 2.8;
+            leftWhisker.rotation.z = -Math.PI / 4;
+            headGroup.add(leftWhisker);
 
-            dragonGroup.scale.set(1.4, 1.4, 1.4);
-            dragonGroup.userData = { leftWing, rightWing, wingSpeed: 12 };
-            return dragonGroup;
+            const rightWhisker = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 8, 6), whiskerMat);
+            rightWhisker.position.set(-3.5, -0.4, -3.8);
+            rightWhisker.rotation.x = -Math.PI / 2.8;
+            rightWhisker.rotation.z = -Math.PI / 4;
+            headGroup.add(rightWhisker);
+
+            shenlongGroup.add(headGroup);
+
+            // 3. 7 Golden Glowing Dragon Balls orbiting Shenlong
+            const dragonBallsGroup = new THREE.Group();
+            for (let b = 0; b < 7; b++) {
+                const angle = (b / 7) * Math.PI * 2;
+                const db = new THREE.Mesh(new THREE.SphereGeometry(0.9, 12, 12), new THREE.MeshStandardMaterial({
+                    color: 0xf59e0b,
+                    emissive: 0xd97706,
+                    emissiveIntensity: 0.8,
+                    roughness: 0.1,
+                    metalness: 0.9
+                }));
+                db.position.set(Math.cos(angle) * 12, Math.sin(angle) * 6, Math.sin(angle * 2) * 5);
+                dragonBallsGroup.add(db);
+            }
+            shenlongGroup.add(dragonBallsGroup);
+
+            shenlongGroup.scale.set(1.3, 1.3, 1.3);
+            shenlongGroup.userData = {
+                segments: segments,
+                head: headGroup,
+                whiskers: [leftWhisker, rightWhisker],
+                dragonBalls: dragonBallsGroup
+            };
+            return shenlongGroup;
         }
 
         // ==============================================================
-        // PROCEDURAL 3D TITAN BOSS MODEL BUILDER
+        // 3D MODEL 2: PERFECT CELL (DRAGON BALL Z COLOSSAL BOSS)
         // ==============================================================
-        function create3DTitanBoss() {
-            const bossGroup = new THREE.Group();
+        function create3DPerfectCell() {
+            const cellGroup = new THREE.Group();
 
-            // Magma Obsidian Material
-            const magmaMat = new THREE.MeshStandardMaterial({
-                color: 0x1c1917,
-                roughness: 0.85,
-                metalness: 0.3,
-                emissive: 0xef4444,
-                emissiveIntensity: 0.6
+            // PBR Materials directly matched to Dragon Ball Z references:
+            const greenChitinMat = new THREE.MeshStandardMaterial({
+                map: cellSpottedTexture,
+                roughness: 0.5,
+                metalness: 0.35
             });
 
-            const armorMat = new THREE.MeshStandardMaterial({
+            const blackArmorMat = new THREE.MeshStandardMaterial({
                 color: 0x09090b,
-                roughness: 0.4,
+                roughness: 0.35,
                 metalness: 0.85
             });
 
-            const goldMat = new THREE.MeshStandardMaterial({
-                color: 0xf59e0b,
-                metalness: 0.9,
-                roughness: 0.2
+            const purpleMat = new THREE.MeshStandardMaterial({
+                color: 0x6b21a8,
+                roughness: 0.5,
+                metalness: 0.4
             });
 
-            // 1. Torso
-            const torsoGeo = new THREE.BoxGeometry(6, 8, 5);
-            const torso = new THREE.Mesh(torsoGeo, magmaMat);
-            torso.position.y = 9;
-            torso.castShadow = true;
-            bossGroup.add(torso);
-
-            // Spiked Pauldrons (Shoulders)
-            [-4.2, 4.2].forEach(z => {
-                const pauldronGeo = new THREE.ConeGeometry(2.5, 4, 6);
-                const pauldron = new THREE.Mesh(pauldronGeo, armorMat);
-                pauldron.position.set(0, 13, z);
-                pauldron.castShadow = true;
-                bossGroup.add(pauldron);
+            const faceMat = new THREE.MeshStandardMaterial({
+                color: 0xf1f5f9,
+                roughness: 0.6,
+                metalness: 0.1
             });
 
-            // 2. Horned Head
-            const headGeo = new THREE.BoxGeometry(3, 3.2, 3);
-            const head = new THREE.Mesh(headGeo, armorMat);
-            head.position.set(0, 14.5, 0);
-            head.castShadow = true;
-            bossGroup.add(head);
+            const bootsGoldMat = new THREE.MeshStandardMaterial({
+                color: 0xfacc15,
+                roughness: 0.3,
+                metalness: 0.7,
+                emissive: 0x854d0e,
+                emissiveIntensity: 0.3
+            });
 
-            // Horns
+            // 1. Torso & Core
+            const chest = new THREE.Mesh(new THREE.BoxGeometry(4.8, 5.5, 3.6), greenChitinMat);
+            chest.position.y = 11.5;
+            chest.castShadow = true;
+            cellGroup.add(chest);
+
+            const blackCenterCore = new THREE.Mesh(new THREE.BoxGeometry(3.6, 4.2, 1.2), blackArmorMat);
+            blackCenterCore.position.set(-1.4, 11.8, 0);
+            cellGroup.add(blackCenterCore);
+
+            const purpleWaist = new THREE.Mesh(new THREE.CylinderGeometry(2, 2.4, 2.5, 10), purpleMat);
+            purpleWaist.position.y = 8;
+            cellGroup.add(purpleWaist);
+
+            // 2. Folded Insectoid Wing Carapace (Back)
+            const wingCarapace = new THREE.Group();
+            wingCarapace.position.set(2, 12, 0);
+
             [-1.5, 1.5].forEach(z => {
-                const hornGeo = new THREE.ConeGeometry(0.8, 3.5, 6);
-                const horn = new THREE.Mesh(hornGeo, goldMat);
-                horn.rotation.z = -Math.PI / 4;
-                horn.position.set(0, 16.5, z);
-                bossGroup.add(horn);
+                const wingBlade = new THREE.Mesh(new THREE.BoxGeometry(0.8, 14, 2.8), blackArmorMat);
+                wingBlade.rotation.z = Math.PI / 10;
+                wingBlade.position.set(1.5, -3, z);
+                wingBlade.castShadow = true;
+                wingCarapace.add(wingBlade);
+            });
+            cellGroup.add(wingCarapace);
+
+            // 3. Head & Iconic Crown / Horns
+            const headGroup = new THREE.Group();
+            headGroup.position.set(0, 16.5, 0);
+
+            // Pale Face with cheek contours
+            const face = new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.8, 2.4), faceMat);
+            face.castShadow = true;
+            headGroup.add(face);
+
+            // Purple Cheek Markings
+            [-1.1, 1.1].forEach(z => {
+                const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.8, 0.4), purpleMat);
+                stripe.position.set(-1.22, -0.4, z);
+                headGroup.add(stripe);
             });
 
-            // Glowing Red Eyes
-            const eyeGeo = new THREE.SphereGeometry(0.4, 8, 8);
-            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            [-0.7, 0.7].forEach(z => {
+            // Purple / Red DBZ Eyes
+            const eyeGeo = new THREE.SphereGeometry(0.3, 8, 8);
+            const eyeMat = new THREE.MeshBasicMaterial({ color: 0xd946ef });
+            [-0.6, 0.6].forEach(z => {
                 const eye = new THREE.Mesh(eyeGeo, eyeMat);
-                eye.position.set(-1.6, 14.8, z);
-                bossGroup.add(eye);
+                eye.position.set(-1.22, 0.3, z);
+                headGroup.add(eye);
             });
 
-            // 3. Legs
-            [-1.8, 1.8].forEach(z => {
-                const legGeo = new THREE.BoxGeometry(2.2, 6, 2.2);
-                const leg = new THREE.Mesh(legGeo, armorMat);
-                leg.position.set(0, 3, z);
-                leg.castShadow = true;
-                bossGroup.add(leg);
+            // Black Helmet Dome
+            const helmetDome = new THREE.Mesh(new THREE.SphereGeometry(1.6, 12, 12), blackArmorMat);
+            helmetDome.position.set(0.2, 1, 0);
+            headGroup.add(helmetDome);
+
+            // Twin-Pointed Crown Horns (Iconic Perfect Cell Antennae)
+            [-1.2, 1.2].forEach(z => {
+                const horn = new THREE.Mesh(new THREE.ConeGeometry(0.9, 7, 6), greenChitinMat);
+                horn.rotation.z = -Math.PI / 14;
+                horn.rotation.x = (z > 0 ? 0.15 : -0.15);
+                horn.position.set(0.4, 4.2, z);
+                horn.castShadow = true;
+                headGroup.add(horn);
             });
 
-            // 4. Arms
-            [-3.8, 3.8].forEach(z => {
-                const armGeo = new THREE.BoxGeometry(2, 7, 2);
-                const arm = new THREE.Mesh(armGeo, magmaMat);
-                arm.position.set(0, 7.5, z);
+            cellGroup.add(headGroup);
+
+            // 4. Arms & Pauldrons
+            [-3.6, 3.6].forEach(z => {
+                // Purple/Black Rounded Pauldron
+                const pauldron = new THREE.Mesh(new THREE.SphereGeometry(1.8, 10, 10), purpleMat);
+                pauldron.position.set(0, 13.5, z);
+                pauldron.castShadow = true;
+                cellGroup.add(pauldron);
+
+                // Arm with green spotted chitin
+                const arm = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.8, 7, 8), greenChitinMat);
+                arm.position.set(0, 8.8, z);
                 arm.castShadow = true;
-                bossGroup.add(arm);
+                cellGroup.add(arm);
             });
 
-            bossGroup.scale.set(1.5, 1.5, 1.5);
-            return bossGroup;
+            // 5. Muscular Legs & Golden Boots
+            [-1.8, 1.8].forEach(z => {
+                const thigh = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.2, 5.5, 8), greenChitinMat);
+                thigh.position.set(0, 4.5, z);
+                thigh.castShadow = true;
+                cellGroup.add(thigh);
+
+                const blackShin = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.3, 4.5, 8), blackArmorMat);
+                blackShin.position.set(0, 1.5, z);
+                blackShin.castShadow = true;
+                cellGroup.add(blackShin);
+
+                // Yellow/Gold DBZ Pointed Boots
+                const boot = new THREE.Mesh(new THREE.ConeGeometry(1.3, 3, 6), bootsGoldMat);
+                boot.rotation.z = Math.PI / 2;
+                boot.position.set(-0.8, 0.2, z);
+                cellGroup.add(boot);
+            });
+
+            // 6. Super Perfect Cell Lightning Aura Halo
+            const auraGeo = new THREE.RingGeometry(8, 9, 32);
+            const auraMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+            const auraRing = new THREE.Mesh(auraGeo, auraMat);
+            auraRing.rotation.x = Math.PI / 2;
+            auraRing.position.y = 0.5;
+            cellGroup.add(auraRing);
+
+            cellGroup.scale.set(1.6, 1.6, 1.6);
+            cellGroup.userData = { head: headGroup, aura: auraRing, wings: wingCarapace };
+            return cellGroup;
         }
 
         // ==============================================================
-        // PROCEDURAL 3D MINION BUILDERS (Orcs, Goblins, Rams, Trebuchets)
+        // 3D MINIONS (Saibamen, Frieza Soldier, Catapult)
         // ==============================================================
         function create3DMinion(typeKey) {
             const group = new THREE.Group();
 
-            if (typeKey === 'goblin') {
-                // Agile green scout
-                const bodyMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.7 });
-                const clothMat = new THREE.MeshStandardMaterial({ color: 0x78350f });
-                const body = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1, 2.2, 8), bodyMat);
-                body.position.y = 1.3;
+            if (typeKey === 'like') {
+                // Saibaman (Green Dragon Ball creature)
+                const saibaMat = new THREE.MeshStandardMaterial({ color: 0x84cc16, roughness: 0.6 });
+                const body = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), saibaMat);
+                body.position.y = 1.6;
                 body.castShadow = true;
                 group.add(body);
 
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.8, 8, 8), bodyMat);
-                head.position.y = 2.8;
-                head.castShadow = true;
-                group.add(head);
-
-                const dagger = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.4, 0.2), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9 }));
-                dagger.position.set(-1, 1.5, 0.6);
-                dagger.rotation.x = Math.PI / 4;
-                group.add(dagger);
+                const claw = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.5, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+                claw.position.set(-1.2, 1.2, 0.8);
+                claw.rotation.x = Math.PI / 4;
+                group.add(claw);
                 group.scale.set(0.9, 0.9, 0.9);
-            } else if (typeKey === 'orc') {
-                // Heavy Orc Berserker with Axe & Horned Helmet
-                const orcMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.75 });
-                const armorMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, metalness: 0.7, roughness: 0.3 });
+            } else if (typeKey === 'rose') {
+                // Frieza Force Soldier with Armor & Scouter
+                const soldierMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.5 });
+                const armorMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, metalness: 0.7 });
 
                 const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 3, 1.8), armorMat);
                 body.position.y = 2.2;
                 body.castShadow = true;
                 group.add(body);
 
-                const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), orcMat);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), soldierMat);
                 head.position.y = 4.2;
-                head.castShadow = true;
                 group.add(head);
 
-                // Battleaxe
-                const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 4.5), new THREE.MeshStandardMaterial({ color: 0x78350f }));
-                handle.position.set(-1.6, 2.5, 0.8);
-                handle.rotation.x = -Math.PI / 6;
-                group.add(handle);
-
-                const blade = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.8, 1.4), new THREE.MeshStandardMaterial({ color: 0xe4e4e7, metalness: 0.9 }));
-                blade.position.set(-1.6, 4.2, 1.2);
-                group.add(blade);
+                // Red DBZ Scouter Eye Piece
+                const scouter = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.4, 0.8), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+                scouter.position.set(-1.1, 4.3, 0.6);
+                group.add(scouter);
                 group.scale.set(1.2, 1.2, 1.2);
-            } else if (typeKey === 'ram') {
-                // Siege Battering Ram
-                const woodMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.9 });
-                const ironMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.8 });
-
-                // Wooden frame
-                const frame = new THREE.Mesh(new THREE.BoxGeometry(7, 3, 3.5), woodMat);
-                frame.position.y = 2.2;
-                frame.castShadow = true;
-                group.add(frame);
-
-                // Spiked Iron Ram
-                const ram = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 9, 8), ironMat);
-                ram.rotation.z = Math.PI / 2;
-                ram.position.set(-1, 2.2, 0);
-                ram.castShadow = true;
-                group.add(ram);
-                group.scale.set(1.3, 1.3, 1.3);
-            } else if (typeKey === 'catapult') {
-                // Dark Trebuchet
-                const woodMat = new THREE.MeshStandardMaterial({ color: 0x292524, roughness: 0.8 });
+            } else {
+                // Siege Battering Ram / Catapult
+                const woodMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.9 });
                 const base = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 4), woodMat);
                 base.position.y = 0.8;
                 base.castShadow = true;
@@ -1236,14 +1370,8 @@
                 const beam = new THREE.Mesh(new THREE.BoxGeometry(0.6, 8, 0.6), woodMat);
                 beam.position.set(0, 4.5, 0);
                 beam.rotation.z = Math.PI / 5;
-                beam.castShadow = true;
                 group.add(beam);
-
-                // Burning boulder
-                const fireRock = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
-                fireRock.position.set(2, 7.5, 0);
-                group.add(fireRock);
-                group.scale.set(1.4, 1.4, 1.4);
+                group.scale.set(1.3, 1.3, 1.3);
             }
 
             return group;
@@ -1261,8 +1389,7 @@
             function renderTexture(img) {
                 ctx2d.clearRect(0, 0, 256, 128);
 
-                // Background bubble
-                ctx2d.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx2d.fillStyle = 'rgba(15, 23, 42, 0.9)';
                 ctx2d.strokeStyle = '#f59e0b';
                 ctx2d.lineWidth = 4;
                 ctx2d.beginPath();
@@ -1270,7 +1397,6 @@
                 ctx2d.fill();
                 ctx2d.stroke();
 
-                // Draw circular avatar
                 ctx2d.save();
                 ctx2d.beginPath();
                 ctx2d.arc(58, 64, 38, 0, Math.PI * 2);
@@ -1282,7 +1408,6 @@
                 }
                 ctx2d.restore();
 
-                // Username text
                 ctx2d.fillStyle = '#ffffff';
                 ctx2d.font = 'bold 24px Outfit, sans-serif';
                 ctx2d.fillText(`@${username.slice(0, 12)}`, 108, 68);
@@ -1324,28 +1449,26 @@
         const skillCooldowns = { cannon: 0, blizzard: 0, meteor: 0, sanctuary: 0 };
 
         const ENEMY_DEFS = {
-            goblin:   { name: 'Goblin Scout',     hp: 75,   speed: 5.5, damage: 12,  score: 5   },
-            orc:      { name: 'Orc Berserker',    hp: 280,  speed: 3.5, damage: 35,  score: 25  },
-            ram:      { name: 'Siege Ram',        hp: 750,  speed: 2.2, damage: 95,  score: 80  },
-            catapult: { name: 'Trebuchet',        hp: 550,  speed: 1.5, damage: 160, score: 150 },
-            dragon:   { name: 'Shadow Wyvern',    hp: 1500, speed: 4.8, damage: 220, score: 400, flying: true },
-            boss:     { name: 'TITAN SIEGE LORD', hp: 6000, speed: 1.2, damage: 550, score: 1800, isBoss: true }
+            like:     { name: 'Saibaman Swarm',         hp: 80,   speed: 5.5, damage: 12,  score: 5   },
+            rose:     { name: 'Frieza Force Soldier',    hp: 300,  speed: 3.5, damage: 35,  score: 25  },
+            donut:    { name: 'Dark Trebuchet',          hp: 600,  speed: 1.8, damage: 140, score: 100 },
+            shenlong: { name: 'SHENLONG (DIVINE DRAGON)', hp: 2000, speed: 4.8, damage: 280, score: 600, isShenlong: true },
+            cell:     { name: 'PERFECT CELL (DBZ BOSS)',  hp: 7500, speed: 1.3, damage: 650, score: 2500, isCell: true }
         };
 
         function spawnEnemy3D(typeKey, sender = 'Viewer', avatarUrl = 'images/renearn_icon.png') {
             if (isGameOver) return;
-            const def = ENEMY_DEFS[typeKey] || ENEMY_DEFS.goblin;
+            const def = ENEMY_DEFS[typeKey] || ENEMY_DEFS.like;
 
-            // Spawn at edge of map (X = 65, Z between -16 and 16)
-            const startX = 65 + Math.random() * 5;
+            const startX = 65 + Math.random() * 6;
             const startZ = (Math.random() * 2 - 1) * 16;
-            const startY = def.flying ? 14 : 0;
+            const startY = def.isShenlong ? 16 : 0;
 
             let mesh;
-            if (def.isBoss) {
-                mesh = create3DTitanBoss();
-            } else if (def.flying) {
-                mesh = create3DDragon();
+            if (def.isCell) {
+                mesh = create3DPerfectCell();
+            } else if (def.isShenlong) {
+                mesh = create3DShenlong();
             } else {
                 mesh = create3DMinion(typeKey);
             }
@@ -1353,9 +1476,9 @@
             mesh.position.set(startX, startY, startZ);
             scene.add(mesh);
 
-            // Attach 3D Billboard Avatar overhead
+            // Overhead Avatar Billboard
             const billboard = createAvatarBillboard(sender, avatarUrl);
-            const overheadY = def.isBoss ? 26 : (def.flying ? 6 : 6);
+            const overheadY = def.isCell ? 28 : (def.isShenlong ? 8 : 6);
             billboard.position.set(0, overheadY, 0);
             mesh.add(billboard);
 
@@ -1372,13 +1495,13 @@
                 frozenUntil: 0
             };
 
-            if (def.isBoss) {
+            if (def.isCell) {
                 activeBoss3D = enemyObj;
                 showBossBar(enemyObj);
-                playSound('bossAlarm');
+                playSound('cellAura');
                 document.getElementById('dangerVignette').classList.add('active');
-            } else if (def.flying) {
-                playSound('dragonRoar');
+            } else if (def.isShenlong) {
+                playSound('shenlongRoar');
             }
 
             enemies3D.push(enemyObj);
@@ -1412,7 +1535,6 @@
             if (now - lastTowerShotTime > 400) {
                 lastTowerShotTime = now;
 
-                // Pick enemy closest to the castle gate (X = -20)
                 let closest = null;
                 let minX = Infinity;
                 for (const e of enemies3D) {
@@ -1423,7 +1545,6 @@
                 }
 
                 if (closest) {
-                    // Fire flaming arrows from both north and south guard towers
                     [-17, 17].forEach(towerZ => {
                         fire3DArrow(new THREE.Vector3(-26, 18, towerZ), closest.mesh.position);
                     });
@@ -1433,22 +1554,14 @@
         }
 
         function fire3DArrow(startPos, targetPos) {
-            const arrowGeo = new THREE.CylinderGeometry(0.12, 0.12, 2.5, 6);
-            const arrowMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
-            const arrow = new THREE.Mesh(arrowGeo, arrowMat);
+            const arrow = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.5, 6), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
             arrow.position.copy(startPos);
             scene.add(arrow);
 
             const dir = new THREE.Vector3().subVectors(targetPos, startPos).normalize();
             arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
 
-            projectiles3D.push({
-                mesh: arrow,
-                dir: dir,
-                speed: 48,
-                damage: 55,
-                life: 90
-            });
+            projectiles3D.push({ mesh: arrow, dir: dir, speed: 50, damage: 60, life: 90 });
         }
 
         // ==============================================================
@@ -1471,8 +1584,6 @@
             } else if (skillKey === 'blizzard') {
                 playSound('freeze');
                 for (const e of enemies3D) e.frozenUntil = now + 4500;
-
-                // 3D Frost ground ring
                 for (let i = 0; i < 40; i++) {
                     create3DParticle(new THREE.Vector3((Math.random() * 80) - 20, 1, (Math.random() * 40) - 20), 0x67e8f9, 1.2);
                 }
@@ -1491,7 +1602,7 @@
             } else if (skillKey === 'sanctuary') {
                 castleHp = Math.min(CASTLE_MAX_HP, castleHp + 1800);
                 castleShield = 1200;
-                shieldMesh.material.opacity = 0.6;
+                shieldMesh.material.opacity = 0.65;
                 updateCastleHpDisplay();
                 playSound('click');
                 setCooldown('sanctuary', 25);
@@ -1517,30 +1628,8 @@
             }, 250);
         }
 
-        // Click to Mortar Blast
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        window.addEventListener('pointerdown', (e) => {
-            // Ignore UI clicks
-            if (e.target.closest('.hud-top, .boss-alert-container, .skills-dock, .test-deck, .controls-top, #endModal')) return;
-            initAudio();
-
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-
-            const intersects = raycaster.intersectObject(ground);
-            if (intersects.length > 0) {
-                const pt = intersects[0].point;
-                create3DExplosion(pt.x, pt.z, 9, 120);
-                playSound('hit');
-            }
-        });
-
         // 3D Explosions & Damage
         function create3DExplosion(x, z, radius, damage) {
-            // Damage enemies in 3D radius
             for (let i = enemies3D.length - 1; i >= 0; i--) {
                 const e = enemies3D[i];
                 const dist = Math.hypot(e.mesh.position.x - x, e.mesh.position.z - z);
@@ -1550,13 +1639,11 @@
                 }
             }
 
-            // Explosion flash light
             const flash = new THREE.PointLight(0xf59e0b, 5, 25);
             flash.position.set(x, 4, z);
             scene.add(flash);
             setTimeout(() => scene.remove(flash), 120);
 
-            // 3D Fire Particles
             for (let i = 0; i < 26; i++) {
                 const pColor = Math.random() > 0.4 ? 0xf59e0b : 0xef4444;
                 create3DParticle(new THREE.Vector3(x, 1, z), pColor, 1.5 + Math.random() * 2);
@@ -1564,9 +1651,7 @@
         }
 
         function create3DParticle(pos, color, size) {
-            const pGeo = new THREE.SphereGeometry(size * 0.35, 6, 6);
-            const pMat = new THREE.MeshBasicMaterial({ color: color });
-            const pMesh = new THREE.Mesh(pGeo, pMat);
+            const pMesh = new THREE.Mesh(new THREE.SphereGeometry(size * 0.35, 6, 6), new THREE.MeshBasicMaterial({ color: color }));
             pMesh.position.copy(pos);
             scene.add(pMesh);
 
@@ -1589,9 +1674,8 @@
                 totalDefeated++;
                 recordGifterScore(enemy.sender, enemy.def.score);
 
-                // Death particles
-                for (let p = 0; p < 12; p++) {
-                    create3DParticle(enemy.mesh.position, 0xf59e0b, 1.2);
+                for (let p = 0; p < 14; p++) {
+                    create3DParticle(enemy.mesh.position, 0xf59e0b, 1.4);
                 }
 
                 if (enemy === activeBoss3D) {
@@ -1637,7 +1721,7 @@
 
         function updateEnemyCountDisplay() {
             const el = document.getElementById('enemyCountDisplay');
-            if (el) el.textContent = `${enemies3D.length} SIEGE UNITS`;
+            if (el) el.textContent = `${enemies3D.length} UNITS`;
         }
 
         function updateCastleHpDisplay() {
@@ -1655,7 +1739,7 @@
             }
 
             if (castleShield > 0) {
-                shieldMesh.material.opacity = Math.max(0.15, castleShield / 1200 * 0.6);
+                shieldMesh.material.opacity = Math.max(0.15, castleShield / 1200 * 0.65);
             } else {
                 shieldMesh.material.opacity = 0.0;
             }
@@ -1676,8 +1760,8 @@
             const genName = topGeneral ? `@${topGeneral[0]} (${topGeneral[1]} pts)` : 'None';
 
             document.getElementById('endStats').innerHTML = `
-                The viewer siege army overwhelmed the fortress walls!<br>
-                Total Monsters Defeated: <strong>${totalDefeated}</strong><br>
+                Perfect Cell and the viewer forces destroyed the fortress gates!<br>
+                Total Units Defeated: <strong>${totalDefeated}</strong><br>
                 Top Siege General: <strong style="color:#f59e0b;">${genName}</strong>
             `;
         }
@@ -1721,38 +1805,48 @@
             torchLight1.intensity = 2.4 + Math.sin(time * 12) * 0.4;
             torchLight2.intensity = 2.4 + Math.cos(time * 15) * 0.4;
 
-            // 1. Update Automated Archer Towers
+            // 1. Update Towers
             updateTowers(Date.now());
 
-            // 2. Update & Move 3D Enemies
+            // 2. Update 3D Enemies & DBZ Animations
             const now = Date.now();
             for (let i = enemies3D.length - 1; i >= 0; i--) {
                 const e = enemies3D[i];
                 const isFrozen = e.frozenUntil > now;
 
                 if (!isFrozen) {
-                    // March toward castle gate at X = -20
                     if (e.mesh.position.x > -20) {
                         e.mesh.position.x -= e.speed * delta;
                     } else {
-                        // At castle gate! Attack!
                         if (now - e.lastAttack > 1800) {
                             e.lastAttack = now;
                             attackCastle(e);
                         }
                     }
 
-                    // Animate Dragon Wings & Flying Motion
-                    if (e.def.flying && e.mesh.userData.leftWing) {
-                        const wingFlap = Math.sin(time * e.mesh.userData.wingSpeed) * 0.6;
-                        e.mesh.userData.leftWing.rotation.x = Math.PI / 2 + wingFlap;
-                        e.mesh.userData.rightWing.rotation.x = Math.PI / 2 - wingFlap;
-                        e.mesh.position.y = 12 + Math.sin(time * 3) * 2;
+                    // Shenlong Sinuous Serpentine Body Animation
+                    if (e.def.isShenlong && e.mesh.userData.segments) {
+                        const segs = e.mesh.userData.segments;
+                        for (let s = 0; s < segs.length; s++) {
+                            const waveOffset = s * 0.35;
+                            segs[s].position.set(
+                                s * 2.8,
+                                Math.sin(time * 3 + waveOffset) * 2.5,
+                                Math.cos(time * 2.5 + waveOffset) * 4
+                            );
+                        }
+                        if (e.mesh.userData.dragonBalls) {
+                            e.mesh.userData.dragonBalls.rotation.y = time * 1.5;
+                        }
                     }
 
-                    // Animate Titan Boss Stomp
-                    if (e.def.isBoss) {
-                        e.mesh.position.y = Math.abs(Math.sin(time * 4)) * 0.8;
+                    // Perfect Cell Aura & Floating Stance Animation
+                    if (e.def.isCell) {
+                        if (e.mesh.userData.aura) {
+                            e.mesh.userData.aura.rotation.z = time * 4;
+                            e.mesh.userData.aura.material.opacity = 0.5 + Math.sin(time * 10) * 0.3;
+                        }
+                        e.mesh.position.y = Math.sin(time * 4) * 0.8;
                     }
                 }
             }
@@ -1763,11 +1857,10 @@
                 p.mesh.position.addScaledVector(p.dir, p.speed * delta);
                 p.life--;
 
-                // Check collision against enemies
                 let hit = false;
                 for (let eIdx = enemies3D.length - 1; eIdx >= 0; eIdx--) {
                     const e = enemies3D[eIdx];
-                    if (p.mesh.position.distanceTo(e.mesh.position) < 4.5) {
+                    if (p.mesh.position.distanceTo(e.mesh.position) < 4.8) {
                         apply3DDamage(e, p.damage, eIdx);
                         playSound('hit');
                         hit = true;
@@ -1787,7 +1880,7 @@
                 pt.mesh.position.x += pt.vx * delta;
                 pt.mesh.position.y += pt.vy * delta;
                 pt.mesh.position.z += pt.vz * delta;
-                pt.vy -= 18 * delta; // gravity
+                pt.vy -= 18 * delta;
                 pt.alpha -= pt.decay;
 
                 if (pt.alpha <= 0 || pt.mesh.position.y < 0) {
@@ -1820,7 +1913,7 @@
         // ==============================================================
         // SIMULATION TEST DECK
         // ==============================================================
-        const testUsernames = ['DragonMaster', 'TikTokHero', 'GamerPro', 'RenEarnChampion', 'SiegeKing'];
+        const testUsernames = ['Goku_SSJ', 'VegetaPrince', 'TrunksTime', 'RenEarnChamp', 'GohanBeast'];
 
         function testSpawn(type) {
             initAudio();
@@ -1829,16 +1922,16 @@
 
             if (type === 'like') {
                 for (let i = 0; i < 3; i++) {
-                    setTimeout(() => spawnEnemy3D('goblin', sender, avatar), i * 200);
+                    setTimeout(() => spawnEnemy3D('like', sender, avatar), i * 200);
                 }
             } else if (type === 'rose') {
-                spawnEnemy3D('orc', sender, avatar);
+                spawnEnemy3D('rose', sender, avatar);
             } else if (type === 'donut') {
-                spawnEnemy3D('catapult', sender, avatar);
-            } else if (type === 'dragon') {
-                spawnEnemy3D('dragon', sender, avatar);
-            } else if (type === 'boss') {
-                spawnEnemy3D('boss', sender, avatar);
+                spawnEnemy3D('donut', sender, avatar);
+            } else if (type === 'shenlong') {
+                spawnEnemy3D('shenlong', sender, avatar);
+            } else if (type === 'cell') {
+                spawnEnemy3D('cell', sender, avatar);
             }
         }
 
@@ -1873,19 +1966,17 @@
                 const giftName = (ev.giftName || '').toLowerCase();
                 const coins = ev.diamondCount || 1;
 
-                if (coins >= 1000 || giftName.includes('galaxy') || giftName.includes('lion') || giftName.includes('whale')) {
-                    spawnEnemy3D('boss', user, avatar);
-                } else if (coins >= 300 || giftName.includes('dragon') || giftName.includes('swan') || giftName.includes('corgi')) {
-                    spawnEnemy3D('dragon', user, avatar);
+                if (coins >= 1000 || giftName.includes('galaxy') || giftName.includes('lion') || giftName.includes('whale') || giftName.includes('cell')) {
+                    spawnEnemy3D('cell', user, avatar);
+                } else if (coins >= 300 || giftName.includes('dragon') || giftName.includes('swan') || giftName.includes('shenlong')) {
+                    spawnEnemy3D('shenlong', user, avatar);
                 } else if (coins >= 30 || giftName.includes('donut') || giftName.includes('crane')) {
-                    spawnEnemy3D('catapult', user, avatar);
-                } else if (coins >= 5 || giftName.includes('heart') || giftName.includes('ice cream')) {
-                    spawnEnemy3D('ram', user, avatar);
+                    spawnEnemy3D('donut', user, avatar);
                 } else {
-                    spawnEnemy3D('orc', user, avatar);
+                    spawnEnemy3D('rose', user, avatar);
                 }
             } else if (ev.type === 'like') {
-                spawnEnemy3D('goblin', user, avatar);
+                spawnEnemy3D('like', user, avatar);
             }
         }
 
