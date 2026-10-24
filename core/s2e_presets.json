@@ -2623,15 +2623,15 @@
                         "name":  "Plants vs. Zombies 2 (TikToEarn Edition)",
                         "game":  "pvz2",
                         "createdAt":  "10/24/2026",
-                        "coverIcon":  "images/pvz2_cover.jpg",
+                        "coverIcon":  "images/pvz2_banner.png",
                         "eventsCount":  23,
                         "overflowCount":  "+18",
                         "previewSprites":  [
-                                               "images/pvz2/coins_gems.jpg",
-                                               "images/game-icons/pvz/spawn_cone_zombie.webp",
-                                               "images/pvz2/parasol_zombie.jpg",
-                                               "images/pvz2/weasel_hoarder.jpg",
-                                               "images/pvz2/pirate_captain.jpg"
+                                               "images/pvz2/coins_gems.png",
+                                               "images/pvz2/conehead_zombie.png",
+                                               "images/pvz2/parasol_zombie.png",
+                                               "images/pvz2/weasel_hoarder.png",
+                                               "images/pvz2/pirate_captain.png"
                                            ],
                         "allowImport":  true,
                         "events":  [
@@ -2640,8 +2640,8 @@
                                            "giftName":  "Tik Coin",
                                            "giftId":  "5655",
                                            "coins":  1,
-                                           "icon":  "images/pvz2/coins_gems.jpg",
-                                           "unitIcon":  "images/pvz2/coins_gems.jpg",
+                                           "icon":  "images/pvz2/coins_gems.png",
+                                           "unitIcon":  "images/pvz2/coins_gems.png",
                                            "actionType":  "special",
                                            "command":  "pvz2:add_coins?amount=99999",
                                            "label":  "ADD COINS \u0026 GEMS (99999)",
@@ -2651,7 +2651,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Common",
-                                           "funcImg":  "images/pvz2/coins_gems.jpg",
+                                           "funcImg":  "images/pvz2/coins_gems.png",
                                            "funcName":  "ADD COINS \u0026 GEMS (99999)"
                                        },
                                        {
@@ -2660,7 +2660,7 @@
                                            "giftId":  "5655",
                                            "coins":  1,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_cone_zombie.webp",
+                                           "unitIcon":  "images/pvz2/conehead_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_conehead_zombie\u0026count=5\u0026delay=50",
                                            "label":  "CONEHEAD ZOMBIE",
@@ -2670,7 +2670,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Common",
-                                           "funcImg":  "images/game-icons/pvz/spawn_cone_zombie.webp",
+                                           "funcImg":  "images/pvz2/conehead_zombie.png",
                                            "funcName":  "CONEHEAD ZOMBIE"
                                        },
                                        {
@@ -2679,7 +2679,7 @@
                                            "giftId":  "5827",
                                            "coins":  1,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/pvz2/parasol_zombie.jpg",
+                                           "unitIcon":  "images/pvz2/parasol_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_lostcity_jane\u0026count=10\u0026delay=50",
                                            "label":  "PARASOL ZOMBIE",
@@ -2689,7 +2689,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Common",
-                                           "funcImg":  "images/pvz2/parasol_zombie.jpg",
+                                           "funcImg":  "images/pvz2/parasol_zombie.png",
                                            "funcName":  "PARASOL ZOMBIE"
                                        },
                                        {
@@ -2698,7 +2698,7 @@
                                            "giftId":  "5487",
                                            "coins":  5,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/pvz2/weasel_hoarder.jpg",
+                                           "unitIcon":  "images/pvz2/weasel_hoarder.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_iceage_weaselhoarder\u0026count=5\u0026delay=50",
                                            "label":  "WEASEL HOARDER",
@@ -2708,7 +2708,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Rare",
-                                           "funcImg":  "images/pvz2/weasel_hoarder.jpg",
+                                           "funcImg":  "images/pvz2/weasel_hoarder.png",
                                            "funcName":  "WEASEL HOARDER"
                                        },
                                        {
@@ -2717,7 +2717,7 @@
                                            "giftId":  "5655",
                                            "coins":  10,
                                            "icon":  "images/tiktok-gifts/17357_pirate_s_treasure.webp",
-                                           "unitIcon":  "images/pvz2/pirate_captain.jpg",
+                                           "unitIcon":  "images/pvz2/pirate_captain.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_pirate_captain\u0026count=5\u0026delay=50",
                                            "label":  "PIRATE CAPTAIN ZOMBIE",
@@ -2727,7 +2727,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Rare",
-                                           "funcImg":  "images/pvz2/pirate_captain.jpg",
+                                           "funcImg":  "images/pvz2/pirate_captain.png",
                                            "funcName":  "PIRATE CAPTAIN ZOMBIE"
                                        },
                                        {
@@ -2736,7 +2736,7 @@
                                            "giftId":  "5827",
                                            "coins":  30,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_bucket_zombie.webp",
+                                           "unitIcon":  "images/pvz2/buckethead_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_buckethead_zombie\u0026count=5\u0026delay=50",
                                            "label":  "BUCKETHEAD ZOMBIE",
@@ -2745,7 +2745,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Rare",
-                                           "funcImg":  "images/game-icons/pvz/spawn_bucket_zombie.webp",
+                                           "funcImg":  "images/pvz2/buckethead_zombie.png",
                                            "funcName":  "BUCKETHEAD ZOMBIE"
                                        },
                                        {
@@ -2754,7 +2754,7 @@
                                            "giftId":  "5655",
                                            "coins":  99,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/pvz2/pirate_captain.jpg",
+                                           "unitIcon":  "images/pvz2/swashbuckler_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_swashbuckler\u0026count=5\u0026delay=50",
                                            "label":  "SWASHBUCKLER ZOMBIE",
@@ -2763,7 +2763,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/pvz2/pirate_captain.jpg",
+                                           "funcImg":  "images/pvz2/swashbuckler_zombie.png",
                                            "funcName":  "SWASHBUCKLER ZOMBIE"
                                        },
                                        {
@@ -2772,7 +2772,7 @@
                                            "giftId":  "5827",
                                            "coins":  20,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/pvz2/pirate_captain.jpg",
+                                           "unitIcon":  "images/pvz2/barrel_roller_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_barrelroller\u0026count=3\u0026delay=50",
                                            "label":  "BARREL ROLLER ZOMBIE",
@@ -2781,7 +2781,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Rare",
-                                           "funcImg":  "images/pvz2/pirate_captain.jpg",
+                                           "funcImg":  "images/pvz2/barrel_roller_zombie.png",
                                            "funcName":  "BARREL ROLLER ZOMBIE"
                                        },
                                        {
@@ -2790,7 +2790,7 @@
                                            "giftId":  "5655",
                                            "coins":  99,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/pvz2_cover.jpg",
+                                           "unitIcon":  "images/pvz2/pharaoh_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_pharaoh\u0026count=3\u0026delay=50",
                                            "label":  "PHARAOH ZOMBIE",
@@ -2799,7 +2799,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/pvz2_cover.jpg",
+                                           "funcImg":  "images/pvz2/pharaoh_zombie.png",
                                            "funcName":  "PHARAOH ZOMBIE"
                                        },
                                        {
@@ -2808,7 +2808,7 @@
                                            "giftId":  "5655",
                                            "coins":  100,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/tiktok-gifts/10668_future_encounter.webp",
+                                           "unitIcon":  "images/pvz2/jetpack_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_future_jetpack\u0026count=5\u0026delay=50",
                                            "label":  "JETPACK ZOMBIE",
@@ -2817,7 +2817,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/tiktok-gifts/10668_future_encounter.webp",
+                                           "funcImg":  "images/pvz2/jetpack_zombie.png",
                                            "funcName":  "JETPACK ZOMBIE"
                                        },
                                        {
@@ -2826,7 +2826,7 @@
                                            "giftId":  "5655",
                                            "coins":  199,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/games/sprites/cc_wizard.svg",
+                                           "unitIcon":  "images/pvz2/wizard_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_dark_wizard\u0026count=3\u0026delay=50",
                                            "label":  "WIZARD ZOMBIE",
@@ -2835,7 +2835,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/games/sprites/cc_wizard.svg",
+                                           "funcImg":  "images/pvz2/wizard_zombie.png",
                                            "funcName":  "WIZARD ZOMBIE"
                                        },
                                        {
@@ -2844,7 +2844,7 @@
                                            "giftId":  "5827",
                                            "coins":  100,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_dance_pol_zombie.webp",
+                                           "unitIcon":  "images/pvz2/jester_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_dark_juggler\u0026count=5\u0026delay=50",
                                            "label":  "JESTER ZOMBIE",
@@ -2853,7 +2853,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/game-icons/pvz/spawn_dance_pol_zombie.webp",
+                                           "funcImg":  "images/pvz2/jester_zombie.png",
                                            "funcName":  "JESTER ZOMBIE"
                                        },
                                        {
@@ -2862,7 +2862,7 @@
                                            "giftId":  "5655",
                                            "coins":  99,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_cone_zombie.webp",
+                                           "unitIcon":  "images/pvz2/robo_cone_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_mech_cone\u0026count=2\u0026delay=50",
                                            "label":  "ROBO-CONE ZOMBIE",
@@ -2871,7 +2871,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/game-icons/pvz/spawn_cone_zombie.webp",
+                                           "funcImg":  "images/pvz2/robo_cone_zombie.png",
                                            "funcName":  "ROBO-CONE ZOMBIE"
                                        },
                                        {
@@ -2880,7 +2880,7 @@
                                            "giftId":  "5655",
                                            "coins":  299,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/pvz2/parasol_zombie.jpg",
+                                           "unitIcon":  "images/pvz2/excavator_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_lostcity_excavator\u0026count=3\u0026delay=50",
                                            "label":  "EXCAVATOR ZOMBIE",
@@ -2889,7 +2889,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/pvz2/parasol_zombie.jpg",
+                                           "funcImg":  "images/pvz2/excavator_zombie.png",
                                            "funcName":  "EXCAVATOR ZOMBIE"
                                        },
                                        {
@@ -2898,7 +2898,7 @@
                                            "giftId":  "5827",
                                            "coins":  300,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/pvz2/parasol_zombie.jpg",
+                                           "unitIcon":  "images/pvz2/relic_hunter_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_lostcity_relichunter\u0026count=5\u0026delay=50",
                                            "label":  "RELIC HUNTER ZOMBIE",
@@ -2907,7 +2907,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/pvz2/parasol_zombie.jpg",
+                                           "funcImg":  "images/pvz2/relic_hunter_zombie.png",
                                            "funcName":  "RELIC HUNTER ZOMBIE"
                                        },
                                        {
@@ -2916,7 +2916,7 @@
                                            "giftId":  "5655",
                                            "coins":  499,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_mecha.webp",
+                                           "unitIcon":  "images/pvz2/mecha_football_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_football_mech\u0026count=2\u0026delay=50",
                                            "label":  "MECHA-FOOTBALL ZOMBIE",
@@ -2925,7 +2925,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/game-icons/pvz/spawn_mecha.webp",
+                                           "funcImg":  "images/pvz2/mecha_football_zombie.png",
                                            "funcName":  "MECHA-FOOTBALL ZOMBIE"
                                        },
                                        {
@@ -2934,7 +2934,7 @@
                                            "giftId":  "5655",
                                            "coins":  200,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/game-icons/pvz/snorkel_zombie.webp",
+                                           "unitIcon":  "images/pvz2/surfer_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_beach_surfer\u0026count=5\u0026delay=50",
                                            "label":  "SURFER ZOMBIE",
@@ -2943,7 +2943,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/game-icons/pvz/snorkel_zombie.webp",
+                                           "funcImg":  "images/pvz2/surfer_zombie.png",
                                            "funcName":  "SURFER ZOMBIE"
                                        },
                                        {
@@ -2952,7 +2952,7 @@
                                            "giftId":  "5827",
                                            "coins":  500,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/game-icons/pvz/snorkel_zombie.webp",
+                                           "unitIcon":  "images/pvz2/octo_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_beach_octopus\u0026count=3\u0026delay=50",
                                            "label":  "OCTO ZOMBIE",
@@ -2961,7 +2961,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/game-icons/pvz/snorkel_zombie.webp",
+                                           "funcImg":  "images/pvz2/octo_zombie.png",
                                            "funcName":  "OCTO ZOMBIE"
                                        },
                                        {
@@ -2970,7 +2970,7 @@
                                            "giftId":  "5655",
                                            "coins":  199,
                                            "icon":  "images/tiktok-gifts/5655_rose.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_dance_pol_zombie2.webp",
+                                           "unitIcon":  "images/pvz2/disco_tron.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_disco_mech\u0026count=2\u0026delay=50",
                                            "label":  "DISCO-TRON 3000",
@@ -2979,7 +2979,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Epic",
-                                           "funcImg":  "images/game-icons/pvz/spawn_dance_pol_zombie2.webp",
+                                           "funcImg":  "images/pvz2/disco_tron.png",
                                            "funcName":  "DISCO-TRON 3000"
                                        },
                                        {
@@ -2988,7 +2988,7 @@
                                            "giftId":  "5827",
                                            "coins":  399,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/pvz2/weasel_hoarder.jpg",
+                                           "unitIcon":  "images/pvz2/troglobite_zombie.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_iceage_troglobite\u0026count=2\u0026delay=50",
                                            "label":  "TROGLOBITE ICE PUSHER",
@@ -2997,7 +2997,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/pvz2/weasel_hoarder.jpg",
+                                           "funcImg":  "images/pvz2/troglobite_zombie.png",
                                            "funcName":  "TROGLOBITE ICE PUSHER"
                                        },
                                        {
@@ -3006,7 +3006,7 @@
                                            "giftId":  "5827",
                                            "coins":  488,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_gargantuar.webp",
+                                           "unitIcon":  "images/pvz2/gargantuar_prime.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_future_gargantuar\u0026count=1\u0026delay=50",
                                            "label":  "GARGANTUAR PRIME",
@@ -3015,7 +3015,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/game-icons/pvz/spawn_gargantuar.webp",
+                                           "funcImg":  "images/pvz2/gargantuar_prime.png",
                                            "funcName":  "GARGANTUAR PRIME"
                                        },
                                        {
@@ -3024,7 +3024,7 @@
                                            "giftId":  "5827",
                                            "coins":  1000,
                                            "icon":  "images/tiktok-gifts/5827_icecream.webp",
-                                           "unitIcon":  "images/game-icons/pvz/spawn_super_gargantuar.webp",
+                                           "unitIcon":  "images/pvz2/zomboss_mech.png",
                                            "actionType":  "zombie",
                                            "command":  "pvz2:spawnzombie?unit=pvz2_zombossmech_future\u0026count=1\u0026delay=50",
                                            "label":  "DR. ZOMBOSS MECH BATTLE",
@@ -3033,7 +3033,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Legendary",
-                                           "funcImg":  "images/game-icons/pvz/spawn_super_gargantuar.webp",
+                                           "funcImg":  "images/pvz2/zomboss_mech.png",
                                            "funcName":  "DR. ZOMBOSS MECH BATTLE"
                                        },
                                        {
@@ -3041,8 +3041,8 @@
                                            "giftName":  "Plant Food",
                                            "giftId":  "5655",
                                            "coins":  1,
-                                           "icon":  "images/games/pvz2_zombie_food.jpg",
-                                           "unitIcon":  "images/games/pvz2_zombie_food.jpg",
+                                           "icon":  "images/pvz2/zombie_food.png",
+                                           "unitIcon":  "images/pvz2/zombie_food.png",
                                            "actionType":  "plant",
                                            "command":  "pvz2:zombie_food",
                                            "label":  "ZOMBIE FOOD (PLANT FOOD BOOST)",
@@ -3051,7 +3051,7 @@
                                            "triggerType":  "gift",
                                            "targetGame":  "pvz2",
                                            "spinnerRarity":  "Common",
-                                           "funcImg":  "images/games/pvz2_zombie_food.jpg",
+                                           "funcImg":  "images/pvz2/zombie_food.png",
                                            "funcName":  "ZOMBIE FOOD (PLANT FOOD BOOST)"
                                        }
                                    ]
