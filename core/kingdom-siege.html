@@ -1397,7 +1397,8 @@
         }
 
         // ==============================================================
-        // DBFZ 3D PERFECT CELL GLTF MODEL & LIGHTNING KI SYSTEM
+        // ==============================================================
+        // DBFZ 3D PERFECT CELL GLTF MODEL & SMOOTH ANIME KI SYSTEM
         // ==============================================================
         let cellGltfTemplate = null;
         let cellLoadingPromise = null;
@@ -1440,9 +1441,27 @@
                             }
                         }
                     });
-                    cellGltfTemplate = root;
-                    console.log('⚡ DBFZ Perfect Cell 3D Model Loaded Successfully!');
-                    resolve(root);
+
+                    // Accurate Bounding Box normalization
+                    const box = new THREE.Box3().setFromObject(root);
+                    const size = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+
+                    // Desired Colossal Boss height: 24 units
+                    const targetHeight = 24;
+                    const scaleFactor = targetHeight / (size.y || 1);
+
+                    const container = new THREE.Group();
+                    root.scale.setScalar(scaleFactor);
+                    // Center horizontally (X, Z) and position feet right on the ground plane (Y = 0)
+                    root.position.set(-center.x * scaleFactor, -box.min.y * scaleFactor, -center.z * scaleFactor);
+                    // Face towards the castle (-X)
+                    root.rotation.y = -Math.PI / 2;
+                    container.add(root);
+
+                    cellGltfTemplate = container;
+                    console.log('⚡ DBFZ Perfect Cell 3D Model Normalized & Loaded Successfully! Height:', targetHeight);
+                    resolve(container);
                 }, undefined, (err) => {
                     console.warn('Error loading models/cell.glb, will use procedural fallback:', err);
                     resolve(null);
@@ -1594,10 +1613,6 @@
 
             if (cellGltfTemplate) {
                 const clone = cellGltfTemplate.clone(true);
-                // Rotate by -90 deg so Cell faces directly toward castle (-X)
-                clone.rotation.y = -Math.PI / 2;
-                clone.scale.set(1.4, 1.4, 1.4);
-                clone.position.y = 0;
                 bodyContainer.add(clone);
             } else {
                 const proc = createProceduralCellBody();
@@ -1608,76 +1623,62 @@
                             bodyContainer.remove(bodyContainer.children[0]);
                         }
                         const clone = gltfRoot.clone(true);
-                        clone.rotation.y = -Math.PI / 2;
-                        clone.scale.set(1.4, 1.4, 1.4);
-                        clone.position.y = 0;
                         bodyContainer.add(clone);
                     }
                 });
             }
 
-            // DBFZ Super Saiyan 2 / Super Perfect Cell Lightning Spikes & Dual-Layer Ki Aura
+            // CLEAN, STUNNING ANIME KI AURA (NO WIREFRAME CAGE!)
             const auraGroup = new THREE.Group();
 
-            // 1. Outer Electric Cyan Ki Pillar
-            const auraGeo = new THREE.CylinderGeometry(7.5, 9.5, 34, 24, 1, true);
+            // 1. Smooth Volumetric Electric Blue Ki Column (Smooth surface, NO wireframe)
+            const auraGeo = new THREE.CylinderGeometry(5.5, 7.5, 26, 32, 1, true);
             const auraMat = new THREE.MeshBasicMaterial({
                 color: 0x38bdf8,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.35,
-                wireframe: true,
+                opacity: 0.22,
+                wireframe: false,
                 blending: THREE.AdditiveBlending
             });
             const auraPillar = new THREE.Mesh(auraGeo, auraMat);
-            auraPillar.position.y = 16;
+            auraPillar.position.y = 13;
             auraGroup.add(auraPillar);
 
-            // 2. Inner Golden Super Saiyan Flare
-            const innerAuraGeo = new THREE.CylinderGeometry(5.2, 7.2, 30, 18, 1, true);
+            // 2. Inner Golden Super Saiyan Flare Column (Smooth translucent glow)
+            const innerAuraGeo = new THREE.CylinderGeometry(4.2, 5.8, 24, 24, 1, true);
             const innerAuraMat = new THREE.MeshBasicMaterial({
                 color: 0xfacc15,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.25,
-                wireframe: true,
+                opacity: 0.18,
+                wireframe: false,
                 blending: THREE.AdditiveBlending
             });
             const innerAura = new THREE.Mesh(innerAuraGeo, innerAuraMat);
-            innerAura.position.y = 15;
+            innerAura.position.y = 12;
             auraGroup.add(innerAura);
 
-            // 3. Dynamic Lightning Sparks (Zig-zag arcs)
-            const lightningArcs = [];
-            const lightMat = new THREE.LineBasicMaterial({
+            // 3. Ground Ki Shockwave Ring at his feet
+            const groundRingGeo = new THREE.RingGeometry(3.5, 7.5, 32);
+            const groundRingMat = new THREE.MeshBasicMaterial({
                 color: 0x67e8f9,
-                linewidth: 2,
+                side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.9,
+                opacity: 0.35,
                 blending: THREE.AdditiveBlending
             });
-            for (let l = 0; l < 8; l++) {
-                const points = [];
-                let cur = new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 4, (Math.random() - 0.5) * 6);
-                points.push(cur.clone());
-                for (let pt = 0; pt < 5; pt++) {
-                    cur.x += (Math.random() - 0.5) * 4;
-                    cur.y += 3 + Math.random() * 4;
-                    cur.z += (Math.random() - 0.5) * 4;
-                    points.push(cur.clone());
-                }
-                const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(lineGeo, lightMat);
-                auraGroup.add(line);
-                lightningArcs.push({ line, basePoints: points });
-            }
+            const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
+            groundRing.rotation.x = -Math.PI / 2;
+            groundRing.position.y = 0.2;
+            auraGroup.add(groundRing);
 
             cellGroup.add(auraGroup);
             cellGroup.userData = {
                 bodyContainer: bodyContainer,
                 aura: auraPillar,
                 innerAura: innerAura,
-                lightning: lightningArcs
+                groundRing: groundRing
             };
 
             return cellGroup;
@@ -2197,31 +2198,21 @@
                         }
                     }
 
-                    // Perfect Cell Floating, Super Saiyan Dual Ki Aura & Violent Lightning
+                    // Perfect Cell Floating & Smooth Ki Energy Pulse
                     if (e.def.isCell) {
                         if (e.mesh.userData.aura) {
-                            e.mesh.userData.aura.rotation.y = time * 4;
-                            e.mesh.userData.aura.material.opacity = 0.35 + Math.sin(time * 10) * 0.15;
+                            e.mesh.userData.aura.rotation.y = time * 2.5;
+                            e.mesh.userData.aura.material.opacity = 0.22 + Math.sin(time * 8) * 0.08;
                         }
                         if (e.mesh.userData.innerAura) {
-                            e.mesh.userData.innerAura.rotation.y = -time * 6;
-                            e.mesh.userData.innerAura.material.opacity = 0.25 + Math.cos(time * 12) * 0.12;
+                            e.mesh.userData.innerAura.rotation.y = -time * 3.5;
+                            e.mesh.userData.innerAura.material.opacity = 0.18 + Math.cos(time * 10) * 0.06;
                         }
-                        if (e.mesh.userData.lightning && Math.random() < 0.45) {
-                            e.mesh.userData.lightning.forEach(l => {
-                                const posAttr = l.line.geometry.attributes.position;
-                                for (let pIdx = 0; pIdx < posAttr.count; pIdx++) {
-                                    posAttr.setXYZ(
-                                        pIdx,
-                                        (Math.random() - 0.5) * 8,
-                                        pIdx * 5 + (Math.random() - 0.5) * 3,
-                                        (Math.random() - 0.5) * 8
-                                    );
-                                }
-                                posAttr.needsUpdate = true;
-                            });
+                        if (e.mesh.userData.groundRing) {
+                            e.mesh.userData.groundRing.rotation.z = time * 3;
+                            e.mesh.userData.groundRing.scale.setScalar(1 + Math.sin(time * 6) * 0.12);
                         }
-                        e.mesh.position.y = 1.2 + Math.sin(time * 3.5) * 0.8;
+                        e.mesh.position.y = 0.8 + Math.sin(time * 3) * 0.5;
                     }
                 }
             }
