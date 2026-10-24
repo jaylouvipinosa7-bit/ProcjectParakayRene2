@@ -8318,10 +8318,12 @@ INSTALLATION INSTRUCTIONS:
                 ".webm" = "video/webm"
                 ".woff2"= "font/woff2"
                 ".ttf"  = "font/ttf"
+                ".glb"  = "model/gltf-binary"
+                ".gltf" = "model/gltf+json"
             }
             $contentType = if ($mimeMap.ContainsKey($ext)) { $mimeMap[$ext] } else { "application/octet-stream" }
 
-            $isStaticMedia = ($ext -in @(".webp", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".mp3", ".wav", ".ogg", ".woff2", ".ttf", ".js", ".css"))
+            $isStaticMedia = ($ext -in @(".webp", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".mp3", ".wav", ".ogg", ".woff2", ".ttf", ".js", ".css", ".glb", ".gltf"))
 
             if (-not $script:staticFileByteCache) {
                 $script:staticFileByteCache = [System.Collections.Generic.Dictionary[string, byte[]]]::new([System.StringComparer]::OrdinalIgnoreCase)
