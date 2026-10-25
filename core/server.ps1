@@ -10,6 +10,7 @@ $gamePorts = @(5003, 55001)
 
 # Disable Expect100Continue to eliminate HTTP POST stall delays
 [System.Net.ServicePointManager]::Expect100Continue = $false
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls
 
 $countsFile = Join-Path $folder "counts.json"
 $configFile = Join-Path $folder "pvz_fusion_config.json"
@@ -2507,8 +2508,9 @@ while ($true) {
         # 0.1 Update System: Check for Updates
         if ($reqPath -eq '/api/update/check') {
             $localVerFile = Join-Path $folder "version.json"
-            $localVer = "4.0.0"
+            $localVer = "4.1.0"
             $remoteUrl = "https://raw.githubusercontent.com/jaylouvipinosa7-bit/ProcjectParakayRene2/main/version.json"
+            $localObj = $null
             
             if (Test-Path $localVerFile) {
                 try {
@@ -2518,45 +2520,37 @@ while ($true) {
                 } catch {}
             }
 
-            $remoteData = $null
-            try {
-                # Fetch remote version from GitHub with 3s timeout
-                $res = Invoke-RestMethod -Uri $remoteUrl -Method Get -TimeoutSec 3 -ErrorAction Stop
-                $remoteData = $res
-            } catch {
-                # Local mirror fallback
-                $rootVer = Join-Path (Split-Path $folder -Parent) "version.json"
-                if (Test-Path $rootVer) {
-                    try { $remoteData = Get-Content $rootVer -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
-                }
-            }
-
             $hasUpdate = $false
             $latestVer = $localVer
-            $changelog = @()
-            $title = ""
-            $downloadUrl = ""
-            $releaseDate = ""
+            $changelog = if ($localObj -and $localObj.changelog) { $localObj.changelog } else { @() }
+            $title = if ($localObj -and $localObj.title) { [string]$localObj.title } else { "RENEarn Studio v$latestVer" }
+            $downloadUrl = if ($localObj -and $localObj.downloadUrl) { [string]$localObj.downloadUrl } else { "" }
+            $releaseDate = if ($localObj -and $localObj.releaseDate) { [string]$localObj.releaseDate } else { "2026-10-25" }
 
-            if ($remoteData -and $remoteData.version) {
-                $latestVer = [string]$remoteData.version
-                $changelog = if ($remoteData.changelog) { $remoteData.changelog } else { @() }
-                $title = if ($remoteData.title) { [string]$remoteData.title } else { "RENEarn Studio v$latestVer" }
-                $downloadUrl = if ($remoteData.downloadUrl) { [string]$remoteData.downloadUrl } else { "" }
-                $releaseDate = if ($remoteData.releaseDate) { [string]$remoteData.releaseDate } else { "" }
+            # Safe quick attempt to check GitHub remote with 1s timeout
+            try {
+                $res = Invoke-RestMethod -Uri $remoteUrl -Method Get -TimeoutSec 1 -ErrorAction Stop
+                if ($res -and $res.version) {
+                    $remoteVer = [string]$res.version
+                    $latestVer = $remoteVer
+                    if ($res.changelog) { $changelog = $res.changelog }
+                    if ($res.title) { $title = [string]$res.title }
+                    if ($res.downloadUrl) { $downloadUrl = [string]$res.downloadUrl }
+                    if ($res.releaseDate) { $releaseDate = [string]$res.releaseDate }
 
-                try {
-                    $vLocal = [System.Version]::new($localVer)
-                    $vRemote = [System.Version]::new($latestVer)
-                    if ($vRemote -gt $vLocal) {
-                        $hasUpdate = $true
-                    }
-                } catch {
-                    if ($latestVer -ne $localVer) {
-                        $hasUpdate = $true
+                    try {
+                        $vLocal = [System.Version]::new($localVer)
+                        $vRemote = [System.Version]::new($latestVer)
+                        if ($vRemote -gt $vLocal) {
+                            $hasUpdate = $true
+                        }
+                    } catch {
+                        if ($latestVer -ne $localVer) {
+                            $hasUpdate = $true
+                        }
                     }
                 }
-            }
+            } catch {}
 
             Send-JsonResponse $response @{
                 currentVersion = $localVer

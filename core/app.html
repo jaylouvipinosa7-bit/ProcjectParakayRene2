@@ -20052,7 +20052,7 @@
                             onclick="simulateUpdateDemo()"
                             title="Test how the updater works without waiting for a new release">🧪 Test Demo</button>
                     </div>
-                    <button type="button" class="btn-update-apply" id="btnPerformUpdate" onclick="performUpdateNow()">
+                    <button type="button" class="btn-update-apply" id="btnPerformUpdate" onclick="onUpdateModalActionClick()">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -42833,7 +42833,12 @@
             }
 
             function handleUpdateCardClick() {
-                openUpdateModal();
+                if (renearnUpdateState && renearnUpdateState.hasUpdate) {
+                    openUpdateModal();
+                } else {
+                    checkAppUpdates(false);
+                    openUpdateModal();
+                }
             }
 
             function openUpdateModal() {
@@ -42862,8 +42867,9 @@
                     if (btnApply) btnApply.style.display = 'inline-flex';
                 } else {
                     if (title) title.textContent = 'RENEarn Studio is Up to Date';
-                    if (sub) sub.textContent = 'You are currently running the latest official version.';
-                    if (btnApplyText) btnApplyText.textContent = 'Recheck Releases ⚡';
+                    if (sub) sub.textContent = 'You are currently running the latest official version (v' + (renearnUpdateState.currentVersion || '4.1.0') + ').';
+                    if (btnApplyText) btnApplyText.textContent = 'Check Again ⚡';
+                    if (btnApply) btnApply.style.display = 'inline-flex';
                 }
 
                 // Render changelog items
@@ -42909,6 +42915,18 @@
                 if (modal) modal.style.display = 'none';
             }
 
+            function onUpdateModalActionClick() {
+                if (renearnUpdateState && renearnUpdateState.hasUpdate) {
+                    performUpdateNow();
+                } else {
+                    checkAppUpdates(false);
+                    if (typeof showToast === 'function') {
+                        showToast('✨ RENEarn Studio is already up to date (v' + (renearnUpdateState.currentVersion || '4.1.0') + ')!', 'OK');
+                    }
+                    setTimeout(() => closeUpdateModal(), 800);
+                }
+            }
+
             function simulateUpdateDemo() {
                 // Demonstration for the streamer so they can see how it looks when v4.1 is released!
                 renearnUpdateState = {
@@ -42950,6 +42968,14 @@
             }
 
             async function performUpdateNow() {
+                if (!renearnUpdateState || !renearnUpdateState.hasUpdate) {
+                    if (typeof showToast === 'function') {
+                        showToast('✨ RENEarn Studio is already up to date (v' + (renearnUpdateState.currentVersion || '4.1.0') + ')!', 'OK');
+                    }
+                    closeUpdateModal();
+                    return;
+                }
+
                 const prog = document.getElementById('modalUpdateProgressWrap');
                 const bar = document.getElementById('modalUpdateProgressBar');
                 const pct = document.getElementById('modalUpdateProgressPct');
@@ -42985,8 +43011,17 @@
                     showToast('⚡ Update installed successfully! Reloading...', 'OK');
                 }
 
-                setTimeout(() => {
-                    window.location.reload();
+                setTimeout(async () => {
+                    try {
+                        const check = await fetch('/api/status', { cache: 'no-store' });
+                        if (check.ok) {
+                            window.location.reload();
+                        }
+                    } catch (e) {
+                        if (typeof showToast === 'function') {
+                            showToast('⚡ Update complete! Restart studio via Launch_Studio.bat when ready.', 'OK');
+                        }
+                    }
                 }, 1200);
             }
 
