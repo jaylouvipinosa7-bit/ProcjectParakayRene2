@@ -3075,9 +3075,12 @@ INSTALLATION INSTRUCTIONS:
 
         # 1b. TikTok Live Control Endpoints
         if ($reqPath -eq '/api/tiktok/connect') {
-            $body = ReadRequestBody $request
-            $data = $body | ConvertFrom-Json
-            $user = if ($data.username) { [string]$data.username.Trim() } else { "" }
+            $user = ""
+            try {
+                $body = ReadRequestBody $request
+                $data = $body | ConvertFrom-Json
+                if ($data -and $data.username) { $user = [string]$data.username.Trim() }
+            } catch {}
             if ($user -match 'tiktok\.com\/@([a-zA-Z0-9_.-]+)') {
                 $user = $matches[1]
             } else {
@@ -3100,25 +3103,13 @@ INSTALLATION INSTRUCTIONS:
             Start-TikTokBridge $user
 
             # Auto-detect streamer's specific community gifts in background
-            [System.Threading.ThreadPool]::QueueUserWorkItem({
-                param($state)
-                try {
-                    $f = $state.Folder
-                    $u = $state.User
-                    $n = Join-Path $f "bin\node.exe"
-                    $s = Join-Path $f "tools\sync_tiktok_gifts.js"
-                    if ((Test-Path $n) -and (Test-Path $s)) {
-                        $pinfo = New-Object System.Diagnostics.ProcessStartInfo
-                        $pinfo.FileName = $n
-                        $pinfo.Arguments = "`"$s`" `"$u`""
-                        $pinfo.WorkingDirectory = $f
-                        $pinfo.UseShellExecute = $false
-                        $pinfo.CreateNoWindow = $true
-                        $p = [System.Diagnostics.Process]::Start($pinfo)
-                        $p.WaitForExit(15000)
-                    }
-                } catch {}
-            }, @{ Folder = $folder; User = $user }) | Out-Null
+            try {
+                $nodeExe = Join-Path $folder "bin\node.exe"
+                $syncScript = Join-Path $folder "tools\sync_tiktok_gifts.js"
+                if ((Test-Path $nodeExe) -and (Test-Path $syncScript)) {
+                    Start-Process -FilePath $nodeExe -ArgumentList "`"$syncScript`" `"$user`"" -WorkingDirectory $folder -WindowStyle Hidden
+                }
+            } catch {}
 
             Send-JsonResponse $response @{ status = "ok"; message = "Connecting to @$user"; username = $user }
             continue
