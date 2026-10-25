@@ -1,4 +1,4 @@
-﻿{
+{
   "streamer": {
     "tiktokUsername": "gohanmalunggay",
     "soundEnabled": true,
@@ -2339,7 +2339,8 @@
       },
       "trigImg": "images/tiktok-gifts/6788_glow_stick.webp",
       "funcImg": "images/game-icons/pvz/spawn_summonedhorse.webp",
-      "funcName": "Spawn SummonedHorse"
+      "funcName": "Spawn SummonedHorse",
+      "triggerType": "gift"
     },
     {
       "id": "7",
@@ -2502,7 +2503,8 @@
       },
       "trigImg": "images/tiktok-gifts/19441_freestyle.webp",
       "funcImg": "images/game-icons/pvz/spawn_eternalzombie_c.webp",
-      "funcName": "Spawn EternalZombie_c"
+      "funcName": "Spawn EternalZombie_c",
+      "triggerType": "gift"
     },
     {
       "id": "1792307359731",
@@ -2666,7 +2668,8 @@
       },
       "trigImg": "images/tiktok-gifts/19447_overreact.webp",
       "funcImg": "images/game-icons/pvz/spawn_jackson_c.webp",
-      "funcName": "Spawn Jackson_c"
+      "funcName": "Spawn Jackson_c",
+      "triggerType": "gift"
     },
     {
       "id": "12",
@@ -2773,7 +2776,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/19445_name_shoutout.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimate_jackbox_zombie.webp",
-      "funcName": "Spawn Ultimate Jackbox Zombie"
+      "funcName": "Spawn Ultimate Jackbox Zombie",
+      "triggerType": "gift"
     },
     {
       "id": "17",
@@ -2789,7 +2793,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/544253_i_like_what_i_see.webp",
       "funcImg": "images/game-icons/pvz/spawn_horseboss.webp",
-      "funcName": "Spawn HorseBoss"
+      "funcName": "Spawn HorseBoss",
+      "triggerType": "gift"
     },
     {
       "id": "18",
@@ -2805,7 +2810,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/5779_i_love_you.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimate_paper_zombie.webp",
-      "funcName": "Spawn Ultimate Paper Zombie"
+      "funcName": "Spawn Ultimate Paper Zombie",
+      "triggerType": "gift"
     },
     {
       "id": "19",
@@ -2822,7 +2828,8 @@
       "trigImg": "images/tiktok-gifts/8913_rosa.webp",
       "action": "SelectedGift",
       "funcImg": "images/game-icons/pvz/spawn_ultimateswordzombie.webp",
-      "funcName": "Spawn UltimateSwordZombie"
+      "funcName": "Spawn UltimateSwordZombie",
+      "triggerType": "gift"
     },
     {
       "id": "21",
@@ -2838,7 +2845,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/15063_journey_pass.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimateendoflamezombie.webp",
-      "funcName": "Spawn UltimateEndoflameZombie"
+      "funcName": "Spawn UltimateEndoflameZombie",
+      "triggerType": "gift"
     },
     {
       "id": "22",
@@ -2937,7 +2945,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/626064_g_o_a_t__busker.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
-      "funcName": "Spawn UltimateSnowZombie"
+      "funcName": "Spawn UltimateSnowZombie",
+      "triggerType": "gift"
     },
     {
       "id": "1792307365816",
@@ -3107,7 +3116,8 @@
       },
       "trigImg": "images/tiktok-gifts/5509_sunglasses.webp",
       "funcImg": "images/game-icons/pvz/spawn_zombie_boss2.webp",
-      "funcName": "Spawn Golden Zomboss"
+      "funcName": "Spawn Golden Zomboss",
+      "triggerType": "gift"
     },
     {
       "id": "27",
@@ -3123,7 +3133,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/14557_puppy_kisses.webp",
       "funcImg": "images/game-icons/pvz/kill_all_plants.webp",
-      "funcName": "Kill all Plants"
+      "funcName": "Kill all Plants",
+      "triggerType": "gift"
     },
     {
       "id": "28",
@@ -3139,7 +3150,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/6267_corgi.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatehorse.webp",
-      "funcName": "Spawn UltimateHorse"
+      "funcName": "Spawn UltimateHorse",
+      "triggerType": "gift"
     },
     {
       "id": "29",
@@ -3209,7 +3221,8 @@
       },
       "trigImg": "images/tiktok-gifts/7168_money_gun.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatehorse.webp",
-      "funcName": "Spawn UltimateHorse"
+      "funcName": "Spawn UltimateHorse",
+      "triggerType": "gift"
     },
     {
       "id": "31",
@@ -3233,7 +3246,8 @@
       },
       "trigImg": "images/tiktok-gifts/11046_galaxy.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimateimpking.webp",
-      "funcName": "Spawn UltimateImpKing"
+      "funcName": "Spawn UltimateImpKing",
+      "triggerType": "gift"
     },
     {
       "id": "1",
@@ -3450,7 +3464,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/231955_good_job.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-      "funcName": "Spawn Ultimate Corn"
+      "funcName": "Spawn Ultimate Corn",
+      "triggerType": "gift"
     },
     {
       "id": "1792314269854",
@@ -3813,7 +3828,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/15231_love_you_so_much.webp",
       "funcImg": "images/game-icons/pvz/spawn_supernutshooter.webp",
-      "funcName": "Spawn SuperNutShooter"
+      "funcName": "Spawn SuperNutShooter",
+      "triggerType": "gift"
     },
     {
       "id": "47",
@@ -3943,7 +3959,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/1137702_encore_ticket.webp",
       "funcImg": "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
-      "funcName": "Spawn Super Threepeater SP (Phoenix)"
+      "funcName": "Spawn Super Threepeater SP (Phoenix)",
+      "triggerType": "gift"
     },
     {
       "id": "49",
@@ -4080,7 +4097,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/919332_mystic_ney.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
-      "funcName": "Spawn UltimateJalaNut"
+      "funcName": "Spawn UltimateJalaNut",
+      "triggerType": "gift"
     },
     {
       "id": "52",
@@ -4096,7 +4114,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/13215_night_star.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
-      "funcName": "Spawn UltimateSunNut"
+      "funcName": "Spawn UltimateSunNut",
+      "triggerType": "gift"
     },
     {
       "id": "53",
@@ -4112,7 +4131,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/9465_fruit_friends.webp",
       "funcImg": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
-      "funcName": "Spawn Cherry Jalapeno"
+      "funcName": "Spawn Cherry Jalapeno",
+      "triggerType": "gift"
     },
     {
       "id": "54",
@@ -4128,7 +4148,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/6007_boxing_gloves.webp",
       "funcImg": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-      "funcName": "Spawn NuclearDoomCherry"
+      "funcName": "Spawn NuclearDoomCherry",
+      "triggerType": "gift"
     },
     {
       "id": "55",
@@ -4144,7 +4165,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/15382_live_ranking_crown.webp",
       "funcImg": "images/game-icons/pvz/kill_all_zombies.webp",
-      "funcName": "Kill all Zombies"
+      "funcName": "Kill all Zombies",
+      "triggerType": "gift"
     },
     {
       "id": "56",
@@ -4244,7 +4266,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/1137734_i_m_yours.webp",
       "funcImg": "images/game-icons/pvz/delete_lawnmower.webp",
-      "funcName": "Delete LawnMower"
+      "funcName": "Delete LawnMower",
+      "triggerType": "gift"
     },
     {
       "id": "63",
@@ -4260,7 +4283,8 @@
       "enabled": true,
       "trigImg": "images/tiktok-gifts/19443_bravo.webp",
       "funcImg": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
-      "funcName": "Spawn UltimateSniperGatling"
+      "funcName": "Spawn UltimateSniperGatling",
+      "triggerType": "gift"
     },
     {
       "id": "1792310064286",
@@ -4290,7 +4314,7 @@
       "repetitionMultiplier": true,
       "allowImport": true,
       "hideInOverlay": false,
-      "triggerType": "custom",
+      "triggerType": "gift",
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",

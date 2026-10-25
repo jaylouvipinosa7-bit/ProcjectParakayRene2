@@ -44,7 +44,7 @@ try {
         }
         console.log(`[GIFTS CATALOG] Loaded ${verifiedGiftsMap.size} verified TikTok gifts into bridge dictionary.`);
     }
-} catch (e) {
+} catch (e) {}
 const https = require('https');
 
 const GIFTS_DIR = path.join(__dirname, 'images', 'tiktok-gifts');
