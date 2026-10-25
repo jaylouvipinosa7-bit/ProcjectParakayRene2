@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="shieldBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="16" fill="url(#shieldBg)" stroke="#64748b" stroke-width="2"/>
+  <!-- Minecraft Shield in isometric angle -->
+  <g transform="translate(30, 16) scale(0.9)">
+    <path d="M 5,5 L 40,5 L 40,55 C 40,75 22,88 22,88 C 22,88 5,75 5,55 Z" fill="#78716c" stroke="#292524" stroke-width="3"/>
+    <path d="M 9,9 L 36,9 L 36,53 C 36,70 22,81 22,81 C 22,81 9,70 9,53 Z" fill="#a8a29e"/>
+    <!-- Iron rim -->
+    <rect x="5" y="5" width="35" height="4" fill="#d6d3d1"/>
+    <line x1="22.5" y1="9" x2="22.5" y2="81" stroke="#44403c" stroke-width="3"/>
+    <circle cx="22.5" cy="30" r="4" fill="#f59e0b"/>
+  </g>
+</svg>

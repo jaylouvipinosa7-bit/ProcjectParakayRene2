@@ -25370,6 +25370,11 @@
                 const dSrc = ifr.getAttribute('data-src');
                 if (dSrc && (!ifr.src || ifr.src === 'about:blank' || ifr.src === window.location.href)) {
                     ifr.src = dSrc;
+                    ifr.onerror = () => {
+                        setTimeout(() => {
+                            if (ifr && (!ifr.src || ifr.src === 'about:blank')) ifr.src = dSrc;
+                        }, 1500);
+                    };
                 }
             }
 
@@ -31092,7 +31097,7 @@
 
                     <div class="cmd-trigger-col" onclick="openTriggerSelectorForDirectRow('${gift.id}')" title="Click to change trigger (Likes, Gifts, Follow, etc.)">
                         <div class="cmd-trigger-icon-wrap">
-                            <img src="${triggerIcon}" alt="Trigger" onerror="if(this.src.indexOf('5655_rose.webp')===-1)this.src='images/tiktok-gifts/5655_rose.webp';">
+                            <img src="${triggerIcon}" alt="" onerror="if(this.src.indexOf('5655_rose.webp')===-1){this.src='images/tiktok-gifts/5655_rose.webp';}else{this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%20fill=%22%23f59e0b%22%3E%3Cpath%20d=%22M12%202l3.09%206.26L22%209.27l-5%204.87%201.18%206.88L12%2017.77l-6.18%203.25L7%2014.14%202%209.27l6.91-1.01L12%202z%22/%3E%3C/svg%3E';}">
                         </div>
                         <div>
                             <div class="cmd-trigger-role">Anyone</div>
@@ -31102,7 +31107,7 @@
                     </div>
 
                     <div class="cmd-unit-col" onclick="openCommandPickerForDirectRow('${gift.id}')" title="Click to change command / unit">
-                        <img src="${unitImgSrc}" alt="Unit" onerror="if(this.src.indexOf('func_2.png')===-1){this.src='images/func_2.png';this.style.opacity='0.2';}">
+                        <img src="${unitImgSrc}" alt="" onerror="this.onerror=null;this.src='images/func_2.png';">
                     </div>
 
                     <div class="cmd-exec-col">

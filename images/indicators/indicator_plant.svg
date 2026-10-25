@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="plantBg" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#15803d"/>
+      <stop offset="60%" stop-color="#14532d"/>
+      <stop offset="100%" stop-color="#052e16"/>
+    </radialGradient>
+    <filter id="plantGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#22c55e" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <circle cx="50" cy="50" r="44" fill="url(#plantBg)" stroke="#22c55e" stroke-width="3" filter="url(#plantGlow)"/>
+  <circle cx="50" cy="50" r="39" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <ellipse cx="50" cy="24" rx="22" ry="10" fill="rgba(255,255,255,0.18)"/>
+  <!-- Vibrant Sunflower / Flora Emblem -->
+  <g transform="translate(50, 48) scale(0.9)">
+    <circle cx="0" cy="0" r="14" fill="#854d0e" stroke="#ca8a04" stroke-width="2"/>
+    <!-- Petals -->
+    <ellipse cx="0" cy="-22" rx="6" ry="10" fill="#facc15" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="0" cy="22" rx="6" ry="10" fill="#facc15" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="-22" cy="0" rx="10" ry="6" fill="#facc15" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="22" cy="0" rx="10" ry="6" fill="#facc15" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="-15" cy="-15" rx="7" ry="10" transform="rotate(-45 -15 -15)" fill="#fde047" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="15" cy="-15" rx="7" ry="10" transform="rotate(45 15 -15)" fill="#fde047" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="-15" cy="15" rx="7" ry="10" transform="rotate(45 -15 15)" fill="#fde047" stroke="#eab308" stroke-width="1"/>
+    <ellipse cx="15" cy="15" rx="7" ry="10" transform="rotate(-45 15 15)" fill="#fde047" stroke="#eab308" stroke-width="1"/>
+    <!-- Face Center -->
+    <circle cx="0" cy="0" r="12" fill="#713f12"/>
+    <circle cx="-4" cy="-2" r="2.2" fill="#ffffff"/>
+    <circle cx="4" cy="-2" r="2.2" fill="#ffffff"/>
+    <path d="M -5,3 Q 0,7 5,3" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+  <text x="50" y="86" font-family="'Outfit', sans-serif" font-size="10" font-weight="900" fill="#86efac" text-anchor="middle" letter-spacing="1">PLANT</text>
+</svg>

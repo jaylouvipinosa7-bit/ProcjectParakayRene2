@@ -708,7 +708,7 @@
                 const unitImg = document.createElement('img');
                 unitImg.className = 'cell-unit-img';
                 unitImg.src = card.funcImg || card.unitIcon || 'images/func_2.png';
-                unitImg.onerror = () => { unitImg.src = 'images/func_2.png'; };
+                unitImg.onerror = () => { unitImg.onerror = null; unitImg.src = 'images/func_2.png'; };
 
                 // Right: Trigger Image or Pill Badge
                 const trigWrap = document.createElement('div');
@@ -740,14 +740,14 @@
                     const trigImg = document.createElement('img');
                     trigImg.className = 'cell-trig-img';
                     trigImg.src = card.trigImg || card.icon || 'images/game-icons/stream/custom_action.webp';
-                    trigImg.onerror = () => { trigImg.src = 'images/game-icons/stream/custom_action.webp'; };
+                    trigImg.onerror = () => { trigImg.onerror = null; trigImg.src = 'images/game-icons/stream/custom_action.webp'; };
                     trigWrap.appendChild(trigImg);
                 } else {
                     // TikTok Gift Icon
                     const trigImg = document.createElement('img');
                     trigImg.className = 'cell-trig-img';
                     trigImg.src = card.trigImg || card.icon || 'images/tiktok-gifts/5655_rose.webp';
-                    trigImg.onerror = () => { trigImg.src = 'images/tiktok-gifts/5655_rose.webp'; };
+                    trigImg.onerror = () => { trigImg.onerror = null; trigImg.src = 'images/tiktok-gifts/5655_rose.webp'; };
                     trigWrap.appendChild(trigImg);
                 }
 

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="diamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="35%" stop-color="#38bdf8" />
+      <stop offset="70%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="diamShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#bae6fd" stop-opacity="0.1" />
+    </linearGradient>
+  </defs>
+  <!-- Sparkles -->
+  <polygon points="160,35 162,42 169,44 162,46 160,53 158,46 151,44 158,42" fill="#e0f2fe" opacity="0.9" />
+  <polygon points="40,40 41.5,45 46.5,46.5 41.5,48 40,53 38.5,48 33.5,46.5 38.5,45" fill="#bae6fd" opacity="0.8" />
+  <!-- Winged Trophy Handles -->
+  <path d="M 60 65 C 25 60, 20 115, 65 125 C 58 110, 52 90, 60 78 Z" fill="url(#diamGrad)" stroke="#0284c7" stroke-width="2.5" />
+  <path d="M 140 65 C 175 60, 180 115, 135 125 C 142 110, 148 90, 140 78 Z" fill="url(#diamGrad)" stroke="#0284c7" stroke-width="2.5" />
+  <!-- Center Diamond Cup Body -->
+  <polygon points="100,45 145,75 130,135 100,150 70,135 55,75" fill="url(#diamGrad)" stroke="#bae6fd" stroke-width="2" />
+  <!-- Facet Highlights -->
+  <polygon points="100,45 145,75 100,90" fill="url(#diamShine)" />
+  <polygon points="100,45 55,75 100,90" fill="rgba(255,255,255,0.4)" />
+  <polygon points="100,90 145,75 130,135 100,150" fill="rgba(2,132,199,0.3)" />
+  <polygon points="100,90 55,75 70,135 100,150" fill="rgba(56,189,248,0.3)" />
+  <!-- Center Star Emblem -->
+  <polygon points="100,82 104,95 117,95 107,103 111,116 100,108 89,116 93,103 83,95 96,95" fill="#ffffff" filter="drop-shadow(0 0 6px #38bdf8)" />
+  <!-- Pedestal Base -->
+  <path d="M 88 150 L 112 150 L 116 168 L 84 168 Z" fill="#0369a1" />
+  <rect x="65" y="168" width="70" height="14" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+</svg>

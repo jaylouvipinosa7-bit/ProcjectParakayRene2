@@ -57,13 +57,21 @@
     "isCommunity": true
   },
   {
-    "id": "19446",
-    "name": "Wink Charm",
+    "id": "231956",
+    "name": "Clap Clap",
     "coins": 1,
-    "icon": "images/tiktok-gifts/19446_wink_charm.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/8f2efc4a1240c4961559f31524e75d03.png~tplv-obj.webp",
+    "icon": "images/tiktok-gifts/231956_clap_clap.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f2349d1d943c0c3bbcc03044268ee535.png~tplv-obj.webp",
     "isCommunity": true,
-    "source": "tiktok_live_room"
+    "isNew": true
+  },
+  {
+    "id": "19446",
+    "name": "Wink wink",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/19446_wink_wink.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/4a68411b3e92fc2bf68d458d5f906b74.png~tplv-obj.webp",
+    "isCommunity": true
   },
   {
     "id": "6784",
@@ -72,6 +80,15 @@
     "icon": "images/tiktok-gifts/6784_cake_slice.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/f681afb4be36d8a321eac741d387f1e2~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "231955",
+    "name": "Good Job",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/231955_good_job.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/047bfa2dcc6813c72fd2d8f649ee8ee2.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
   },
   {
     "id": "919346",
@@ -230,6 +247,15 @@
     "isCommunity": true
   },
   {
+    "id": "1228602",
+    "name": "GOten",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/1228602_goten.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/saliency_seg_1787678131792_0.0a613f1cb62d728332c22f815fd143d2.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
     "id": "1296800",
     "name": "Halloween mood",
     "coins": 1,
@@ -340,6 +366,33 @@
     "isCommunity": true
   },
   {
+    "id": "231956_sent",
+    "name": "Sent Clap Clap",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/231956_clap_clap.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f2349d1d943c0c3bbcc03044268ee535.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
+    "id": "231955_sent",
+    "name": "Sent Good Job",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/231955_good_job.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/047bfa2dcc6813c72fd2d8f649ee8ee2.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
+    "id": "1228602_sent",
+    "name": "Sent GOten",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/1228602_goten.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/saliency_seg_1787678131792_0.0a613f1cb62d728332c22f815fd143d2.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
     "id": "973040",
     "name": "Starfish",
     "coins": 1,
@@ -408,12 +461,12 @@
   },
   {
     "id": "1137702",
-    "name": "Encore",
+    "name": "Encore Ticket",
     "coins": 5,
     "icon": "images/tiktok-gifts/1137702_encore_ticket.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f305f6e80b27bb9007fbf82f42a2e4dc.png~tplv-obj.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/620bd04e2551f7af28c2355934f3ca65.png~tplv-obj.webp",
     "isCommunity": true,
-    "source": "tiktok_live_room"
+    "isNew": true
   },
   {
     "id": "919386",
@@ -5884,59 +5937,5 @@
     "icon": "images/tiktok-gifts/9072_tiktok_universe.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp",
     "isCommunity": true
-  },
-  {
-    "id": "1228602",
-    "name": "GOten",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/1228602_goten.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/saliency_seg_1787678131792_0.0a613f1cb62d728332c22f815fd143d2.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
-  },
-  {
-    "id": "1228602_sent",
-    "name": "Sent GOten",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/1228602_goten.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/saliency_seg_1787678131792_0.0a613f1cb62d728332c22f815fd143d2.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
-  },
-  {
-    "id": "231955",
-    "name": "Good Job",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/231955_good_job.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/047bfa2dcc6813c72fd2d8f649ee8ee2.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
-  },
-  {
-    "id": "231955_sent",
-    "name": "Sent Good Job",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/231955_good_job.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/047bfa2dcc6813c72fd2d8f649ee8ee2.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
-  },
-  {
-    "id": "231956",
-    "name": "Clap Clap",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/231956_clap_clap.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f2349d1d943c0c3bbcc03044268ee535.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
-  },
-  {
-    "id": "231956_sent",
-    "name": "Sent Clap Clap",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/231956_clap_clap.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f2349d1d943c0c3bbcc03044268ee535.png~tplv-obj.webp",
-    "isCommunity": true,
-    "source": "tiktok_live_room"
   }
 ]

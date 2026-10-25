@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="genBg" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#78350f"/>
+      <stop offset="60%" stop-color="#451a03"/>
+      <stop offset="100%" stop-color="#1c0a00"/>
+    </radialGradient>
+    <filter id="genGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f59e0b" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <circle cx="50" cy="50" r="44" fill="url(#genBg)" stroke="#f59e0b" stroke-width="3" filter="url(#genGlow)"/>
+  <circle cx="50" cy="50" r="39" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <ellipse cx="50" cy="24" rx="22" ry="10" fill="rgba(255,255,255,0.18)"/>
+  <!-- Golden Lucky Star / Prize Emblem -->
+  <polygon points="50,22 57,38 74,40 61,52 65,69 50,60 35,69 39,52 26,40 43,38" fill="url(#goldStarGrad)" stroke="#fde047" stroke-width="1.8" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.7))"/>
+  <defs>
+    <linearGradient id="goldStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="46" r="4" fill="#ffffff" opacity="0.9"/>
+  <text x="50" y="86" font-family="'Outfit', sans-serif" font-size="10" font-weight="900" fill="#fde047" text-anchor="middle" letter-spacing="1">LUCKY</text>
+</svg>
