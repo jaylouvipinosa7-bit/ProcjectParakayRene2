@@ -2165,15 +2165,33 @@ function ReadRequestBody($req) {
     }
 }
 
-# Start HTTP Server Listener
+# Start HTTP Server Listener with retry and auto-recovery
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$port/")
 $listener.Prefixes.Add("http://127.0.0.1:$port/")
 
-try {
-    $listener.Start()
-} catch {
-    Write-Host "Port $port already in use or access denied: $_" -ForegroundColor Red
+$started = $false
+for ($attempt = 1; $attempt -le 5; $attempt++) {
+    try {
+        $listener.Start()
+        $started = $true
+        break
+    } catch {
+        Write-Host "Port $port in use on attempt $attempt, clearing conflict and retrying..." -ForegroundColor Yellow
+        try {
+            $conns = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+            foreach ($c in $conns) {
+                if ($c.OwningProcess -and $c.OwningProcess -ne $PID) {
+                    Stop-Process -Id $c.OwningProcess -Force -ErrorAction SilentlyContinue
+                }
+            }
+        } catch {}
+        Start-Sleep -Milliseconds 700
+    }
+}
+
+if (-not $started) {
+    Write-Host "Port $port could not be bound after multiple retries." -ForegroundColor Red
     exit 1
 }
 

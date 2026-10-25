@@ -49,7 +49,8 @@ if exist "%~dp0core\server.ps1" (
     start "PvZ Fusion Live Studio Server" /min powershell.exe -NoProfile -ExecutionPolicy Bypass -NoExit -File "%~dp0server.ps1"
 )
 
-ping 127.0.0.1 -n 3 >nul
+echo  Waiting for Live Studio Server to initialize...
+powershell -NoProfile -Command "$ready = $false; for ($i=0; $i -lt 15; $i++) { try { $r = Invoke-WebRequest -Uri 'http://localhost:8080/api/status' -UseBasicParsing -TimeoutSec 1; if ($r.StatusCode -eq 200) { $ready = $true; break } } catch {}; Start-Sleep -Milliseconds 400 }; if (-not $ready) { Write-Host 'Server starting up, continuing...' }"
 
 echo  Launching PvZ Fusion Studio Application...
 if exist "%~dp0RENEarn_Studio.exe" (
