@@ -25153,7 +25153,7 @@
                         if (pBadge) { pBadge.innerText = "EVENT TRIGGER"; pBadge.style.color = "#f59e0b"; }
                         if (pDesc) pDesc.innerHTML = `Executes whenever a <strong>${trigName}</strong> occurs on TikTok LIVE.`;
                         if (likeRow) likeRow.style.display = 'none';
-                        const iconFallback = (TRIGGER_ICONS && TRIGGER_ICONS[currentEditingTriggerType]) ? 'images/trig_3.svg' : 'images/trig_7.svg';
+                        const iconFallback = (TRIGGER_ICONS && TRIGGER_ICONS[currentEditingTriggerType]) ? 'images/trig_3.webp' : 'images/trig_7.svg';
                         if (previewImg) previewImg.src = iconFallback;
                         if (previewName) previewName.innerText = trigName;
                         if (previewCoins) previewCoins.innerText = `${trigName} Event`;
@@ -39654,7 +39654,7 @@
                         }
                         else if (currentEditingTriggerType === 'follow' || editingGiftId === '4') icon = 'images/trig_1.svg';
                         else if (currentEditingTriggerType === 'share') icon = 'images/trig_8.svg';
-                        else if (currentEditingTriggerType !== 'gift') icon = 'images/trig_3.svg';
+                        else if (currentEditingTriggerType !== 'gift') icon = 'images/trig_3.webp';
                         else if (!icon) icon = 'images/tiktok-gifts/5655_rose.webp';
                     }
 
@@ -40681,6 +40681,9 @@
                     if (data.status === 'ok') {
                         showToast(`Standby for @${cleanUser}. Start stream in TikTok LIVE Studio!`, "OK");
                         setTimeout(checkTikTokLiveStatus, 1000);
+                        if (typeof connectOrReconnectGame === 'function') connectOrReconnectGame();
+                        if (typeof refreshHeaderGameDetectorPill === 'function') refreshHeaderGameDetectorPill();
+                        if (typeof loadConfig === 'function') loadConfig();
                     } else {
                         showToast(data.message || 'Connection failed', 'ERR');
                         if (btn) { btn.innerText = 'Connect'; btn.className = 'btn-tiktok-action'; }
@@ -40707,6 +40710,9 @@
                 if (hBtn) { hBtn.innerText = 'Connect'; hBtn.className = 'btn-tiktok-pill-connect'; }
                 if (discBtn) discBtn.style.display = 'none';
                 setTimeout(checkTikTokLiveStatus, 600);
+                if (typeof connectOrReconnectGame === 'function') connectOrReconnectGame();
+                if (typeof refreshHeaderGameDetectorPill === 'function') refreshHeaderGameDetectorPill();
+                if (typeof loadConfig === 'function') loadConfig();
             }
 
             async function checkTikTokLiveStatus() {

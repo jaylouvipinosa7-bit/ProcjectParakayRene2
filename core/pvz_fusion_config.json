@@ -2255,7 +2255,7 @@
                       "platform":  "tiktok",
                       "availableFor":  "Anyone",
                       "enabled":  true,
-                      "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/abae8b31c06183b3ed0d7b9df01a800e.png~tplv-obj.webp",
+                      "icon":  "images/tiktok-gifts/1429010_palm_of_protection.webp",
                       "audio":  {
                                     "file":  "sounds/anime-ahh.mp3",
                                     "title":  "Anime Ahh",
@@ -4319,8 +4319,8 @@
                       "platform":  "tiktok",
                       "availableFor":  "Anyone",
                       "enabled":  true,
-                      "icon":  "images/trig_3.svg",
-                      "trigImg":  "images/trig_3.svg",
+                      "icon":  "images/trig_3.webp",
+                      "trigImg":  "images/trig_3.webp",
                       "funcImg":  "images/game-icons/pvz/plant_everywahre.webp",
                       "funcName":  "Plant Everywhere"
                   }

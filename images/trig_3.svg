@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="taptapGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="45%" stop-color="#0284c7"/>
+      <stop offset="90%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#075985"/>
+    </radialGradient>
+    <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#0284c7" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#taptapGrad)" filter="url(#badgeShadow)"/>
+  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.8"/>
+  <ellipse cx="50" cy="24" rx="26" ry="12" fill="rgba(255,255,255,0.22)"/>
+  <path d="M 32 38 L 68 38 M 32 50 L 60 50 M 32 62 L 52 62" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+</svg>

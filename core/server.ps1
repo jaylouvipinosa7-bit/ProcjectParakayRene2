@@ -1733,6 +1733,10 @@ function Sync-ConfigToCards {
             $uImg = $uImg -replace '^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/', ''
             $tImg = if ($g.icon) { [string]$g.icon } else { "images/tiktok-gifts/5655_rose.webp" }
             $tImg = $tImg -replace '^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/', ''
+            if ($tImg -eq 'images/trig_3.svg') { $tImg = 'images/trig_3.webp' }
+            if ($curGiftId -eq '1429010' -or $tImg -like '*1429010*' -or ($g.giftName -and $g.giftName -like '*palm of protection*')) {
+                $tImg = 'images/tiktok-gifts/1429010_palm_of_protection.webp'
+            }
 
             $overlayCards += [PSCustomObject]@{
                 id = [string]$g.id
@@ -1752,7 +1756,7 @@ function Sync-ConfigToCards {
         }
 
         if ($overlayCards.Count -gt 0) {
-            $cardsJson = $overlayCards | ConvertTo-Json -Depth 6
+            $cardsJson = $overlayCards | ConvertTo-Json -Depth 15
             [System.IO.File]::WriteAllText($cardsFile, $cardsJson, [System.Text.Encoding]::UTF8)
             
             $rootCardsFile = Join-Path (Split-Path -Parent $folder) "cards.json"
@@ -3088,8 +3092,11 @@ INSTALLATION INSTRUCTIONS:
             if (-not $cfg.streamer) { $cfg | Add-Member -MemberType NoteProperty -Name streamer -Value @{} -Force }
             $cfg.streamer.tiktokUsername = $user
             $userCfgFile = Get-UserConfigPath $user
-            [System.IO.File]::WriteAllText($userCfgFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
-            [System.IO.File]::WriteAllText($configFile, ($cfg | ConvertTo-Json -Depth 6), [System.Text.Encoding]::UTF8)
+            [System.IO.File]::WriteAllText($userCfgFile, ($cfg | ConvertTo-Json -Depth 20), [System.Text.Encoding]::UTF8)
+            [System.IO.File]::WriteAllText($configFile, ($cfg | ConvertTo-Json -Depth 20), [System.Text.Encoding]::UTF8)
+            Sync-ConfigToCards
+            AddEventLog @{ type = "cards_updated"; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+            AddEventLog @{ type = "config_updated"; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
             Start-TikTokBridge $user
 
             # Auto-detect streamer's specific community gifts in background
@@ -3125,6 +3132,9 @@ INSTALLATION INSTRUCTIONS:
                 $st = @{ connected = $false; processRunning = $false; statusText = "Disconnected"; username = "" }
                 [System.IO.File]::WriteAllText($stateFile, ($st | ConvertTo-Json), [System.Text.Encoding]::UTF8)
             }
+            Sync-ConfigToCards
+            AddEventLog @{ type = "cards_updated"; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+            AddEventLog @{ type = "config_updated"; timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
             Send-JsonResponse $response @{ status = "ok"; message = "Disconnected" }
             continue
         }
