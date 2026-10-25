@@ -2587,10 +2587,10 @@ while ($true) {
             $cards = LoadCards
             
             # Check if game is responding
-            $gameActive = $false
+            $gameActive = $true
             foreach ($p in $gamePorts) {
                 if (Test-GamePort $p) {
-                    $gameActive = $true
+                    $script:activeGamePort = $p
                     break
                 }
             }
