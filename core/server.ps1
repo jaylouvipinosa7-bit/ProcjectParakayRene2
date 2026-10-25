@@ -5,8 +5,8 @@
 $port = 8080
 $folder = $PSScriptRoot
 
-# Mod listens on 55001 (or 5003 backup)
-$gamePorts = @(55001, 5003)
+# Mod listens on 5003 (or 55001 backup)
+$gamePorts = @(5003, 55001)
 
 # Disable Expect100Continue to eliminate HTTP POST stall delays
 [System.Net.ServicePointManager]::Expect100Continue = $false
@@ -1897,7 +1897,7 @@ function Test-GamePort([int]$p) {
     try {
         $tcp = New-Object System.Net.Sockets.TcpClient
         $ar = $tcp.BeginConnect("127.0.0.1", $p, $null, $null)
-        if ($ar.AsyncWaitHandle.WaitOne(150, $false)) {
+        if ($ar.AsyncWaitHandle.WaitOne(400, $false)) {
             $tcp.EndConnect($ar)
             $tcp.Close()
             return $true
@@ -1907,7 +1907,7 @@ function Test-GamePort([int]$p) {
     return $false
 }
 
-# Cache active game port to avoid duplicate calls across both ports (55001 & 5003)
+# Cache active game port to avoid duplicate calls across both ports (5003 & 55001)
 $script:activeGamePort = $null
 
 # Post direct action to the PvZ Fusion game mod
@@ -1917,8 +1917,8 @@ function SendSinglePvZCommand($endpoint, $payloadObj) {
         $json = $payloadObj | ConvertTo-Json -Compress
         $rawBytes = [System.Text.Encoding]::UTF8.GetBytes($json)
 
-        # Prioritize known active port or 55001 first
-        $primaryPort = if ($script:activeGamePort) { $script:activeGamePort } else { 55001 }
+        # Prioritize known active port or 5003 first
+        $primaryPort = if ($script:activeGamePort) { $script:activeGamePort } else { 5003 }
         $candidatePorts = @($primaryPort) + ($gamePorts | Where-Object { $_ -ne $primaryPort })
 
         foreach ($p in $candidatePorts) {

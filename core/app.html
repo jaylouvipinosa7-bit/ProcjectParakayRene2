@@ -32745,7 +32745,7 @@
             // ==================== GAME CONNECTION LIFECYCLE & HANDSHAKE MANAGER ====================
             let isGameConnected = false;
             let isSystemReady = false;
-            let activeGamePort = 55001;
+            let activeGamePort = 5003;
             let connectionRetryTimer = null;
 
             // Interactive Handshake & Reconnection Function (callable manually or via interval)
@@ -32775,7 +32775,7 @@
                     if (data.gameOnline) {
                         const wasConnected = isGameConnected;
                         isGameConnected = true;
-                        activeGamePort = (data.gamePorts && data.gamePorts[0]) ? data.gamePorts[0] : 55001;
+                        activeGamePort = (data.gamePorts && data.gamePorts[0]) ? data.gamePorts[0] : 5003;
 
                         if (pill) pill.className = 'pill-status connected';
                         if (dot) {
