@@ -38483,6 +38483,21 @@
                                         triggerCommandSound(matchedGift.id, matchedGift.audio, ev);
                                     }
                                 }
+                                // Handle live TikTok chat comments (Song Requests & AI Voice TTS)
+                                if (ev.type === 'chat' && ev.comment) {
+                                    if (typeof window.handleIncomingSongRequest === 'function') {
+                                        window.handleIncomingSongRequest(ev.username || 'Viewer', ev.comment);
+                                    }
+                                    if (typeof window.handleIncomingChatTTS === 'function') {
+                                        window.handleIncomingChatTTS(ev.username || 'Viewer', ev.comment);
+                                    }
+                                }
+                                // Handle song request state update events
+                                if (ev.type && ev.type.startsWith('songrequest_')) {
+                                    if (typeof window.loadSongState === 'function') {
+                                        window.loadSongState();
+                                    }
+                                }
                                 if (ticker) {
                                     const item = document.createElement('span');
                                     item.className = 'log-item';

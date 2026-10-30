@@ -577,79 +577,177 @@
         if (!comment || typeof comment !== 'string') return;
 
         const text = comment.trim();
-        const lower = text.toLowerCase();
 
-        // 1. Check for Play/Request Command
-        const isPlayCommand = lower.startsWith('!play ') || lower.startsWith('!sr ') || lower.startsWith('!request ');
-        if (isPlayCommand) {
-            const songQuery = text.replace(/^!(play|sr|request)\s+/i, '').trim();
-            if (!songQuery) return;
-
-            // Announce in toast/UI
-            if (typeof showToast === 'function') {
-                showToast(`🔍 Searching full-length song for @${username}: "${songQuery}"...`, 'info');
-            }
-
-            const track = await searchTrack(songQuery);
-            if (!track) {
-                if (typeof showToast === 'function') {
-                    showToast(`❌ Could not find song: "${songQuery}"`, 'error');
-                }
-                return;
-            }
-
-            const newItem = {
-                id: 'req_' + Date.now(),
-                title: track.title,
-                artist: track.artist,
-                singer: track.singer || track.artist,
-                album: track.album || '',
-                coverUrl: track.coverUrl || '',
-                durationMs: track.durationMs || 210000,
-                requestedBy: username || 'Viewer',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                status: 'queued',
-                uri: track.uri,
-                previewUrl: track.previewUrl,
-                youtubeId: track.youtubeId
-            };
-
-            // If nothing is playing currently, start playing this track immediately
-            if (!songState.nowPlaying || !songState.nowPlaying.title) {
-                await playTrackImmediately(newItem);
-                if (typeof showToast === 'function') {
-                    showToast(`🎵 Now Playing Full Song: "${track.title}" by ${track.artist}`, 'success');
-                }
-            } else {
-                songState.queue.push(newItem);
-                if (songState.spotifyConnected && track.uri) {
-                    queueOnSpotifyPlayer(track.uri);
-                }
-                await saveSongState();
-                renderSongRequestUI();
-                if (typeof showToast === 'function') {
-                    showToast(`📋 Added to Queue: "${track.title}" by ${track.artist}`, 'success');
-                }
-            }
-
-            // Announce via AI Voice TTS if enabled
-            if (songState.settings.ttsAnnouncement && typeof window.handleIncomingChatTTS === 'function') {
-                const announceMsg = `Now playing: ${track.title} by ${track.artist}, requested by ${username}.`;
-                window.handleIncomingChatTTS('MusicBot', announceMsg);
-            }
-            return;
-        }
-
-        // 2. Check for Skip Command
-        if (lower === '!skip' || lower === '!next') {
+        // 1. Check for Skip Command (!skip, !next, /skip, /next)
+        if (/^[!/](skip|next)\b/i.test(text)) {
             skipCurrentTrack(`Requested by @${username}`);
             return;
         }
 
-        // 3. Check for Revoke Command
-        if (lower === '!revoke' || lower === '!unplay') {
+        // 2. Check for Revoke Command (!revoke, !unplay, /revoke)
+        if (/^[!/](revoke|unplay)\b/i.test(text)) {
             revokeUserSong(username);
             return;
+        }
+
+        // 3. Check for Play/Request Command (!play, !sr, !song, !request, !p, /play, /sr, etc.)
+        const playMatch = text.match(/^[!/](play|sr|song|request|p)(?:[\s:]+(.+)|$)/i);
+        if (playMatch) {
+            const songQuery = (playMatch[2] || '').trim();
+            if (!songQuery) {
+                if (typeof showToast === 'function') {
+                    showToast(`💡 @${username}: Type !play [song name] to request a song!`, 'info');
+                }
+                return;
+            }
+
+            // Check max songs limit per user
+            if (songState.settings.maxQueuePerUser && songState.settings.maxQueuePerUser < 999) {
+                const userActiveCount = songState.queue.filter(q => q.requestedBy && q.requestedBy.toLowerCase() === (username || '').toLowerCase()).length;
+                if (userActiveCount >= songState.settings.maxQueuePerUser) {
+                    if (typeof showToast === 'function') {
+                        showToast(`⚠️ @${username} reached max song request limit (${songState.settings.maxQueuePerUser})`, 'warning');
+                    }
+                    return;
+                }
+            }
+
+            const isCurrentlyPlaying = !!(songState.nowPlaying && songState.nowPlaying.title && songState.nowPlaying.isPlaying !== false);
+
+            if (isCurrentlyPlaying) {
+                // SMOOTH QUEUE ADDITION: Instantly appears on Upcoming Queue list (0ms delay)
+                const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                const optimisticItem = {
+                    id: reqId,
+                    title: songQuery,
+                    artist: 'Searching track...',
+                    singer: 'Searching track...',
+                    album: 'Stream Queue',
+                    coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop',
+                    durationMs: 210000,
+                    requestedBy: username || 'Viewer',
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    status: 'resolving',
+                    uri: '',
+                    previewUrl: '',
+                    youtubeId: ''
+                };
+
+                // Add to queue list immediately
+                songState.queue.push(optimisticItem);
+
+                // Smoothly update UI synchronously (0ms delay)
+                renderSongRequestUI();
+
+                if (typeof showToast === 'function') {
+                    showToast(`📋 Added to Queue: "${songQuery}" (Requested by @${username})`, 'success');
+                }
+
+                // Announce via AI Voice TTS if enabled
+                if (songState.settings.ttsAnnouncement && typeof window.handleIncomingChatTTS === 'function') {
+                    window.handleIncomingChatTTS('MusicBot', `Song requested by ${username}: ${songQuery}`);
+                }
+
+                // Background resolution: Fetch high-fidelity metadata & audio without blocking UI
+                (async () => {
+                    try {
+                        const track = await searchTrack(songQuery);
+                        const qIndex = songState.queue.findIndex(q => q.id === reqId);
+                        if (qIndex !== -1) {
+                            if (track) {
+                                songState.queue[qIndex].title = track.title || songState.queue[qIndex].title;
+                                songState.queue[qIndex].artist = track.artist || track.singer || 'Artist';
+                                songState.queue[qIndex].singer = track.singer || track.artist || 'Singer';
+                                songState.queue[qIndex].album = track.album || 'Single';
+                                songState.queue[qIndex].coverUrl = track.coverUrl || songState.queue[qIndex].coverUrl;
+                                songState.queue[qIndex].durationMs = track.durationMs || 210000;
+                                songState.queue[qIndex].uri = track.uri || '';
+                                songState.queue[qIndex].previewUrl = track.previewUrl || '';
+                                songState.queue[qIndex].youtubeId = track.youtubeId || '';
+                                songState.queue[qIndex].status = 'queued';
+
+                                if (songState.spotifyConnected && track.uri) {
+                                    queueOnSpotifyPlayer(track.uri);
+                                }
+                            } else {
+                                songState.queue[qIndex].artist = 'Community Request';
+                                songState.queue[qIndex].singer = 'Community Request';
+                                songState.queue[qIndex].status = 'queued';
+                            }
+                            saveSongState();
+                            renderSongRequestUI();
+                        }
+                    } catch (err) {
+                        console.warn('[SongRequest] Background track resolution notice:', err);
+                    }
+                })();
+
+                saveSongState();
+                return;
+            } else {
+                // If nothing is playing, play immediately
+                const nowId = 'now_' + Date.now();
+                const optimisticNow = {
+                    id: nowId,
+                    title: songQuery,
+                    artist: 'Loading audio...',
+                    singer: 'Loading singer...',
+                    album: 'Live Music',
+                    coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop',
+                    durationMs: 210000,
+                    progressMs: 0,
+                    requestedBy: username || 'Viewer',
+                    isPlaying: true,
+                    uri: '',
+                    previewUrl: '',
+                    youtubeId: ''
+                };
+
+                songState.nowPlaying = optimisticNow;
+                renderSongRequestUI();
+                updatePlayingUI(true);
+                startTimelineTicker();
+
+                if (typeof showToast === 'function') {
+                    showToast(`🎵 Loading: "${songQuery}" for @${username}`, 'info');
+                }
+
+                // Announce via AI Voice TTS if enabled
+                if (songState.settings.ttsAnnouncement && typeof window.handleIncomingChatTTS === 'function') {
+                    window.handleIncomingChatTTS('MusicBot', `Now playing: ${songQuery}, requested by ${username}.`);
+                }
+
+                (async () => {
+                    try {
+                        const track = await searchTrack(songQuery);
+                        if (track && songState.nowPlaying && songState.nowPlaying.id === nowId) {
+                            songState.nowPlaying.title = track.title || songState.nowPlaying.title;
+                            songState.nowPlaying.artist = track.artist || track.singer || 'Artist';
+                            songState.nowPlaying.singer = track.singer || track.artist || 'Singer';
+                            songState.nowPlaying.album = track.album || 'Single';
+                            songState.nowPlaying.coverUrl = track.coverUrl || songState.nowPlaying.coverUrl;
+                            songState.nowPlaying.durationMs = track.durationMs || 210000;
+                            songState.nowPlaying.previewUrl = track.previewUrl || '';
+                            songState.nowPlaying.youtubeId = track.youtubeId || '';
+                            songState.nowPlaying.uri = track.uri || '';
+
+                            if (songState.nowPlaying.previewUrl) {
+                                playLocalAudioDirect(songState.nowPlaying.previewUrl, true);
+                            } else if (songState.nowPlaying.youtubeId) {
+                                playYouTubeFullTrack(songState.nowPlaying.youtubeId, 0, true);
+                            }
+
+                            saveSongState();
+                            renderSongRequestUI();
+                        }
+                    } catch (err) {
+                        console.warn('[SongRequest] Immediate play resolution notice:', err);
+                    }
+                })();
+
+                saveSongState();
+                return;
+            }
         }
     }
 
@@ -1084,9 +1182,18 @@
         }
     };
 
-    // Play a track immediately as Now Playing
-    async function playTrackImmediately(track) {
+    // Play a track immediately as Now Playing (Instant UI & Audio Start)
+    function playTrackImmediately(track) {
+        if (!track) return;
         const detectedSinger = track.singer || track.artist || 'Unknown Artist';
+
+        // Stop any current audio instantly
+        if (localAudioPreview) {
+            localAudioPreview.pause();
+            localAudioPreview.currentTime = 0;
+            localAudioPreview = null;
+        }
+
         songState.nowPlaying = {
             id: track.id || ('now_' + Date.now()),
             title: track.title,
@@ -1103,55 +1210,81 @@
             youtubeId: track.youtubeId || ''
         };
 
+        // Instant synchronous UI render & ticker start (0ms latency)
         renderSongRequestUI();
-        await ensureAudioPlaying(true);
-        await saveSongState();
-        renderSongRequestUI();
+        updatePlayingUI(true);
+        startTimelineTicker();
+
+        // Direct audible playback if previewUrl is already known
+        if (songState.nowPlaying.previewUrl) {
+            playLocalAudioDirect(songState.nowPlaying.previewUrl, true);
+        } else {
+            // Non-blocking async audio resolution if needed
+            ensureAudioPlaying(true);
+        }
+
+        saveSongState();
     }
 
-    // Skip current track
-    async function skipCurrentTrack(reason = 'Streamer Skipped') {
-        if (!songState.nowPlaying) return;
+    // Skip current track (Instant ASAP Execution with 0ms Latency)
+    function skipCurrentTrack(reason = 'Streamer Skipped') {
+        if (!songState.nowPlaying && songState.queue.length === 0) return;
 
-        stopAllAudio();
+        // 1. INSTANTLY KILL AUDIO (0ms delay)
+        if (localAudioPreview) {
+            localAudioPreview.pause();
+            localAudioPreview.currentTime = 0;
+            localAudioPreview = null;
+        }
+        const iframe = document.getElementById('studioPersistentYtFrame');
+        if (iframe && iframe.contentWindow) {
+            try { iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch (_) {}
+        }
+        if (ytPlayer && ytPlayerReady && typeof ytPlayer.pauseVideo === 'function') {
+            try { ytPlayer.pauseVideo(); } catch (_) {}
+        }
+        if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+        }
 
-        // Archive to history
-        songState.history.unshift({
-            id: 'hist_' + Date.now(),
-            title: songState.nowPlaying.title,
-            artist: songState.nowPlaying.artist,
-            requestedBy: songState.nowPlaying.requestedBy,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            status: 'skipped'
-        });
-        if (songState.history.length > 40) songState.history.pop();
+        // 2. ARCHIVE PREVIOUS TRACK TO HISTORY
+        if (songState.nowPlaying) {
+            songState.history.unshift({
+                id: 'hist_' + Date.now(),
+                title: songState.nowPlaying.title || 'Track',
+                artist: songState.nowPlaying.singer || songState.nowPlaying.artist || 'Artist',
+                requestedBy: songState.nowPlaying.requestedBy || 'Viewer',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                status: 'skipped'
+            });
+            if (songState.history.length > 40) songState.history.pop();
+        }
 
-        // Advance to next song in queue
+        // 3. ADVANCE TO NEXT SONG IN QUEUE ASAP (0ms UI & Audio switch)
         if (songState.queue.length > 0) {
             const next = songState.queue.shift();
-            await playTrackImmediately(next);
+            playTrackImmediately(next);
             if (typeof showToast === 'function') {
                 showToast(`⏭️ Skipped! Now Playing: "${next.title}"`, 'success');
             }
         } else {
             songState.nowPlaying = null;
+            renderSongRequestUI();
+            updatePlayingUI(false);
             if (typeof showToast === 'function') {
                 showToast('⏹️ Queue finished. No more songs.', 'info');
             }
         }
 
-        // Call Spotify API skip if connected
+        // 4. BACKGROUND NON-BLOCKING PERSISTENCE & SPOTIFY API
+        saveSongState();
         if (songState.spotifyConnected && songState.spotifyAccessToken) {
-            try {
-                await fetch('https://api.spotify.com/v1/me/player/next', {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + songState.spotifyAccessToken }
-                });
-            } catch (e) {}
+            fetch('https://api.spotify.com/v1/me/player/next', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + songState.spotifyAccessToken }
+            }).catch(() => {});
         }
-
-        await saveSongState();
-        renderSongRequestUI();
     }
 
     // Revoke user's pending song
