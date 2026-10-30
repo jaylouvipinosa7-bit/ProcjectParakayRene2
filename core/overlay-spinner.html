@@ -1195,6 +1195,647 @@
         }
 
         /* ==========================================================================
+           VISUALIZER MODE 5: 3D CLAW MACHINE (UFO CATCHER)
+           ========================================================================== */
+        .claw-viewport-wrap {
+            position: relative;
+            width: 460px;
+            max-width: 96vw;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .claw-arcade-cabinet {
+            position: relative;
+            width: 440px;
+            background: linear-gradient(180deg, #180928 0%, #0d0617 100%);
+            border: 3.5px solid #a855f7;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(168, 85, 247, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .claw-arcade-marquee {
+            width: 100%;
+            background: linear-gradient(90deg, #7e22ce 0%, #a855f7 50%, #7e22ce 100%);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid #c084fc;
+        }
+
+        .marquee-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(192, 132, 252, 0.9);
+        }
+
+        .marquee-lights-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .m-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 8px #facc15;
+            animation: marqueeBlink 0.6s infinite alternate;
+        }
+        .m-dot.dot-2 { animation-delay: 0.15s; background: #ec4899; box-shadow: 0 0 8px #ec4899; }
+        .m-dot.dot-3 { animation-delay: 0.3s; background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+        .m-dot.dot-4 { animation-delay: 0.45s; background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+
+        @keyframes marqueeBlink {
+            0% { opacity: 0.4; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
+        .claw-glass-chamber {
+            position: relative;
+            width: 100%;
+            height: 310px;
+            background: radial-gradient(ellipse at 50% 30%, #201138 0%, #0c0716 95%);
+            border-bottom: 3px solid #3b0764;
+            overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.85);
+        }
+
+        .glass-glare-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 35%, transparent 60%);
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .interior-spotlight {
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: 280px;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.45;
+        }
+        .spotlight-left {
+            left: 20px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(192, 132, 252, 0.5) 0%, transparent 70%);
+            transform: skewX(12deg);
+        }
+        .spotlight-right {
+            right: 20px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(236, 72, 153, 0.5) 0%, transparent 70%);
+            transform: skewX(-12deg);
+        }
+
+        .claw-gantry-system {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            z-index: 10;
+        }
+
+        .gantry-rail-track {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            height: 6px;
+            background: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+        }
+        .top-rail { top: 8px; }
+        .bottom-rail { top: 22px; }
+
+        .claw-trolley-carriage {
+            position: absolute;
+            top: 2px;
+            left: 18%;
+            width: 44px;
+            height: 30px;
+            transform: translateX(-50%);
+            will-change: left;
+            z-index: 12;
+        }
+
+        .trolley-housing {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            background: linear-gradient(180deg, #cbd5e1 0%, #64748b 60%, #334155 100%);
+            border-radius: 6px;
+            border: 1px solid #94a3b8;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trolley-wheel {
+            position: absolute;
+            top: -4px;
+            width: 8px;
+            height: 8px;
+            background: #1e293b;
+            border: 1px solid #94a3b8;
+            border-radius: 50%;
+        }
+        .wheel-l { left: 4px; }
+        .wheel-r { right: 4px; }
+
+        .trolley-status-led {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            transition: background 0.2s;
+        }
+
+        .claw-winch-cable {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 24px;
+            background: repeating-linear-gradient(180deg, #94a3b8 0px, #94a3b8 3px, #475569 3px, #475569 6px);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+            will-change: height;
+        }
+
+        .claw-assembly-rig {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 48px;
+            transform-origin: top center;
+            will-change: top, transform;
+        }
+
+        .claw-swaying-active {
+            animation: clawSwayPhysics 1.1s ease-in-out infinite alternate !important;
+        }
+
+        @keyframes clawSwayPhysics {
+            0% { transform: translateX(-50%) rotate(-7deg); }
+            100% { transform: translateX(-50%) rotate(7deg); }
+        }
+
+        .claw-hub-cylinder {
+            width: 20px;
+            height: 14px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #94a3b8 50%, #475569 100%);
+            border-radius: 4px;
+            border: 1.5px solid #64748b;
+            margin: 0 auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .claw-prong {
+            position: absolute;
+            top: 10px;
+            width: 4px;
+            height: 34px;
+            transform-origin: top center;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .prong-left {
+            left: 8px;
+            transform: rotate(15deg);
+        }
+        .prong-right {
+            right: 8px;
+            transform: rotate(-15deg);
+        }
+        .prong-back {
+            left: 16px;
+            top: 10px;
+            height: 30px;
+            opacity: 0.65;
+            z-index: -1;
+        }
+
+        .prong-segment-upper {
+            width: 4px;
+            height: 18px;
+            background: linear-gradient(180deg, #cbd5e1 0%, #64748b 100%);
+            border-radius: 2px;
+        }
+
+        .prong-segment-lower {
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(180deg, #64748b 0%, #334155 100%);
+            border-radius: 2px;
+            transform-origin: top center;
+            transform: rotate(-15deg);
+        }
+
+        .prong-rubber-tip {
+            width: 7px;
+            height: 7px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin-top: -2px;
+            margin-left: -1.5px;
+            box-shadow: 0 0 4px #ef4444;
+        }
+
+        .claw-held-prize {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            pointer-events: none;
+        }
+
+        .claw-held-prize.active {
+            transform: translateX(-50%) scale(1) !important;
+            opacity: 1 !important;
+            display: flex !important;
+        }
+
+        .claw-held-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9));
+        }
+
+        .claw-drop-chute-box {
+            position: absolute;
+            bottom: 0;
+            left: 8px;
+            width: 82px;
+            height: 110px;
+            background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+            border: 2px solid #6366f1;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            z-index: 8;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        .chute-opening-lip {
+            width: 100%;
+            height: 8px;
+            background: #818cf8;
+            box-shadow: 0 0 10px #818cf8;
+        }
+
+        .chute-hole-interior {
+            width: 100%;
+            height: calc(100% - 8px);
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chute-arrow-indicator {
+            color: #818cf8;
+            font-size: 22px;
+            font-weight: 900;
+            animation: arrowBounce 0.8s infinite alternate;
+        }
+
+        @keyframes arrowBounce {
+            0% { transform: translateY(-4px); opacity: 0.5; }
+            100% { transform: translateY(4px); opacity: 1; }
+        }
+
+        .claw-falling-prize {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42px;
+            height: 42px;
+            z-index: 10;
+        }
+
+        .claw-falling-prize.falling-chute-active {
+            animation: chuteDropPhysics 0.65s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+        @keyframes chuteDropPhysics {
+            0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+            70% { transform: translateX(-50%) translateY(75px) scale(0.9); opacity: 0.9; }
+            100% { transform: translateX(-50%) translateY(115px) scale(0.6); opacity: 0; }
+        }
+
+        .claw-falling-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .claw-prize-pit-bed {
+            position: absolute;
+            bottom: 0;
+            left: 92px;
+            right: 0;
+            height: 95px;
+            background: linear-gradient(180deg, #180d2b 0%, #0c0716 100%);
+            border-top: 2px solid #581c87;
+            overflow: hidden;
+            z-index: 6;
+        }
+
+        .pit-floor-texture {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #2e1065 10%, transparent 60%);
+            opacity: 0.4;
+        }
+
+        .claw-pit-items-container {
+            position: absolute;
+            inset: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-content: flex-end;
+            justify-content: center;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .claw-pit-prize {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px;
+            flex-shrink: 0;
+            transition: transform 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
+        }
+
+        .claw-pit-prize.targeted {
+            transform: scale(1.25) !important;
+            filter: drop-shadow(0 0 8px #facc15) drop-shadow(0 0 16px #ec4899) !important;
+            z-index: 10;
+        }
+
+        .claw-pit-prize.grabbed {
+            opacity: 0 !important;
+            transform: scale(0.2) translateY(-30px) !important;
+        }
+
+        .claw-pit-prize-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.85));
+        }
+
+        .claw-arcade-console {
+            width: 100%;
+            background: linear-gradient(180deg, #24143a 0%, #150922 100%);
+            border-top: 2px solid #7e22ce;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .console-deck {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 10px;
+        }
+
+        .arcade-joystick-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .joystick-base-washer {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            background: #090310;
+            border: 2px solid #475569;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+        }
+
+        .joystick-shaft {
+            position: absolute;
+            width: 6px;
+            height: 22px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #94a3b8 100%);
+            bottom: 14px;
+            border-radius: 3px;
+            transform-origin: bottom center;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .joystick-ball-knob {
+            position: absolute;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 35% 35%, #ff4b72 0%, #dc2626 55%, #7f1d1d 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7), 0 0 8px rgba(220, 38, 38, 0.6);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .joystick-active-right .joystick-shaft { transform: rotate(24deg); }
+        .joystick-active-right .joystick-ball-knob { transform: translate(7px, 2px); }
+        .joystick-active-left .joystick-shaft { transform: rotate(-24deg); }
+        .joystick-active-left .joystick-ball-knob { transform: translate(-7px, 2px); }
+
+        .arcade-digital-display {
+            background: #030107;
+            border: 1.5px solid #4c1d95;
+            border-radius: 6px;
+            padding: 4px 12px;
+            text-align: center;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
+        }
+
+        .led-credit-text {
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fbbf24;
+            letter-spacing: 1px;
+            text-shadow: 0 0 6px #fbbf24;
+        }
+
+        .led-sub-text {
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 1px;
+        }
+
+        .arcade-grab-button {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+        }
+
+        .btn-top-surface {
+            display: block;
+            background: radial-gradient(circle at 35% 35%, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+            border: 2px solid #7dd3fc;
+            border-radius: 9999px;
+            padding: 8px 18px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 0 #075985, 0 8px 15px rgba(2, 132, 199, 0.5);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .arcade-grab-button.pressed .btn-top-surface {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #075985, 0 3px 8px rgba(2, 132, 199, 0.4);
+        }
+
+        .console-lower-panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+        }
+
+        .coin-slot-housing {
+            background: #090310;
+            border: 1.5px solid #334155;
+            border-radius: 4px;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coin-insert-slit {
+            width: 3px;
+            height: 16px;
+            background: #cbd5e1;
+            box-shadow: 0 0 4px #ffffff;
+        }
+
+        .prize-dispenser-pocket {
+            position: relative;
+            width: 90px;
+            height: 38px;
+            background: #020104;
+            border: 2px solid #6366f1;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.95);
+        }
+
+        .dispenser-flap-door {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+            border-bottom: 2px solid #4338ca;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            transform-origin: top center;
+            transition: transform 0.4s ease;
+        }
+
+        .dispenser-flap-door.flap-open-active {
+            transform: rotateX(-50deg);
+        }
+
+        .dispenser-glow-light {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(250, 204, 21, 0.35) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .dispenser-flap-door.flap-open-active ~ .dispenser-glow-light {
+            opacity: 1;
+        }
+
+        .dispenser-sparkles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .arcade-sparkle-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--bg, #facc15);
+            box-shadow: 0 0 8px var(--bg, #facc15);
+            animation: sparkleFly 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes sparkleFly {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.4); opacity: 0; }
+        }
+
+        /* ==========================================================================
            STREAMER CONTROL PANEL / SETTINGS MODAL (MATCHING PHOTO 1)
            ========================================================================== */
         .settings-modal-backdrop {
@@ -1818,6 +2459,11 @@
             </div>
         </div>
 
+        <!-- ==================== MODE 2.5: 3D THREE.JS LUCKY WHEEL (MATCHING APP) ==================== -->
+        <div class="wheel3d-viewport-wrap" id="wheel3DOverlayWrap" style="display: none; position: relative; width: 500px; height: 460px; justify-content: center; align-items: center; margin: 0 auto;">
+            <canvas id="overlayWheel3DCanvas" width="500" height="460" style="width: 500px; height: 460px; display: block; filter: drop-shadow(0 20px 35px rgba(0,0,0,0.92));"></canvas>
+        </div>
+
         <!-- ==================== MODE 3: 3D GACHA CAPSULE MACHINE & PVZ MYSTERY PACK CARD ==================== -->
         <div class="gacha-viewport-wrap" id="gachaMachineWrap">
             <div class="gacha-machine-body" id="gachaMachineBody">
@@ -1873,6 +2519,114 @@
                 <!-- Hidden fallback strip elements for legacy verifiers if needed -->
                 <div style="display: none;">
                     <div id="slotStrip1"></div><div id="slotStrip2"></div><div id="slotStrip3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MODE 5: 3D ARCADE CLAW MACHINE ==================== -->
+        <div class="claw-viewport-wrap" id="clawMachineWrap">
+            <div class="claw-arcade-cabinet">
+                <!-- Top Marquee -->
+                <div class="claw-arcade-marquee">
+                    <div class="marquee-title" id="overlayClawTitle">🕹️ PVZ CLAW CATCHER</div>
+                    <div class="marquee-lights-row">
+                        <span class="m-dot dot-1"></span>
+                        <span class="m-dot dot-2"></span>
+                        <span class="m-dot dot-3"></span>
+                        <span class="m-dot dot-4"></span>
+                    </div>
+                </div>
+
+                <!-- Glass Showcase Chamber -->
+                <div class="claw-glass-chamber" id="overlayClawGlassChamber">
+                    <div class="glass-glare-overlay"></div>
+                    <div class="interior-spotlight spotlight-left"></div>
+                    <div class="interior-spotlight spotlight-right"></div>
+
+                    <!-- Overhead Gantry System -->
+                    <div class="claw-gantry-system">
+                        <div class="gantry-rail-track top-rail"></div>
+                        <div class="gantry-rail-track bottom-rail"></div>
+
+                        <div class="claw-trolley-carriage" id="overlayClawTrolley">
+                            <div class="trolley-housing">
+                                <div class="trolley-wheel wheel-l"></div>
+                                <div class="trolley-wheel wheel-r"></div>
+                                <div class="trolley-status-led" id="overlayClawStatusLed"></div>
+                            </div>
+                            <div class="claw-winch-cable" id="overlayClawCable"></div>
+                            <div class="claw-assembly-rig" id="overlayClawAssembly">
+                                <div class="claw-hub-cylinder"></div>
+                                <div class="claw-prong prong-left" id="overlayClawProngLeft">
+                                    <div class="prong-segment-upper"></div>
+                                    <div class="prong-segment-lower"></div>
+                                    <div class="prong-rubber-tip"></div>
+                                </div>
+                                <div class="claw-prong prong-right" id="overlayClawProngRight">
+                                    <div class="prong-segment-upper"></div>
+                                    <div class="prong-segment-lower"></div>
+                                    <div class="prong-rubber-tip"></div>
+                                </div>
+                                <div class="claw-prong prong-back" id="overlayClawProngBack">
+                                    <div class="prong-segment-upper"></div>
+                                    <div class="prong-segment-lower"></div>
+                                    <div class="prong-rubber-tip"></div>
+                                </div>
+                                <div class="claw-held-prize" id="overlayClawHeldPrize">
+                                    <img src="" id="overlayClawHeldImg" class="claw-held-img" alt="Held Prize">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drop Chute Box (Left) -->
+                    <div class="claw-drop-chute-box" id="overlayClawChute">
+                        <div class="chute-opening-lip"></div>
+                        <div class="chute-hole-interior">
+                            <div class="chute-arrow-indicator">⬇</div>
+                        </div>
+                        <div class="claw-falling-prize" id="overlayClawFallingPrize">
+                            <img src="" id="overlayClawFallingImg" class="claw-falling-img" alt="Falling Prize">
+                        </div>
+                    </div>
+
+                    <!-- Lower Prize Pit Bed -->
+                    <div class="claw-prize-pit-bed" id="overlayClawPitBed">
+                        <div class="pit-floor-texture"></div>
+                        <div class="pit-front-glass-lip"></div>
+                        <div class="claw-pit-items-container" id="overlayClawPitItems"></div>
+                    </div>
+                </div>
+
+                <!-- Arcade Control Console Base -->
+                <div class="claw-arcade-console">
+                    <div class="console-deck">
+                        <div class="arcade-joystick-wrap" id="overlayClawJoystick">
+                            <div class="joystick-base-washer"></div>
+                            <div class="joystick-shaft"></div>
+                            <div class="joystick-ball-knob"></div>
+                        </div>
+                        <div class="arcade-digital-display">
+                            <div class="led-credit-text">CREDITS: <span id="overlayClawCredits">01</span></div>
+                            <div class="led-sub-text" id="overlayClawConsoleStatus">READY</div>
+                        </div>
+                        <div class="arcade-grab-button" id="overlayClawGrabBtn">
+                            <span class="btn-top-surface">GRAB!</span>
+                        </div>
+                    </div>
+                    <div class="console-lower-panel">
+                        <div class="coin-slot-housing">
+                            <div class="coin-insert-slit"></div>
+                            <div class="coin-return-cup"></div>
+                        </div>
+                        <div class="prize-dispenser-pocket" id="overlayClawDispenser">
+                            <div class="dispenser-flap-door" id="overlayClawDispenserFlap">
+                                <span>PUSH</span>
+                            </div>
+                            <div class="dispenser-glow-light"></div>
+                            <div class="dispenser-sparkles" id="overlayClawSparkles"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2019,6 +2773,9 @@
                         </button>
                         <button type="button" class="mode-pill-btn" data-mode="slot" onclick="switchVisualizerMode('slot')">
                             <span>🍒</span> Slot Machine
+                        </button>
+                        <button type="button" class="mode-pill-btn" data-mode="claw" onclick="switchVisualizerMode('claw')">
+                            <span>🕹️</span> Claw Machine
                         </button>
                     </div>
                 </div>
@@ -3407,14 +4164,745 @@
         }
 
         // ========================================================
+        // 9.5 VISUALIZER MODE 2.5: 3D THREE.JS LUCKY WHEEL ENGINE
+        // ========================================================
+        let overlay3DWheelState = {
+            renderer: null,
+            scene: null,
+            camera: null,
+            mainAssembly: null,
+            rotorGroup: null,
+            flapperGroup: null,
+            gemMesh: null,
+            currentRotation: 0,
+            spinVelocity: 0,
+            isSpinning: false,
+            animId: null,
+            flapperAngle: 0,
+            flapperVelocity: 0,
+            lastTickSlice: -1,
+            numSlices: 8,
+            sliceAngle: Math.PI / 4
+        };
+
+        function initOrUpdateOverlay3DWheel() {
+            const canvas = document.getElementById('overlayWheel3DCanvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            const slices = (currentSpinnerConfig && currentSpinnerConfig.slices && currentSpinnerConfig.slices.length > 0)
+                ? currentSpinnerConfig.slices
+                : (overlaySpinnerItems || []);
+            const numSlices = slices.length || 8;
+            const sliceAngle = (Math.PI * 2) / numSlices;
+            overlay3DWheelState.numSlices = numSlices;
+            overlay3DWheelState.sliceAngle = sliceAngle;
+
+            if (!overlay3DWheelState.renderer) {
+                const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+                renderer.setSize(500, 460);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+                if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(36, 500 / 460, 0.1, 100);
+                camera.position.set(0, -0.32, 6.2);
+                camera.lookAt(0, 0.08, 0);
+
+                const ambLight = new THREE.AmbientLight(0xffffff, 0.95);
+                scene.add(ambLight);
+
+                const keyLight = new THREE.DirectionalLight(0xfffaea, 2.4);
+                keyLight.position.set(3.2, 5.0, 4.6);
+                scene.add(keyLight);
+
+                const topRimLight = new THREE.PointLight(0xf59e0b, 2.8, 10);
+                topRimLight.position.set(0, 2.4, 2.8);
+                scene.add(topRimLight);
+
+                const fillLight = new THREE.PointLight(0x06b6d4, 1.4, 9);
+                fillLight.position.set(-2.8, -2.4, 2.2);
+                scene.add(fillLight);
+
+                overlay3DWheelState.renderer = renderer;
+                overlay3DWheelState.scene = scene;
+                overlay3DWheelState.camera = camera;
+
+                function loop() {
+                    overlay3DWheelState.animId = requestAnimationFrame(loop);
+                    const currentRot = overlay3DWheelState.currentRotation;
+                    const sAngle = overlay3DWheelState.sliceAngle;
+                    const nSlices = overlay3DWheelState.numSlices;
+
+                    if (overlay3DWheelState.rotorGroup) {
+                        overlay3DWheelState.rotorGroup.rotation.z = currentRot;
+                    }
+
+                    // Flapper deflection
+                    let maxDeflection = 0;
+                    for (let i = 0; i < nSlices; i++) {
+                        const pegAngle = (i * sAngle + currentRot);
+                        const diff = ((pegAngle - Math.PI / 2 + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+                        if (diff > -0.04 && diff < 0.16) {
+                            const push = (0.16 - diff) / 0.20;
+                            const targetDef = push * 0.44;
+                            if (targetDef > maxDeflection) maxDeflection = targetDef;
+                        }
+                    }
+
+                    overlay3DWheelState.flapperVelocity += (maxDeflection - overlay3DWheelState.flapperAngle) * 0.32;
+                    overlay3DWheelState.flapperVelocity *= 0.72;
+                    overlay3DWheelState.flapperAngle += overlay3DWheelState.flapperVelocity;
+
+                    if (overlay3DWheelState.flapperGroup) {
+                        overlay3DWheelState.flapperGroup.rotation.z = overlay3DWheelState.flapperAngle;
+                    }
+
+                    const normRot = ((currentRot % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    const currentSliceIdx = Math.floor((((Math.PI / 2 - normRot) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2)) / sAngle);
+                    if (currentSliceIdx !== overlay3DWheelState.lastTickSlice && Math.abs(overlay3DWheelState.spinVelocity) > 0.02) {
+                        playReelTick();
+                        overlay3DWheelState.lastTickSlice = currentSliceIdx;
+                    }
+
+                    if (!overlay3DWheelState.isSpinning && overlay3DWheelState.mainAssembly) {
+                        const t = performance.now() * 0.0014;
+                        overlay3DWheelState.mainAssembly.rotation.y = 0.08 + Math.sin(t * 1.2) * 0.038;
+                        overlay3DWheelState.mainAssembly.rotation.x = -0.32 + Math.cos(t * 0.9) * 0.022;
+                        overlay3DWheelState.mainAssembly.position.y = -0.16 + Math.sin(t * 1.8) * 0.024;
+                        if (overlay3DWheelState.gemMesh) {
+                            overlay3DWheelState.gemMesh.material.emissiveIntensity = 0.75 + Math.sin(t * 2.5) * 0.35;
+                        }
+                    }
+
+                    renderer.render(scene, camera);
+                }
+                loop();
+            }
+
+            if (overlay3DWheelState.mainAssembly) {
+                overlay3DWheelState.scene.remove(overlay3DWheelState.mainAssembly);
+            }
+
+            const mainAssembly = new THREE.Group();
+            mainAssembly.rotation.x = -0.32;
+            mainAssembly.rotation.y = 0.08;
+            mainAssembly.position.y = -0.16;
+
+            // Rear casing
+            const casingGeo = new THREE.CylinderGeometry(2.32, 2.36, 0.36, 64);
+            casingGeo.rotateX(Math.PI / 2);
+            const casingMat = new THREE.MeshStandardMaterial({ color: 0x141824, metalness: 0.88, roughness: 0.32 });
+            const casingMesh = new THREE.Mesh(casingGeo, casingMat);
+            casingMesh.position.z = -0.15;
+            mainAssembly.add(casingMesh);
+
+            // Outer gold rim
+            const torusGeo = new THREE.TorusGeometry(2.18, 0.13, 24, 72);
+            const goldRimMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.95, roughness: 0.16 });
+            const torusMesh = new THREE.Mesh(torusGeo, goldRimMat);
+            torusMesh.position.z = 0.05;
+            mainAssembly.add(torusMesh);
+
+            // Stepped inner chamfer
+            const chamferGeo = new THREE.CylinderGeometry(2.15, 2.05, 0.10, 64);
+            chamferGeo.rotateX(Math.PI / 2);
+            const chamferMat = new THREE.MeshStandardMaterial({ color: 0xebb328, metalness: 0.92, roughness: 0.22 });
+            const chamferMesh = new THREE.Mesh(chamferGeo, chamferMat);
+            chamferMesh.position.z = 0.02;
+            mainAssembly.add(chamferMesh);
+
+            // Rotor group
+            const rotorGroup = new THREE.Group();
+
+            const tCanvas = document.createElement('canvas');
+            tCanvas.width = 1024;
+            tCanvas.height = 1024;
+            const ctx = tCanvas.getContext('2d');
+            const cx = 512, cy = 512, R = 496;
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, 1024, 1024);
+
+            for (let i = 0; i < numSlices; i++) {
+                const sl = slices[i] || {};
+                const start = i * sliceAngle;
+                const end = start + sliceAngle;
+                const mid = start + sliceAngle / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, R, start, end);
+                ctx.closePath();
+
+                const baseColor = sl.color || ((i % 2 === 0) ? '#1e293b' : '#0f172a');
+                const grad = ctx.createRadialGradient(cx, cy, 120, cx, cy, R);
+                grad.addColorStop(0.0, baseColor);
+                grad.addColorStop(0.85, baseColor);
+                grad.addColorStop(1.0, '#000000');
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#fef08a';
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(mid);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 34px Outfit, sans-serif';
+                ctx.shadowColor = 'rgba(0,0,0,0.95)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+
+                const labelText = (sl.label || `Prize ${i + 1}`).substring(0, 16);
+                ctx.fillText(labelText, R - 62, 11);
+
+                ctx.beginPath();
+                ctx.arc(R - 26, 0, 7, 0, Math.PI * 2);
+                ctx.fillStyle = '#fde047';
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = '#f59e0b';
+                ctx.fill();
+                ctx.restore();
+            }
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 140, 0, Math.PI * 2);
+            ctx.lineWidth = 14;
+            ctx.strokeStyle = '#d4af37';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, R - 4, 0, Math.PI * 2);
+            ctx.lineWidth = 18;
+            ctx.strokeStyle = '#f59e0b';
+            ctx.stroke();
+
+            const texture = new THREE.CanvasTexture(tCanvas);
+            texture.anisotropy = 4;
+
+            const discGeo = new THREE.CylinderGeometry(2.05, 2.05, 0.20, 64);
+            discGeo.rotateX(Math.PI / 2);
+            const materials = [
+                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.95, roughness: 0.18 }),
+                new THREE.MeshStandardMaterial({ map: texture, roughness: 0.30, metalness: 0.15 }),
+                new THREE.MeshStandardMaterial({ color: 0x090b10, roughness: 0.85 })
+            ];
+            const discMesh = new THREE.Mesh(discGeo, materials);
+            rotorGroup.add(discMesh);
+
+            // Divider ribs
+            const ribGeo = new THREE.BoxGeometry(0.024, 1.38, 0.045);
+            const ribMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, metalness: 0.96, roughness: 0.12 });
+            for (let i = 0; i < numSlices; i++) {
+                const angle = i * sliceAngle;
+                const rib = new THREE.Mesh(ribGeo, ribMat);
+                rib.position.set(0, 0.70, 0.115);
+                const pivot = new THREE.Group();
+                pivot.rotation.z = angle;
+                pivot.add(rib);
+                rotorGroup.add(pivot);
+            }
+
+            // 3D Brass Pegs
+            const pegShaftGeo = new THREE.CylinderGeometry(0.032, 0.036, 0.16, 16);
+            pegShaftGeo.rotateX(Math.PI / 2);
+            const pegCapGeo = new THREE.SphereGeometry(0.065, 16, 16);
+            const pegMat = new THREE.MeshStandardMaterial({ color: 0xfff08a, metalness: 0.98, roughness: 0.08 });
+            for (let i = 0; i < numSlices; i++) {
+                const a = i * sliceAngle;
+                const px = Math.cos(a) * 1.96;
+                const py = Math.sin(a) * 1.96;
+                const pegGroup = new THREE.Group();
+                pegGroup.position.set(px, py, 0.10);
+                const shaft = new THREE.Mesh(pegShaftGeo, pegMat);
+                shaft.position.z = 0.08;
+                const cap = new THREE.Mesh(pegCapGeo, pegMat);
+                cap.position.z = 0.16;
+                pegGroup.add(shaft);
+                pegGroup.add(cap);
+                rotorGroup.add(pegGroup);
+            }
+
+            // Center Turret
+            const collarGeo = new THREE.CylinderGeometry(0.66, 0.72, 0.08, 36);
+            collarGeo.rotateX(Math.PI / 2);
+            const collarMat = new THREE.MeshStandardMaterial({ color: 0xca8a04, metalness: 0.92, roughness: 0.22 });
+            const collarMesh = new THREE.Mesh(collarGeo, collarMat);
+            collarMesh.position.z = 0.12;
+            rotorGroup.add(collarMesh);
+
+            const domeGeo = new THREE.SphereGeometry(0.44, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+            domeGeo.rotateX(-Math.PI / 2);
+            const domeMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.96, roughness: 0.14 });
+            const domeMesh = new THREE.Mesh(domeGeo, domeMat);
+            domeMesh.position.z = 0.15;
+            rotorGroup.add(domeMesh);
+
+            const gemBezelGeo = new THREE.TorusGeometry(0.22, 0.038, 16, 32);
+            const gemBezelMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, metalness: 0.95, roughness: 0.1 });
+            const gemBezel = new THREE.Mesh(gemBezelGeo, gemBezelMat);
+            gemBezel.position.z = 0.26;
+            rotorGroup.add(gemBezel);
+
+            const gemGeo = new THREE.CylinderGeometry(0.18, 0.12, 0.08, 8);
+            gemGeo.rotateX(Math.PI / 2);
+            const gemMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x991b1b, emissiveIntensity: 0.8, roughness: 0.12, metalness: 0.55 });
+            const gemMesh = new THREE.Mesh(gemGeo, gemMat);
+            gemMesh.position.z = 0.27;
+            rotorGroup.add(gemMesh);
+            overlay3DWheelState.gemMesh = gemMesh;
+
+            mainAssembly.add(rotorGroup);
+            overlay3DWheelState.rotorGroup = rotorGroup;
+
+            // Flapper Needle
+            const flapperAnchor = new THREE.Group();
+            flapperAnchor.position.set(0, 2.16, 0.22);
+            const bracketGeo = new THREE.BoxGeometry(0.22, 0.16, 0.14);
+            const bracketMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.85, roughness: 0.35 });
+            const bracket = new THREE.Mesh(bracketGeo, bracketMat);
+            bracket.position.y = 0.08;
+            flapperAnchor.add(bracket);
+
+            const pinGeo = new THREE.CylinderGeometry(0.045, 0.045, 0.14, 16);
+            pinGeo.rotateX(Math.PI / 2);
+            const pinMat = new THREE.MeshStandardMaterial({ color: 0xfde047, metalness: 0.95, roughness: 0.15 });
+            const pin = new THREE.Mesh(pinGeo, pinMat);
+            flapperAnchor.add(pin);
+
+            const flapperGroup = new THREE.Group();
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.09, 0.04);
+            shape.lineTo(0.09, 0.04);
+            shape.lineTo(0.03, -0.42);
+            shape.lineTo(0, -0.46);
+            shape.lineTo(-0.03, -0.42);
+            shape.closePath();
+
+            const needleGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.07, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.015, bevelThickness: 0.015 });
+            needleGeo.center();
+            needleGeo.translate(0, -0.22, 0.035);
+
+            const needleMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.95, roughness: 0.15 });
+            const needleMesh = new THREE.Mesh(needleGeo, needleMat);
+            flapperGroup.add(needleMesh);
+
+            const rubyGeo = new THREE.SphereGeometry(0.055, 16, 16);
+            const rubyMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x7f1d1d, emissiveIntensity: 0.7, roughness: 0.1 });
+            const rubyMesh = new THREE.Mesh(rubyGeo, rubyMat);
+            rubyMesh.position.set(0, -0.16, 0.08);
+            flapperGroup.add(rubyMesh);
+
+            flapperAnchor.add(flapperGroup);
+            mainAssembly.add(flapperAnchor);
+            overlay3DWheelState.flapperGroup = flapperGroup;
+
+            overlay3DWheelState.mainAssembly = mainAssembly;
+            overlay3DWheelState.scene.add(mainAssembly);
+        }
+
+        function spin3DWheelOverlay(targetWinner, onComplete) {
+            initOrUpdateOverlay3DWheel();
+            overlay3DWheelState.isSpinning = true;
+
+            const slices = (currentSpinnerConfig && currentSpinnerConfig.slices && currentSpinnerConfig.slices.length > 0)
+                ? currentSpinnerConfig.slices
+                : (overlaySpinnerItems || []);
+            let winIdx = slices.findIndex(s => s.id === targetWinner.id || s.label === targetWinner.label);
+            if (winIdx === -1) winIdx = 0;
+            const numSlices = slices.length || 8;
+            const sliceAngle = (Math.PI * 2) / numSlices;
+
+            const targetSliceMid = (winIdx + 0.5) * sliceAngle;
+            const baseTarget = (Math.PI / 2) - targetSliceMid;
+            const spins = (Math.PI * 2) * (5 + Math.floor(Math.random() * 2));
+            const finalZ = overlay3DWheelState.currentRotation + spins + ((baseTarget - (overlay3DWheelState.currentRotation % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2));
+
+            const startZ = overlay3DWheelState.currentRotation;
+            const duration = (currentSpinnerConfig && currentSpinnerConfig.duration) ? Math.max(3800, currentSpinnerConfig.duration) : 4200;
+            const startTime = performance.now();
+            let prevRot = startZ;
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                let currentRot;
+                if (progress < 0.08) {
+                    const pAnt = progress / 0.08;
+                    currentRot = startZ + Math.sin(pAnt * Math.PI) * -0.06;
+                } else {
+                    const pMain = (progress - 0.08) / 0.92;
+                    const ease = 1 - Math.pow(1 - pMain, 4.2);
+                    currentRot = startZ + (finalZ - startZ) * ease;
+                    if (pMain > 0.90) {
+                        const pSettle = (pMain - 0.90) / 0.10;
+                        currentRot += Math.sin(pSettle * Math.PI * 3) * Math.exp(-pSettle * 4) * 0.018;
+                    }
+                }
+
+                overlay3DWheelState.spinVelocity = currentRot - prevRot;
+                prevRot = currentRot;
+                overlay3DWheelState.currentRotation = currentRot;
+
+                if (overlay3DWheelState.camera) {
+                    const zoomOffset = Math.sin(progress * Math.PI) * 0.35;
+                    overlay3DWheelState.camera.position.z = 6.2 - zoomOffset;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    overlay3DWheelState.currentRotation = finalZ;
+                    overlay3DWheelState.spinVelocity = 0;
+                    overlay3DWheelState.isSpinning = false;
+                    if (overlay3DWheelState.camera) overlay3DWheelState.camera.position.z = 6.2;
+                    if (typeof playWinFanfare === 'function') {
+                        playWinFanfare(targetWinner.rarity || 'Legendary');
+                    }
+                    if (onComplete) onComplete();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        // ========================================================
+        // 9.8 VISUALIZER MODE 5: 3D CLAW MACHINE (UFO CATCHER) ENGINE
+        // ========================================================
+        // 9.8 VISUALIZER MODE 5: 3D CLAW MACHINE (UFO CATCHER) ENGINE
+        // ========================================================
+        const OVERLAY_PVZ_COMMANDS = [
+            { label: 'Gatling Pea', icon: 'images/game-icons/pvz/spawn_gatling_pea.webp', rarity: 'Mythic', command: 'spawn_gatling_pea' },
+            { label: 'Super Gargantuar', icon: 'images/game-icons/pvz/spawn_super_gargantuar.webp', rarity: 'Mythic', command: 'spawn_super_gargantuar' },
+            { label: 'Nuclear Doom Cherry', icon: 'images/game-icons/pvz/spawn_nucleardoomcherry.webp', rarity: 'Mythic', command: 'spawn_nucleardoomcherry' },
+            { label: 'Obsidian Jugger-nut', icon: 'images/game-icons/pvz/spawn_obsidian_juggernut.webp', rarity: 'Legendary', command: 'spawn_obsidian_juggernut' },
+            { label: 'Overclocked Cherrybomber', icon: 'images/game-icons/pvz/spawn_overclocked_cherrybomber.webp', rarity: 'Legendary', command: 'spawn_overclocked_cherrybomber' },
+            { label: 'Ultimate Cattail', icon: 'images/game-icons/pvz/spawn_ultimatecattail.webp', rarity: 'Legendary', command: 'spawn_ultimatecattail' },
+            { label: 'Super Threepeater SP', icon: 'images/game-icons/pvz/spawn_superthreepeater_sp.webp', rarity: 'Legendary', command: 'spawn_superthreepeater_sp' },
+            { label: 'Ultimate Sniper Gatling', icon: 'images/game-icons/pvz/spawn_ultimatesnipergatling.webp', rarity: 'Legendary', command: 'spawn_ultimatesnipergatling' },
+            { label: 'Charm All Zombies', icon: 'images/game-icons/pvz/charm_all_zombies.webp', rarity: 'Epic', command: 'charmallzombies' },
+            { label: 'Kill All Zombies', icon: 'images/game-icons/pvz/kill_all_zombies.webp', rarity: 'Mythic', command: 'kill_all_zombies' },
+            { label: 'Launch Lawnmowers', icon: 'images/game-icons/pvz/lawnmower.webp', rarity: 'Epic', command: 'startlawnmowers' },
+            { label: 'Big Sun Nut', icon: 'images/game-icons/pvz/spawn_big_sun_nut.webp', rarity: 'Rare', command: 'spawn_big_sun_nut' },
+            { label: 'Bedrock Tall Nut', icon: 'images/game-icons/pvz/spawn_bedrocktallnut.webp', rarity: 'Rare', command: 'spawn_bedrocktallnut' },
+            { label: 'Doom-shroom', icon: 'images/game-icons/pvz/spawn_doom_shroom.webp', rarity: 'Epic', command: 'spawn_doom_shroom' },
+            { label: 'Cherry Bomb', icon: 'images/game-icons/pvz/spawn_cherry_bomb.webp', rarity: 'Epic', command: 'spawn_cherry_bomb' },
+            { label: 'Ice-shroom', icon: 'images/game-icons/pvz/spawn_ice_shroom.webp', rarity: 'Epic', command: 'spawn_ice_shroom' },
+            { label: 'Jalapeno', icon: 'images/game-icons/pvz/spawn_jalapeno.webp', rarity: 'Rare', command: 'spawn_jalapeno' },
+            { label: 'Squash', icon: 'images/game-icons/pvz/spawn_squash.webp', rarity: 'Rare', command: 'spawn_squash' },
+            { label: 'Kirov Airship', icon: 'images/game-icons/pvz/spawn_kirov_c.webp', rarity: 'Legendary', command: 'spawn_kirov_c' },
+            { label: 'Ultimate Football Zombie', icon: 'images/game-icons/pvz/spawn_ultimate_football_zombie.webp', rarity: 'Legendary', command: 'spawn_ultimate_football_zombie' },
+            { label: 'Summoned Horse', icon: 'images/game-icons/pvz/spawn_summonedhorse.webp', rarity: 'Epic', command: 'spawn_summonedhorse' },
+            { label: 'Eternal Zombie', icon: 'images/game-icons/pvz/spawn_eternalzombie_c.webp', rarity: 'Rare', command: 'spawn_eternalzombie_c' },
+            { label: 'Sun Storm', icon: 'images/game-icons/pvz/add_sun.webp', rarity: 'Rare', command: 'sunstorm' },
+            { label: 'Hypno Queen', icon: 'images/game-icons/pvz/spawn_hypno_queen.webp', rarity: 'Legendary', command: 'spawn_hypno_queen' },
+            { label: 'Black Knight Zombie', icon: 'images/game-icons/pvz/spawn_black_knight_zombie.webp', rarity: 'Legendary', command: 'spawn_black_knight_zombie' },
+            { label: 'Trident Juggernut', icon: 'images/game-icons/pvz/spawn_trident_juggernut.webp', rarity: 'Mythic', command: 'spawn_trident_juggernut' },
+            { label: 'Super Furnace', icon: 'images/game-icons/pvz/spawn_super_furnace.webp', rarity: 'Epic', command: 'spawn_super_furnace' },
+            { label: 'Gold Sunflower', icon: 'images/game-icons/pvz/spawn_gold_sunflower.webp', rarity: 'Rare', command: 'spawn_gold_sunflower' }
+        ];
+
+        function populateOverlayClawPrizes() {
+            const pit = document.getElementById('overlayClawPitItems');
+            if (!pit) return;
+
+            let source = [];
+            if (state.items && state.items.length > 0) {
+                state.items.forEach(it => {
+                    const icon = it.unitIcon || it.icon || 'images/game-icons/pvz/spawn_gatling_pea.webp';
+                    source.push({ label: it.label || 'Unit', icon: icon, rarity: it.rarity || 'Legendary', command: it.command || '' });
+                });
+            }
+            if (source.length < 24) {
+                source = source.concat(OVERLAY_PVZ_COMMANDS);
+            }
+
+            pit.innerHTML = '';
+            const totalDisplay = Math.min(38, Math.max(28, source.length));
+            for (let i = 0; i < totalDisplay; i++) {
+                const it = source[i % source.length];
+                const prizeEl = document.createElement('div');
+                prizeEl.className = 'claw-pit-prize';
+                prizeEl.dataset.label = it.label || '';
+                prizeEl.dataset.icon = it.icon || '';
+                prizeEl.dataset.command = it.command || '';
+
+                const rot = (Math.sin(i * 1.7) * 16).toFixed(1);
+                const scale = (0.92 + Math.abs(Math.sin(i * 2.3)) * 0.16).toFixed(2);
+                prizeEl.style.transform = `rotate(${rot}deg) scale(${scale})`;
+                prizeEl.innerHTML = `
+                    <img src="${it.icon || 'images/game-icons/pvz/spawn_gatling_pea.webp'}" onerror="this.src='images/func_2.png'" class="claw-pit-prize-img" alt="${it.label || 'Prize'}">
+                `;
+                pit.appendChild(prizeEl);
+            }
+        }
+
+        function playClawMachineCatch(targetWinner, onComplete) {
+            const trolley = document.getElementById('overlayClawTrolley');
+            const cable = document.getElementById('overlayClawCable');
+            const assembly = document.getElementById('overlayClawAssembly');
+            const statusLed = document.getElementById('overlayClawStatusLed');
+            const prongLeft = document.getElementById('overlayClawProngLeft');
+            const prongRight = document.getElementById('overlayClawProngRight');
+            const prongBack = document.getElementById('overlayClawProngBack');
+            const heldPrize = document.getElementById('overlayClawHeldPrize');
+            const heldImg = document.getElementById('overlayClawHeldImg');
+            const fallingPrize = document.getElementById('overlayClawFallingPrize');
+            const fallingImg = document.getElementById('overlayClawFallingImg');
+            const dispenserFlap = document.getElementById('overlayClawDispenserFlap');
+            const sparkles = document.getElementById('overlayClawSparkles');
+            const joystick = document.getElementById('overlayClawJoystick');
+            const creditsEl = document.getElementById('overlayClawCredits');
+            const consoleStatus = document.getElementById('overlayClawConsoleStatus');
+            const grabBtn = document.getElementById('overlayClawGrabBtn');
+
+            const rawItem = (targetWinner && targetWinner.item) ? targetWinner.item : (targetWinner || {});
+            const itemIcon = rawItem.unitIcon || rawItem.icon || targetWinner.icon || 'images/game-icons/pvz/spawn_gatling_pea.webp';
+            const itemLabel = rawItem.label || targetWinner.label || 'Reward';
+
+            // Find matching pit prize to target directly
+            const pit = document.getElementById('overlayClawPitItems');
+            const pitPrizes = pit ? Array.from(pit.querySelectorAll('.claw-pit-prize')) : [];
+            let targetPitEl = null;
+
+            if (pitPrizes.length > 0) {
+                targetPitEl = pitPrizes.find(el => {
+                    const l = (el.dataset.label || '').toLowerCase();
+                    const c = (el.dataset.command || '').toLowerCase();
+                    const wl = itemLabel.toLowerCase();
+                    const wc = (rawItem.command || '').toLowerCase();
+                    return (wl && l.includes(wl)) || (wc && c.includes(wc));
+                });
+                if (!targetPitEl) {
+                    const rndIdx = Math.floor(Math.random() * pitPrizes.length);
+                    targetPitEl = pitPrizes[rndIdx];
+                    if (targetPitEl) {
+                        const img = targetPitEl.querySelector('.claw-pit-prize-img');
+                        if (img) img.src = itemIcon;
+                    }
+                }
+            }
+
+            // Calculate target horizontal coordinate over the prize item
+            let targetXPercent = 48;
+            if (targetPitEl && pit) {
+                const itemRect = targetPitEl.getBoundingClientRect();
+                const chamberEl = document.querySelector('.claw-glass-chamber');
+                if (chamberEl && itemRect.width > 0) {
+                    const chamberRect = chamberEl.getBoundingClientRect();
+                    const itemCenter = (itemRect.left + itemRect.width / 2) - chamberRect.left;
+                    targetXPercent = Math.max(28, Math.min(84, (itemCenter / chamberRect.width) * 100));
+                } else {
+                    targetXPercent = 36 + Math.floor(Math.random() * 42);
+                }
+            } else {
+                targetXPercent = 36 + Math.floor(Math.random() * 42);
+            }
+
+            // Reset initial mechanics
+            if (heldPrize) {
+                heldPrize.className = 'claw-held-prize';
+                heldPrize.style.display = 'none';
+                heldPrize.style.opacity = '0';
+            }
+            if (fallingPrize) {
+                fallingPrize.style.display = 'none';
+                fallingPrize.classList.remove('falling-chute-active');
+            }
+            if (sparkles) sparkles.innerHTML = '';
+            if (dispenserFlap) dispenserFlap.classList.remove('flap-open-active');
+            if (prongLeft) prongLeft.style.transform = 'rotate(15deg)';
+            if (prongRight) prongRight.style.transform = 'rotate(-15deg)';
+            if (prongBack) prongBack.style.transform = 'scale(1)';
+            if (trolley) {
+                trolley.style.transition = 'none';
+                trolley.style.left = '18%';
+            }
+            if (cable) {
+                cable.style.transition = 'none';
+                cable.style.height = '24px';
+            }
+            if (assembly) {
+                assembly.style.transition = 'none';
+                assembly.style.top = '24px';
+                assembly.classList.remove('claw-swaying-active');
+            }
+
+            if (creditsEl) creditsEl.innerText = 'PLAY';
+            if (consoleStatus) consoleStatus.innerText = 'AIMING...';
+            if (grabBtn) grabBtn.classList.add('pressed');
+            setTimeout(() => { if (grabBtn) grabBtn.classList.remove('pressed'); }, 300);
+
+            // Phase 1: Joystick deflects, trolley travels exactly to target prize (1.1s)
+            setTimeout(() => {
+                if (joystick) joystick.classList.add('joystick-active-right');
+                if (statusLed) statusLed.style.background = '#fbbf24';
+                if (trolley) {
+                    trolley.style.transition = 'left 1.1s cubic-bezier(0.25, 1, 0.5, 1)';
+                    trolley.style.left = `${targetXPercent}%`;
+                }
+            }, 300);
+
+            // Phase 2: Prongs open wide, descend directly down 205px onto pit bed (1.1s)
+            setTimeout(() => {
+                if (joystick) joystick.classList.remove('joystick-active-right');
+                if (statusLed) statusLed.style.background = '#f97316';
+                if (consoleStatus) consoleStatus.innerText = 'DESCENDING...';
+
+                if (targetPitEl) targetPitEl.classList.add('targeted');
+
+                if (prongLeft) {
+                    prongLeft.style.transition = 'transform 0.4s ease';
+                    prongLeft.style.transform = 'rotate(-32deg)';
+                }
+                if (prongRight) {
+                    prongRight.style.transition = 'transform 0.4s ease';
+                    prongRight.style.transform = 'rotate(32deg)';
+                }
+
+                if (cable) {
+                    cable.style.transition = 'height 1.1s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
+                    cable.style.height = '205px';
+                }
+                if (assembly) {
+                    assembly.style.transition = 'top 1.1s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
+                    assembly.style.top = '205px';
+                }
+            }, 1500);
+
+            // Phase 3: Bottom reached directly over unit, prongs clamp tight around prize (0.6s)
+            setTimeout(() => {
+                if (statusLed) statusLed.style.background = '#22c55e';
+                if (consoleStatus) consoleStatus.innerText = 'LOCKED!';
+
+                if (prongLeft) prongLeft.style.transform = 'rotate(34deg)';
+                if (prongRight) prongRight.style.transform = 'rotate(-34deg)';
+                if (prongBack) prongBack.style.transform = 'scale(1.15)';
+
+                if (targetPitEl) {
+                    targetPitEl.classList.add('grabbed');
+                }
+
+                if (heldImg) {
+                    heldImg.src = itemIcon;
+                    heldImg.style.background = 'transparent';
+                }
+                if (heldPrize) {
+                    heldPrize.className = 'claw-held-prize active';
+                    heldPrize.style.display = 'flex';
+                    heldPrize.style.opacity = '1';
+                }
+            }, 2700);
+
+            // Phase 4: Winch hoists back up with prize firmly held in prongs & pendulum sway (1.1s)
+            setTimeout(() => {
+                if (consoleStatus) consoleStatus.innerText = 'RETRACTING...';
+                if (assembly) assembly.classList.add('claw-swaying-active');
+
+                if (cable) {
+                    cable.style.transition = 'height 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
+                    cable.style.height = '24px';
+                }
+                if (assembly) {
+                    assembly.style.transition = 'top 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
+                    assembly.style.top = '24px';
+                }
+            }, 3400);
+
+            // Phase 5: Move smoothly to drop chute at left: 16% (1.2s)
+            setTimeout(() => {
+                if (joystick) joystick.classList.add('joystick-active-left');
+                if (consoleStatus) consoleStatus.innerText = 'TO CHUTE...';
+
+                if (trolley) {
+                    trolley.style.transition = 'left 1.2s cubic-bezier(0.25, 1, 0.5, 1)';
+                    trolley.style.left = '16%';
+                }
+            }, 4600);
+
+            // Phase 6: Prongs open, prize drops into chute (0.7s)
+            setTimeout(() => {
+                if (joystick) joystick.classList.remove('joystick-active-left');
+                if (assembly) assembly.classList.remove('claw-swaying-active');
+                if (statusLed) statusLed.style.background = '#a855f7';
+                if (consoleStatus) consoleStatus.innerText = 'DROPPING!';
+
+                if (prongLeft) prongLeft.style.transform = 'rotate(-25deg)';
+                if (prongRight) prongRight.style.transform = 'rotate(25deg)';
+
+                if (heldPrize) {
+                    heldPrize.className = 'claw-held-prize';
+                    heldPrize.style.opacity = '0';
+                    heldPrize.style.display = 'none';
+                }
+
+                if (fallingImg) {
+                    fallingImg.src = itemIcon;
+                    fallingImg.style.background = 'transparent';
+                }
+                if (fallingPrize) {
+                    fallingPrize.style.display = 'block';
+                    fallingPrize.classList.add('falling-chute-active');
+                }
+            }, 5900);
+
+            // Phase 7: Dispenser pops open & sparkles fly (0.6s)
+            setTimeout(() => {
+                if (consoleStatus) consoleStatus.innerText = 'PRIZE OUT!';
+                if (dispenserFlap) dispenserFlap.classList.add('flap-open-active');
+
+                if (sparkles) {
+                    for (let s = 0; s < 14; s++) {
+                        const spark = document.createElement('span');
+                        spark.className = 'arcade-sparkle-dot';
+                        spark.style.setProperty('--tx', `${(Math.random() - 0.5) * 80}px`);
+                        spark.style.setProperty('--ty', `${-(Math.random() * 60 + 20)}px`);
+                        spark.style.setProperty('--bg', ['#facc15', '#a855f7', '#ec4899', '#38bdf8', '#22c55e'][s % 5]);
+                        sparkles.appendChild(spark);
+                    }
+                }
+            }, 6600);
+
+            // Phase 8: Summon Overlay Presentation & Finish
+            setTimeout(() => {
+                if (creditsEl) creditsEl.innerText = '01';
+                if (consoleStatus) consoleStatus.innerText = 'READY';
+
+                // Reveal summon card in dead center overlay
+                const summonOverlay = document.getElementById('gachaSummonOverlay');
+                const summonImg = document.getElementById('summonEntityImg');
+                const summonName = document.getElementById('summonNameBadge');
+                const summonMult = document.getElementById('summonMultBanner');
+                const sunCostBadge = document.getElementById('summonSunCostBadge');
+
+                if (summonImg) summonImg.src = itemIcon;
+                if (summonName) summonName.textContent = itemLabel;
+                if (sunCostBadge) sunCostBadge.textContent = `☀️ ${rawItem.sunCost || 500} SUN`;
+
+                if (summonOverlay) summonOverlay.classList.add('revealed');
+                if (typeof playWinFanfare === 'function') {
+                    playWinFanfare(rawItem.rarity || 'Legendary');
+                }
+
+                if (onComplete) onComplete();
+            }, 7000);
+        }
+
+        // ========================================================
         // 10. TIKTOK STUDIO & EVENT LISTENER INTEGRATION
         // ========================================================
         
         function setVisualizerDisplayMode(mode) {
             const isReel = (mode === 'horizontal' || mode === 'reel');
             const isWheel = (mode === 'wheel' || mode === 'wheel3d');
+            const isWheel3D = false;
             const isGacha = (mode === 'gacha');
             const isSlots = (mode === 'slot' || mode === 'slots' || mode === 'slots3d');
+            const isClaw = (mode === 'claw' || mode === 'clawmachine');
 
             const hReel = document.getElementById('horizontalReelWrap');
             if (hReel) hReel.style.display = isReel ? 'flex' : 'none';
@@ -3422,11 +4910,25 @@
             const cWheel = document.getElementById('classicWheelWrap');
             if (cWheel) cWheel.style.display = isWheel ? 'flex' : 'none';
 
+            const w3d = document.getElementById('wheel3DOverlayWrap');
+            if (w3d) w3d.style.display = isWheel3D ? 'flex' : 'none';
+
             const gMach = document.getElementById('gachaMachineWrap');
             if (gMach) gMach.style.display = isGacha ? 'flex' : 'none';
 
             const sMach = document.getElementById('slotMachineWrap');
             if (sMach) sMach.style.display = isSlots ? 'flex' : 'none';
+
+            const cMach = document.getElementById('clawMachineWrap');
+            if (cMach) cMach.style.display = isClaw ? 'flex' : 'none';
+
+            if (isClaw) {
+                populateOverlayClawPrizes();
+            }
+
+            if (isWheel3D) {
+                initOrUpdateOverlay3DWheel();
+            }
 
             if (isSlots) {
                 if (!overlay3DSlotsState.renderer || !overlay3DSlotsState.reels || overlay3DSlotsState.reels.length === 0) {
@@ -3644,7 +5146,12 @@
                 if (banner) banner.classList.add('visible');
                 if (wObj && (wObj.command || wObj.label)) {
                     if (typeof playWinFanfare === 'function') playWinFanfare(wObj.rarity || 'Legendary');
-                    if (typeof dispatchPvZCommand === 'function') dispatchPvZCommand(wObj, spinData.username);
+                    // 1 GIFT = 1 COMMAND INTEGRITY:
+                    // Backend server.ps1 already executed the won command directly upon gift receipt.
+                    // Never re-dispatch from overlay visualizer to prevent double command summons.
+                    if (spinData && spinData.needsClientDispatch && typeof dispatchPvZCommand === 'function') {
+                        dispatchPvZCommand(wObj, spinData.username);
+                    }
                 }
 
         async function dispatchPvZCommand(winnerItem, username = "RENEarn") {
@@ -3750,6 +5257,8 @@
                     playGachaCapsuleDrop(spinData.winner, afterSpinResolved);
                 } else if (mode === 'slot' || mode === 'slots' || mode === 'slots3d') {
                     spinSlotMachine(spinData.winner, afterSpinResolved);
+                } else if (mode === 'claw' || mode === 'clawmachine') {
+                    playClawMachineCatch(spinData.winner, afterSpinResolved);
                 } else {
                     spinHorizontalReel(spinData.winner, afterSpinResolved);
                 }
@@ -4165,7 +5674,7 @@
             state.items.push({
                 id: `item_${Date.now()}`,
                 label: 'New Prize',
-                icon: 'images/game-icons/pvz/spawn_gatlingpea.webp',
+                icon: 'images/game-icons/pvz/spawn_gatling_pea.webp',
                 rarity: 'Rare',
                 weight: 10
             });

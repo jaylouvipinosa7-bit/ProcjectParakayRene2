@@ -4,7 +4,7 @@
     "dateRange":  "19 Oct - 2 Nov",
     "totalSlots":  12,
     "obtainedCount":  6,
-    "lastUpdated":  1792819026532,
+    "lastUpdated":  1793016496992,
     "gifts":  [
                   {
                       "id":  "5655",
@@ -12,11 +12,11 @@
                       "icon":  "images/tiktok-gifts/5655_rose.webp",
                       "coins":  1,
                       "targetCount":  1,
-                      "currentCount":  422,
+                      "currentCount":  429,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "aninggggggg",
-                                     "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=eea129a0\u0026x-expires=1792990800\u0026x-signature=nBIoxEGHvnhfEaZfj0wqKtED3iE%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my"
+                                     "username":  "RENEarn_Streamer",
+                                     "avatar":  "images/renearn_icon.png"
                                  }
                   },
                   {
@@ -25,11 +25,11 @@
                       "icon":  "images/tiktok-gifts/5487_finger_heart.webp",
                       "coins":  5,
                       "targetCount":  1,
-                      "currentCount":  4,
+                      "currentCount":  6,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "Barney D\u0027 Dinosaur",
-                                     "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-aiso/c20c65cb08c0cfe3bb30493f5c9033ea~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=a8e6f34e\u0026x-expires=1792915200\u0026x-signature=4un8OYdsU0KjwUE5xx4ZAqTO%2BfU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my"
+                                     "username":  "RENEarn_Streamer",
+                                     "avatar":  "images/renearn_icon.png"
                                  }
                   },
                   {
@@ -38,11 +38,11 @@
                       "icon":  "images/tiktok-gifts/5879_doughnut.webp",
                       "coins":  30,
                       "targetCount":  1,
-                      "currentCount":  11,
+                      "currentCount":  12,
                       "obtained":  true,
                       "gifter":  {
-                                     "username":  "SpinTester_4269",
-                                     "avatar":  "images/default_avatar.svg"
+                                     "username":  "RENEarn_Streamer",
+                                     "avatar":  "images/renearn_icon.png"
                                  }
                   },
                   {
@@ -77,9 +77,12 @@
                       "icon":  "images/tiktok-gifts/5586_hearts.webp",
                       "coins":  199,
                       "targetCount":  3,
-                      "currentCount":  0,
+                      "currentCount":  1,
                       "obtained":  false,
-                      "gifter":  null
+                      "gifter":  {
+                                     "username":  "RENEarn_Streamer",
+                                     "avatar":  "images/renearn_icon.png"
+                                 }
                   },
                   {
                       "id":  "17589",

@@ -424,13 +424,15 @@
         }
 
         .card-lose {
-            background: linear-gradient(180deg, rgba(92, 18, 28, 0.4) 0%, rgba(20, 24, 33, 0.9) 100%);
-            border: 1.5px solid #671e27;
+            background: linear-gradient(180deg, rgba(92, 18, 28, 0.45) 0%, rgba(20, 24, 33, 0.95) 100%);
+            border: 1.5px solid var(--color-neg, #ff007f);
+            box-shadow: 0 4px 18px rgba(255, 0, 127, 0.25);
         }
 
         .card-win {
-            background: linear-gradient(180deg, rgba(16, 85, 48, 0.4) 0%, rgba(20, 24, 33, 0.9) 100%);
-            border: 1.5px solid #165b38;
+            background: linear-gradient(180deg, rgba(16, 85, 48, 0.45) 0%, rgba(20, 24, 33, 0.95) 100%);
+            border: 1.5px solid var(--color-pos, #10b981);
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.25);
         }
 
         .card-tag {
@@ -440,8 +442,8 @@
             letter-spacing: 0.5px;
         }
 
-        .card-lose .card-tag { color: #ef4444; }
-        .card-win .card-tag { color: #10b981; }
+        .card-lose .card-tag { color: var(--color-neg, #ff007f); text-shadow: 0 0 10px var(--color-neg, #ff007f); }
+        .card-win .card-tag { color: var(--color-pos, #10b981); text-shadow: 0 0 10px var(--color-pos, #10b981); }
 
         .card-big-number {
             font-family: 'Outfit', sans-serif;
@@ -451,6 +453,16 @@
             line-height: 1;
             margin: 6px 0;
             letter-spacing: -1px;
+        }
+
+        .card-lose .card-big-number {
+            color: var(--color-neg, #ff007f);
+            text-shadow: 0 0 16px var(--color-neg, #ff007f);
+        }
+
+        .card-win .card-big-number {
+            color: var(--color-pos, #10b981);
+            text-shadow: 0 0 16px var(--color-pos, #10b981);
         }
 
         /* VIEW SWITCHING CLASSES */
@@ -561,10 +573,17 @@
         const trophyMap = {
             'cup': 'images/trophy_cup.svg',
             'gold': 'images/trophy_cup.svg',
+            'silver': 'images/trophy_silver.svg',
+            'bronze': 'images/trophy_bronze.svg',
             'diamond': 'images/trophy_diamond.svg',
             'crown': 'images/trophy_crown.svg',
+            'laurel': 'images/trophy_laurel.svg',
+            'fire': 'images/trophy_fire.svg',
             'emerald': 'images/trophy_emerald.svg',
-            'star': 'images/trophy_star.svg'
+            'pvz_sun': 'images/trophy_pvz_sun.svg',
+            'star': 'images/trophy_star.svg',
+            'skull': 'images/trophy_skull.svg',
+            'stream_trophy': 'images/game-icons/stream/trophy.webp'
         };
 
         function applyTrophyIcon(trophy) {
@@ -677,9 +696,10 @@
             const prevL = currentLosses;
             const prevW = currentWins;
             const loseEl = document.getElementById('cardLoseCount');
-            const winEl = document.getElementById('cardWinCount');
-            if (loseEl) loseEl.textContent = currentLosses;
-            if (winEl) winEl.textContent = currentWins;
+            const displayLose = (currentLosses && currentLosses !== 0) ? currentLosses : (currentScore < 0 ? Math.abs(currentScore) : 0);
+            const displayWin = (currentWins && currentWins !== 0) ? currentWins : currentTarget;
+            if (loseEl) loseEl.textContent = displayLose;
+            if (winEl) winEl.textContent = displayWin;
 
             if (currentLosses > prevL) {
                 const b = loseEl?.closest('.win-card-box');

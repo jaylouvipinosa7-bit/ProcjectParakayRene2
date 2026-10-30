@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normal Overlay (Large Command, Small Gift, No Counting)</title>
+    <script>
+        const search = new URLSearchParams(window.location.search);
+        if (!search.has('style')) search.set('style', 'normal');
+        if (!search.has('noCount')) search.set('noCount', 'true');
+        window.location.replace('overlay-side.html?' + search.toString());
+    </script>
+</head>
+<body>
+    <p>Redirecting to Normal Overlay...</p>
+</body>
+</html>

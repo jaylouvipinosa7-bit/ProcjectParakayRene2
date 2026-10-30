@@ -1,0 +1,35 @@
+{
+    "activePreset": "blue_vs_red",
+    "team1": {
+        "id": "blue",
+        "name": "Team Blue",
+        "command": "!blue",
+        "aliases": ["!blue", "!teamblue", "!bluearmy", "!plants", "!teamplant"],
+        "color": "#38bdf8",
+        "colorDark": "#0284c7",
+        "colorGrad": "linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)",
+        "glow": "rgba(56, 189, 248, 0.45)",
+        "icon": "images/indicators/indicator_general.svg",
+        "emoji": "🔵",
+        "threshold": 20,
+        "repetition": 20,
+        "unit": "Blue Vanguard",
+        "gameCommand": "spawn_overclocked_cherrybomber"
+    },
+    "team2": {
+        "id": "red",
+        "name": "Team Red",
+        "command": "!red",
+        "aliases": ["!red", "!teamred", "!redarmy", "!zombies", "!teamzombie"],
+        "color": "#ef4444",
+        "colorDark": "#b91c1c",
+        "colorGrad": "linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)",
+        "glow": "rgba(239, 68, 68, 0.45)",
+        "icon": "images/indicators/indicator_general.svg",
+        "emoji": "🔴",
+        "threshold": 20,
+        "repetition": 20,
+        "unit": "Red Vanguard",
+        "gameCommand": "spawn_trident_juggernut_gargantuar"
+    }
+}

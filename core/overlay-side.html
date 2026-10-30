@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All-Games Side Stream Overlay</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fredoka:wght@600;700;800&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fredoka:wght@600;700;800&family=JetBrains+Mono:wght@700;800&display=swap"
+        rel="stylesheet">
     <script src="socket.io.min.js"></script>
     <script>
         if (typeof io === 'undefined') {
@@ -41,7 +44,8 @@
             -webkit-user-drag: none;
         }
 
-        html, body {
+        html,
+        body {
             background-color: transparent;
             font-family: var(--font-family);
             width: 100%;
@@ -164,6 +168,7 @@
             color: #ffffff;
             border-color: #388bfd;
         }
+
         .s2e-btn-blue:hover {
             background: #388bfd;
             transform: translateY(-1px);
@@ -175,6 +180,7 @@
             color: #c9d1d9;
             border-color: #30363d;
         }
+
         .s2e-btn-split:hover {
             background: #30363d;
             color: #ffffff;
@@ -186,6 +192,7 @@
             color: #ffffff;
             border-color: #2ea043;
         }
+
         .s2e-btn-settings:hover {
             background: #2ea043;
             transform: translateY(-1px);
@@ -197,6 +204,7 @@
             color: #ffffff;
             border-color: #a371f7;
         }
+
         .s2e-btn-sync:hover {
             background: #a371f7;
             transform: translateY(-1px);
@@ -232,9 +240,11 @@
         .side-overlay-viewport.align-left {
             justify-content: flex-start;
         }
+
         .side-overlay-viewport.align-right {
             justify-content: flex-end;
         }
+
         .side-overlay-viewport.align-center {
             justify-content: center;
         }
@@ -248,7 +258,8 @@
             transform-origin: top left;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85);
             border: 2px solid rgba(255, 255, 255, 0.15);
-            overflow: visible; /* CRITICAL: Never crop bottom cards, shadows, or rainbow borders */
+            overflow: visible;
+            /* CRITICAL: Never crop bottom cards, shadows, or rainbow borders */
             height: fit-content;
             width: fit-content;
             box-sizing: border-box;
@@ -258,21 +269,20 @@
         .side-overlay-viewport.align-right .side-overlay-wrapper {
             transform-origin: top right;
         }
+
         .side-overlay-viewport.align-center .side-overlay-wrapper {
             transform-origin: top center;
         }
 
         /* Authentic StreamToEarn Angled Gradient Background (Matching User Photo!) */
         .theme-s2e-gradient {
-            background: linear-gradient(
-                135deg,
-                rgba(236, 72, 153, 0.95) 0%,
-                rgba(192, 132, 252, 0.92) 20%,
-                rgba(250, 204, 21, 0.92) 48%,
-                rgba(245, 158, 11, 0.92) 58%,
-                rgba(6, 182, 212, 0.95) 82%,
-                rgba(59, 130, 246, 0.95) 100%
-            );
+            background: linear-gradient(135deg,
+                    rgba(236, 72, 153, 0.95) 0%,
+                    rgba(192, 132, 252, 0.92) 20%,
+                    rgba(250, 204, 21, 0.92) 48%,
+                    rgba(245, 158, 11, 0.92) 58%,
+                    rgba(6, 182, 212, 0.95) 82%,
+                    rgba(59, 130, 246, 0.95) 100%);
             border: 2px solid rgba(255, 255, 255, 0.35);
             box-shadow: 0 0 25px rgba(236, 72, 153, 0.4), 0 0 35px rgba(6, 182, 212, 0.4);
         }
@@ -330,6 +340,7 @@
             backdrop-filter: blur(8px) !important;
             border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
         }
+
         .theme-blackhole .side-cmd-card:hover,
         .theme-bluegalaxy .side-cmd-card:hover,
         .theme-gargantua .side-cmd-card:hover,
@@ -424,10 +435,25 @@
         }
 
         @keyframes cardDonateGlow {
-            0% { border-color: #38bdf8; box-shadow: 0 0 16px #38bdf8, 0 0 28px rgba(56, 189, 248, 0.6); }
-            30% { border-color: #fde047; box-shadow: 0 0 22px #fde047, 0 0 35px rgba(253, 224, 71, 0.7); }
-            65% { border-color: #38bdf8; box-shadow: 0 0 16px #38bdf8, 0 0 24px rgba(56, 189, 248, 0.5); }
-            100% { border-color: rgba(255, 255, 255, 0.15); box-shadow: none; }
+            0% {
+                border-color: #38bdf8;
+                box-shadow: 0 0 16px #38bdf8, 0 0 28px rgba(56, 189, 248, 0.6);
+            }
+
+            30% {
+                border-color: #fde047;
+                box-shadow: 0 0 22px #fde047, 0 0 35px rgba(253, 224, 71, 0.7);
+            }
+
+            65% {
+                border-color: #38bdf8;
+                box-shadow: 0 0 16px #38bdf8, 0 0 24px rgba(56, 189, 248, 0.5);
+            }
+
+            100% {
+                border-color: rgba(255, 255, 255, 0.15);
+                box-shadow: none;
+            }
         }
 
         /* Left Side: Unit / Function Icon */
@@ -459,7 +485,7 @@
             max-height: 100%;
             display: block;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
         }
 
         /* Center / Command Details Column */
@@ -479,7 +505,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
             letter-spacing: 0.2px;
         }
 
@@ -585,16 +611,26 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .taptap-heart-svg {
             width: 34px;
             height: 32px;
             filter: drop-shadow(0 2px 6px rgba(254, 44, 85, 0.65));
             animation: heartPulse 2.4s ease-in-out infinite;
         }
+
         @keyframes heartPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.06);
+            }
         }
+
         .taptap-heart-text {
             position: absolute;
             top: 46%;
@@ -604,10 +640,11 @@
             font-size: 11px;
             font-weight: 900;
             font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
             letter-spacing: -0.5px;
             pointer-events: none;
         }
+
         .cmd-unit-multiplier {
             position: absolute;
             top: 1px;
@@ -624,6 +661,7 @@
             border-radius: 3px;
             line-height: 12px;
         }
+
         .cmd-team-tag {
             font-size: 8px;
             font-weight: 900;
@@ -636,22 +674,27 @@
             border-radius: 4px;
             text-transform: lowercase;
         }
+
         .mode-strip .cmd-team-tag,
         .mode-compact .cmd-team-tag,
+        .mode-icons .cmd-team-tag,
         .mode-icons-only .cmd-team-tag,
         .counter-pos-bottom .cmd-team-tag {
             display: none !important;
         }
+
         /* In full detailed mode, the team tag lives cleanly inside the details column */
-        .side-cards-grid:not(.mode-compact):not(.mode-icons-only):not(.mode-strip) > .side-cmd-card > .cmd-team-tag {
+        .side-cards-grid:not(.mode-compact):not(.mode-icons-only):not(.mode-icons):not(.mode-strip)>.side-cmd-card>.cmd-team-tag {
             display: none !important;
         }
+
         .team-zombies-tag {
             color: #ff3355 !important;
             text-shadow: 0 0 6px rgba(255, 51, 85, 0.8), 0 1px 2px #000;
             background: rgba(255, 51, 85, 0.18);
             border: 1px solid rgba(255, 51, 85, 0.45);
         }
+
         .team-plants-tag {
             color: #10b981 !important;
             text-shadow: 0 0 6px rgba(16, 185, 129, 0.8), 0 1px 2px #000;
@@ -675,7 +718,7 @@
             padding: 0 2px;
             border-radius: 9999px;
             border: 1px solid #fbbf24;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
             text-align: center;
             flex-shrink: 0;
             display: inline-flex;
@@ -696,9 +739,17 @@
         }
 
         @keyframes counterGlowAnim {
-            0% { box-shadow: 0 0 0 transparent; }
-            50% { box-shadow: 0 0 12px #fbbf24, 0 0 20px rgba(245, 158, 11, 0.85); }
-            100% { box-shadow: 0 0 0 transparent; }
+            0% {
+                box-shadow: 0 0 0 transparent;
+            }
+
+            50% {
+                box-shadow: 0 0 12px #fbbf24, 0 0 20px rgba(245, 158, 11, 0.85);
+            }
+
+            100% {
+                box-shadow: 0 0 0 transparent;
+            }
         }
 
         /* ========================================================
@@ -708,9 +759,11 @@
             overflow: visible !important;
             position: relative !important;
         }
+
         .counter-pos-bottom .cmd-unit-img {
             border-radius: 7px;
         }
+
         .cmd-counter-badge.counter-badge-bottom {
             position: absolute !important;
             bottom: -7px !important;
@@ -726,11 +779,12 @@
             font-weight: 900 !important;
             border-radius: 9999px !important;
             border: 1.5px solid #000000 !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 0 5px rgba(245, 158, 11, 0.5) !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9), 0 0 5px rgba(245, 158, 11, 0.5) !important;
             z-index: 10 !important;
             white-space: nowrap !important;
             box-sizing: border-box !important;
         }
+
         .counter-pos-bottom .cmd-right-col {
             width: 36px !important;
             min-width: 36px !important;
@@ -739,25 +793,64 @@
             padding: 0 !important;
             gap: 0 !important;
         }
+
         .counter-pos-bottom.mode-strip .cmd-right-col,
-        .counter-pos-bottom .mode-strip .cmd-right-col {
-            width: 32px !important;
-            min-width: 32px !important;
-            max-width: 32px !important;
+        .counter-pos-bottom .mode-strip .cmd-right-col,
+        .counter-pos-bottom.mode-compact .cmd-right-col,
+        .counter-pos-bottom .mode-compact .cmd-right-col,
+        .counter-pos-bottom.mode-icons-only .cmd-right-col,
+        .counter-pos-bottom .mode-icons-only .cmd-right-col,
+        .counter-pos-bottom.mode-icons .cmd-right-col,
+        .counter-pos-bottom .mode-icons .cmd-right-col {
+            width: 34px !important;
+            min-width: 34px !important;
+            max-width: 34px !important;
         }
-        .counter-pos-bottom.mode-strip .side-cmd-card,
-        .counter-pos-bottom .mode-strip .side-cmd-card {
+
+        .counter-pos-bottom.mode-strip:not(.show-function-name) .side-cmd-card,
+        .counter-pos-bottom:not(.show-function-name) .mode-strip .side-cmd-card {
             justify-content: space-between !important;
-            padding: 2px 10px !important;
+            padding: 2px 8px !important;
+            width: 96px;
+            min-width: 96px;
+            max-width: 96px;
         }
-        .counter-pos-bottom.mode-compact .side-cmd-card,
-        .counter-pos-bottom .mode-compact .side-cmd-card {
+
+        .counter-pos-bottom.mode-compact:not(.show-function-name) .side-cmd-card,
+        .counter-pos-bottom:not(.show-function-name) .mode-compact .side-cmd-card {
             justify-content: space-between !important;
-            padding: 3px 12px !important;
+            padding: 3px 8px !important;
+            width: 98px;
+            min-width: 98px;
+            max-width: 98px;
+        }
+
+        .counter-pos-bottom.mode-icons-only:not(.show-function-name) .side-cmd-card,
+        .counter-pos-bottom:not(.show-function-name) .mode-icons-only .side-cmd-card,
+        .counter-pos-bottom.mode-icons:not(.show-function-name) .side-cmd-card,
+        .counter-pos-bottom:not(.show-function-name) .mode-icons .side-cmd-card {
+            justify-content: space-between !important;
+            padding: 2px 6px !important;
+            width: 88px;
+            min-width: 88px;
+            max-width: 88px;
+        }
+
+        /* 1 Column (Vertical Stack) layout */
+        body.cols-1 .side-cards-grid {
+            grid-template-columns: 1fr !important;
+            width: 100% !important;
+        }
+
+        body.cols-1 .side-cmd-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 160px !important;
         }
 
         /* COMPACT / ICON-ONLY MODE (Matches Photo 1 & S2E Compact) */
         .mode-icons-only .side-cmd-card,
+        .mode-icons .side-cmd-card,
         .mode-compact .side-cmd-card {
             min-height: 48px;
             height: 48px;
@@ -765,28 +858,39 @@
             gap: 4px;
             justify-content: space-between;
             width: 122px;
-            min-width: 122px;
-            max-width: 122px;
+            min-width: 100px;
+            max-width: 100%;
             box-sizing: border-box;
             flex-shrink: 0;
         }
-        .mode-icons-only .cmd-details-col,
-        .mode-compact .cmd-details-col {
+
+        .mode-icons-only:not(.show-function-name) .cmd-details-col,
+        .mode-icons:not(.show-function-name) .cmd-details-col,
+        .mode-compact:not(.show-function-name) .cmd-details-col,
+        body:not(.show-function-name) .mode-icons-only .cmd-details-col,
+        body:not(.show-function-name) .mode-icons .cmd-details-col,
+        body:not(.show-function-name) .mode-compact .cmd-details-col {
             display: none !important;
         }
+
         .mode-icons-only .cmd-unit-avatar,
+        .mode-icons .cmd-unit-avatar,
         .mode-compact .cmd-unit-avatar {
             width: 38px;
             height: 38px;
             flex-shrink: 0;
         }
+
         .mode-icons-only .cmd-trig-avatar,
+        .mode-icons .cmd-trig-avatar,
         .mode-compact .cmd-trig-avatar {
             width: 36px;
             height: 36px;
             flex-shrink: 0;
         }
+
         .mode-icons-only .cmd-right-col,
+        .mode-icons .cmd-right-col,
         .mode-compact .cmd-right-col {
             width: 70px;
             min-width: 70px;
@@ -797,12 +901,13 @@
         .side-cards-grid.mode-strip,
         .mode-strip .side-cards-grid {
             display: grid;
-            grid-template-columns: repeat(var(--side-columns, 6), 118px);
+            grid-template-columns: repeat(var(--side-columns, 6), minmax(96px, 1fr));
             gap: var(--item-margin, 1px);
             align-content: start;
             width: max-content;
             min-width: max-content;
         }
+
         .mode-strip .side-cmd-card {
             min-height: var(--item-height, 46px);
             height: var(--item-height, 46px);
@@ -812,18 +917,22 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-sizing: border-box;
             width: 118px;
-            min-width: 118px;
-            max-width: 118px;
+            min-width: 96px;
+            max-width: 100%;
             flex-shrink: 0;
         }
-        .mode-strip .cmd-details-col {
+
+        .mode-strip:not(.show-function-name) .cmd-details-col,
+        body:not(.show-function-name) .mode-strip .cmd-details-col {
             display: none !important;
         }
+
         .mode-strip .cmd-unit-avatar {
             width: 34px;
             height: 34px;
             flex-shrink: 0;
         }
+
         .mode-strip .cmd-trig-avatar,
         .mode-strip .cmd-trig-badge-likes,
         .mode-strip .cmd-trig-badge-follow {
@@ -831,6 +940,227 @@
             height: 32px;
             font-size: 10px;
             flex-shrink: 0;
+        }
+
+        /* Show Function Name expanded styling for compact, strip, and icons */
+        body.show-function-name .mode-icons-only .side-cmd-card,
+        body.show-function-name .mode-icons .side-cmd-card,
+        body.show-function-name .mode-compact .side-cmd-card,
+        body.show-function-name .mode-strip .side-cmd-card {
+            width: 100% !important;
+            min-width: 165px !important;
+            max-width: 220px !important;
+        }
+
+        body.show-function-name .mode-icons-only .cmd-details-col,
+        body.show-function-name .mode-icons .cmd-details-col,
+        body.show-function-name .mode-compact .cmd-details-col,
+        body.show-function-name .mode-strip .cmd-details-col {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-width: 70px !important;
+            overflow: hidden !important;
+            margin: 0 4px !important;
+        }
+
+        /* Detailed Mode ensures details are visible and card expands */
+        .mode-detailed .cmd-details-col,
+        .side-cards-grid:not(.mode-compact):not(.mode-icons-only):not(.mode-icons):not(.mode-strip):not(.mode-normal) .cmd-details-col {
+            display: flex !important;
+        }
+
+        /* ========================================================
+           NORMAL OVERLAY MODE (Large Command Icon, Small Gift, No Counting)
+           ======================================================== */
+        body.no-counting .cmd-counter-badge,
+        .mode-normal .cmd-counter-badge,
+        .mode-normal .counter-badge-bottom {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+
+        .mode-normal .side-cmd-card {
+            min-height: 56px !important;
+            height: auto !important;
+            padding: 4px 10px !important;
+            gap: 10px !important;
+            border-radius: 12px !important;
+            background: rgba(15, 23, 42, 0.88) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55) !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            position: relative !important;
+        }
+
+        /* Large Command / Unit Icon (Photo/Normal Command Focus) */
+        .mode-normal .cmd-left-col {
+            flex-shrink: 0 !important;
+        }
+
+        .mode-normal .cmd-unit-avatar {
+            width: 52px !important;
+            height: 52px !important;
+            min-width: 52px !important;
+            max-width: 52px !important;
+            border-radius: 12px !important;
+            background: radial-gradient(circle at 50% 35%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)) !important;
+            border: 2px solid rgba(56, 189, 248, 0.55) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), 0 0 10px rgba(56, 189, 248, 0.25) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: visible !important;
+            position: relative !important;
+            flex-shrink: 0 !important;
+        }
+
+        .mode-normal .cmd-unit-img {
+            width: 90% !important;
+            height: 90% !important;
+            max-width: 90% !important;
+            max-height: 90% !important;
+            object-fit: contain !important;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9)) !important;
+        }
+
+        .mode-normal .cmd-unit-multiplier {
+            position: absolute !important;
+            top: -4px !important;
+            left: -4px !important;
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+            border: 1.5px solid #ffffff !important;
+            color: #ffffff !important;
+            font-size: 9px !important;
+            font-weight: 900 !important;
+            padding: 1px 5px !important;
+            border-radius: 6px !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+            z-index: 10 !important;
+        }
+
+        /* Center Details */
+        .mode-normal .cmd-details-col {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            flex: 1 !important;
+            min-width: 80px !important;
+            overflow: hidden !important;
+            margin: 0 4px !important;
+        }
+
+        .mode-normal .cmd-label-text {
+            font-size: 13.5px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            letter-spacing: 0.2px !important;
+        }
+
+        .mode-normal .cmd-sub-badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            color: #f59e0b !important;
+            margin-top: 2px !important;
+        }
+
+        .mode-normal .cmd-sub-tag {
+            background: rgba(245, 158, 11, 0.2) !important;
+            border: 1px solid rgba(245, 158, 11, 0.4) !important;
+            padding: 1px 5px !important;
+            border-radius: 4px !important;
+            font-weight: 800 !important;
+        }
+
+        /* Small Trigger Gift Icon */
+        .mode-normal .cmd-right-col {
+            width: auto !important;
+            min-width: unset !important;
+            max-width: unset !important;
+            flex-shrink: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            margin-left: auto !important;
+        }
+
+        .mode-normal .cmd-trig-avatar {
+            width: 24px !important;
+            height: 24px !important;
+            min-width: 24px !important;
+            max-width: 24px !important;
+            border-radius: 50% !important;
+            background: rgba(13, 17, 23, 0.95) !important;
+            border: 1.5px solid #ff2b56 !important;
+            box-shadow: 0 2px 6px rgba(255, 43, 86, 0.45) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+            flex-shrink: 0 !important;
+        }
+
+        .mode-normal .cmd-trig-img {
+            width: 82% !important;
+            height: 82% !important;
+            max-width: 82% !important;
+            max-height: 82% !important;
+            object-fit: contain !important;
+        }
+
+        .mode-normal .cmd-trig-badge-heart {
+            width: 24px !important;
+            height: 24px !important;
+            min-width: 24px !important;
+            max-width: 24px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+
+        .mode-normal .taptap-heart-svg {
+            width: 22px !important;
+            height: 20px !important;
+        }
+
+        .mode-normal .taptap-heart-text {
+            font-size: 7.5px !important;
+            top: 48% !important;
+        }
+
+        .mode-normal .cmd-trig-badge-likes,
+        .mode-normal .cmd-trig-badge-follow {
+            width: 24px !important;
+            height: 24px !important;
+            min-width: 24px !important;
+            max-width: 24px !important;
+            font-size: 9px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
         }
 
         /* FULL-BOTTOM ROW CARD TO FILL BOTTOM GAPS */
@@ -855,7 +1185,9 @@
         }
 
         .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-details-col,
-        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-details-col {
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-details-col,
+        .mode-icons-only .side-cmd-card.card-fill-bottom-full .cmd-details-col,
+        .mode-icons .side-cmd-card.card-fill-bottom-full .cmd-details-col {
             display: flex !important;
             flex-direction: column !important;
             flex: 1 !important;
@@ -863,14 +1195,18 @@
         }
 
         .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-label-text,
-        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-label-text {
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-label-text,
+        .mode-icons-only .side-cmd-card.card-fill-bottom-full .cmd-label-text,
+        .mode-icons .side-cmd-card.card-fill-bottom-full .cmd-label-text {
             font-size: 12.5px !important;
             font-weight: 800 !important;
             color: #ffffff !important;
         }
 
         .mode-strip .side-cmd-card.card-fill-bottom-full .cmd-sub-badge,
-        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-sub-badge {
+        .mode-compact .side-cmd-card.card-fill-bottom-full .cmd-sub-badge,
+        .mode-icons-only .side-cmd-card.card-fill-bottom-full .cmd-sub-badge,
+        .mode-icons .side-cmd-card.card-fill-bottom-full .cmd-sub-badge {
             font-size: 10.5px !important;
             color: #fbbf24 !important;
         }
@@ -885,7 +1221,7 @@
             background: rgba(13, 17, 23, 0.98);
             backdrop-filter: blur(20px);
             border-left: 1.5px solid #30363d;
-            box-shadow: -8px 0 35px rgba(0,0,0,0.85);
+            box-shadow: -8px 0 35px rgba(0, 0, 0, 0.85);
             z-index: 99999;
             transform: translateX(100%);
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -930,6 +1266,7 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         .btn-drawer-close:hover {
             background: #30363d;
             color: #fff;
@@ -1021,25 +1358,27 @@
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
+
         .s2e-toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
     </style>
 </head>
+
 <body class="show-controls">
     <!-- SVG Global Defs for TapTap Heart Badges -->
     <svg width="0" height="0" style="position: absolute; pointer-events: none; opacity: 0; visibility: hidden;">
         <defs>
             <radialGradient id="taptapHeartGrad" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#ff6b8b"/>
-                <stop offset="45%" stop-color="#fe2c55"/>
-                <stop offset="90%" stop-color="#e0123c"/>
-                <stop offset="100%" stop-color="#b00628"/>
+                <stop offset="0%" stop-color="#ff6b8b" />
+                <stop offset="45%" stop-color="#fe2c55" />
+                <stop offset="90%" stop-color="#e0123c" />
+                <stop offset="100%" stop-color="#b00628" />
             </radialGradient>
             <filter id="taptapHeartShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.6"/>
-                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#fe2c55" flood-opacity="0.5"/>
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.6" />
+                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#fe2c55" flood-opacity="0.5" />
             </filter>
         </defs>
     </svg>
@@ -1065,19 +1404,25 @@
         </div>
 
         <div class="s2e-actions-right">
-            <button class="s2e-btn" onclick="resetAllCounts()" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #f87171;" title="Reset all counted commands to 0">
+            <button class="s2e-btn" onclick="resetAllCounts()"
+                style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #f87171;"
+                title="Reset all counted commands to 0">
                 <span>🔄</span> Reset Counts
             </button>
-            <button class="s2e-btn s2e-btn-blue" onclick="copyOverlayUrl()" title="Copy Link for OBS / TikTok Live Studio">
+            <button class="s2e-btn s2e-btn-blue" onclick="copyOverlayUrl()"
+                title="Copy Link for OBS / TikTok Live Studio">
                 <span>📋</span> Copy URL
             </button>
-            <button class="s2e-btn s2e-btn-split" onclick="toggleSplitFilter()" id="btnSplitFilter" title="Toggle Split View">
+            <button class="s2e-btn s2e-btn-split" onclick="toggleSplitFilter()" id="btnSplitFilter"
+                title="Toggle Split View">
                 <span>⚡</span> Split
             </button>
-            <button class="s2e-btn s2e-btn-sync" onclick="syncCardsWithBackend()" title="Run sync_icons and refresh cards">
+            <button class="s2e-btn s2e-btn-sync" onclick="syncCardsWithBackend()"
+                title="Run sync_icons and refresh cards">
                 <span>🔄</span> Sync Icons
             </button>
-            <button class="s2e-btn s2e-btn-settings" onclick="toggleSettingsDrawer()" title="Customize Colors, Columns & Layout">
+            <button class="s2e-btn s2e-btn-settings" onclick="toggleSettingsDrawer()"
+                title="Customize Colors, Columns & Layout">
                 <span>⚙️</span> Overlay Settings
             </button>
         </div>
@@ -1111,9 +1456,12 @@
         <div class="setting-group">
             <span class="setting-label">Side Placement</span>
             <div class="btn-toggle-row">
-                <button class="btn-toggle-option active" id="btnDockLeft" onclick="setSideAlignment('left')">Left Side</button>
-                <button class="btn-toggle-option" id="btnDockRight" onclick="setSideAlignment('right')">Right Side</button>
-                <button class="btn-toggle-option" id="btnDockCenter" onclick="setSideAlignment('center')">Center</button>
+                <button class="btn-toggle-option active" id="btnDockLeft" onclick="setSideAlignment('left')">Left
+                    Side</button>
+                <button class="btn-toggle-option" id="btnDockRight" onclick="setSideAlignment('right')">Right
+                    Side</button>
+                <button class="btn-toggle-option" id="btnDockCenter"
+                    onclick="setSideAlignment('center')">Center</button>
             </div>
         </div>
 
@@ -1132,8 +1480,10 @@
         <div class="setting-group">
             <span class="setting-label">Card Style</span>
             <div class="btn-toggle-row">
-                <button class="btn-toggle-option active" id="btnStyleDetailed" onclick="setCardDisplayMode('detailed')">Commands + Icons</button>
-                <button class="btn-toggle-option" id="btnStyleIcons" onclick="setCardDisplayMode('icons')">Icons Only</button>
+                <button class="btn-toggle-option active" id="btnStyleDetailed"
+                    onclick="setCardDisplayMode('detailed')">Commands + Icons</button>
+                <button class="btn-toggle-option" id="btnStyleIcons" onclick="setCardDisplayMode('icons')">Icons
+                    Only</button>
             </div>
         </div>
 
@@ -1141,8 +1491,10 @@
         <div class="setting-group">
             <span class="setting-label">Counter Position</span>
             <div class="btn-toggle-row">
-                <button class="btn-toggle-option active" id="btnCounterPosRight" onclick="setCounterPosition('right')">👉 Right Side</button>
-                <button class="btn-toggle-option" id="btnCounterPosBottom" onclick="setCounterPosition('bottom')">👇 Below Command</button>
+                <button class="btn-toggle-option active" id="btnCounterPosRight"
+                    onclick="setCounterPosition('right')">👉 Right Side</button>
+                <button class="btn-toggle-option" id="btnCounterPosBottom" onclick="setCounterPosition('bottom')">👇
+                    Below Command</button>
             </div>
         </div>
 
@@ -1150,16 +1502,26 @@
         <div class="setting-group">
             <span class="setting-label">Theme / Background</span>
             <div class="btn-toggle-row" style="flex-wrap: wrap; gap: 6px;">
-                <button class="btn-toggle-option active" id="btnThemeGradient" onclick="setTheme('s2e-gradient')" style="flex: 1 1 45%;">🌈 Gradient</button>
-                <button class="btn-toggle-option" id="btnThemeBlackHole" onclick="setTheme('blackhole')" style="flex: 1 1 45%;">🕳️ Black Hole</button>
-                <button class="btn-toggle-option" id="btnThemeBlueGalaxy" onclick="setTheme('bluegalaxy')" style="flex: 1 1 45%;">🌌 Blue Galaxy</button>
-                <button class="btn-toggle-option" id="btnThemeGargantua" onclick="setTheme('gargantua')" style="flex: 1 1 45%;">🪐 Gargantua</button>
-                <button class="btn-toggle-option" id="btnThemePurpleSupernova" onclick="setTheme('purplesupernova')" style="flex: 1 1 45%;">🔮 Supernova</button>
-                <button class="btn-toggle-option" id="btnThemeCyberCosmos" onclick="setTheme('cybercosmos')" style="flex: 1 1 45%;">🚀 Cyber Cosmos</button>
-                <button class="btn-toggle-option" id="btnThemeGoldenNebula" onclick="setTheme('goldennebula')" style="flex: 1 1 45%;">🌟 Gold Nebula</button>
-                <button class="btn-toggle-option" id="btnThemeGlass" onclick="setTheme('glass-dark')" style="flex: 1 1 45%;">🌙 Dark Glass</button>
-                <button class="btn-toggle-option" id="btnThemeNeon" onclick="setTheme('cyber-neon')" style="flex: 1 1 45%;">⚡ Cyber Neon</button>
-                <button class="btn-toggle-option" id="btnThemeTrans" onclick="setTheme('transparent')" style="flex: 1 1 45%;">👻 Transparent</button>
+                <button class="btn-toggle-option active" id="btnThemeGradient" onclick="setTheme('s2e-gradient')"
+                    style="flex: 1 1 45%;">🌈 Gradient</button>
+                <button class="btn-toggle-option" id="btnThemeBlackHole" onclick="setTheme('blackhole')"
+                    style="flex: 1 1 45%;">🕳️ Black Hole</button>
+                <button class="btn-toggle-option" id="btnThemeBlueGalaxy" onclick="setTheme('bluegalaxy')"
+                    style="flex: 1 1 45%;">🌌 Blue Galaxy</button>
+                <button class="btn-toggle-option" id="btnThemeGargantua" onclick="setTheme('gargantua')"
+                    style="flex: 1 1 45%;">🪐 Gargantua</button>
+                <button class="btn-toggle-option" id="btnThemePurpleSupernova" onclick="setTheme('purplesupernova')"
+                    style="flex: 1 1 45%;">🔮 Supernova</button>
+                <button class="btn-toggle-option" id="btnThemeCyberCosmos" onclick="setTheme('cybercosmos')"
+                    style="flex: 1 1 45%;">🚀 Cyber Cosmos</button>
+                <button class="btn-toggle-option" id="btnThemeGoldenNebula" onclick="setTheme('goldennebula')"
+                    style="flex: 1 1 45%;">🌟 Gold Nebula</button>
+                <button class="btn-toggle-option" id="btnThemeGlass" onclick="setTheme('glass-dark')"
+                    style="flex: 1 1 45%;">🌙 Dark Glass</button>
+                <button class="btn-toggle-option" id="btnThemeNeon" onclick="setTheme('cyber-neon')"
+                    style="flex: 1 1 45%;">⚡ Cyber Neon</button>
+                <button class="btn-toggle-option" id="btnThemeTrans" onclick="setTheme('transparent')"
+                    style="flex: 1 1 45%;">👻 Transparent</button>
             </div>
         </div>
 
@@ -1167,7 +1529,8 @@
         <div class="setting-group">
             <span class="setting-label">Item Margin / Gap (0px)</span>
             <div class="range-slider-wrap">
-                <input type="range" class="range-slider" id="marginSlider" min="0" max="20" step="1" value="1" oninput="setItemMargin(this.value)">
+                <input type="range" class="range-slider" id="marginSlider" min="0" max="20" step="1" value="1"
+                    oninput="setItemMargin(this.value)">
                 <span class="range-val-badge" id="marginValBadge">1px</span>
             </div>
         </div>
@@ -1176,7 +1539,8 @@
         <div class="setting-group">
             <span class="setting-label">Item Height</span>
             <div class="range-slider-wrap">
-                <input type="range" class="range-slider" id="heightSlider" min="30" max="140" step="2" value="46" oninput="setItemHeight(this.value)">
+                <input type="range" class="range-slider" id="heightSlider" min="30" max="140" step="2" value="46"
+                    oninput="setItemHeight(this.value)">
                 <span class="range-val-badge" id="heightValBadge">46px</span>
             </div>
         </div>
@@ -1185,24 +1549,31 @@
         <div class="setting-group">
             <span class="setting-label">Outer Padding (0px)</span>
             <div class="range-slider-wrap">
-                <input type="range" class="range-slider" id="paddingSlider" min="0" max="24" step="1" value="4" oninput="setWrapperPadding(this.value)">
+                <input type="range" class="range-slider" id="paddingSlider" min="0" max="24" step="1" value="4"
+                    oninput="setWrapperPadding(this.value)">
                 <span class="range-val-badge" id="paddingValBadge">4px</span>
             </div>
         </div>
 
         <!-- 8. S2E Layout Checkboxes -->
         <div class="setting-group" style="display: flex; flex-direction: column; gap: 8px;">
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
-                <input type="checkbox" id="checkGrowLast" checked onchange="toggleGrowLast(this.checked)"> Grow Last Items
+            <label
+                style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
+                <input type="checkbox" id="checkGrowLast" checked onchange="toggleGrowLast(this.checked)"> Grow Last
+                Items
             </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
+            <label
+                style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
                 <input type="checkbox" id="checkHideRep" onchange="toggleHideRep(this.checked)"> Hide Repetition
             </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
+            <label
+                style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
                 <input type="checkbox" id="checkShowName" onchange="toggleShowName(this.checked)"> Show Function Name
             </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
-                <input type="checkbox" id="checkGiftsFirst" onchange="toggleGiftsFirst(this.checked)"> Gifts First In Item
+            <label
+                style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #f0f6fc; cursor: pointer;">
+                <input type="checkbox" id="checkGiftsFirst" onchange="toggleGiftsFirst(this.checked)"> Gifts First In
+                Item
             </label>
         </div>
 
@@ -1210,7 +1581,8 @@
         <div class="setting-group">
             <span class="setting-label">Overlay Zoom / Scale</span>
             <div class="range-slider-wrap">
-                <input type="range" class="range-slider" id="zoomSlider" min="0.5" max="1.6" step="0.05" value="1" oninput="setZoomLevel(this.value)">
+                <input type="range" class="range-slider" id="zoomSlider" min="0.5" max="1.6" step="0.05" value="1"
+                    oninput="setZoomLevel(this.value)">
                 <span class="range-val-badge" id="zoomValBadge">1.0x</span>
             </div>
         </div>
@@ -1219,7 +1591,8 @@
         <div class="setting-group">
             <span class="setting-label">Card Fill Opacity</span>
             <div class="range-slider-wrap">
-                <input type="range" class="range-slider" id="opacitySlider" min="0.3" max="1.0" step="0.05" value="0.96" oninput="setCardOpacity(this.value)">
+                <input type="range" class="range-slider" id="opacitySlider" min="0.3" max="1.0" step="0.05" value="0.96"
+                    oninput="setCardOpacity(this.value)">
                 <span class="range-val-badge" id="opacityValBadge">96%</span>
             </div>
         </div>
@@ -1228,10 +1601,12 @@
         <div class="setting-group">
             <span class="setting-label">Audio & Testing</span>
             <div class="btn-toggle-row">
-                <button class="btn-toggle-option active" id="btnSoundOn" onclick="toggleAudio(true)">🔊 Sounds On</button>
+                <button class="btn-toggle-option active" id="btnSoundOn" onclick="toggleAudio(true)">🔊 Sounds
+                    On</button>
                 <button class="btn-toggle-option" id="btnSoundOff" onclick="toggleAudio(false)">🔇 Mute</button>
             </div>
-            <button class="s2e-btn s2e-btn-blue" style="margin-top: 6px; width: 100%; justify-content: center;" onclick="testRandomDonation()">
+            <button class="s2e-btn s2e-btn-blue" style="margin-top: 6px; width: 100%; justify-content: center;"
+                onclick="testRandomDonation()">
                 🎲 Trigger Random Test Donation
             </button>
         </div>
@@ -1314,7 +1689,8 @@
         let cardCounts = {};
         let sideAlignment = 'left';
         let currentColumns = 2;
-        let cardDisplayMode = 'detailed'; // 'detailed' | 'icons' | 'compact' | 'strip'
+        let cardDisplayMode = 'normal'; // 'normal' | 'detailed' | 'icons' | 'compact' | 'strip'
+        let hideCount = true;
         let currentTheme = 's2e-gradient';
         let zoomLevel = 1.0;
         let cardOpacity = 0.96;
@@ -1337,19 +1713,19 @@
             if (savedCounts) {
                 cardCounts = JSON.parse(savedCounts);
             }
-        } catch (e) {}
+        } catch (e) { }
 
         try {
             const savedPos = localStorage.getItem('renearn_counter_pos');
             if (savedPos && (savedPos === 'bottom' || savedPos === 'right')) {
                 counterPosition = savedPos;
             }
-        } catch (e) {}
+        } catch (e) { }
 
         function saveLocalCardCounts() {
             try {
                 localStorage.setItem('renearn_side_card_counts', JSON.stringify(cardCounts));
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // Audio synthesizer
@@ -1374,15 +1750,21 @@
                 gain.connect(audioCtx.destination);
                 osc.start(now);
                 osc.stop(now + 0.25);
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // ========================================================
         // URL PARAMS INITIALIZATION
         // ========================================================
+        const explicitUrlParams = new Set();
+
         function initFromUrlParams() {
             const params = new URLSearchParams(window.location.search);
-            
+            explicitUrlParams.clear();
+            for (const key of params.keys()) {
+                explicitUrlParams.add(key.toLowerCase());
+            }
+
             const pKey = params.get('preset') || params.get('game');
             if (pKey) {
                 const g = pKey.toLowerCase();
@@ -1411,9 +1793,18 @@
                 const o = parseInt(params.get('offset'), 10);
                 if (!isNaN(o) && o >= 0) cardOffset = o;
             }
+            if (window.location.pathname.toLowerCase().includes('normal') || window.location.search.toLowerCase().includes('normal')) {
+                if (!params.has('style')) cardDisplayMode = 'normal';
+            }
             if (params.get('style')) {
-                const st = params.get('style').toLowerCase();
-                if (['detailed', 'icons', 'compact', 'strip'].includes(st)) cardDisplayMode = st;
+                let st = params.get('style').toLowerCase();
+                if (st === 'icons-only') st = 'icons';
+                if (['normal', 'detailed', 'icons', 'compact', 'strip'].includes(st)) cardDisplayMode = st;
+            }
+            if (params.has('noCount') || params.has('nocount') || params.has('noCounting') || params.has('hideCount')) {
+                hideCount = (params.get('noCount') === 'true' || params.get('nocount') === 'true' || params.get('noCounting') === 'true' || params.get('hideCount') === 'true');
+            } else if (cardDisplayMode === 'normal') {
+                hideCount = true;
             }
             if (params.get('theme')) {
                 const th = params.get('theme').toLowerCase();
@@ -1470,8 +1861,37 @@
 
         function getGridColTemplate(cols, mode) {
             const c = parseInt(cols, 10) || 2;
-            if (mode === 'strip') return `repeat(${c}, 118px)`;
-            if (mode === 'icons' || mode === 'compact') return `repeat(${c}, 122px)`;
+            if (c === 1) return '1fr';
+            const withName = showFunctionName;
+            const isBottom = (counterPosition === 'bottom');
+
+            if (mode === 'normal') {
+                if (c >= 10) return `repeat(${c}, minmax(140px, 1fr))`;
+                if (c >= 8) return `repeat(${c}, minmax(150px, 1fr))`;
+                if (c >= 6) return `repeat(${c}, minmax(165px, 1fr))`;
+                if (c >= 4) return `repeat(${c}, minmax(180px, 1fr))`;
+                return `repeat(${c}, minmax(200px, 1fr))`;
+            }
+            if (mode === 'strip') {
+                if (withName) return `repeat(${c}, minmax(170px, 1fr))`;
+                const w = isBottom ? 96 : 118;
+                return `repeat(${c}, ${w}px)`;
+            }
+            if (mode === 'icons' || mode === 'icons-only') {
+                if (withName) return `repeat(${c}, minmax(165px, 1fr))`;
+                const w = isBottom ? 88 : 108;
+                return `repeat(${c}, ${w}px)`;
+            }
+            if (mode === 'compact') {
+                if (withName) return `repeat(${c}, minmax(175px, 1fr))`;
+                const w = isBottom ? 98 : 122;
+                return `repeat(${c}, ${w}px)`;
+            }
+            // detailed mode (Photo 5 style)
+            if (c >= 10) return `repeat(${c}, minmax(130px, 1fr))`;
+            if (c >= 8) return `repeat(${c}, minmax(145px, 1fr))`;
+            if (c >= 6) return `repeat(${c}, minmax(160px, 1fr))`;
+            if (c >= 4) return `repeat(${c}, minmax(180px, 1fr))`;
             return `repeat(${c}, minmax(200px, 1fr))`;
         }
 
@@ -1487,27 +1907,35 @@
             if (data.preset && data.preset !== activeGameKey) {
                 activeGameKey = data.preset;
                 loadGameCards(data.preset);
-                return;
             }
 
             // 2. Realtime Margin / Gap
             if (data.margin !== undefined) {
                 itemMargin = parseInt(data.margin, 10);
+                if (isNaN(itemMargin) || itemMargin < 0) itemMargin = 0;
                 document.documentElement.style.setProperty('--item-margin', `${itemMargin}px`);
+                const badge = document.getElementById('marginValBadge');
+                if (badge) badge.textContent = `${itemMargin}px`;
             }
 
             // 3. Realtime Item Height
             if (data.height !== undefined) {
                 itemHeight = parseInt(data.height, 10);
+                if (isNaN(itemHeight) || itemHeight < 24) itemHeight = 46;
                 document.documentElement.style.setProperty('--item-height', `${itemHeight}px`);
+                const badge = document.getElementById('heightValBadge');
+                if (badge) badge.textContent = `${itemHeight}px`;
             }
 
             // 4. Realtime Outer Padding
             if (data.padding !== undefined) {
                 wrapperPadding = parseInt(data.padding, 10);
+                if (isNaN(wrapperPadding) || wrapperPadding < 0) wrapperPadding = 0;
                 document.documentElement.style.setProperty('--wrapper-padding', `${wrapperPadding}px`);
                 const wrapper = document.getElementById('sideOverlayWrapper');
                 if (wrapper) wrapper.style.padding = `${wrapperPadding}px`;
+                const badge = document.getElementById('paddingValBadge');
+                if (badge) badge.textContent = `${wrapperPadding}px`;
             }
 
             // 5. Realtime Columns
@@ -1518,36 +1946,41 @@
                     needReRender = true;
                 }
                 document.documentElement.style.setProperty('--side-columns', currentColumns);
-                const grid = document.getElementById('sideCardsGrid');
-                if (grid) {
-                    grid.style.gridTemplateColumns = getGridColTemplate(currentColumns, cardDisplayMode);
-                }
+                document.body.classList.toggle('cols-1', currentColumns === 1);
             }
 
             // 6. Style Template
-            if (data.style && data.style !== cardDisplayMode) {
-                cardDisplayMode = data.style;
-                needReRender = true;
+            if (data.style) {
+                let newStyle = data.style.toLowerCase();
+                if (newStyle === 'icons-only') newStyle = 'icons';
+                if (newStyle !== cardDisplayMode) {
+                    cardDisplayMode = newStyle;
+                    if (cardDisplayMode === 'normal') hideCount = true;
+                    needReRender = true;
+                }
+                const allModes = ['mode-normal', 'mode-detailed', 'mode-compact', 'mode-strip', 'mode-icons-only', 'mode-icons'];
                 const wrapper = document.getElementById('sideOverlayWrapper');
                 if (wrapper) {
-                    wrapper.classList.remove('mode-detailed', 'mode-compact', 'mode-strip', 'mode-icons-only');
+                    wrapper.classList.remove(...allModes);
                     wrapper.classList.add(`mode-${cardDisplayMode}`);
+                    if (cardDisplayMode === 'icons') wrapper.classList.add('mode-icons-only');
                 }
                 const grid = document.getElementById('sideCardsGrid');
                 if (grid) {
-                    grid.classList.remove('mode-detailed', 'mode-compact', 'mode-strip', 'mode-icons-only');
+                    grid.classList.remove(...allModes);
                     grid.classList.add(`mode-${cardDisplayMode}`);
-                    grid.style.gridTemplateColumns = getGridColTemplate(currentColumns, cardDisplayMode);
+                    if (cardDisplayMode === 'icons') grid.classList.add('mode-icons-only');
                 }
+            }
+            if (data.noCount !== undefined || data.hideCount !== undefined) {
+                hideCount = !!(data.noCount || data.hideCount);
+                document.body.classList.toggle('no-counting', hideCount || cardDisplayMode === 'normal');
+                needReRender = true;
             }
 
             // 7. Theme
             if (data.theme && data.theme !== currentTheme) {
-                currentTheme = data.theme;
-                const wrapper = document.getElementById('sideOverlayWrapper');
-                if (wrapper) {
-                    wrapper.className = wrapper.className.replace(/\btheme-[^\s]+\b/g, '').trim() + ` theme-${currentTheme}`;
-                }
+                setTheme(data.theme);
             }
 
             // 8. Toggles
@@ -1559,17 +1992,27 @@
                 }
             }
             if (data.hideRep !== undefined) {
-                hideRepetition = !!data.hideRep;
-                if (hideRepetition) document.body.classList.add('hide-repetition');
-                else document.body.classList.remove('hide-repetition');
+                const newHide = !!data.hideRep;
+                if (newHide !== hideRepetition) {
+                    hideRepetition = newHide;
+                    needReRender = true;
+                }
+                document.body.classList.toggle('hide-repetition', hideRepetition);
             }
             if (data.showName !== undefined) {
-                showFunctionName = !!data.showName;
-                if (showFunctionName) document.body.classList.add('show-function-name');
-                else document.body.classList.remove('show-function-name');
+                const newShow = !!data.showName;
+                if (newShow !== showFunctionName) {
+                    showFunctionName = newShow;
+                    needReRender = true;
+                }
+                document.body.classList.toggle('show-function-name', showFunctionName);
             }
             if (data.giftsFirst !== undefined) {
-                giftsFirst = !!data.giftsFirst;
+                const newGiftsFirst = !!data.giftsFirst;
+                if (newGiftsFirst !== giftsFirst) {
+                    giftsFirst = newGiftsFirst;
+                    needReRender = true;
+                }
                 document.querySelectorAll('.side-cmd-card').forEach(c => {
                     if (giftsFirst) c.classList.add('gifts-first');
                     else c.classList.remove('gifts-first');
@@ -1601,6 +2044,11 @@
                 }
             }
 
+            const grid = document.getElementById('sideCardsGrid');
+            if (grid) {
+                grid.style.gridTemplateColumns = getGridColTemplate(currentColumns, cardDisplayMode);
+            }
+
             if (needReRender) {
                 renderCards(activeCards);
             }
@@ -1611,9 +2059,9 @@
         }
 
         // Apply settings received from server side_overlay_settings.json or broadcast
-        function applySyncedSettings(settings) {
+        function applySyncedSettings(settings, isInitialBoot = false) {
             if (!settings) return;
-            
+
             // Unpack if wrapped in { settings: ... }
             let raw = settings;
             if (raw.settings && typeof raw.settings === 'object') {
@@ -1633,14 +2081,29 @@
             } else if (splitMode === 'right') {
                 specific = raw.split2 || {};
             } else {
-                if (raw.activeMode === 'split') {
-                    specific = raw.split1 || raw.single || {};
-                } else {
-                    specific = raw.single || raw.split1 || {};
-                }
+                specific = raw.single || raw.split1 || {};
             }
 
             const merged = Object.assign({}, common, specific);
+
+            // If this is initial boot and page had explicit URL parameters, protect them from server defaults!
+            if (isInitialBoot && explicitUrlParams.size > 0) {
+                if (explicitUrlParams.has('cols') || explicitUrlParams.has('columns')) delete merged.cols;
+                if (explicitUrlParams.has('style')) delete merged.style;
+                if (explicitUrlParams.has('limit') || explicitUrlParams.has('rows')) delete merged.limit;
+                if (explicitUrlParams.has('offset')) delete merged.offset;
+                if (explicitUrlParams.has('preset') || explicitUrlParams.has('game')) delete merged.preset;
+                if (explicitUrlParams.has('theme')) delete merged.theme;
+                if (explicitUrlParams.has('margin')) delete merged.margin;
+                if (explicitUrlParams.has('height') || explicitUrlParams.has('itemheight')) delete merged.height;
+                if (explicitUrlParams.has('padding')) delete merged.padding;
+                if (explicitUrlParams.has('growlast')) delete merged.growLast;
+                if (explicitUrlParams.has('hiderep')) delete merged.hideRep;
+                if (explicitUrlParams.has('showname')) delete merged.showName;
+                if (explicitUrlParams.has('giftsfirst')) delete merged.giftsFirst;
+                if (explicitUrlParams.has('counterpos') || explicitUrlParams.has('counter')) delete merged.counterPos;
+            }
+
             applyLiveCustomizerSettings(merged);
         }
 
@@ -1703,7 +2166,7 @@
                         side: splitMode
                     }, '*');
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
 
 
@@ -1791,14 +2254,15 @@
             document.documentElement.style.setProperty('--side-columns', cols);
             grid.style.gridTemplateColumns = getGridColTemplate(cols, cardDisplayMode);
 
-            // Apply card display mode classes to grid
-            grid.classList.remove('mode-icons-only', 'mode-compact', 'mode-strip');
+            // Apply card display mode classes to grid & body
+            const allModes = ['mode-normal', 'mode-detailed', 'mode-compact', 'mode-strip', 'mode-icons-only', 'mode-icons'];
+            grid.classList.remove(...allModes);
+            grid.classList.add(`mode-${cardDisplayMode}`);
             if (cardDisplayMode === 'icons') grid.classList.add('mode-icons-only');
-            else if (cardDisplayMode === 'compact') grid.classList.add('mode-compact');
-            else if (cardDisplayMode === 'strip') grid.classList.add('mode-strip');
+            document.body.classList.toggle('no-counting', hideCount || cardDisplayMode === 'normal');
 
             // Diff check: If structure is identical, update counters in place without destroying DOM (prevents any fading or reload flicker)
-            const listSig = list.map(c => `${c.id}_${c.funcName || ''}_${c.funcImg || ''}_${c.giftName || ''}_${c.commands || ''}_${c.triggerValue || ''}_${c.repetition || ''}_${c.action || ''}`).join('|') + `_${cardDisplayMode}_${cardOffset}_${cardLimit}_${splitMode}_${cols}_${giftsFirst}_${counterPosition}`;
+            const listSig = list.map(c => `${c.id}_${c.funcName || ''}_${c.funcImg || ''}_${c.giftName || ''}_${c.commands || ''}_${c.triggerValue || ''}_${c.repetition || ''}_${c.action || ''}`).join('|') + `_${cardDisplayMode}_${cardOffset}_${cardLimit}_${splitMode}_${cols}_${giftsFirst}_${counterPosition}_${hideCount}`;
             if (grid._lastRenderSig === listSig && grid.children.length === total) {
                 list.forEach(c => {
                     const b = document.getElementById(`counterBadge_${c.id}`);
@@ -1884,11 +2348,12 @@
                 }
 
                 const displayGiftLabel = isCustom ? 'Custom Event' : giftLabel;
-                const counterBadgeHtml = `<span class="cmd-counter-badge ${counterPosition === 'bottom' ? 'counter-badge-bottom' : ''}" id="counterBadge_${card.id}">${count}</span>`;
+                const showCounterBadge = !hideCount && (cardDisplayMode !== 'normal');
+                const counterBadgeHtml = showCounterBadge ? `<span class="cmd-counter-badge ${counterPosition === 'bottom' ? 'counter-badge-bottom' : ''}" id="counterBadge_${card.id}">${count}</span>` : '';
                 const unitRepsTag = (card.repetition && card.repetition > 1) ? `<span class="cmd-unit-multiplier">x${card.repetition}</span>` : '';
                 const teamCmdText = card.teamCommand || (isTeamPlants ? '!teamplant' : (isTeamZombies ? '!teamzombie' : ''));
-                const teamTagHtml = isTeamBattle 
-                    ? `<div class="cmd-team-tag ${isTeamPlants ? 'team-plants-tag' : 'team-zombies-tag'}">${teamCmdText}</div>` 
+                const teamTagHtml = isTeamBattle
+                    ? `<div class="cmd-team-tag ${isTeamPlants ? 'team-plants-tag' : 'team-zombies-tag'}">${teamCmdText}</div>`
                     : '';
 
                 if (isTeamBattle) {
@@ -1930,7 +2395,7 @@
             const cardId = String(card.id);
             cardCounts[cardId] = (cardCounts[cardId] || 0) + 1;
             saveLocalCardCounts();
-            
+
             const badge = document.getElementById(`counterBadge_${cardId}`);
             if (badge) {
                 badge.textContent = cardCounts[cardId];
@@ -1954,7 +2419,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: cardId, count: 1 })
-            }).catch(() => {});
+            }).catch(() => { });
         }
 
         function testRandomDonation() {
@@ -1979,11 +2444,11 @@
                     try {
                         const bc = new BroadcastChannel('renearn_overlay_events');
                         bc.postMessage({ type: 'counts_reset', cardId: 'all' });
-                    } catch (e) {}
+                    } catch (e) { }
                     try {
                         const bcSide = new BroadcastChannel('renearn_side_overlay');
                         bcSide.postMessage({ type: 'counts_reset', cardId: 'all' });
-                    } catch (e) {}
+                    } catch (e) { }
                 }
             } catch (err) {
                 showToast('Failed to reset counts: ' + err.message);
@@ -2034,8 +2499,8 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 2000);
                 try {
-                    const url = lastEventTimestamp > 0 
-                        ? `/api/events?since=${lastEventTimestamp}&_t=${Date.now()}` 
+                    const url = lastEventTimestamp > 0
+                        ? `/api/events?since=${lastEventTimestamp}&_t=${Date.now()}`
                         : `/api/events?_t=${Date.now()}`;
                     const res = await fetch(url, { signal: controller.signal });
                     clearTimeout(timeoutId);
@@ -2075,6 +2540,7 @@
 
                             // C. Explicit card count updated event
                             else if (ev.type === 'card_count_updated' && ev.cardId) {
+                                if (ev.isTest || ev.noOverlayCount || ev.username === 'RENEarn' || ev.username === 'Tester') continue;
                                 triggerCardCountUpdate(ev.cardId, ev.count, ev.amount);
                             }
 
@@ -2082,7 +2548,7 @@
                             else if (ev.type === 'gift' || ev.type === 'card_donation') {
                                 let cId = ev.cardId;
                                 if (!cId) {
-                                    const matched = activeCards.find(c => 
+                                    const matched = activeCards.find(c =>
                                         (ev.command && (c.commands === ev.command || c.command === ev.command)) ||
                                         (ev.giftName && c.giftName && c.giftName.toLowerCase() === ev.giftName.toLowerCase()) ||
                                         (ev.label && c.funcName && c.funcName.toLowerCase().includes(ev.label.toLowerCase()))
@@ -2158,7 +2624,7 @@
             const syncCardsTick = async () => {
                 try {
                     await loadGameCards(activeGameKey);
-                } catch (e) {}
+                } catch (e) { }
             };
 
             if (typeof window.createWorkerTicker === 'function') {
@@ -2194,6 +2660,7 @@
                 } else if (d.type === 'overlay_side_settings_updated' && d.settings) {
                     applySyncedSettings(d.settings);
                 } else if (d.cardId) {
+                    if (d.isTest || d.noOverlayCount || d.username === 'RENEarn' || d.username === 'Tester') return;
                     triggerCardCountUpdate(d.cardId, d.count, d.amount || 1);
                 }
             };
@@ -2201,12 +2668,12 @@
             try {
                 const bc = new BroadcastChannel('renearn_overlay_events');
                 bc.onmessage = handleBcMessage;
-            } catch (err) {}
+            } catch (err) { }
 
             try {
                 const bcSide = new BroadcastChannel('renearn_side_overlay');
                 bcSide.onmessage = handleBcMessage;
-            } catch (err) {}
+            } catch (err) { }
 
             window.addEventListener('message', (e) => {
                 if (e.data) handleBcMessage(e);
@@ -2235,23 +2702,43 @@
         }
 
         function setColumnsCount(cols) {
-            currentColumns = cols;
-            document.documentElement.style.setProperty('--side-columns', cols);
+            currentColumns = parseInt(cols, 10) || 2;
+            document.documentElement.style.setProperty('--side-columns', currentColumns);
+            document.body.classList.toggle('cols-1', currentColumns === 1);
+            const grid = document.getElementById('sideCardsGrid');
+            if (grid) {
+                grid.style.gridTemplateColumns = getGridColTemplate(currentColumns, cardDisplayMode);
+            }
             document.querySelectorAll('#btnCol1, #btnCol2, #btnCol3, #btnCol4').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.getElementById(`btnCol${cols}`);
+            const activeBtn = document.getElementById(`btnCol${currentColumns}`);
             if (activeBtn) activeBtn.classList.add('active');
             updateUrlDisplay();
         }
 
         function setCardDisplayMode(mode) {
-            cardDisplayMode = mode;
+            let m = (mode || 'detailed').toLowerCase();
+            if (m === 'icons-only') m = 'icons';
+            cardDisplayMode = m;
+            if (cardDisplayMode === 'normal') hideCount = true;
+            document.body.classList.toggle('no-counting', hideCount || cardDisplayMode === 'normal');
             const grid = document.getElementById('sideCardsGrid');
-            if (grid) {
-                if (mode === 'icons') grid.classList.add('mode-icons-only');
-                else grid.classList.remove('mode-icons-only');
+            const wrap = document.getElementById('sideOverlayWrapper');
+            const allModes = ['mode-normal', 'mode-detailed', 'mode-compact', 'mode-strip', 'mode-icons-only', 'mode-icons'];
+            if (wrap) {
+                wrap.classList.remove(...allModes);
+                wrap.classList.add(`mode-${cardDisplayMode}`);
+                if (cardDisplayMode === 'icons') wrap.classList.add('mode-icons-only');
             }
-            document.getElementById('btnStyleDetailed').classList.toggle('active', mode === 'detailed');
-            document.getElementById('btnStyleIcons').classList.toggle('active', mode === 'icons');
+            if (grid) {
+                grid.classList.remove(...allModes);
+                grid.classList.add(`mode-${cardDisplayMode}`);
+                if (cardDisplayMode === 'icons') grid.classList.add('mode-icons-only');
+                grid.style.gridTemplateColumns = getGridColTemplate(currentColumns, cardDisplayMode);
+            }
+            const btnDetailed = document.getElementById('btnStyleDetailed');
+            const btnIcons = document.getElementById('btnStyleIcons');
+            if (btnDetailed) btnDetailed.classList.toggle('active', cardDisplayMode === 'detailed');
+            if (btnIcons) btnIcons.classList.toggle('active', cardDisplayMode === 'icons');
             updateUrlDisplay();
         }
 
@@ -2262,7 +2749,7 @@
             counterPosition = (pos === 'bottom') ? 'bottom' : 'right';
             try {
                 localStorage.setItem('renearn_counter_pos', counterPosition);
-            } catch (e) {}
+            } catch (e) { }
             applyCounterPosDom();
             renderCards(activeCards);
             updateUrlDisplay();
@@ -2390,6 +2877,8 @@
             if (giftsFirst) url.searchParams.set('giftsFirst', 'true');
             if (counterPosition !== 'right') url.searchParams.set('counterPos', counterPosition);
             else url.searchParams.delete('counterPos');
+            if (hideCount || cardDisplayMode === 'normal') url.searchParams.set('noCount', 'true');
+            else url.searchParams.delete('noCount');
 
             const displayEl = document.getElementById('overlayUrlDisplay');
             if (displayEl) displayEl.textContent = url.toString();
@@ -2515,9 +3004,9 @@
             fetch('/api/overlay-side/settings')
                 .then(r => r.json())
                 .then(st => {
-                    if (st) applySyncedSettings(st);
+                    if (st) applySyncedSettings(st, true);
                 })
-                .catch(() => {});
+                .catch(() => { });
 
             // Fetch initial counts from server
             fetch('/api/counts')
@@ -2533,7 +3022,7 @@
                         saveLocalCardCounts();
                     }
                 })
-                .catch(() => {});
+                .catch(() => { });
 
             window.addEventListener('resize', autoFitOverlay);
             window.addEventListener('load', autoFitOverlay);
@@ -2542,4 +3031,17 @@
         });
     </script>
 </body>
+
+</html>
+})
+.catch(() => {});
+
+window.addEventListener('resize', autoFitOverlay);
+window.addEventListener('load', autoFitOverlay);
+setTimeout(autoFitOverlay, 150);
+setTimeout(autoFitOverlay, 600);
+});
+</script>
+</body>
+
 </html>

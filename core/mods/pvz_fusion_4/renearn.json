@@ -1,0 +1,14 @@
+{
+  "name": "RENEarnPVZFusionMod",
+  "versionName": "47v",
+  "versionCode": 47,
+  "info": "renearn.studio",
+  "game": "PvZFusion",
+  "version": "47v (BETA)",
+  "author": "RENEarn Studio",
+  "description": "RENEarn Live Stream Mod for PvZ Fusion & MelonLoader",
+  "melonLoader": {
+    "autoLoad": true,
+    "version": "net6"
+  }
+}

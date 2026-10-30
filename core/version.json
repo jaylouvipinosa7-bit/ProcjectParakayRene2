@@ -1,20 +1,21 @@
-{
-    "appName": "RENEarn Studio",
-    "version": "4.1.0",
-    "releaseDate": "2026-10-23",
-    "title": "RENEarn Studio v4.1.0 - Game Intelligence & Permissions Update",
-    "changelog": [
-        "S2E-Style Mod Status Bar: Real-time mod version & directory detection, auto/manual installation modal with archive downloader",
-        "Social Triggers Event Dispatcher: Integrated 10-trigger selector panel & modal (Gift, Likes By Person, All Likes, Follow, Min-Max coins, Viewer Joined, Chat, Share, Super Fan, Custom)",
-        "Fixed 50 Likes Team Zombies trigger synchronization across command dashboard, configs, and stream overlay (Trident Jugger-nut Gargantuar)",
-        "Dynamic Game-Aware Status Detector (Option 1: dynamically shows PvZ Fusion, Hybrid, Classic, Zombie Tsunami, Minecraft)",
-        "Team & Testers Management Hub in top header bar (Invite and manage Editors & Testers by Gmail)",
-        "Symmetrical 48x48px Command & Trigger icon cards with Obsidian & Groudon styling",
-        "Groudon Neon Magma Stream Overlay theme with rarity glow and volcanic crimson accents",
-        "Cleaned redundant third-party terms (S2E/Runetify) across all modals, presets, and overlays",
-        "Persistent config auto-healing and cross-restart overlay synchronization"
-    ],
-    "downloadUrl": "https://github.com/jaylouvipinosa7-bit/ProcjectParakayRene2/archive/refs/heads/main.zip",
-    "mandatory": false,
-    "minSupportedVersion": "1.0.0"
+﻿{
+    "downloadUrl":  "https://github.com/jaylouvipinosa7-bit/ProcjectParakayRene2/archive/refs/heads/main.zip",
+    "remoteVersionUrl":  "https://raw.githubusercontent.com/jaylouvipinosa7-bit/ProcjectParakayRene2/main/version.json",
+    "mandatory":  false,
+    "version":  "4.2.0",
+    "minSupportedVersion":  "1.0.0",
+    "releaseDate":  "2026-10-30",
+    "autoUpdate":  false,
+    "title":  "RENEarn Studio v4.2.0 - Normal Overlay \u0026 Live Stream Engine Update",
+    "changelog":  [
+                      "Normal Overlay: Prominent 52px command icon, 24px mini trigger badge, and completely hidden counter badges (\u0026style=normal\u0026noCount=true)",
+                      "Streamer Safe Protection: Automatic background updates disabled. The game and studio will NEVER auto-update during active coding or live streams",
+                      "1-Click Done Coding Implementation: Clicking the update button pulls, syncs, and implements all newly completed code directly into the active version",
+                      "Universal Overlay Routes: Standalone /normal, /overlay-normal, and /renearn/normal routes with live cross-frame synchronization",
+                      "Enhanced TikTok gift trigger responsiveness and audio sync across all cards and widgets",
+                      "S2E-Style Mod Status Bar: Real-time mod version \u0026 directory detection with archive downloader",
+                      "Social Triggers Event Dispatcher: Integrated 10-trigger selector panel \u0026 modal (Gift, Likes By Person, All Likes, Follow, Min-Max coins, Viewer Joined, Chat, Share, Super Fan, Custom)",
+                      "Persistent config auto-healing and cross-restart overlay synchronization"
+                  ],
+    "appName":  "RENEarn Studio"
 }

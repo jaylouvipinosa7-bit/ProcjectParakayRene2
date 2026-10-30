@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Battle Overlay - !plants vs !zombies</title>
+    <title>Team Battle Overlay - Blue vs Red</title>
     <!-- Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&family=Impact&display=swap" rel="stylesheet">
     <style>
         :root {
-            --plant-green: #10b981;
-            --plant-glow: rgba(16, 185, 129, 0.45);
-            --plant-grad: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            --team1-color: #38bdf8;
+            --team1-dark: #0284c7;
+            --team1-glow: rgba(56, 189, 248, 0.45);
+            --team1-grad: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%);
             
-            --zombie-red: #ef4444;
-            --zombie-glow: rgba(239, 68, 68, 0.45);
-            --zombie-grad: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%);
+            --team2-color: #ef4444;
+            --team2-dark: #b91c1c;
+            --team2-glow: rgba(239, 68, 68, 0.45);
+            --team2-grad: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%);
 
             --gold-amber: #f59e0b;
             --gold-grad: linear-gradient(180deg, #fbbf24 0%, #f59e0b 60%, #d97706 100%);
@@ -47,7 +49,6 @@
             justify-content: flex-start;
         }
 
-        /* Ambient subtle backdrop for preview (disabled in pure transparent OBS mode) */
         body.theme-gradient {
             background: radial-gradient(circle at 50% 20%, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
         }
@@ -55,7 +56,7 @@
             background: rgba(10, 14, 20, 0.95);
         }
 
-        /* ==================== 1. FLOATING CONTROL BAR (Auto-hides on ?controls=0) ==================== */
+        /* ==================== 1. FLOATING CONTROL BAR ==================== */
         .tb-controls-bar {
             position: fixed;
             top: 10px;
@@ -99,22 +100,22 @@
             color: #ffffff;
             border-color: #8b949e;
         }
-        .tb-btn-plant {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(16, 185, 129, 0.4);
-            color: #34d399;
+        .tb-btn-team1 {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #38bdf8;
         }
-        .tb-btn-plant:hover {
-            background: rgba(16, 185, 129, 0.35);
-            border-color: #10b981;
+        .tb-btn-team1:hover {
+            background: rgba(56, 189, 248, 0.35);
+            border-color: #38bdf8;
             color: #ffffff;
         }
-        .tb-btn-zombie {
+        .tb-btn-team2 {
             background: rgba(239, 68, 68, 0.2);
             border-color: rgba(239, 68, 68, 0.4);
             color: #f87171;
         }
-        .tb-btn-zombie:hover {
+        .tb-btn-team2:hover {
             background: rgba(239, 68, 68, 0.35);
             border-color: #ef4444;
             color: #ffffff;
@@ -148,233 +149,210 @@
         .tb-tug-bar {
             width: 100%;
             height: 12px;
+            background: rgba(10, 14, 24, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
-            background: #1f2937;
-            border: 2px solid rgba(255, 255, 255, 0.25);
             overflow: hidden;
             display: flex;
-            box-shadow: 0 0 16px rgba(0, 0, 0, 0.8), inset 0 1px 3px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 2px 4px rgba(0,0,0,0.8);
             position: relative;
         }
 
-        .tb-tug-plants {
+        .tb-tug-segment {
             height: 100%;
-            width: 50%;
-            background: var(--plant-grad);
-            box-shadow: 0 0 12px var(--plant-green);
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
         }
 
-        .tb-tug-zombies {
-            height: 100%;
-            width: 50%;
-            background: var(--zombie-grad);
-            box-shadow: 0 0 12px var(--zombie-red);
-            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        .tb-tug-team1 {
+            background: var(--team1-grad);
+            box-shadow: 0 0 12px var(--team1-color);
+        }
+
+        .tb-tug-team2 {
+            background: var(--team2-grad);
+            box-shadow: 0 0 12px var(--team2-color);
         }
 
         .tb-lead-pill {
-            margin-top: 5px;
-            font-size: 10.5px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 2px 10px;
+            margin-top: 6px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 3px 14px;
             border-radius: 9999px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #f3f4f6;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
         }
 
-        /* Split Cards Head-to-Head Arena */
+        /* Head-to-Head Arena */
         .tb-arena {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 16px;
             position: relative;
         }
 
-        /* Center VS Badge */
-        .tb-vs-badge {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #3b82f6 0%, #1e1b4b 90%);
-            border: 2px solid #60a5fa;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), 0 0 35px rgba(147, 51, 234, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Impact', sans-serif;
-            font-size: 24px;
-            font-style: italic;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px #93c5fd;
-            z-index: 20;
-            animation: vsPulse 2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes vsPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.7)); }
-            50% { transform: scale(1.08); filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9)); }
-        }
-
-        /* ==================== 3. TEAM CARDS (Matching User Uploaded Photo) ==================== */
+        /* Cards Layout */
         .tb-team-card {
-            position: relative;
-            width: 250px;
-            background: rgba(18, 24, 38, 0.88);
+            width: 260px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 26, 0.98) 100%);
             backdrop-filter: blur(14px);
             border-radius: 14px;
-            padding: 10px 12px;
+            border: 2px solid;
+            padding: 12px 14px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+            position: relative;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
-            overflow: visible;
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
         }
+
         .tb-team-card:hover {
             transform: translateY(-2px);
         }
 
-        /* Plant Team Border & Glow */
-        .tb-team-card.team-plants {
-            border: 2px solid rgba(16, 185, 129, 0.6);
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.35), 0 10px 30px rgba(0, 0, 0, 0.85);
+        .card-team1 {
+            border-color: var(--team1-glow);
         }
-        .tb-team-card.team-plants:hover {
-            border-color: #34d399;
-            box-shadow: 0 0 35px rgba(16, 185, 129, 0.65), 0 12px 36px rgba(0, 0, 0, 0.9);
+        .card-team1:hover {
+            border-color: var(--team1-color);
+            box-shadow: 0 14px 36px var(--team1-glow), 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
-        /* Zombie Team Border & Glow */
-        .tb-team-card.team-zombies {
-            border: 2px solid rgba(239, 68, 68, 0.6);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.35), 0 10px 30px rgba(0, 0, 0, 0.85);
+        .card-team2 {
+            border-color: var(--team2-glow);
         }
-        .tb-team-card.team-zombies:hover {
-            border-color: #f87171;
-            box-shadow: 0 0 35px rgba(239, 68, 68, 0.65), 0 12px 36px rgba(0, 0, 0, 0.9);
+        .card-team2:hover {
+            border-color: var(--team2-color);
+            box-shadow: 0 14px 36px var(--team2-glow), 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
-        /* Card Top Row: Unit Avatar + TapTap Heart (Matching Photo 100%) */
+        /* Top Unit Showcase + Multiplier Badge */
         .tb-card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: relative;
+            gap: 8px;
         }
 
-        /* Unit Avatar with Top-Left x20 Multiplier */
         .tb-unit-box {
-            position: relative;
-            width: 68px;
-            height: 68px;
-            border-radius: 10px;
-            background: #090d16;
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+            gap: 8px;
+            position: relative;
         }
 
         .tb-unit-img {
-            width: 100%;
-            height: 100%;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.85));
-            transition: transform 0.2s ease;
-        }
-        .tb-team-card:hover .tb-unit-img {
-            transform: scale(1.08);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
         }
 
-        /* Top-Left Multiplier Badge (e.g. x20 in photo) */
         .tb-multiplier-badge {
             position: absolute;
-            top: 2px;
-            left: 3px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            padding: 0 4px;
-            font-size: 10px;
-            font-weight: 900;
-            color: #ffffff;
+            top: -6px;
+            left: -6px;
+            background: #ffffff;
+            color: #000000;
             font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 1px 2px #000;
-            z-index: 5;
-            line-height: 14px;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 1px 6px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            border: 1.5px solid #000000;
         }
 
-        /* Right Side: 3D TapTap Heart Badge (with 20 inside) */
+        /* TapTap Likes Badge */
         .tb-heart-box {
-            position: relative;
-            width: 62px;
-            height: 62px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 4px 10px;
+            border-radius: 9999px;
         }
 
         .tb-heart-svg {
-            width: 58px;
-            height: 54px;
-            filter: drop-shadow(0 4px 12px rgba(254, 44, 85, 0.75));
-            animation: heartThrob 2s ease-in-out infinite;
+            width: 20px;
+            height: 20px;
+            filter: drop-shadow(0 0 4px #ff3b69);
+            animation: pulseHeart 1.4s infinite ease-in-out;
         }
 
-        @keyframes heartThrob {
+        @keyframes pulseHeart {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.15); }
         }
 
         .tb-heart-val {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
             font-weight: 900;
             color: #ffffff;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-            letter-spacing: -0.5px;
+        }
+
+        /* VS Center Shield */
+        .tb-vs-badge {
+            position: relative;
+            z-index: 10;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #3b82f6 0%, #1e1b4b 90%);
+            border: 2px solid #60a5fa;
+            color: #ffffff;
+            font-family: 'Impact', system-ui, sans-serif;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.7), 0 4px 12px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
+            font-style: italic;
             pointer-events: none;
         }
 
-        /* Bottom Command Pill (e.g. !teamzombie in bold red, !teamplant in green) */
+        /* Bottom Command Banner */
         .tb-cmd-banner {
             width: 100%;
             text-align: center;
-            padding: 4px 0;
+            padding: 5px 0;
             border-radius: 6px;
             font-size: 13.5px;
             font-weight: 900;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
             letter-spacing: -0.3px;
             text-shadow: 0 1px 2px #000;
             box-shadow: 0 2px 6px rgba(0,0,0,0.5);
             transition: all 0.2s ease;
         }
-        .team-plants .tb-cmd-banner {
-            background: rgba(16, 185, 129, 0.18);
-            border: 1.5px solid rgba(16, 185, 129, 0.55);
-            color: #34d399;
-            text-shadow: 0 0 8px rgba(16, 185, 129, 0.8), 0 1px 2px #000;
+        .card-team1 .tb-cmd-banner {
+            background: rgba(56, 189, 248, 0.18);
+            border: 1.5px solid var(--team1-color);
+            color: var(--team1-color);
+            text-shadow: 0 0 8px var(--team1-glow), 0 1px 2px #000;
         }
-        .team-zombies .tb-cmd-banner {
+        .card-team2 .tb-cmd-banner {
             background: rgba(239, 68, 68, 0.18);
-            border: 1.5px solid rgba(239, 68, 68, 0.55);
-            color: #ff3355;
-            text-shadow: 0 0 8px rgba(255, 51, 85, 0.8), 0 1px 2px #000;
+            border: 1.5px solid var(--team2-color);
+            color: var(--team2-color);
+            text-shadow: 0 0 8px var(--team2-glow), 0 1px 2px #000;
         }
 
         /* Live Likes Progress Bar */
@@ -404,13 +382,13 @@
             position: relative;
         }
 
-        .team-plants .tb-progress-fill {
-            background: var(--plant-grad);
-            box-shadow: 0 0 10px var(--plant-green);
+        .card-team1 .tb-progress-fill {
+            background: var(--team1-grad);
+            box-shadow: 0 0 10px var(--team1-color);
         }
-        .team-zombies .tb-progress-fill {
-            background: var(--zombie-grad);
-            box-shadow: 0 0 10px var(--zombie-red);
+        .card-team2 .tb-progress-fill {
+            background: var(--team2-grad);
+            box-shadow: 0 0 10px var(--team2-color);
         }
 
         .tb-progress-labels {
@@ -460,7 +438,7 @@
             justify-content: center;
         }
 
-        /* Flash on Summon Spawn */
+        /* Flash on Spawn */
         .flash-spawn {
             animation: spawnFlashAnim 1.6s ease-out forwards;
         }
@@ -495,6 +473,98 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        /* ==================== 3. EDIT TEAMS MODAL ==================== */
+        .tb-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+        }
+        .tb-modal-backdrop.active {
+            display: flex;
+        }
+
+        .tb-modal-box {
+            width: 520px;
+            max-width: 94vw;
+            background: #0d1117;
+            border: 1.5px solid #30363d;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tb-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 10px;
+        }
+
+        .tb-preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tb-preset-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #c9d1d9;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+        }
+        .tb-preset-btn:hover, .tb-preset-btn.active {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        .tb-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .tb-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .tb-field-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        .tb-field-group input {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #ffffff;
+            font-size: 12px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            outline: none;
+        }
+        .tb-field-group input:focus {
+            border-color: #38bdf8;
+        }
     </style>
 </head>
 <body class="show-controls theme-gradient">
@@ -515,13 +585,14 @@
         </defs>
     </svg>
 
-    <!-- 1. Floating Streamer Controls (Toggleable via ?controls=0 or button) -->
+    <!-- 1. Floating Streamer Controls -->
     <header class="tb-controls-bar" id="tbControlsBar">
-        <span style="font-size: 11px; font-weight: 800; color: #94a3b8;">⚔️ Team Battle Live</span>
-        <button class="tb-btn tb-btn-plant" onclick="sendTestLike('plants', 5)">🌿 +5 Likes</button>
-        <button class="tb-btn tb-btn-plant" onclick="sendTestLike('plants', 20)">🌿 Spawn x20</button>
-        <button class="tb-btn tb-btn-zombie" onclick="sendTestLike('zombies', 5)">🧟 +5 Likes</button>
-        <button class="tb-btn tb-btn-zombie" onclick="sendTestLike('zombies', 20)">🧟 Spawn x20</button>
+        <span style="font-size: 11px; font-weight: 800; color: #94a3b8;">⚔️ Team Battle</span>
+        <button class="tb-btn tb-btn-team1" id="btnTestTeam1_5" onclick="sendTestLike('team1', 5)">🔵 +5 Likes</button>
+        <button class="tb-btn tb-btn-team1" id="btnTestTeam1_20" onclick="sendTestLike('team1', 20)">🔵 Spawn x20</button>
+        <button class="tb-btn tb-btn-team2" id="btnTestTeam2_5" onclick="sendTestLike('team2', 5)">🔴 +5 Likes</button>
+        <button class="tb-btn tb-btn-team2" id="btnTestTeam2_20" onclick="sendTestLike('team2', 20)">🔴 Spawn x20</button>
+        <button class="tb-btn" onclick="openSettingsModal()">⚙️ Edit Teams</button>
         <button class="tb-btn" onclick="copyObsUrl()">📋 Copy OBS URL</button>
         <button class="tb-btn" onclick="toggleControls()">👁️ Hide HUD</button>
     </header>
@@ -531,147 +602,212 @@
         <!-- Tug-of-War Bar & Dominance Tracker -->
         <div class="tb-header-wrap">
             <div class="tb-tug-bar">
-                <div class="tb-tug-plants" id="tugPlants" style="width: 50%;"></div>
-                <div class="tb-tug-zombies" id="tugZombies" style="width: 50%;"></div>
+                <div class="tb-tug-segment tb-tug-team1" id="tugTeam1" style="width: 50%;"></div>
+                <div class="tb-tug-segment tb-tug-team2" id="tugTeam2" style="width: 50%;"></div>
             </div>
-            <div class="tb-lead-pill" id="tbLeadPill">🌿 Plants vs 🧟 Zombies • Tap Screen to Attack!</div>
+            <div class="tb-lead-pill" id="tbLeadPill">🔵 Blue vs 🔴 Red • Tap Screen to Attack!</div>
         </div>
 
-        <!-- Head-to-Head Cards Matching User Photo -->
+        <!-- Head-to-Head Cards -->
         <div class="tb-arena">
-            <!-- LEFT: TEAM PLANTS CARD -->
-            <div class="tb-team-card team-plants" id="cardPlants" onclick="sendTestLike('plants', 1)">
+            <!-- LEFT: TEAM 1 CARD (DEFAULT BLUE) -->
+            <div class="tb-team-card card-team1" id="cardTeam1" onclick="sendTestLike('team1', 1)">
                 <div class="tb-card-top">
                     <div class="tb-unit-box">
-                        <span class="tb-multiplier-badge" id="repsPlants">x1</span>
-                        <img class="tb-unit-img" id="imgPlants" src="/images/game-icons/pvz/spawn_overclocked_cherrybomber.webp" alt="Spawn Blazer Snipea" onerror="this.onerror=null; this.src='/images/game-icons/pvz/spawn_overclocked_cherrybomber.webp';">
+                        <span class="tb-multiplier-badge" id="repsTeam1">x20</span>
+                        <img class="tb-unit-img" id="imgTeam1" src="/images/indicators/indicator_general.svg" alt="Team 1" onerror="this.onerror=null; this.src='/images/indicators/indicator_general.svg';">
                     </div>
                     <div class="tb-heart-box" title="TapTap Likes Requirement">
                         <svg viewBox="0 0 36 34" class="tb-heart-svg">
                             <path d="M18,31 C10,24 2,17.5 2,9.8 C2,4.6 6,0.8 11,0.8 C14,0.8 16.5,2.3 18,4.7 C19.5,2.3 22,0.8 25,0.8 C30,0.8 34,4.6 34,9.8 C34,17.5 26,24 18,31 Z" fill="url(#tbHeartGrad)" filter="url(#tbHeartShadow)"/>
                             <path d="M18,29 C11,22.5 4,16.5 4,9.8 C4,5.8 7.2,2.4 11,2.4 C13.5,2.4 15.6,3.8 17,5.8 L18,7.2 L19,5.8 C20.4,3.8 22.5,2.4 25,2.4 C28.8,2.4 32,5.8 32,9.8 C32,16.5 25,22.5 18,29 Z" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
                         </svg>
-                        <span class="tb-heart-val" id="threshPlants">50</span>
+                        <span class="tb-heart-val" id="threshTeam1">20</span>
                     </div>
                 </div>
 
-                <!-- Chat Command Tag Matching Photo -->
-                <div class="tb-cmd-banner" id="cmdPlants">!plants / !teamplant</div>
+                <!-- Chat Command Banner -->
+                <div class="tb-cmd-banner" id="cmdTeam1">!blue</div>
 
                 <!-- Live Likes Progress Bar -->
                 <div class="tb-progress-container">
                     <div class="tb-progress-track">
-                        <div class="tb-progress-fill" id="fillPlants" style="width: 0%;"></div>
+                        <div class="tb-progress-fill" id="fillTeam1" style="width: 0%;"></div>
                     </div>
                     <div class="tb-progress-labels">
-                        <span>Tap Progress</span>
-                        <span class="tb-progress-val"><span id="curPlants">0</span> / <span id="maxPlants">50</span> ❤️</span>
+                        <span id="nameTeam1">Team Blue</span>
+                        <span class="tb-progress-val"><span id="curTeam1">0</span> / <span id="maxTeam1">20</span> ❤️</span>
                     </div>
                 </div>
 
                 <!-- Total Summons Count -->
                 <div class="tb-card-stats">
                     <span class="tb-summons-label">Units Spawned</span>
-                    <span class="tb-counter-badge" id="countPlants">0</span>
+                    <span class="tb-counter-badge" id="countTeam1">0</span>
                 </div>
             </div>
 
-            <!-- CENTER: 3D ANIMATED VS EMBLEM -->
+            <!-- CENTER: VS EMBLEM -->
             <div class="tb-vs-badge" id="vsBadge">VS</div>
 
-            <!-- RIGHT: TEAM ZOMBIES CARD -->
-            <div class="tb-team-card team-zombies" id="cardZombies" onclick="sendTestLike('zombies', 1)">
+            <!-- RIGHT: TEAM 2 CARD (DEFAULT RED) -->
+            <div class="tb-team-card card-team2" id="cardTeam2" onclick="sendTestLike('team2', 1)">
                 <div class="tb-card-top">
                     <div class="tb-unit-box">
-                        <span class="tb-multiplier-badge" id="repsZombies">x1</span>
-                        <img class="tb-unit-img" id="imgZombies" src="/images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp" alt="Trident Jugger-nut Gargantuar" onerror="this.onerror=null; this.src='/images/game-icons/pvz/spawn_trident_juggernut_gargantuar.png';">
+                        <span class="tb-multiplier-badge" id="repsTeam2">x20</span>
+                        <img class="tb-unit-img" id="imgTeam2" src="/images/indicators/indicator_general.svg" alt="Team 2" onerror="this.onerror=null; this.src='/images/indicators/indicator_general.svg';">
                     </div>
                     <div class="tb-heart-box" title="TapTap Likes Requirement">
                         <svg viewBox="0 0 36 34" class="tb-heart-svg">
                             <path d="M18,31 C10,24 2,17.5 2,9.8 C2,4.6 6,0.8 11,0.8 C14,0.8 16.5,2.3 18,4.7 C19.5,2.3 22,0.8 25,0.8 C30,0.8 34,4.6 34,9.8 C34,17.5 26,24 18,31 Z" fill="url(#tbHeartGrad)" filter="url(#tbHeartShadow)"/>
                             <path d="M18,29 C11,22.5 4,16.5 4,9.8 C4,5.8 7.2,2.4 11,2.4 C13.5,2.4 15.6,3.8 17,5.8 L18,7.2 L19,5.8 C20.4,3.8 22.5,2.4 25,2.4 C28.8,2.4 32,5.8 32,9.8 C32,16.5 25,22.5 18,29 Z" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
                         </svg>
-                        <span class="tb-heart-val" id="threshZombies">50</span>
+                        <span class="tb-heart-val" id="threshTeam2">20</span>
                     </div>
                 </div>
 
-                <!-- Chat Command Tag Matching Photo -->
-                <div class="tb-cmd-banner" id="cmdZombies">!zombies / !teamzombie</div>
+                <!-- Chat Command Banner -->
+                <div class="tb-cmd-banner" id="cmdTeam2">!red</div>
 
                 <!-- Live Likes Progress Bar -->
                 <div class="tb-progress-container">
                     <div class="tb-progress-track">
-                        <div class="tb-progress-fill" id="fillZombies" style="width: 0%;"></div>
+                        <div class="tb-progress-fill" id="fillTeam2" style="width: 0%;"></div>
                     </div>
                     <div class="tb-progress-labels">
-                        <span>Tap Progress</span>
-                        <span class="tb-progress-val"><span id="curZombies">0</span> / <span id="maxZombies">50</span> ❤️</span>
+                        <span id="nameTeam2">Team Red</span>
+                        <span class="tb-progress-val"><span id="curTeam2">0</span> / <span id="maxTeam2">20</span> ❤️</span>
                     </div>
                 </div>
 
                 <!-- Total Summons Count -->
                 <div class="tb-card-stats">
                     <span class="tb-summons-label">Units Spawned</span>
-                    <span class="tb-counter-badge" id="countZombies">0</span>
+                    <span class="tb-counter-badge" id="countTeam2">0</span>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- 3. Edit Teams Modal (Available in interactive view) -->
+    <div class="tb-modal-backdrop" id="modalSettings">
+        <div class="tb-modal-box">
+            <div class="tb-modal-header">
+                <div style="font-size: 15px; font-weight: 800; color: #fff;">⚙️ Team Battle Settings & Presets</div>
+                <button type="button" class="tb-btn" onclick="closeSettingsModal()" style="padding: 2px 8px;">✕</button>
+            </div>
+
+            <!-- Quick Presets -->
+            <div style="font-size: 11px; font-weight: 700; color: #94a3b8;">Quick Switch Preset:</div>
+            <div class="tb-preset-grid">
+                <button type="button" class="tb-preset-btn active" id="presetBtnBlueRed" onclick="applyPresetChoice('blue_vs_red')">
+                    🔵 Blue vs 🔴 Red (General)
+                </button>
+                <button type="button" class="tb-preset-btn" id="presetBtnPlantsZombies" onclick="applyPresetChoice('plants_vs_zombies')">
+                    🌿 Plants vs 🧟 Zombies (PvZ)
+                </button>
+            </div>
+
+            <!-- Inputs for Team 1 & Team 2 -->
+            <div class="tb-inputs-grid">
+                <!-- Team 1 -->
+                <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 10px;">
+                    <div style="font-size: 12px; font-weight: 800; color: #38bdf8;">Team 1 Setup</div>
+                    <div class="tb-field-group">
+                        <label>Team Name</label>
+                        <input type="text" id="inputTeam1Name" value="Team Blue">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Chat Command</label>
+                        <input type="text" id="inputTeam1Cmd" value="!blue">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Likes Threshold (❤️)</label>
+                        <input type="number" id="inputTeam1Thresh" value="20" min="1">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Spawn Multiplier (x)</label>
+                        <input type="number" id="inputTeam1Reps" value="20" min="1">
+                    </div>
+                </div>
+
+                <!-- Team 2 -->
+                <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 10px;">
+                    <div style="font-size: 12px; font-weight: 800; color: #f87171;">Team 2 Setup</div>
+                    <div class="tb-field-group">
+                        <label>Team Name</label>
+                        <input type="text" id="inputTeam2Name" value="Team Red">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Chat Command</label>
+                        <input type="text" id="inputTeam2Cmd" value="!red">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Likes Threshold (❤️)</label>
+                        <input type="number" id="inputTeam2Thresh" value="20" min="1">
+                    </div>
+                    <div class="tb-field-group">
+                        <label>Spawn Multiplier (x)</label>
+                        <input type="number" id="inputTeam2Reps" value="20" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Save -->
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+                <button type="button" class="tb-btn" onclick="closeSettingsModal()">Cancel</button>
+                <button type="button" class="tb-btn" onclick="saveSettingsFromModal()" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 800; border-color: #059669;">
+                    💾 Save & Apply
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Banner -->
     <div class="tb-toast" id="tbToast">Notification</div>
 
     <script>
         // ========================================================
-        // TEAM BATTLE STATE & LOGIC
+        // TEAM BATTLE STATE & DYNAMIC CONFIG
         // ========================================================
-        let tbState = {
-            plants: { current: 0, threshold: 50, count: 0, reps: 1 },
-            zombies: { current: 0, threshold: 50, count: 0, reps: 1 }
+        let currentSettings = {
+            activePreset: 'blue_vs_red',
+            team1: {
+                id: 'blue',
+                name: 'Team Blue',
+                command: '!blue',
+                color: '#38bdf8',
+                colorDark: '#0284c7',
+                colorGrad: 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)',
+                glow: 'rgba(56, 189, 248, 0.45)',
+                emoji: '🔵',
+                threshold: 20,
+                repetition: 20,
+                icon: 'images/indicators/indicator_general.svg'
+            },
+            team2: {
+                id: 'red',
+                name: 'Team Red',
+                command: '!red',
+                color: '#ef4444',
+                colorDark: '#b91c1c',
+                colorGrad: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)',
+                glow: 'rgba(239, 68, 68, 0.45)',
+                emoji: '🔴',
+                threshold: 20,
+                repetition: 20,
+                icon: 'images/indicators/indicator_general.svg'
+            }
         };
 
-        // URL Parameters
+        let tbState = {
+            team1: { current: 0, threshold: 20, count: 0, reps: 20 },
+            team2: { current: 0, threshold: 20, count: 0, reps: 20 }
+        };
+
         const params = new URLSearchParams(window.location.search);
         if (params.get('controls') === '0' || params.get('obs') === '1') {
             document.body.classList.add('hide-controls');
-        }
-        if (params.get('theme')) {
-            document.body.classList.remove('theme-gradient', 'theme-dark');
-            const th = params.get('theme');
-            if (th === 'dark') document.body.classList.add('theme-dark');
-            else if (th === 'gradient') document.body.classList.add('theme-gradient');
-        }
-        if (params.get('scale')) {
-            const sc = parseFloat(params.get('scale'));
-            if (!isNaN(sc) && sc >= 0.5 && sc <= 2.5) {
-                document.documentElement.style.setProperty('--ui-scale', sc);
-            }
-        }
-
-        // Silent Audio Engine (Sound muted as requested)
-        let soundEnabled = false; // SILENT
-        if (params.get('sound') === '1' || params.get('audio') === '1') {
-            soundEnabled = true;
-        }
-
-        let audioCtx = null;
-        function playChime(freq1 = 587.33, freq2 = 880.00) {
-            if (!soundEnabled) return; // Completely silent
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = audioCtx.currentTime;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq1, now);
-                osc.frequency.exponentialRampToValueAtTime(freq2, now + 0.15);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } catch (e) {}
         }
 
         function showToast(msg) {
@@ -695,125 +831,156 @@
             });
         }
 
-        // Update DOM from State
+        function applyThemeToCSS() {
+            const r = document.documentElement;
+            if (currentSettings.team1) {
+                r.style.setProperty('--team1-color', currentSettings.team1.color || '#38bdf8');
+                r.style.setProperty('--team1-dark', currentSettings.team1.colorDark || '#0284c7');
+                r.style.setProperty('--team1-glow', currentSettings.team1.glow || 'rgba(56, 189, 248, 0.45)');
+                r.style.setProperty('--team1-grad', currentSettings.team1.colorGrad || 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)');
+            }
+            if (currentSettings.team2) {
+                r.style.setProperty('--team2-color', currentSettings.team2.color || '#ef4444');
+                r.style.setProperty('--team2-dark', currentSettings.team2.colorDark || '#b91c1c');
+                r.style.setProperty('--team2-glow', currentSettings.team2.glow || 'rgba(239, 68, 68, 0.45)');
+                r.style.setProperty('--team2-grad', currentSettings.team2.colorGrad || 'linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)');
+            }
+        }
+
         function updateUI() {
-            const p = tbState.plants;
-            const z = tbState.zombies;
+            const t1 = tbState.team1;
+            const t2 = tbState.team2;
+            const s1 = currentSettings.team1;
+            const s2 = currentSettings.team2;
 
-            // Plants
-            const pPct = Math.min(100, Math.max(0, (p.current / (p.threshold || 50)) * 100));
-            document.getElementById('fillPlants').style.width = `${pPct}%`;
-            document.getElementById('curPlants').textContent = p.current;
-            document.getElementById('maxPlants').textContent = p.threshold;
-            document.getElementById('threshPlants').textContent = p.threshold;
-            document.getElementById('countPlants').textContent = p.count;
+            applyThemeToCSS();
 
-            // Zombies
-            const zPct = Math.min(100, Math.max(0, (z.current / (z.threshold || 50)) * 100));
-            document.getElementById('fillZombies').style.width = `${zPct}%`;
-            document.getElementById('curZombies').textContent = z.current;
-            document.getElementById('maxZombies').textContent = z.threshold;
-            document.getElementById('threshZombies').textContent = z.threshold;
-            document.getElementById('countZombies').textContent = z.count;
+            // Team 1 UI
+            const t1Thresh = s1.threshold || t1.threshold || 20;
+            const t1Pct = Math.min(100, Math.max(0, (t1.current / t1Thresh) * 100));
+            document.getElementById('fillTeam1').style.width = `${t1Pct}%`;
+            document.getElementById('curTeam1').textContent = t1.current;
+            document.getElementById('maxTeam1').textContent = t1Thresh;
+            document.getElementById('threshTeam1').textContent = t1Thresh;
+            document.getElementById('countTeam1').textContent = t1.count;
+            document.getElementById('repsTeam1').textContent = `x${s1.repetition || 20}`;
+            document.getElementById('cmdTeam1').textContent = s1.command || '!blue';
+            document.getElementById('nameTeam1').textContent = s1.name || 'Team Blue';
+
+            // Button controls label
+            const b1_5 = document.getElementById('btnTestTeam1_5');
+            if (b1_5) b1_5.textContent = `${s1.emoji || '🔵'} +5 Likes`;
+            const b1_20 = document.getElementById('btnTestTeam1_20');
+            if (b1_20) b1_20.textContent = `${s1.emoji || '🔵'} Spawn x${s1.repetition || 20}`;
+
+            // Team 2 UI
+            const t2Thresh = s2.threshold || t2.threshold || 20;
+            const t2Pct = Math.min(100, Math.max(0, (t2.current / t2Thresh) * 100));
+            document.getElementById('fillTeam2').style.width = `${t2Pct}%`;
+            document.getElementById('curTeam2').textContent = t2.current;
+            document.getElementById('maxTeam2').textContent = t2Thresh;
+            document.getElementById('threshTeam2').textContent = t2Thresh;
+            document.getElementById('countTeam2').textContent = t2.count;
+            document.getElementById('repsTeam2').textContent = `x${s2.repetition || 20}`;
+            document.getElementById('cmdTeam2').textContent = s2.command || '!red';
+            document.getElementById('nameTeam2').textContent = s2.name || 'Team Red';
+
+            const b2_5 = document.getElementById('btnTestTeam2_5');
+            if (b2_5) b2_5.textContent = `${s2.emoji || '🔴'} +5 Likes`;
+            const b2_20 = document.getElementById('btnTestTeam2_20');
+            if (b2_20) b2_20.textContent = `${s2.emoji || '🔴'} Spawn x${s2.repetition || 20}`;
 
             // Tug of War dominance meter
-            const totalSummons = (p.count || 0) + (z.count || 0);
+            const total = (t1.count || 0) + (t2.count || 0);
             let pDom = 50;
             let zDom = 50;
-            if (totalSummons > 0) {
-                pDom = Math.round((p.count / totalSummons) * 100);
+            if (total > 0) {
+                pDom = Math.round((t1.count / total) * 100);
                 zDom = 100 - pDom;
             }
-            document.getElementById('tugPlants').style.width = `${pDom}%`;
-            document.getElementById('tugZombies').style.width = `${zDom}%`;
+            document.getElementById('tugTeam1').style.width = `${pDom}%`;
+            document.getElementById('tugTeam2').style.width = `${zDom}%`;
 
             const pill = document.getElementById('tbLeadPill');
-            if (p.count > z.count) {
-                pill.textContent = `🌿 Plants Leading (+${p.count - z.count}) • Type !plants or !zombies to Join!`;
-                pill.style.borderColor = 'rgba(16, 185, 129, 0.6)';
-            } else if (z.count > p.count) {
-                pill.textContent = `🧟 Zombies Leading (+${z.count - p.count}) • Type !plants or !zombies to Join!`;
-                pill.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+            if (t1.count > t2.count) {
+                pill.textContent = `${s1.emoji || '🔵'} ${s1.name} Leading (+${t1.count - t2.count}) • Type ${s1.command} or ${s2.command} to Join!`;
+                pill.style.borderColor = s1.color || '#38bdf8';
+            } else if (t2.count > t1.count) {
+                pill.textContent = `${s2.emoji || '🔴'} ${s2.name} Leading (+${t2.count - t1.count}) • Type ${s1.command} or ${s2.command} to Join!`;
+                pill.style.borderColor = s2.color || '#ef4444';
             } else {
-                pill.textContent = `⚔️ Tied Clash (${p.count} vs ${z.count}) • Tap Screen to Attack!`;
+                pill.textContent = `⚔️ ${s1.name} vs ${s2.name} (${t1.count} vs ${t2.count}) • Tap Screen to Attack!`;
                 pill.style.borderColor = 'rgba(255, 255, 255, 0.2)';
             }
         }
 
         function resolveIcon(url) {
-            if (!url) return '';
-            let s = String(url).trim();
-            s = s.replace(/^https?:\/\/[^\/]+/i, '');
+            if (!url) return 'images/indicators/indicator_general.svg';
+            let s = String(url).trim().replace(/^https?:\/\/[^\/]+/i, '');
             if (!s.startsWith('/') && !s.startsWith('http://') && !s.startsWith('https://') && !s.startsWith('data:')) {
                 s = '/' + s;
             }
             return s;
         }
 
-        // Fetch Dynamic State & Commands from Backend
-        async function fetchState() {
+        async function fetchSettingsAndState() {
             try {
-                const res = await fetch(`/api/teambattle/state?v=${Date.now()}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.plants) {
-                        tbState.plants.current = data.plants.current || 0;
-                        tbState.plants.threshold = data.plants.threshold || 50;
-                        tbState.plants.count = data.plants.count || 0;
-                        tbState.plants.reps = data.plants.repetition || 1;
-                        const rEl = document.getElementById('repsPlants');
-                        if (rEl) rEl.textContent = `x${tbState.plants.reps}`;
-                        if (data.plants.icon) {
-                            const pImg = document.getElementById('imgPlants');
-                            const cleanIcon = resolveIcon(data.plants.icon);
-                            if (pImg && cleanIcon && pImg.getAttribute('src') !== cleanIcon) {
-                                pImg.src = cleanIcon;
-                            }
-                            if (pImg && data.plants.unit) pImg.alt = data.plants.unit;
-                        }
-                    }
-                    if (data.zombies) {
-                        tbState.zombies.current = data.zombies.current || 0;
-                        tbState.zombies.threshold = data.zombies.threshold || 50;
-                        tbState.zombies.count = data.zombies.count || 0;
-                        tbState.zombies.reps = data.zombies.repetition || 1;
-                        const rEl = document.getElementById('repsZombies');
-                        if (rEl) rEl.textContent = `x${tbState.zombies.reps}`;
-                        if (data.zombies.icon) {
-                            const zImg = document.getElementById('imgZombies');
-                            const cleanIcon = resolveIcon(data.zombies.icon);
-                            if (zImg && cleanIcon && zImg.getAttribute('src') !== cleanIcon) {
-                                zImg.src = cleanIcon;
-                            }
-                            if (zImg && data.zombies.unit) zImg.alt = data.zombies.unit;
-                        }
-                    }
-                    updateUI();
+                // 1. Fetch persistent settings
+                const setRes = await fetch(`/api/teambattle/settings?v=${Date.now()}`);
+                if (setRes.ok) {
+                    const cfg = await setRes.json();
+                    if (cfg && cfg.team1) currentSettings.team1 = Object.assign(currentSettings.team1, cfg.team1);
+                    if (cfg && cfg.team2) currentSettings.team2 = Object.assign(currentSettings.team2, cfg.team2);
+                    if (cfg && cfg.activePreset) currentSettings.activePreset = cfg.activePreset;
                 }
+
+                // 2. Fetch live state & counts
+                const stateRes = await fetch(`/api/teambattle/state?v=${Date.now()}`);
+                if (stateRes.ok) {
+                    const data = await stateRes.json();
+                    const t1Data = data.team1 || data.plants;
+                    const t2Data = data.team2 || data.zombies;
+
+                    if (t1Data) {
+                        tbState.team1.current = t1Data.current || 0;
+                        tbState.team1.threshold = t1Data.threshold || currentSettings.team1.threshold || 20;
+                        tbState.team1.count = t1Data.count || 0;
+                        tbState.team1.reps = t1Data.repetition || currentSettings.team1.repetition || 20;
+                        if (t1Data.icon) {
+                            const img = document.getElementById('imgTeam1');
+                            const iconUrl = resolveIcon(t1Data.icon);
+                            if (img && img.getAttribute('src') !== iconUrl) img.src = iconUrl;
+                        }
+                    }
+                    if (t2Data) {
+                        tbState.team2.current = t2Data.current || 0;
+                        tbState.team2.threshold = t2Data.threshold || currentSettings.team2.threshold || 20;
+                        tbState.team2.count = t2Data.count || 0;
+                        tbState.team2.reps = t2Data.repetition || currentSettings.team2.repetition || 20;
+                        if (t2Data.icon) {
+                            const img = document.getElementById('imgTeam2');
+                            const iconUrl = resolveIcon(t2Data.icon);
+                            if (img && img.getAttribute('src') !== iconUrl) img.src = iconUrl;
+                        }
+                    }
+                }
+                updateUI();
             } catch (e) {
-                console.log("[TeamBattle] Offline state fallback:", e);
+                console.log("[TeamBattle] Offline fallback:", e);
             }
         }
 
-        // Test Like Trigger
         async function sendTestLike(team, likes = 5) {
-            playChime(team === 'plants' ? 659.25 : 440.00, team === 'plants' ? 880.00 : 554.37);
+            const isTeam1 = (team === 'team1' || team === 'plants');
+            const targetState = isTeam1 ? tbState.team1 : tbState.team2;
+            const targetCardId = isTeam1 ? 'cardTeam1' : 'cardTeam2';
+            const teamObj = isTeam1 ? currentSettings.team1 : currentSettings.team2;
 
-            // Optimistic update
-            if (team === 'plants') {
-                tbState.plants.current += likes;
-                if (tbState.plants.current >= tbState.plants.threshold) {
-                    tbState.plants.current -= tbState.plants.threshold;
-                    tbState.plants.count++;
-                    triggerCardFlash('cardPlants', '🌿 Team Plants Spawned Units!');
-                }
-            } else {
-                tbState.zombies.current += likes;
-                if (tbState.zombies.current >= tbState.zombies.threshold) {
-                    tbState.zombies.current -= tbState.zombies.threshold;
-                    tbState.zombies.count++;
-                    triggerCardFlash('cardZombies', '🧟 Team Zombies Spawned Units!');
-                }
+            targetState.current += likes;
+            if (targetState.current >= targetState.threshold) {
+                targetState.current -= targetState.threshold;
+                targetState.count++;
+                triggerCardFlash(targetCardId, `${teamObj.emoji || '⚡'} ${teamObj.name} Spawned Units!`);
             }
             updateUI();
 
@@ -821,7 +988,7 @@
                 await fetch('/api/teambattle/test', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ team, likes, user: 'StreamViewer' })
+                    body: JSON.stringify({ team: isTeam1 ? 'plants' : 'zombies', likes, user: 'StreamViewer' })
                 });
             } catch (e) {}
         }
@@ -834,10 +1001,109 @@
                 card.classList.add('flash-spawn');
             }
             if (toastMsg) showToast(toastMsg);
-            playChime(784.00, 1046.50);
         }
 
-        // Real-Time Event Polling & WebSocket Integration
+        // ========================================================
+        // MODAL SETTINGS & PRESET SWITCHER
+        // ========================================================
+        function openSettingsModal() {
+            document.getElementById('inputTeam1Name').value = currentSettings.team1.name;
+            document.getElementById('inputTeam1Cmd').value = currentSettings.team1.command;
+            document.getElementById('inputTeam1Thresh').value = currentSettings.team1.threshold || 20;
+            document.getElementById('inputTeam1Reps').value = currentSettings.team1.repetition || 20;
+
+            document.getElementById('inputTeam2Name').value = currentSettings.team2.name;
+            document.getElementById('inputTeam2Cmd').value = currentSettings.team2.command;
+            document.getElementById('inputTeam2Thresh').value = currentSettings.team2.threshold || 20;
+            document.getElementById('inputTeam2Reps').value = currentSettings.team2.repetition || 20;
+
+            const isPvZ = currentSettings.activePreset === 'plants_vs_zombies';
+            document.getElementById('presetBtnBlueRed').classList.toggle('active', !isPvZ);
+            document.getElementById('presetBtnPlantsZombies').classList.toggle('active', isPvZ);
+
+            document.getElementById('modalSettings').classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('modalSettings').classList.remove('active');
+        }
+
+        function applyPresetChoice(preset) {
+            document.getElementById('presetBtnBlueRed').classList.toggle('active', preset === 'blue_vs_red');
+            document.getElementById('presetBtnPlantsZombies').classList.toggle('active', preset === 'plants_vs_zombies');
+
+            if (preset === 'blue_vs_red') {
+                document.getElementById('inputTeam1Name').value = 'Team Blue';
+                document.getElementById('inputTeam1Cmd').value = '!blue';
+                document.getElementById('inputTeam1Thresh').value = 20;
+                document.getElementById('inputTeam1Reps').value = 20;
+
+                document.getElementById('inputTeam2Name').value = 'Team Red';
+                document.getElementById('inputTeam2Cmd').value = '!red';
+                document.getElementById('inputTeam2Thresh').value = 20;
+                document.getElementById('inputTeam2Reps').value = 20;
+            } else if (preset === 'plants_vs_zombies') {
+                document.getElementById('inputTeam1Name').value = 'Team Plants';
+                document.getElementById('inputTeam1Cmd').value = '!plants';
+                document.getElementById('inputTeam1Thresh').value = 50;
+                document.getElementById('inputTeam1Reps').value = 1;
+
+                document.getElementById('inputTeam2Name').value = 'Team Zombies';
+                document.getElementById('inputTeam2Cmd').value = '!zombies';
+                document.getElementById('inputTeam2Thresh').value = 50;
+                document.getElementById('inputTeam2Reps').value = 1;
+            }
+        }
+
+        async function saveSettingsFromModal() {
+            const isPvZ = document.getElementById('presetBtnPlantsZombies').classList.contains('active');
+            const newSettings = {
+                activePreset: isPvZ ? 'plants_vs_zombies' : 'blue_vs_red',
+                team1: {
+                    id: isPvZ ? 'plants' : 'blue',
+                    name: document.getElementById('inputTeam1Name').value.trim() || 'Team Blue',
+                    command: document.getElementById('inputTeam1Cmd').value.trim() || '!blue',
+                    aliases: isPvZ ? ['!plants', '!teamplant', '!plant'] : ['!blue', '!teamblue', '!bluearmy', '!plants'],
+                    color: isPvZ ? '#10b981' : '#38bdf8',
+                    colorDark: isPvZ ? '#059669' : '#0284c7',
+                    colorGrad: isPvZ ? 'linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%)' : 'linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)',
+                    glow: isPvZ ? 'rgba(16, 185, 129, 0.45)' : 'rgba(56, 189, 248, 0.45)',
+                    emoji: isPvZ ? '🌿' : '🔵',
+                    threshold: parseInt(document.getElementById('inputTeam1Thresh').value) || 20,
+                    repetition: parseInt(document.getElementById('inputTeam1Reps').value) || 20,
+                    icon: isPvZ ? 'images/game-icons/pvz/spawn_overclocked_cherrybomber.webp' : 'images/indicators/indicator_general.svg'
+                },
+                team2: {
+                    id: isPvZ ? 'zombies' : 'red',
+                    name: document.getElementById('inputTeam2Name').value.trim() || 'Team Red',
+                    command: document.getElementById('inputTeam2Cmd').value.trim() || '!red',
+                    aliases: isPvZ ? ['!zombies', '!teamzombie', '!zombie'] : ['!red', '!teamred', '!redarmy', '!zombies'],
+                    color: '#ef4444',
+                    colorDark: '#b91c1c',
+                    colorGrad: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)',
+                    glow: 'rgba(239, 68, 68, 0.45)',
+                    emoji: isPvZ ? '🧟' : '🔴',
+                    threshold: parseInt(document.getElementById('inputTeam2Thresh').value) || 20,
+                    repetition: parseInt(document.getElementById('inputTeam2Reps').value) || 20,
+                    icon: isPvZ ? 'images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp' : 'images/indicators/indicator_general.svg'
+                }
+            };
+
+            currentSettings = newSettings;
+            updateUI();
+            closeSettingsModal();
+            showToast("💾 Team Battle Settings Saved & Applied!");
+
+            try {
+                await fetch('/api/teambattle/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newSettings)
+                });
+            } catch (e) {}
+        }
+
+        // Real-Time Event Polling
         let lastEventId = 0;
         async function pollEvents() {
             try {
@@ -857,37 +1123,37 @@
             if (!ev || !ev.type) return;
 
             if (ev.type === 'config_updated' || ev.type === 'cards_updated' || ev.type === 'settings_updated') {
-                fetchState();
+                fetchSettingsAndState();
             } else if (ev.type === 'team_battle_progress') {
                 if (ev.team === 'plants') {
-                    tbState.plants.current = ev.current;
-                    tbState.plants.threshold = ev.threshold;
+                    tbState.team1.current = ev.current;
+                    tbState.team1.threshold = ev.threshold;
                 } else if (ev.team === 'zombies') {
-                    tbState.zombies.current = ev.current;
-                    tbState.zombies.threshold = ev.threshold;
+                    tbState.team2.current = ev.current;
+                    tbState.team2.threshold = ev.threshold;
                 }
                 updateUI();
             } else if (ev.type === 'team_battle_spawn') {
                 if (ev.team === 'plants') {
-                    tbState.plants.count++;
-                    triggerCardFlash('cardPlants', `🌿 ${ev.username || 'Viewer'} spawned Plants!`);
+                    tbState.team1.count++;
+                    triggerCardFlash('cardTeam1', `${currentSettings.team1.emoji} ${ev.username || 'Viewer'} spawned units!`);
                 } else if (ev.team === 'zombies') {
-                    tbState.zombies.count++;
-                    triggerCardFlash('cardZombies', `🧟 ${ev.username || 'Viewer'} spawned Zombies!`);
+                    tbState.team2.count++;
+                    triggerCardFlash('cardTeam2', `${currentSettings.team2.emoji} ${ev.username || 'Viewer'} spawned units!`);
                 }
                 updateUI();
             } else if (ev.type === 'team_join') {
-                showToast(`👤 ${ev.username} joined ${ev.team === 'plants' ? '🌿 Team Plants' : '🧟 Team Zombies'}!`);
+                showToast(`👤 ${ev.username} joined ${ev.label || 'a team'}!`);
             } else if (ev.type === 'counts_update' || ev.type === 'counts_reset') {
                 if (ev.counts) {
-                    if (ev.counts["1"] !== undefined) tbState.plants.count = ev.counts["1"];
-                    if (ev.counts["2"] !== undefined) tbState.zombies.count = ev.counts["2"];
+                    if (ev.counts["1"] !== undefined) tbState.team1.count = ev.counts["1"];
+                    if (ev.counts["2"] !== undefined) tbState.team2.count = ev.counts["2"];
                     updateUI();
                 } else if (ev.type === 'counts_reset') {
-                    tbState.plants.count = 0;
-                    tbState.zombies.count = 0;
-                    tbState.plants.current = 0;
-                    tbState.zombies.current = 0;
+                    tbState.team1.count = 0;
+                    tbState.team2.count = 0;
+                    tbState.team1.current = 0;
+                    tbState.team2.current = 0;
                     updateUI();
                 }
             }
@@ -899,39 +1165,15 @@
             bc.onmessage = (e) => {
                 if (!e || !e.data) return;
                 if (e.data.type === 'config_updated' || e.data.type === 'cards_updated' || e.data.type === 'counts_updated') {
-                    fetchState();
+                    fetchSettingsAndState();
                 }
             };
         } catch (e) {}
 
-        window.addEventListener('message', (e) => {
-            if (!e || !e.data) return;
-            if (e.data.type === 'config_updated' || e.data.type === 'cards_updated') {
-                fetchState();
-            }
-        });
-
-        // WebSocket Real-Time Connection
-        function setupWebSocket() {
-            try {
-                const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${wsProto}//${location.host}/ws`;
-                const ws = new WebSocket(wsUrl);
-                ws.onmessage = (msg) => {
-                    try {
-                        const data = JSON.parse(msg.data);
-                        handleIncomingEvent(data);
-                    } catch (e) {}
-                };
-                ws.onclose = () => setTimeout(setupWebSocket, 3000);
-            } catch (e) {}
-        }
-
         // Init
-        fetchState();
-        setupWebSocket();
+        fetchSettingsAndState();
         setInterval(pollEvents, 1000);
-        setInterval(fetchState, 2000);
+        setInterval(fetchSettingsAndState, 2500);
     </script>
 </body>
 </html>

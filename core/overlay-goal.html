@@ -197,17 +197,258 @@
             0% { opacity: 0.7; }
             100% { opacity: 1; filter: brightness(1.2); }
         }
+
+        /* ─── Goal Icons & Micro-Animations ─── */
+        .goal-coin-icon-anim {
+            animation: coinShimmer 2.8s ease-in-out infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes coinShimmer {
+            0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.8)); }
+            25% { transform: rotate(-8deg) scale(1.1); filter: drop-shadow(0 0 14px rgba(251, 191, 36, 1)); }
+            75% { transform: rotate(8deg) scale(1.06); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.9)); }
+        }
+
+        .goal-follow-icon-box {
+            animation: followIconPulse 2.8s ease-in-out infinite alternate;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        @keyframes followIconPulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
+            100% { transform: scale(1.1); box-shadow: 0 0 18px rgba(56, 189, 248, 0.85); }
+        }
+
+        /* ─── Official TikTok Heart Me Icon & Lively Animations ─── */
+        .goal-heartme-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            margin-right: 4px;
+            perspective: 600px;
+        }
+
+        .goal-heartme-aura {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 45, 120, 0.55) 0%, rgba(254, 218, 106, 0.3) 45%, transparent 72%);
+            animation: heartmeAuraPulse 2.4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes heartmeAuraPulse {
+            0% { transform: scale(0.8); opacity: 0.4; filter: blur(3px); }
+            100% { transform: scale(1.35); opacity: 0.95; filter: blur(6px); }
+        }
+
+        .goal-heartme-img {
+            position: relative;
+            z-index: 2;
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 45, 120, 0.85)) drop-shadow(0 0 16px rgba(254, 218, 106, 0.55));
+            animation: heartmeHeartbeatFloat 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            transform-origin: center center;
+            will-change: transform, filter;
+        }
+
+        @keyframes heartmeHeartbeatFloat {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 10px rgba(255, 45, 120, 0.85)) drop-shadow(0 0 16px rgba(254, 218, 106, 0.55));
+            }
+            12% {
+                transform: translateY(-2px) scale(1.18) rotate(-4deg);
+                filter: drop-shadow(0 0 16px rgba(255, 45, 120, 1)) drop-shadow(0 0 24px rgba(254, 218, 106, 0.85));
+            }
+            24% {
+                transform: translateY(-1px) scale(1.05) rotate(0deg);
+                filter: drop-shadow(0 0 12px rgba(255, 45, 120, 0.9));
+            }
+            36% {
+                transform: translateY(-3.5px) scale(1.25) rotate(5deg);
+                filter: drop-shadow(0 0 20px rgba(255, 45, 120, 1)) drop-shadow(0 0 28px rgba(254, 218, 106, 0.95));
+            }
+            55% {
+                transform: translateY(0.5px) scale(0.98) rotate(-2deg);
+                filter: drop-shadow(0 0 11px rgba(255, 45, 120, 0.8));
+            }
+            72% {
+                transform: translateY(-1px) scale(1.03) rotate(0deg);
+            }
+            100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 10px rgba(255, 45, 120, 0.85)) drop-shadow(0 0 16px rgba(254, 218, 106, 0.55));
+            }
+        }
+
+        /* Heart surge impact on point increase */
+        .goal-heartme-img.anim-surge {
+            animation: heartmeSurgeImpact 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.4) !important;
+        }
+
+        @keyframes heartmeSurgeImpact {
+            0% { transform: scale(0.9); }
+            30% {
+                transform: scale(1.5) rotate(-12deg);
+                filter: drop-shadow(0 0 25px #ff2d78) drop-shadow(0 0 35px #fde047) brightness(1.3);
+            }
+            55% { transform: scale(1.1) rotate(8deg); }
+            75% { transform: scale(1.25) rotate(-4deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Floating mini sparkles & hearts */
+        .heartme-particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0;
+            line-height: 1;
+            user-select: none;
+            animation: floatParticleRise 2.8s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+        }
+
+        .heartme-particle-1 {
+            top: -4px;
+            right: -6px;
+            font-size: 11px;
+            animation-delay: 0.3s;
+            filter: drop-shadow(0 0 6px #ff2d78);
+        }
+
+        .heartme-particle-2 {
+            bottom: -2px;
+            left: -6px;
+            font-size: 9px;
+            animation-delay: 1.5s;
+            filter: drop-shadow(0 0 6px #fde047);
+        }
+
+        .heartme-particle-3 {
+            top: 4px;
+            left: -8px;
+            font-size: 8px;
+            animation-delay: 2.1s;
+            filter: drop-shadow(0 0 6px #ec4899);
+        }
+
+        @keyframes floatParticleRise {
+            0% {
+                transform: translateY(0) scale(0.4) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.95;
+                transform: translateY(-6px) scale(1.1) rotate(-12deg);
+            }
+            60% {
+                opacity: 0.85;
+                transform: translateY(-16px) scale(1) rotate(15deg);
+            }
+            100% {
+                transform: translateY(-28px) scale(0.2) rotate(-20deg);
+                opacity: 0;
+            }
+        }
+
+        /* ─── Percentage Badge ─── */
+        .hud-pct-badge {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--goal-accent-light);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--goal-accent);
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-left: 6px;
+            box-shadow: 0 0 10px var(--goal-accent-glow);
+            transition: all 0.3s ease;
+        }
+
+        /* ─── Goal Celebration Overdrive (100% Fill) ─── */
+        .cyber-style-view.goal-completed {
+            border-color: var(--goal-accent) !important;
+            box-shadow: 0 0 35px var(--goal-accent-glow), 0 0 70px var(--goal-accent-glow), inset 0 0 25px var(--goal-accent-glow) !important;
+            animation: goalCompletedPulse 1.2s ease-in-out infinite alternate !important;
+        }
+
+        @keyframes goalCompletedPulse {
+            0% { transform: scale(1); filter: brightness(1.05); }
+            100% { transform: scale(1.025); filter: brightness(1.25); box-shadow: 0 0 50px var(--goal-accent-glow), 0 0 90px var(--goal-accent-glow); }
+        }
+
+        .goal-celebration-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            z-index: 40;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.45s cubic-bezier(0.16, 1.4, 0.3, 1);
+        }
+
+        .goal-celebration-banner.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .celebration-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(13, 19, 29, 0.96), rgba(24, 33, 47, 0.98));
+            border: 2px solid var(--goal-accent);
+            padding: 7px 20px;
+            border-radius: 9999px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 30px var(--goal-accent-glow);
+            animation: badgeShinePulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes badgeShinePulse {
+            0% { box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 20px var(--goal-accent-glow); }
+            100% { box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 40px var(--goal-accent-glow), inset 0 0 15px var(--goal-accent-glow); }
+        }
+
+        .celebration-text {
+            font-family: 'Oxanium', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 0 14px var(--goal-accent-light);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
 
     <div class="cyber-style-view" id="goalView">
+        <!-- Confetti Canvas for 100% Fill Celebration -->
+        <canvas id="confettiCanvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 35; width: 100%; height: 100%;"></canvas>
+
         <div class="hud-top-content-row">
-            <span class="hud-header-label" id="goalLabel">LIKES</span>
+            <div style="display: flex; align-items: center; gap: 9px;">
+                <div id="goalIconWrap" style="display: flex; align-items: center;"></div>
+                <span class="hud-header-label" id="goalLabel">LIKES</span>
+            </div>
             <div class="hud-numbers-main">
                 <span class="hud-current-num" id="currentPoints">36</span>
                 <span class="hud-slash-divider">/</span>
                 <span class="hud-target-num" id="targetPoints">1,000</span>
+                <span class="hud-pct-badge" id="pctBadge">3.6%</span>
             </div>
         </div>
 
@@ -228,13 +469,38 @@
             <div class="hud-dot-segment"></div>
             <div class="hud-dot-segment"></div>
         </div>
+
+        <!-- Goal Celebration Banner (pops in when 100% full) -->
+        <div id="goalCelebrationBanner" class="goal-celebration-banner">
+            <div class="celebration-badge">
+                <span style="font-size: 16px;">🎉</span>
+                <span class="celebration-text" id="celebrationBannerText">GOAL COMPLETED!</span>
+                <span style="font-size: 16px;">✨</span>
+            </div>
+        </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const goalType = (params.get('type') || params.get('kind') || 'likes').toLowerCase();
-        let targetVal = parseInt(params.get('goal') || (goalType.includes('like') ? '1000' : '500'), 10);
-        let currentVal = parseInt(params.get('current') || (goalType.includes('like') ? '36' : '0'), 10);
+
+        // Target and Current defaults
+        let defaultGoal = 1000;
+        let defaultCurrent = 36;
+        if (goalType.includes('follow')) {
+            defaultGoal = 200;
+            defaultCurrent = 142;
+        } else if (goalType.includes('coin')) {
+            defaultGoal = 5000;
+            defaultCurrent = 2840;
+        } else if (goalType.includes('share')) {
+            defaultGoal = 500;
+            defaultCurrent = 50;
+        }
+
+        let targetVal = parseInt(params.get('goal') || defaultGoal, 10);
+        const storedGoalVal = sessionStorage.getItem('goal_current_' + goalType);
+        let currentVal = parseInt(params.get('current') || (storedGoalVal !== null ? storedGoalVal : defaultCurrent), 10);
         const customTitle = params.get('title');
         const customAccent = params.get('accent');
 
@@ -244,34 +510,204 @@
             document.documentElement.style.setProperty('--goal-accent-light', customAccent);
             document.documentElement.style.setProperty('--goal-accent-glow', customAccent + '88');
         } else if (goalType.includes('heart')) {
-            document.documentElement.style.setProperty('--goal-accent', '#ec4899');
-            document.documentElement.style.setProperty('--goal-accent-light', '#f472b6');
-            document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(236, 72, 153, 0.6)');
+            document.documentElement.style.setProperty('--goal-accent', '#ff2d78');
+            document.documentElement.style.setProperty('--goal-accent-light', '#ff659c');
+            document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(255, 45, 120, 0.65)');
+            const gv = document.getElementById('goalView');
+            if (gv) {
+                gv.style.borderColor = 'rgba(255, 45, 120, 0.4)';
+                gv.style.background = 'linear-gradient(115deg, rgba(255, 45, 120, 0.12) 0%, rgba(13, 19, 29, 0.95) 75%)';
+                gv.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 45, 120, 0.35)';
+            }
         } else if (goalType.includes('coin')) {
             document.documentElement.style.setProperty('--goal-accent', '#f59e0b');
             document.documentElement.style.setProperty('--goal-accent-light', '#fbbf24');
             document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(245, 158, 11, 0.6)');
+        } else if (goalType.includes('follow')) {
+            document.documentElement.style.setProperty('--goal-accent', '#38bdf8');
+            document.documentElement.style.setProperty('--goal-accent-light', '#7dd3fc');
+            document.documentElement.style.setProperty('--goal-accent-glow', 'rgba(56, 189, 248, 0.6)');
         }
 
-        // Apply label
+        // Apply goal icon
+        const iconWrap = document.getElementById('goalIconWrap');
+        if (iconWrap) {
+            if (goalType.includes('coin')) {
+                iconWrap.innerHTML = `<img src="images/gifts/tiktok-coin-3d.webp" onerror="this.src='images/gifts/tiktok-coin.svg'" alt="Coin" class="goal-coin-icon-anim" style="width: 24px; height: 24px; object-fit: contain;">`;
+            } else if (goalType.includes('follow')) {
+                iconWrap.innerHTML = `
+                <div class="goal-follow-icon-box" style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(56, 189, 248, 0.15) 100%); border: 1.5px solid #38bdf8; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9" cy="7" r="4" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(56, 189, 248, 0.3)"/>
+                        <path d="M19 8v6M16 11h6" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                </div>`;
+            } else if (goalType.includes('heart')) {
+                iconWrap.innerHTML = `
+                <div class="goal-heartme-wrapper" id="heartmeWrapper">
+                    <div class="goal-heartme-aura"></div>
+                    <span class="heartme-particle heartme-particle-1">💖</span>
+                    <span class="heartme-particle heartme-particle-2">✨</span>
+                    <span class="heartme-particle heartme-particle-3">❤️</span>
+                    <img src="images/tiktok-gifts/7934_heart_me.webp" 
+                         onerror="this.onerror=null; this.src='/images/tiktok-gifts/7934_heart_me.webp';" 
+                         alt="TikTok Heart Me" 
+                         class="goal-heartme-img" 
+                         id="heartmeImg" />
+                </div>`;
+            } else if (goalType.includes('share')) {
+                iconWrap.innerHTML = `<span style="font-size: 18px; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.7));">🚀</span>`;
+            } else {
+                iconWrap.innerHTML = `<span style="font-size: 18px; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.7));">👍</span>`;
+            }
+        }
+
+        // Apply label & celebration banner text
         let displayLabel = 'LIKES';
-        if (customTitle) displayLabel = customTitle;
-        else if (goalType.includes('heart')) displayLabel = 'HEART ME GOAL';
-        else if (goalType.includes('coin')) displayLabel = 'COINS GOAL';
-        else if (goalType.includes('follow')) displayLabel = 'FOLLOWERS GOAL';
-        else if (goalType.includes('share')) displayLabel = 'SHARES GOAL';
+        let celebrationText = 'GOAL COMPLETED!';
+        if (customTitle) {
+            displayLabel = customTitle;
+            celebrationText = customTitle.toUpperCase() + ' REACHED!';
+        } else if (goalType.includes('heart')) {
+            displayLabel = 'HEART ME GOAL';
+            celebrationText = 'HEART GOAL COMPLETED!';
+        } else if (goalType.includes('coin')) {
+            displayLabel = 'COIN GOAL';
+            celebrationText = 'COIN GOAL REACHED!';
+        } else if (goalType.includes('follow')) {
+            displayLabel = 'FOLLOWER GOAL';
+            celebrationText = 'FOLLOWER GOAL REACHED!';
+        } else if (goalType.includes('share')) {
+            displayLabel = 'SHARE GOAL';
+            celebrationText = 'SHARE GOAL REACHED!';
+        }
         document.getElementById('goalLabel').textContent = displayLabel.toUpperCase();
+        const bannerTextEl = document.getElementById('celebrationBannerText');
+        if (bannerTextEl) bannerTextEl.textContent = celebrationText;
+
+        // Web Audio Synthesizer Fanfare
+        function playVictoryChime() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    gain.gain.setValueAtTime(0, now + idx * 0.1);
+                    gain.gain.linearRampToValueAtTime(0.2, now + idx * 0.1 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.7);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.75);
+                });
+            } catch (e) {}
+        }
+
+        // Confetti Engine
+        let confettiRunning = false;
+        let confettiParticles = [];
+        function startCelebrationConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth || 440;
+            canvas.height = canvas.offsetHeight || 100;
+
+            const colors = ['#f59e0b', '#fbbf24', '#38bdf8', '#7dd3fc', '#ffffff', '#ec4899', '#10b981'];
+            confettiParticles = [];
+            for (let i = 0; i < 55; i++) {
+                confettiParticles.push({
+                    x: canvas.width / 2 + (Math.random() - 0.5) * 40,
+                    y: canvas.height * 0.6,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: -(Math.random() * 5 + 3),
+                    size: Math.random() * 5 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rot: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.2,
+                    alpha: 1,
+                    decay: Math.random() * 0.012 + 0.008
+                });
+            }
+
+            if (confettiRunning) return;
+            confettiRunning = true;
+
+            function renderConfetti() {
+                if (!confettiRunning) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = 0;
+                confettiParticles.forEach(p => {
+                    if (p.alpha <= 0) return;
+                    alive++;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.18; // gravity
+                    p.rot += p.rotSpeed;
+                    p.alpha -= p.decay;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.globalAlpha = Math.max(0, p.alpha);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+                    ctx.restore();
+                });
+
+                if (alive > 0) {
+                    requestAnimationFrame(renderConfetti);
+                } else {
+                    confettiRunning = false;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            requestAnimationFrame(renderConfetti);
+        }
+
+        let isCompletedCelebrated = false;
+        let lastRenderedPoints = currentVal;
 
         function renderGoal() {
+            const hasIncremented = currentVal > lastRenderedPoints;
+            lastRenderedPoints = currentVal;
+
             const numEl = document.getElementById('currentPoints');
             numEl.textContent = currentVal.toLocaleString();
             numEl.classList.remove('anim-pts-punch');
             void numEl.offsetWidth;
             numEl.classList.add('anim-pts-punch');
 
+            // Heart Me surge pop animation on point increment
+            if (hasIncremented && goalType.includes('heart')) {
+                const heartImg = document.getElementById('heartmeImg');
+                if (heartImg) {
+                    heartImg.classList.remove('anim-surge');
+                    void heartImg.offsetWidth;
+                    heartImg.classList.add('anim-surge');
+                    setTimeout(() => {
+                        if (heartImg) heartImg.classList.remove('anim-surge');
+                    }, 800);
+                }
+            }
+
             document.getElementById('targetPoints').textContent = targetVal.toLocaleString();
             const pct = Math.min(100, Math.max(1, (currentVal / targetVal) * 100));
             document.getElementById('progressFill').style.width = pct + '%';
+
+            // Percentage badge
+            const pctBadge = document.getElementById('pctBadge');
+            if (pctBadge) {
+                const formattedPct = pct >= 100 ? '100%' : (pct.toFixed(pct < 10 ? 1 : 0) + '%');
+                pctBadge.textContent = formattedPct;
+            }
 
             // Update dot segments
             const dots = document.querySelectorAll('.hud-dot-segment');
@@ -283,6 +719,24 @@
                     dot.classList.remove('active');
                 }
             });
+
+            // Fill Celebration
+            const goalView = document.getElementById('goalView');
+            const celebrationBanner = document.getElementById('goalCelebrationBanner');
+
+            if (currentVal >= targetVal || pct >= 100) {
+                if (goalView) goalView.classList.add('goal-completed');
+                if (celebrationBanner) celebrationBanner.classList.add('show');
+                if (!isCompletedCelebrated) {
+                    isCompletedCelebrated = true;
+                    playVictoryChime();
+                    startCelebrationConfetti();
+                }
+            } else {
+                if (goalView) goalView.classList.remove('goal-completed');
+                if (celebrationBanner) celebrationBanner.classList.remove('show');
+                isCompletedCelebrated = false;
+            }
         }
         renderGoal();
 
@@ -296,11 +750,12 @@
                     if (data.serverTime) lastEventTimestamp = data.serverTime;
                     if (data.events && Array.isArray(data.events)) {
                         for (const ev of data.events) {
+                            if (ev.isTest || ev.noOverlayCount || ev.username === 'RENEarn' || ev.username === 'Tester') continue;
                             if (goalType.includes('like') && (ev.type === 'like' || ev.event === 'like')) {
                                 currentVal += (ev.likes || ev.count || 1);
                                 renderGoal();
                             } else if (goalType.includes('heart') && (ev.type === 'gift' || ev.type === 'jar_drop')) {
-                                if ((ev.giftName || '').toLowerCase().includes('heart')) {
+                                if ((ev.giftName || '').toLowerCase().includes('heart') || ev.giftId == 7934) {
                                     currentVal += (ev.count || 1);
                                     renderGoal();
                                 }
@@ -317,16 +772,45 @@
             } catch (e) {}
         }, 350);
 
+        function handleGoalResetEvent() {
+            currentVal = 0;
+            sessionStorage.setItem('goal_current_' + goalType, '0');
+            renderGoal();
+        }
+
+        window.addEventListener('message', (e) => {
+            if (e.data && (e.data.type === 'reset' || e.data.type === 'goal_reset' || e.data.action === 'reset')) {
+                handleGoalResetEvent();
+            }
+        });
+
         // BroadcastChannel
         try {
             const bc = new BroadcastChannel('renearn_overlay_events');
             bc.onmessage = (e) => {
                 if (e.data) {
+                    if (e.data.type === 'reset' || e.data.type === 'goal_reset' || e.data.action === 'reset') {
+                        handleGoalResetEvent();
+                        return;
+                    }
+                    if (e.data.isTest || e.data.noOverlayCount || e.data.username === 'RENEarn' || e.data.username === 'Tester') return;
                     if (goalType.includes('like') && e.data.type === 'like') {
                         currentVal += (e.data.count || 1);
+                        sessionStorage.setItem('goal_current_' + goalType, currentVal);
                         renderGoal();
+                    } else if (goalType.includes('heart') && (e.data.type === 'gift' || e.data.type === 'jar_drop')) {
+                        if ((e.data.giftName || '').toLowerCase().includes('heart') || e.data.giftId == 7934) {
+                            currentVal += (e.data.count || 1);
+                            sessionStorage.setItem('goal_current_' + goalType, currentVal);
+                            renderGoal();
+                        }
                     } else if (goalType.includes('coin') && (e.data.type === 'gift' || e.data.type === 'jar_drop')) {
                         currentVal += (e.data.coins || 1);
+                        sessionStorage.setItem('goal_current_' + goalType, currentVal);
+                        renderGoal();
+                    } else if (goalType.includes('follow') && (e.data.type === 'follow')) {
+                        currentVal += 1;
+                        sessionStorage.setItem('goal_current_' + goalType, currentVal);
                         renderGoal();
                     }
                 }

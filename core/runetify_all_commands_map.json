@@ -1,4 +1,8 @@
 {
+  "spawn_boat_imp": {
+    "effect": "71",
+    "endpoint": "/spawnzombie"
+  },
   "spawn_black_horse": {
     "effect": "251",
     "endpoint": "/spawnzombie"

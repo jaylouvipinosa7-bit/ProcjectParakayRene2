@@ -704,17 +704,26 @@
         function renderCards() {
             const dock = document.getElementById('cardsDock');
             dock.innerHTML = '';
-            if (!config || !config.gifts) return;
 
             // Render active gifts
             const urlParams = new URLSearchParams(window.location.search);
             const overlayLimit = parseInt(urlParams.get('limit')) || 12;
-            const activeGifts = config.gifts.filter(g => {
+            let activeGifts = (config && config.gifts && Array.isArray(config.gifts)) ? config.gifts.filter(g => {
                 if (!g || g.enabled === false) return false;
                 if (g.hideInOverlay === true || g.hideInOverlay === 'true') return false;
                 if (g.triggerType === 'custom' || g.actionType === 'custom' || g.action === 'custom' || g.action === 'Custom' || String(g.id) === '59') return false;
                 return true;
-            });
+            }) : [];
+
+            if (activeGifts.length === 0) {
+                activeGifts = [
+                    { id: 'demo_1', giftName: 'Rose (1 Coin)', coins: 1, actionType: 'plant', label: 'Twin Sunflower', icon: 'images/tiktok-gifts/5655_rose.webp', unitIcon: 'images/game-icons/pvz/spawn_twin_sunflower.webp' },
+                    { id: 'demo_2', giftName: 'Ice Cream (20 Coins)', coins: 20, actionType: 'plant', label: 'Gatling Pea', icon: 'images/tiktok-gifts/ice_cream.webp', unitIcon: 'images/game-icons/pvz/spawn_gatling_pea.webp' },
+                    { id: 'demo_3', giftName: 'Gaming Chair (99 Coins)', coins: 99, actionType: 'zombie', label: 'Football Zombie', icon: 'images/tiktok-gifts/gaming_chair.webp', unitIcon: 'images/game-icons/pvz/spawn_football_zombie.webp' },
+                    { id: 'demo_4', giftName: 'Lion (488 Coins)', coins: 488, actionType: 'zombie', label: 'Gargantuar Smash Boss', icon: 'images/tiktok-gifts/lion.webp', unitIcon: 'images/game-icons/pvz/spawn_gargantuar.webp' }
+                ];
+            }
+
             activeGifts.slice(0, overlayLimit).forEach(gift => {
                 const card = document.createElement('div');
                 card.id = `overlayCard_${gift.id}`;

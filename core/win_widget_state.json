@@ -1,9 +1,9 @@
 ﻿{
     "enabled":  true,
-    "score":  -5491,
+    "score":  -5820,
     "target":  5,
-    "wins":  504,
-    "losses":  5995,
+    "wins":  0,
+    "losses":  5820,
     "autoWin":  true,
     "hotkeysEnabled":  true,
     "label":  "Win",

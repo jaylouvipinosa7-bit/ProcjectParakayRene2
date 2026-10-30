@@ -1,0 +1,111 @@
+{
+    "enabled":  true,
+    "spotifyConnected":  false,
+    "spotifyUser":  null,
+    "spotifyAccessToken":  "",
+    "spotifyRefreshToken":  "",
+    "spotifyClientId":  "",
+    "nowPlaying": {
+        "id": "demo_natalie",
+        "title": "Starting Over Again",
+        "artist": "Natalie Cole",
+        "singer": "Natalie Cole",
+        "album": "Unforgettable... with Love",
+        "coverUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop",
+        "durationMs": 254000,
+        "progressMs": 42000,
+        "requestedBy": "StreamHost",
+        "isPlaying": false,
+        "youtubeId": "b1G8R5J4tD4"
+    },
+    "queue": [
+        {
+            "id": "req_1",
+            "title": "Bomba",
+            "artist": "Jessy",
+            "singer": "Jessy",
+            "album": "Bomba Hits",
+            "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
+            "requestedBy": "@LiveChatFan",
+            "timestamp": "Just now",
+            "status": "queued"
+        },
+        {
+            "id": "req_2",
+            "title": "That's What I Like",
+            "artist": "Bruno Mars",
+            "singer": "Bruno Mars",
+            "album": "24K Magic",
+            "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+            "requestedBy": "@TopGifter",
+            "timestamp": "2m ago",
+            "status": "queued"
+        }
+    ],
+    "history":  [
+                    {
+                        "id":  "hist_1793320588142",
+                        "title":  "That\u0027s What I Like",
+                        "artist":  "Bruno Mars",
+                        "requestedBy":  "@LiveChatFan",
+                        "timestamp":  "08:36 AM",
+                        "status":  "skipped"
+                    },
+                    {
+                        "id":  "hist_1793319479172",
+                        "title":  "Starting Over Again",
+                        "artist":  "Natalie Cole",
+                        "requestedBy":  "@TestViewer",
+                        "timestamp":  "08:17 AM",
+                        "status":  "skipped"
+                    },
+                    {
+                        "id":  "hist_1793272956482",
+                        "title":  "Starting Over Again",
+                        "artist":  "Natalie Cole",
+                        "requestedBy":  "TestViewer",
+                        "timestamp":  "07:22 PM",
+                        "status":  "skipped"
+                    },
+                    {
+                        "id":  "hist_1793272926235",
+                        "title":  "Starting Over Again",
+                        "artist":  "Natalie Cole",
+                        "requestedBy":  "TestViewer",
+                        "timestamp":  "07:22 PM",
+                        "status":  "skipped"
+                    },
+                    {
+                        "id":  "hist_1793272895611",
+                        "title":  "Starting Over Again",
+                        "artist":  "Natalie Cole",
+                        "requestedBy":  "TestViewer",
+                        "timestamp":  "07:21 PM",
+                        "status":  "skipped"
+                    },
+                    {
+                        "id":  "demo_1",
+                        "title":  "Starboy",
+                        "artist":  "The Weeknd",
+                        "singer":  "The Weeknd",
+                        "requestedBy":  "CoolGamer",
+                        "timestamp":  "7:20 PM",
+                        "status":  "played"
+                    }
+                ],
+    "settings":  {
+                     "commandPrefix":  "!play",
+                     "aliases":  [
+                                     "!sr",
+                                     "!song",
+                                     "!request"
+                                 ],
+                     "allowEveryone":  true,
+                     "maxQueuePerUser":  3,
+                     "maxSongDurationMinutes":  7,
+                     "ttsAnnouncement":  true,
+                     "overlayTheme":  "modern_glass",
+                     "volume":  30
+                 },
+    "spotifyExpiresAt":  0
+}

@@ -1,7 +1,7 @@
 ﻿{
-    "totalTriggers":  494,
+    "totalTriggers":  495,
     "streak":  1,
-    "lastTriggerTime":  1792819628308,
+    "lastTriggerTime":  1793330567934,
     "goal":  100,
     "goalTitle":  "Mega Wave Boss",
     "gifts":  {
@@ -166,13 +166,6 @@
                                  "icon":  "images/game-icons/pvz/charm_all_zombies.webp",
                                  "lastGifter":  "This_is_Ejay :)"
                              },
-                  "rose":  {
-                               "name":  "Rose",
-                               "giftId":  "5655",
-                               "count":  53,
-                               "icon":  "images/game-icons/pvz/spawn_ultimate_football_zombie.webp",
-                               "lastGifter":  "aninggggggg"
-                           },
                   "hamsa_protect":  {
                                         "name":  "Hamsa Protect",
                                         "giftId":  "1429010",
@@ -214,19 +207,16 @@
                                             "count":  4,
                                             "icon":  "images/game-icons/pvz/spawn_horseboss.webp",
                                             "lastGifter":  "ScreenGazer_G"
-                                        }
+                                        },
+                  "rose":  {
+                               "name":  "Rose",
+                               "giftId":  "5655",
+                               "count":  54,
+                               "icon":  "images/game-icons/pvz/spawn_burglar_bungee.webp",
+                               "lastGifter":  "RENEarn"
+                           }
               },
     "recentTriggers":  [
-                           {
-                               "id":  "1792819180067_7481",
-                               "username":  "ScreenGazer_G",
-                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/6fa0ee080c042045240a9d270bd147be~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=f1d377c1\u0026x-expires=1792990800\u0026x-signature=yoMQZdBkEnokWCo6oN99XXa5iHo%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
-                               "giftName":  "Sunglasses",
-                               "giftIcon":  "images/game-icons/pvz/spawn_zombie_boss2.webp",
-                               "commandLabel":  "Spawn Golden Zomboss",
-                               "count":  1,
-                               "timestamp":  1792819180067
-                           },
                            {
                                "id":  "1792819430823_6570",
                                "username":  "ScreenGazer_G",
@@ -336,6 +326,16 @@
                                "commandLabel":  "Spawn HorseBoss",
                                "count":  1,
                                "timestamp":  1792819628308
+                           },
+                           {
+                               "id":  "1793330567934_9890",
+                               "username":  "RENEarn",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Rose",
+                               "giftIcon":  "images/game-icons/pvz/spawn_burglar_bungee.webp",
+                               "commandLabel":  "Spawn Ultimate Football Zombie",
+                               "count":  1,
+                               "timestamp":  1793330567934
                            }
                        ]
 }

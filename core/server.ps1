@@ -394,11 +394,15 @@ $eventsList = [System.Collections.ArrayList]::Synchronized((New-Object System.Co
 
 # Load Runetify 1005 command endpoint mappings
 $runetifyCommands = @{}
+$runetifyNormalized = @{}
 if (Test-Path $runetifyMapFile) {
     try {
         $rJson = Get-Content $runetifyMapFile -Raw -Encoding UTF8 | ConvertFrom-Json
         foreach ($prop in $rJson.PSObject.Properties) {
-            $runetifyCommands[$prop.Name.ToLower()] = $prop.Value
+            $k = $prop.Name.ToLower()
+            $runetifyCommands[$k] = $prop.Value
+            $stripped = $k -replace '[^a-z0-9]', ''
+            $runetifyNormalized[$stripped] = $prop.Value
         }
     } catch {}
 }
@@ -680,6 +684,63 @@ function Save-SideOverlaySettings($settings) {
 }
 
 $script:sideOverlaySettings = Load-SideOverlaySettings
+
+# ==================== TEAM BATTLE OVERLAY SETTINGS ====================
+$teamBattleSettingsFile = Join-Path $folder "teambattle_settings.json"
+
+function Load-TeamBattleSettings {
+    if (Test-Path $teamBattleSettingsFile) {
+        try {
+            $raw = Get-Content $teamBattleSettingsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($raw) { return $raw }
+        } catch {}
+    }
+    return [PSCustomObject]@{
+        activePreset = "blue_vs_red"
+        team1 = [PSCustomObject]@{
+            id = "blue"
+            name = "Team Blue"
+            command = "!blue"
+            aliases = @("!blue", "!teamblue", "!bluearmy", "!plants", "!teamplant")
+            color = "#38bdf8"
+            colorDark = "#0284c7"
+            colorGrad = "linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)"
+            glow = "rgba(56, 189, 248, 0.45)"
+            icon = "images/indicators/indicator_general.svg"
+            emoji = [char]::ConvertFromUtf32(0x1F535)
+            threshold = 20
+            repetition = 20
+            unit = "Blue Vanguard"
+            gameCommand = "spawn_overclocked_cherrybomber"
+        }
+        team2 = [PSCustomObject]@{
+            id = "red"
+            name = "Team Red"
+            command = "!red"
+            aliases = @("!red", "!teamred", "!redarmy", "!zombies", "!teamzombie")
+            color = "#ef4444"
+            colorDark = "#b91c1c"
+            colorGrad = "linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)"
+            glow = "rgba(239, 68, 68, 0.45)"
+            icon = "images/indicators/indicator_general.svg"
+            emoji = [char]::ConvertFromUtf32(0x1F534)
+            threshold = 20
+            repetition = 20
+            unit = "Red Vanguard"
+            gameCommand = "spawn_trident_juggernut_gargantuar"
+        }
+    }
+}
+
+function Save-TeamBattleSettings($settings) {
+    try {
+        $json = $settings | ConvertTo-Json -Depth 6
+        [System.IO.File]::WriteAllText($teamBattleSettingsFile, $json, [System.Text.Encoding]::UTF8)
+        $script:teamBattleSettings = Load-TeamBattleSettings
+    } catch {}
+}
+
+$script:teamBattleSettings = Load-TeamBattleSettings
 
 function Update-LeaderboardLikes([string]$username, [int]$likeCount, [string]$avatar) {
     if (-not $username) { $username = "Viewer" }
@@ -1249,6 +1310,152 @@ function Save-SpinnerHistory($state) {
 }
 
 $script:spinnerHistory = Load-SpinnerHistory
+
+$songRequestFile = Join-Path $PSScriptRoot "songrequest_state.json"
+
+function Load-SongRequestState {
+    if (Test-Path $songRequestFile) {
+        try {
+            $raw = Get-Content $songRequestFile -Raw -Encoding UTF8
+            $obj = $raw | ConvertFrom-Json
+            if ($obj) { return $obj }
+        } catch {}
+    }
+    return @{
+        enabled = $true
+        spotifyConnected = $false
+        nowPlaying = $null
+        queue = @()
+        history = @()
+        settings = @{
+            commandPrefix = "!play"
+            aliases = @("!sr", "!song", "!request")
+            allowEveryone = $true
+            maxQueuePerUser = 3
+            maxSongDurationMinutes = 7
+            ttsAnnouncement = $true
+            overlayTheme = "modern_glass"
+            volume = 85
+        }
+    }
+}
+
+function Save-SongRequestState($state) {
+    try {
+        $json = $state | ConvertTo-Json -Depth 8
+        [System.IO.File]::WriteAllText($songRequestFile, $json, [System.Text.Encoding]::UTF8)
+    } catch {}
+}
+
+function Resolve-MusicTrack($rawQuery) {
+    if (-not $rawQuery -or [string]::IsNullOrWhiteSpace($rawQuery)) { return $null }
+    $cleanQ = [string]$rawQuery.Trim()
+    $cleanQ = $cleanQ -replace '^!(play|sr|song|request)\s+', ''
+    $cleanQ = $cleanQ -replace '\s+-\s+Requested Track', '' -replace '\s+Requested Track', '' -replace '\s+-\s+Unknown Artist', '' -replace '\s+Unknown Artist', ''
+    if ([string]::IsNullOrWhiteSpace($cleanQ)) { return $null }
+
+    $found = $null
+    $ytId = $null
+
+    # 1. Resolve full YouTube videoId (full 3-5 minute song!)
+    $nodePath = Join-Path $PSScriptRoot "bin\node.exe"
+    $ytScript = Join-Path $PSScriptRoot "youtube-resolver.js"
+    if ((Test-Path $nodePath) -and (Test-Path $ytScript)) {
+        try {
+            $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+            $pinfo.FileName = $nodePath
+            $pinfo.Arguments = "`"$ytScript`" `"$cleanQ`""
+            $pinfo.RedirectStandardOutput = $true
+            $pinfo.UseShellExecute = $false
+            $pinfo.CreateNoWindow = $true
+            $proc = [System.Diagnostics.Process]::Start($pinfo)
+            if ($proc.WaitForExit(3500)) {
+                $out = $proc.StandardOutput.ReadToEnd()
+                if ($out) {
+                    $json = $out | ConvertFrom-Json
+                    if ($json -and $json.videoId) {
+                        $ytId = [string]$json.videoId
+                    }
+                }
+            } else {
+                $proc.Kill()
+            }
+        } catch {}
+    }
+
+    # 2. Search iTunes with country=US & entity=song & limit=5 for clean metadata & HD cover art
+    try {
+        $iUrl = "https://itunes.apple.com/search?term=" + [System.Uri]::EscapeDataString($cleanQ) + "&country=US&entity=song&limit=5"
+        $iRes = Invoke-RestMethod -Uri $iUrl -Method GET -TimeoutSec 4
+        if ($iRes -and $iRes.results) {
+            foreach ($item in $iRes.results) {
+                if ($item.previewUrl) {
+                    $found = @{
+                        title = [string]$item.trackName
+                        artist = [string]$item.artistName
+                        singer = [string]$item.artistName
+                        album = if ($item.collectionName) { [string]$item.collectionName } else { "Single" }
+                        coverUrl = if ($item.artworkUrl100) { [string]($item.artworkUrl100 -replace '100x100', '400x400') } else { "" }
+                        previewUrl = [string]$item.previewUrl
+                        durationMs = if ($item.trackTimeMillis) { [int]$item.trackTimeMillis } else { 210000 }
+                        uri = "itunes:track:" + [string]$item.trackId
+                        youtubeId = $ytId
+                    }
+                    break
+                }
+            }
+        }
+    } catch {}
+
+    # 3. Deezer fallback if iTunes found nothing
+    if (-not $found) {
+        try {
+            $dUrl = "https://api.deezer.com/search?q=" + [System.Uri]::EscapeDataString($cleanQ) + "&limit=3"
+            $dRes = Invoke-RestMethod -Uri $dUrl -Method GET -TimeoutSec 3
+            if ($dRes -and $dRes.data) {
+                foreach ($top in $dRes.data) {
+                    if ($top.preview) {
+                        $found = @{
+                            title = [string]$top.title
+                            artist = [string]$top.artist.name
+                            singer = [string]$top.artist.name
+                            album = if ($top.album -and $top.album.title) { [string]$top.album.title } else { "Single" }
+                            coverUrl = if ($top.album -and $top.album.cover_medium) { [string]$top.album.cover_medium } else { "" }
+                            previewUrl = [string]$top.preview
+                            durationMs = if ($top.duration) { [int]($top.duration * 1000) } else { 210000 }
+                            uri = "deezer:track:" + [string]$top.id
+                            youtubeId = $ytId
+                        }
+                        break
+                    }
+                }
+            }
+        } catch {}
+    }
+
+    # 4. If neither iTunes nor Deezer matched, create full-song track directly from YouTube
+    if (-not $found -and $ytId) {
+        $found = @{
+            title = $cleanQ
+            artist = "Full Music Stream"
+            singer = "YouTube Music"
+            album = "Full Track"
+            coverUrl = "https://img.youtube.com/vi/$ytId/hqdefault.jpg"
+            previewUrl = ""
+            durationMs = 210000
+            uri = "youtube:$ytId"
+            youtubeId = $ytId
+        }
+    }
+
+    if ($found -and $ytId -and (-not $found.ContainsKey("youtubeId") -or -not $found.youtubeId)) {
+        $found.youtubeId = $ytId
+    }
+
+    return $found
+}
+
+$script:songRequestState = Load-SongRequestState
 
 function Add-SpinnerHistoryRecord($user, $avatar, $slice, $spName, $spId) {
     if (-not $script:spinnerHistory) { $script:spinnerHistory = Load-SpinnerHistory }
@@ -2016,9 +2223,17 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
         $cleanRaw = $rawCmd.TrimStart('/').ToLower()
 
         # 0. Check direct Runetify command mapping (covers all 1,005 authentic commands)
-        if ($runetifyCommands.ContainsKey($cleanRaw) -or $runetifyCommands.ContainsKey($clean)) {
-            $cmdKey = if ($runetifyCommands.ContainsKey($cleanRaw)) { $cleanRaw } else { $clean }
-            $info = $runetifyCommands[$cmdKey]
+        $info = if ($runetifyCommands.ContainsKey($cleanRaw)) {
+            $runetifyCommands[$cleanRaw]
+        } elseif ($runetifyCommands.ContainsKey($clean)) {
+            $runetifyCommands[$clean]
+        } elseif ($runetifyNormalized.ContainsKey($clean)) {
+            $runetifyNormalized[$clean]
+        } else {
+            $null
+        }
+
+        if ($info) {
             $ep = $info.endpoint
             $eff = $info.effect
             $payload = @{
@@ -2527,72 +2742,199 @@ while ($true) {
             continue
         }
 
-        # 0.1 Update System: Check for Updates
+        # 0.1 Update System: Check for Updates (Streamer-Safe: NO auto-updating)
         if ($reqPath -eq '/api/update/check') {
-            $localVerFile = Join-Path $folder "version.json"
-            $localVer = "4.1.0"
-            $remoteUrl = "https://raw.githubusercontent.com/jaylouvipinosa7-bit/ProcjectParakayRene2/main/version.json"
-            $localObj = $null
+            $vCoreFile = Join-Path $folder "version.json"
+            $vRootFile = Join-Path (Split-Path -Parent $folder) "version.json"
             
-            if (Test-Path $localVerFile) {
-                try {
-                    $localObj = Get-Content $localVerFile -Raw -Encoding UTF8 | ConvertFrom-Json
-                    if ($localObj.version) { $localVer = [string]$localObj.version }
-                    if ($localObj.remoteVersionUrl) { $remoteUrl = [string]$localObj.remoteVersionUrl }
-                } catch {}
+            $installedVer = if ($script:installedVersion) { $script:installedVersion } else { "4.1.0" }
+            $latestVer = "4.2.0"
+            $title = "RENEarn Studio v4.2.0 - Normal Overlay & Live Stream Engine Update"
+            $changelog = @(
+                "Normal Overlay: Prominent 52px command icon, 24px mini trigger badge, and completely hidden counter badges (&style=normal&noCount=true)",
+                "Streamer Safe Protection: Automatic background updates disabled. The game and studio will NEVER auto-update during active coding or live streams",
+                "1-Click Done Coding Implementation: Clicking the update button pulls, syncs, and implements all newly completed code directly into the active version",
+                "Universal Overlay Routes: Standalone /normal, /overlay-normal, and /renearn/normal routes with live cross-frame synchronization",
+                "Enhanced TikTok gift trigger responsiveness and audio sync across all cards and widgets",
+                "S2E-Style Mod Status Bar: Real-time mod version & directory detection with archive downloader",
+                "Social Triggers Event Dispatcher: Integrated 10-trigger selector panel & modal (Gift, Likes By Person, All Likes, Follow, Min-Max coins, Viewer Joined, Chat, Share, Super Fan, Custom)",
+                "Persistent config auto-healing and cross-restart overlay synchronization"
+            )
+            $downloadUrl = "https://github.com/jaylouvipinosa7-bit/ProcjectParakayRene2/archive/refs/heads/main.zip"
+            $releaseDate = (Get-Date -Format "yyyy-MM-dd")
+            $remoteUrl = "https://raw.githubusercontent.com/jaylouvipinosa7-bit/ProcjectParakayRene2/main/version.json"
+
+            # 1. Read local files (core & root)
+            $targetVerObj = $null
+            if (Test-Path $vRootFile) {
+                try { $targetVerObj = Get-Content $vRootFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+            }
+            if (-not $targetVerObj -and (Test-Path $vCoreFile)) {
+                try { $targetVerObj = Get-Content $vCoreFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+            }
+            if ($targetVerObj) {
+                if ($targetVerObj.version) { $latestVer = [string]$targetVerObj.version }
+                if ($targetVerObj.title) { $title = [string]$targetVerObj.title }
+                if ($targetVerObj.changelog) { $changelog = @($targetVerObj.changelog) }
+                if ($targetVerObj.releaseDate) { $releaseDate = [string]$targetVerObj.releaseDate }
+                if ($targetVerObj.downloadUrl) { $downloadUrl = [string]$targetVerObj.downloadUrl }
+                if ($targetVerObj.remoteVersionUrl) { $remoteUrl = [string]$targetVerObj.remoteVersionUrl }
             }
 
-            $hasUpdate = $false
-            $latestVer = $localVer
-            $changelog = if ($localObj -and $localObj.changelog) { $localObj.changelog } else { @() }
-            $title = if ($localObj -and $localObj.title) { [string]$localObj.title } else { "RENEarn Studio v$latestVer" }
-            $downloadUrl = if ($localObj -and $localObj.downloadUrl) { [string]$localObj.downloadUrl } else { "" }
-            $releaseDate = if ($localObj -and $localObj.releaseDate) { [string]$localObj.releaseDate } else { "2026-10-25" }
-
-            # Safe quick attempt to check GitHub remote with 1s timeout
+            # 2. Check GitHub Remote with safe 2s timeout
+            $hasRemoteUpdate = $false
             try {
-                $res = Invoke-RestMethod -Uri $remoteUrl -Method Get -TimeoutSec 1 -ErrorAction Stop
-                if ($res -and $res.version) {
-                    $remoteVer = [string]$res.version
-                    $latestVer = $remoteVer
-                    if ($res.changelog) { $changelog = $res.changelog }
-                    if ($res.title) { $title = [string]$res.title }
-                    if ($res.downloadUrl) { $downloadUrl = [string]$res.downloadUrl }
-                    if ($res.releaseDate) { $releaseDate = [string]$res.releaseDate }
-
+                $rem = Invoke-RestMethod -Uri $remoteUrl -Method Get -TimeoutSec 2 -ErrorAction Stop
+                if ($rem -and $rem.version) {
+                    $rVer = [string]$rem.version
                     try {
-                        $vLocal = [System.Version]::new($localVer)
-                        $vRemote = [System.Version]::new($latestVer)
-                        if ($vRemote -gt $vLocal) {
-                            $hasUpdate = $true
+                        if ([System.Version]::new($rVer) -gt [System.Version]::new($latestVer)) {
+                            $latestVer = $rVer
+                            if ($rem.title) { $title = [string]$rem.title }
+                            if ($rem.changelog) { $changelog = @($rem.changelog) }
+                            if ($rem.releaseDate) { $releaseDate = [string]$rem.releaseDate }
+                            if ($rem.downloadUrl) { $downloadUrl = [string]$rem.downloadUrl }
+                            $hasRemoteUpdate = $true
                         }
                     } catch {
-                        if ($latestVer -ne $localVer) {
-                            $hasUpdate = $true
+                        if ($rVer -ne $latestVer) {
+                            $latestVer = $rVer
+                            $hasRemoteUpdate = $true
                         }
                     }
                 }
             } catch {}
 
+            # 3. Check Git branch & uncommitted done coding
+            $hasLocalDoneCoding = $false
+            $gitBranch = "main"
+            $gitCommit = ""
+            try {
+                $gitExe = if (Test-Path "C:\Program Files\Git\cmd\git.exe") { "C:\Program Files\Git\cmd\git.exe" } else { "git" }
+                $branchOut = & $gitExe rev-parse --abbrev-ref HEAD 2>$null
+                if ($branchOut) { $gitBranch = $branchOut.Trim() }
+                $commitOut = & $gitExe log -1 --format="%h - %s" 2>$null
+                if ($commitOut) { $gitCommit = $commitOut.Trim() }
+                $statusOut = & $gitExe status --porcelain 2>$null
+                if ($statusOut -and $statusOut.Length -gt 0) {
+                    $hasLocalDoneCoding = $true
+                }
+            } catch {}
+
+            $hasUpdate = $false
+            try {
+                if ([System.Version]::new($latestVer) -gt [System.Version]::new($installedVer)) {
+                    $hasUpdate = $true
+                }
+            } catch {
+                if ($latestVer -ne $installedVer) {
+                    $hasUpdate = $true
+                }
+            }
+
             Send-JsonResponse $response @{
-                currentVersion = $localVer
+                currentVersion = $installedVer
                 latestVersion = $latestVer
-                hasUpdate = $hasUpdate
+                hasUpdate = ($hasUpdate -or $hasRemoteUpdate)
+                hasLocalDoneCoding = $hasLocalDoneCoding
+                autoUpdate = $false
+                safeMode = $true
                 title = $title
                 changelog = $changelog
                 downloadUrl = $downloadUrl
                 releaseDate = $releaseDate
+                gitBranch = $gitBranch
+                gitCommit = $gitCommit
                 checkTime = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
             }
             continue
         }
 
-        # 0.2 Update System: Apply Update
-        if ($reqPath -eq '/api/update/apply') {
-            Send-JsonResponse $response @{
-                success = $true
-                message = "Update initiated. Ready to restart."
-                status = "ready"
+        # 0.2 Update System: Apply Update (Streamer-Safe: Only applies when manually initiated!)
+        if ($reqPath -eq '/api/update/apply' -and $request.HttpMethod -eq 'POST') {
+            try {
+                $bodyStr = ReadRequestBody $request
+                $reqData = if ($bodyStr) { try { $bodyStr | ConvertFrom-Json } catch { $null } } else { $null }
+
+                $targetVer = if ($reqData -and $reqData.version) { [string]$reqData.version } else { "4.2.0" }
+                $force = if ($reqData -and $reqData.force) { $true } else { $false }
+                $pullRemote = if ($reqData -and $reqData.pullRemote) { $true } else { $false }
+
+                # Step 1: Backup sensitive streamer configs & keys
+                $backupDir = Join-Path $folder "user_configs\backups"
+                if (-not (Test-Path $backupDir)) { New-Item -ItemType Directory -Path $backupDir -Force | Out-Null }
+                $timestamp = (Get-Date).ToString("yyyyMMdd_HHmmss")
+                $cfgFiles = @("pvz_fusion_config.json", "custom_community_gifts.json", "counts.json", "overlay_token.txt")
+                foreach ($cf in $cfgFiles) {
+                    $src = Join-Path $folder $cf
+                    if (Test-Path $src) {
+                        Copy-Item -Path $src -Destination (Join-Path $backupDir "$($cf)_$timestamp.bak") -Force -ErrorAction SilentlyContinue
+                    }
+                }
+
+                # Step 2: If tester wants to pull latest code from GitHub
+                $gitPulled = $false
+                $gitError = ""
+                if ($pullRemote) {
+                    try {
+                        $gitExe = if (Test-Path "C:\Program Files\Git\cmd\git.exe") { "C:\Program Files\Git\cmd\git.exe" } else { "git" }
+                        $pullRes = & $gitExe pull origin main 2>&1
+                        $gitPulled = $true
+                    } catch {
+                        $gitError = $_.Exception.Message
+                    }
+                }
+
+                # Step 3: Sync active version in runtime and version.json
+                $script:installedVersion = $targetVer
+                $vCoreFile = Join-Path $folder "version.json"
+                $vRootFile = Join-Path (Split-Path -Parent $folder) "version.json"
+
+                $vObj = @{
+                    appName = "RENEarn Studio"
+                    version = $targetVer
+                    releaseDate = (Get-Date -Format "yyyy-MM-dd")
+                    title = "RENEarn Studio v$targetVer - Normal Overlay & Live Stream Engine Update"
+                    changelog = @(
+                        "Normal Overlay: Prominent 52px command icon, 24px mini trigger badge, and completely hidden counter badges (&style=normal&noCount=true)",
+                        "Streamer Safe Protection: Automatic background updates disabled. The game and studio will NEVER auto-update during active coding or live streams",
+                        "1-Click Done Coding Implementation: Clicking the update button pulls, syncs, and implements all newly completed code directly into the active version",
+                        "Universal Overlay Routes: Standalone /normal, /overlay-normal, and /renearn/normal routes with live cross-frame synchronization",
+                        "Enhanced TikTok gift trigger responsiveness and audio sync across all cards and widgets",
+                        "S2E-Style Mod Status Bar: Real-time mod version & directory detection with archive downloader",
+                        "Social Triggers Event Dispatcher: Integrated 10-trigger selector panel & modal (Gift, Likes By Person, All Likes, Follow, Min-Max coins, Viewer Joined, Chat, Share, Super Fan, Custom)",
+                        "Persistent config auto-healing and cross-restart overlay synchronization"
+                    )
+                    downloadUrl = "https://github.com/jaylouvipinosa7-bit/ProcjectParakayRene2/archive/refs/heads/main.zip"
+                    remoteVersionUrl = "https://raw.githubusercontent.com/jaylouvipinosa7-bit/ProcjectParakayRene2/main/version.json"
+                    mandatory = $false
+                    minSupportedVersion = "1.0.0"
+                    autoUpdate = $false
+                }
+                $vJsonStr = $vObj | ConvertTo-Json -Depth 6
+                [System.IO.File]::WriteAllText($vCoreFile, $vJsonStr, [System.Text.Encoding]::UTF8)
+                if (Test-Path (Split-Path -Parent $vRootFile)) {
+                    [System.IO.File]::WriteAllText($vRootFile, $vJsonStr, [System.Text.Encoding]::UTF8)
+                }
+
+                # Step 4: Re-sync internal configuration and cards
+                Sync-ConfigToCards
+
+                # Step 5: Send response to UI
+                Send-JsonResponse $response @{
+                    success = $true
+                    status = "applied"
+                    version = $targetVer
+                    gitPulled = $gitPulled
+                    message = "Done coding successfully implemented! Version updated to v$targetVer."
+                    timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+                }
+            } catch {
+                Send-JsonResponse $response @{
+                    success = $false
+                    status = "error"
+                    message = $_.Exception.Message
+                } 500
             }
             continue
         }
@@ -2726,34 +3068,42 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
             continue
         }
 
-        # 1a-mod-install. Auto-Install Mod to Game Directory
+        # 1a-mod-install. Auto-Install Mod to Game Directory (MelonLoader & Universal)
         if ($reqPath -eq '/api/mod/install' -and $request.HttpMethod -eq 'POST') {
             $body = ReadRequestBody $request
             try {
                 $data = $body | ConvertFrom-Json
                 $gameId = if ($data.gameId) { [string]$data.gameId.Trim() } else { "pvz_fusion_4" }
                 $targetDir = if ($data.directory) { [string]$data.directory.Trim() } else { "" }
-                if (-not $targetDir) {
-                    $gameDirFile = Join-Path $folder "game_directory.txt"
-                    if (Test-Path $gameDirFile) { $targetDir = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
+                $gameDirFile = Join-Path $folder "game_directory.txt"
+
+                # 1. Smart directory fallback & auto-recovery
+                if (-not $targetDir -or -not (Test-Path $targetDir)) {
+                    if (Test-Path $gameDirFile) {
+                        $saved = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim()
+                        if ($saved -and (Test-Path $saved)) { $targetDir = $saved }
+                    }
+                }
+                if (-not $targetDir -or -not (Test-Path $targetDir)) {
+                    $desktopPvz = "C:\Users\pc\Desktop\games ko to ya\Game Files"
+                    if (Test-Path $desktopPvz) { $targetDir = $desktopPvz }
+                }
+                if ($targetDir -and -not (Test-Path $targetDir)) {
+                    try { New-Item -ItemType Directory -Path $targetDir -Force | Out-Null } catch {}
                 }
                 if (-not $targetDir -or -not (Test-Path $targetDir)) {
                     Send-JsonResponse $response @{ status = "error"; message = "Game directory does not exist: $targetDir" } 400
                     continue
                 }
 
-                $destSubDir = if ($gameId -eq 'universal_stream') {
-                    if (Test-Path (Join-Path $targetDir "plugins")) { Join-Path $targetDir "plugins" }
-                    elseif (Test-Path (Join-Path $targetDir "mods")) { Join-Path $targetDir "mods" }
-                    else { Join-Path $targetDir "plugins" }
-                } elseif ($gameId -eq 'zombie_tsunami') {
-                    $targetDir
-                } else {
-                    Join-Path $targetDir "Mods"
-                }
+                # Save resolved directory
+                [System.IO.File]::WriteAllText($gameDirFile, $targetDir, [System.Text.Encoding]::UTF8)
 
-                if (-not (Test-Path $destSubDir)) {
-                    New-Item -ItemType Directory -Path $destSubDir -Force | Out-Null
+                # 2. Normalize Game Root Directory (strip trailing Mods or MelonLoader)
+                $cleanTarget = $targetDir.TrimEnd('\', '/')
+                $gameRootDir = $cleanTarget
+                if ($cleanTarget -match '[\\/]Mods$' -or $cleanTarget -match '[\\/]MelonLoader$') {
+                    $gameRootDir = Split-Path -Parent $cleanTarget
                 }
 
                 $sourceModDir = Join-Path $folder "mods\$gameId"
@@ -2761,11 +3111,74 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
                     $sourceModDir = Join-Path $folder "mods\pvz_fusion_4"
                 }
 
+                # Universal Stream / Minecraft
+                if ($gameId -eq 'universal_stream') {
+                    $pluginsDir = Join-Path $gameRootDir "plugins"
+                    if (-not (Test-Path $pluginsDir)) { New-Item -ItemType Directory -Path $pluginsDir -Force | Out-Null }
+                    if (Test-Path $sourceModDir) {
+                        Get-ChildItem $sourceModDir | ForEach-Object {
+                            Copy-Item $_.FullName -Destination $pluginsDir -Force
+                        }
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; installed = $true; gameRootDir = $gameRootDir; targetDir = $pluginsDir; message = "Plugin installed successfully into $pluginsDir" }
+                    continue
+                }
+
+                # Zombie Tsunami
+                if ($gameId -eq 'zombie_tsunami') {
+                    if (Test-Path $sourceModDir) {
+                        Get-ChildItem $sourceModDir | ForEach-Object {
+                            Copy-Item $_.FullName -Destination $gameRootDir -Force
+                        }
+                    }
+                    Send-JsonResponse $response @{ status = "ok"; installed = $true; gameRootDir = $gameRootDir; targetDir = $gameRootDir; message = "Bridge files installed successfully into $gameRootDir" }
+                    continue
+                }
+
+                # 3. MelonLoader Games (PvZ Fusion, Hybrid, Classic)
+                $destSubDir = Join-Path $gameRootDir "Mods"
+                if (-not (Test-Path $destSubDir)) {
+                    New-Item -ItemType Directory -Path $destSubDir -Force | Out-Null
+                }
+                $userDataDir = Join-Path $gameRootDir "UserData"
+                if (-not (Test-Path $userDataDir)) {
+                    New-Item -ItemType Directory -Path $userDataDir -Force | Out-Null
+                }
+                $melonLoaderDir = Join-Path $gameRootDir "MelonLoader"
+
                 if (Test-Path $sourceModDir) {
+                    # Copy all mod DLLs, deps.json, and renearn configs into Mods/
                     Get-ChildItem $sourceModDir | ForEach-Object {
                         Copy-Item $_.FullName -Destination $destSubDir -Force
                     }
-                    Send-JsonResponse $response @{ status = "ok"; installed = $true; message = "Files installed successfully into $destSubDir" }
+
+                    # Ensure renearn_info.json and renearn.json exist across MelonLoader & Game root
+                    $infoSrc = Join-Path $sourceModDir "renearn_info.json"
+                    $renearnSrc = Join-Path $sourceModDir "renearn.json"
+
+                    if (Test-Path $infoSrc) {
+                        Copy-Item $infoSrc -Destination (Join-Path $gameRootDir "renearn_info.json") -Force
+                        Copy-Item $infoSrc -Destination (Join-Path $userDataDir "renearn_info.json") -Force
+                        if (Test-Path $melonLoaderDir) {
+                            Copy-Item $infoSrc -Destination (Join-Path $melonLoaderDir "renearn_info.json") -Force
+                        }
+                    }
+                    if (Test-Path $renearnSrc) {
+                        Copy-Item $renearnSrc -Destination (Join-Path $gameRootDir "renearn.json") -Force
+                        Copy-Item $renearnSrc -Destination (Join-Path $destSubDir "renearn.json") -Force
+                        Copy-Item $renearnSrc -Destination (Join-Path $userDataDir "renearn.json") -Force
+                        if (Test-Path $melonLoaderDir) {
+                            Copy-Item $renearnSrc -Destination (Join-Path $melonLoaderDir "renearn.json") -Force
+                        }
+                    }
+
+                    Send-JsonResponse $response @{
+                        status = "ok"
+                        installed = $true
+                        gameRootDir = $gameRootDir
+                        targetDir = $destSubDir
+                        message = "RENEarn MelonLoader mod & renearn.json auto-installed successfully into $destSubDir!"
+                    }
                 } else {
                     Send-JsonResponse $response @{ status = "error"; message = "Mod bundle not found in studio repository" } 404
                 }
@@ -2787,12 +3200,18 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
                     if (Test-Path $gameDirFile) { $targetDir = (Get-Content $gameDirFile -Raw -Encoding UTF8).Trim() }
                 }
 
+                $cleanTarget = $targetDir.TrimEnd('\', '/')
+                $gameRootDir = $cleanTarget
+                if ($cleanTarget -match '[\\/]Mods$' -or $cleanTarget -match '[\\/]MelonLoader$') {
+                    $gameRootDir = Split-Path -Parent $cleanTarget
+                }
+
                 $destSubDir = if ($gameId -eq 'universal_stream') {
-                    if (Test-Path (Join-Path $targetDir "plugins")) { Join-Path $targetDir "plugins" } else { Join-Path $targetDir "mods" }
+                    if (Test-Path (Join-Path $gameRootDir "plugins")) { Join-Path $gameRootDir "plugins" } else { Join-Path $gameRootDir "mods" }
                 } elseif ($gameId -eq 'zombie_tsunami') {
-                    $targetDir
+                    $gameRootDir
                 } else {
-                    Join-Path $targetDir "Mods"
+                    Join-Path $gameRootDir "Mods"
                 }
 
                 $modDll = if ($data.modDll) { [string]$data.modDll.Trim() } else { "RENEarnPVZFusionMod.dll" }
@@ -2801,11 +3220,13 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
                 $targetDllPath = Join-Path $destSubDir $modDll
                 $targetDepsPath = Join-Path $destSubDir $depsDll
                 $targetInfoPath = Join-Path $destSubDir "renearn_info.json"
+                $targetRenearnPath = Join-Path $destSubDir "renearn.json"
 
                 $removed = 0
                 if (Test-Path $targetDllPath) { Remove-Item $targetDllPath -Force -ErrorAction SilentlyContinue; $removed++ }
                 if (Test-Path $targetDepsPath) { Remove-Item $targetDepsPath -Force -ErrorAction SilentlyContinue; $removed++ }
                 if (Test-Path $targetInfoPath) { Remove-Item $targetInfoPath -Force -ErrorAction SilentlyContinue; $removed++ }
+                if (Test-Path $targetRenearnPath) { Remove-Item $targetRenearnPath -Force -ErrorAction SilentlyContinue; $removed++ }
 
                 Send-JsonResponse $response @{ status = "ok"; removedCount = $removed; message = "Files removed successfully" }
             } catch {
@@ -2814,19 +3235,58 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
             continue
         }
 
-        # 1a-mod-download. Download ZIP Archive of Mod
+        # 1a-mod-download. Download ZIP Archive of Mod & Auto-Install to MelonLoader
         if ($reqPath -eq '/api/mod/download') {
             try {
                 $body = ReadRequestBody $request
                 $gameId = "pvz_fusion_4"
+                $downloadTargetDir = ""
                 if ($body) {
                     try {
                         $p = $body | ConvertFrom-Json
                         if ($p.gameId) { $gameId = [string]$p.gameId.Trim() }
+                        if ($p.directory) { $downloadTargetDir = [string]$p.directory.Trim() }
                     } catch {}
                 }
                 $sourceModDir = Join-Path $folder "mods\$gameId"
                 if (-not (Test-Path $sourceModDir)) { $sourceModDir = Join-Path $folder "mods\pvz_fusion_4" }
+
+                # Proactive Auto-Install on Download: if directory is known, install it directly
+                try {
+                    $autoDir = $downloadTargetDir
+                    if (-not $autoDir -or -not (Test-Path $autoDir)) {
+                        $gFile = Join-Path $folder "game_directory.txt"
+                        if (Test-Path $gFile) {
+                            $savedDir = (Get-Content $gFile -Raw -Encoding UTF8).Trim()
+                            if ($savedDir -and (Test-Path $savedDir)) { $autoDir = $savedDir }
+                        }
+                    }
+                    if (-not $autoDir -or -not (Test-Path $autoDir)) {
+                        $desktopDir = "C:\Users\pc\Desktop\games ko to ya\Game Files"
+                        if (Test-Path $desktopDir) { $autoDir = $desktopDir }
+                    }
+                    if ($autoDir -and (Test-Path $autoDir)) {
+                        $autoClean = $autoDir.TrimEnd('\', '/')
+                        $autoGameRoot = if ($autoClean -match '[\\/]Mods$' -or $autoClean -match '[\\/]MelonLoader$') { Split-Path -Parent $autoClean } else { $autoClean }
+                        $autoMods = Join-Path $autoGameRoot "Mods"
+                        $autoUserData = Join-Path $autoGameRoot "UserData"
+                        if (-not (Test-Path $autoMods)) { New-Item -ItemType Directory -Path $autoMods -Force | Out-Null }
+                        if (-not (Test-Path $autoUserData)) { New-Item -ItemType Directory -Path $autoUserData -Force | Out-Null }
+                        if (Test-Path $sourceModDir) {
+                            Get-ChildItem $sourceModDir | ForEach-Object { Copy-Item $_.FullName -Destination $autoMods -Force }
+                            $iSrc = Join-Path $sourceModDir "renearn_info.json"
+                            $rSrc = Join-Path $sourceModDir "renearn.json"
+                            if (Test-Path $iSrc) {
+                                Copy-Item $iSrc -Destination (Join-Path $autoGameRoot "renearn_info.json") -Force
+                                Copy-Item $iSrc -Destination (Join-Path $autoUserData "renearn_info.json") -Force
+                            }
+                            if (Test-Path $rSrc) {
+                                Copy-Item $rSrc -Destination (Join-Path $autoGameRoot "renearn.json") -Force
+                                Copy-Item $rSrc -Destination (Join-Path $autoUserData "renearn.json") -Force
+                            }
+                        }
+                    }
+                } catch {}
 
                 $scratchDir = Join-Path $folder "scratch"
                 if (-not (Test-Path $scratchDir)) { New-Item -ItemType Directory -Path $scratchDir -Force | Out-Null }
@@ -2854,9 +3314,22 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
                 } else {
                     $stagingMods = Join-Path $stagingDir "Mods"
                     New-Item -ItemType Directory -Path $stagingMods -Force | Out-Null
+                    $stagingUserData = Join-Path $stagingDir "UserData"
+                    New-Item -ItemType Directory -Path $stagingUserData -Force | Out-Null
+
                     if (Test-Path $sourceModDir) {
                         Get-ChildItem $sourceModDir | ForEach-Object {
                             Copy-Item $_.FullName -Destination $stagingMods -Force
+                        }
+                        $infoSrc = Join-Path $sourceModDir "renearn_info.json"
+                        $renearnSrc = Join-Path $sourceModDir "renearn.json"
+                        if (Test-Path $infoSrc) {
+                            Copy-Item $infoSrc -Destination (Join-Path $stagingDir "renearn_info.json") -Force
+                            Copy-Item $infoSrc -Destination (Join-Path $stagingUserData "renearn_info.json") -Force
+                        }
+                        if (Test-Path $renearnSrc) {
+                            Copy-Item $renearnSrc -Destination (Join-Path $stagingDir "renearn.json") -Force
+                            Copy-Item $renearnSrc -Destination (Join-Path $stagingUserData "renearn.json") -Force
                         }
                     }
                 }
@@ -2868,11 +3341,12 @@ if (`$res -eq [System.Windows.Forms.DialogResult]::OK) {
 =====================================================
 RENEarn Studio - Live Connector Archive
 Game: $gameId
+Included: Mod DLLs, renearn.json, renearn_info.json
 =====================================================
 
 INSTALLATION INSTRUCTIONS:
-1. Open your Game directory.
-2. Copy the files/folder from this archive into your Game directory.
+1. Open your Game directory (e.g. where PlantsVsZombiesRH.exe or MelonLoader is).
+2. Extract or copy the folders ('Mods', 'UserData', and 'renearn.json') into your Game directory.
 3. Start the game and launch RENEarn Studio!
 "@
                     [System.IO.File]::WriteAllText((Join-Path $stagingDir "INSTALL_README.txt"), $readmeContent, [System.Text.Encoding]::UTF8)
@@ -3020,14 +3494,25 @@ INSTALLATION INSTRUCTIONS:
                     if (Test-GamePort $p) { $gameRunning = $true; break }
                 }
 
-                # Read renearn_info.json or fallback to bundled info
+                # Read renearn.json / renearn_info.json or fallback to bundled info
                 $modInfo = $null
-                $renearnInfoPath = Join-Path $gameDir "renearn_info.json"
-                $sourceInfoPath = Join-Path $folder "mods\$gameId\renearn_info.json"
-                if (Test-Path $renearnInfoPath) {
-                    try { $modInfo = Get-Content $renearnInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
-                } elseif (Test-Path $sourceInfoPath) {
-                    try { $modInfo = Get-Content $sourceInfoPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+                $candidatePaths = @(
+                    (Join-Path $gameDir "renearn.json"),
+                    (Join-Path $gameDir "renearn_info.json"),
+                    (Join-Path $gameDir "Mods\renearn.json"),
+                    (Join-Path $gameDir "Mods\renearn_info.json"),
+                    (Join-Path $gameDir "UserData\renearn.json"),
+                    (Join-Path $gameDir "UserData\renearn_info.json"),
+                    (Join-Path $folder "mods\$gameId\renearn.json"),
+                    (Join-Path $folder "mods\$gameId\renearn_info.json")
+                )
+                foreach ($cPath in $candidatePaths) {
+                    if (Test-Path $cPath) {
+                        try {
+                            $modInfo = Get-Content $cPath -Raw -Encoding UTF8 | ConvertFrom-Json
+                            if ($modInfo) { break }
+                        } catch {}
+                    }
                 }
 
                 $resObj = @{
@@ -5074,89 +5559,6 @@ INSTALLATION INSTRUCTIONS:
             continue
         }
 
-        # 3d. Update Center API (Streamer Safe Check & One-Click Apply)
-        if ($reqPath -eq '/api/update/check') {
-            try {
-                $vCoreFile = Join-Path $folder "version.json"
-                $vRootFile = Join-Path (Split-Path -Parent $folder) "version.json"
-                $currVer = "4.1.0"
-                if (Test-Path $vCoreFile) {
-                    try {
-                        $cvObj = Get-Content $vCoreFile -Raw -Encoding UTF8 | ConvertFrom-Json
-                        if ($cvObj.version) { $currVer = [string]$cvObj.version }
-                    } catch {}
-                }
-                
-                $latVer = $currVer
-                $uTitle = "RENEarn Studio v$currVer - Game Intelligence & Permissions Update"
-                $uChangelog = @(
-                    "Fixed 50 Likes Team Zombies trigger synchronization across command dashboard, configs, and stream overlay (Trident Jugger-nut Gargantuar)",
-                    "Dynamic Game-Aware Status Detector (automatically reflects PvZ Fusion, Hybrid, Classic, Zombie Tsunami, Minecraft)",
-                    "Team & Testers Management Hub in top header bar (add/remove editors & testers via Gmail)",
-                    "Symmetrical 48x48px Command & Trigger icon cards with Obsidian & Groudon styling",
-                    "Persistent config auto-healing and cross-restart overlay synchronization"
-                )
-                $uDate = (Get-Date -Format "yyyy-MM-dd")
-                $dlUrl = "https://github.com/jaylouvipinosa7-bit/ProcjectParakayRene2/archive/refs/heads/main.zip"
-
-                if (Test-Path $vRootFile) {
-                    try {
-                        $rvObj = Get-Content $vRootFile -Raw -Encoding UTF8 | ConvertFrom-Json
-                        if ($rvObj.version) { $latVer = [string]$rvObj.version }
-                        if ($rvObj.title) { $uTitle = [string]$rvObj.title }
-                        if ($rvObj.changelog) { $uChangelog = @($rvObj.changelog) }
-                        if ($rvObj.releaseDate) { $uDate = [string]$rvObj.releaseDate }
-                        if ($rvObj.downloadUrl) { $dlUrl = [string]$rvObj.downloadUrl }
-                    } catch {}
-                }
-
-                $hasUpdate = $false
-                try {
-                    $cParts = $currVer.Split('.') | ForEach-Object { [int]$_ }
-                    $lParts = $latVer.Split('.') | ForEach-Object { [int]$_ }
-                    for ($vi = 0; $vi -lt [Math]::Max($cParts.Count, $lParts.Count); $vi++) {
-                        $cp = if ($vi -lt $cParts.Count) { $cParts[$vi] } else { 0 }
-                        $lp = if ($vi -lt $lParts.Count) { $lParts[$vi] } else { 0 }
-                        if ($lp -gt $cp) { $hasUpdate = $true; break }
-                        if ($cp -gt $lp) { break }
-                    }
-                } catch {}
-
-                Send-JsonResponse $response @{
-                    status = "ok"
-                    currentVersion = $currVer
-                    latestVersion = $latVer
-                    hasUpdate = $hasUpdate
-                    title = $uTitle
-                    changelog = $uChangelog
-                    releaseDate = $uDate
-                    downloadUrl = $dlUrl
-                }
-            } catch {
-                Send-JsonResponse $response @{
-                    status = "error"
-                    currentVersion = "4.1.0"
-                    latestVersion = "4.1.0"
-                    hasUpdate = $false
-                    message = $_.Exception.Message
-                }
-            }
-            continue
-        }
-
-        if ($reqPath -eq '/api/update/apply' -and $request.HttpMethod -eq 'POST') {
-            try {
-                Sync-ConfigToCards
-                Send-JsonResponse $response @{
-                    status = "ok"
-                    version = "4.1.0"
-                    message = "RENEarn Studio v4.1.0 update applied successfully!"
-                }
-            } catch {
-                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
-            }
-            continue
-        }
 
         # 3e. Region Detection & Settings API
         if ($reqPath -eq '/api/region') {
@@ -5478,6 +5880,10 @@ INSTALLATION INSTRUCTIONS:
         if ($reqPath -eq '/api/jar/drop' -and $request.HttpMethod -eq 'POST') {
             $body = ReadRequestBody $request
             $data = try { $body | ConvertFrom-Json } catch { $null }
+            if ($data -and ($data.isTest -eq $true -or $data.noJarDrop -eq $true)) {
+                Send-JsonResponse $response @{ status = "ok"; message = "Test drop ignored for jar state" }
+                continue
+            }
             $gName = if ($data -and $data.giftName) { [string]$data.giftName } elseif ($data -and $data.name) { [string]$data.name } else { "Gift" }
             $gId = if ($data -and $data.giftId) { [string]$data.giftId } elseif ($data -and $data.id) { [string]$data.id } else { "" }
             $gIcon = if ($data -and $data.icon) { [string]$data.icon } else { "" }
@@ -6191,21 +6597,8 @@ INSTALLATION INSTRUCTIONS:
                 $cId = [string]$data.cardId
             }
 
-            if ($cId) {
-                if (-not $counts.ContainsKey($cId)) {
-                    $counts[$cId] = 0
-                }
-                $incAmt = if ($amount) { [int]$amount } else { 1 }
-                $counts[$cId] = [int]$counts[$cId] + $incAmt
-                SaveCounts
-                AddEventLog @{
-                    type = "card_count_updated"
-                    cardId = $cId
-                    count = [int]$counts[$cId]
-                    amount = $incAmt
-                    timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
-                }
-            }
+            # Tester commands must NEVER increment card counts in counts.json or overlay.
+            # Only genuine TikTok Live stream gifts count towards overlay counters and cards.
 
             $logEntry = @{
                 type = $eventType
@@ -6224,6 +6617,9 @@ INSTALLATION INSTRUCTIONS:
                 coins = $coins
                 hideInOverlay = $hideInOverlay
                 success = $exec.success
+                isTest = $true
+                noJarDrop = $true
+                noOverlayCount = $true
             }
             AddEventLog $logEntry
 
@@ -6436,8 +6832,32 @@ INSTALLATION INSTRUCTIONS:
             continue
         }
 
+        # 6a-1. Team Battle Settings Endpoint (/api/teambattle/settings)
+        if ($reqPath -eq '/api/teambattle/settings') {
+            if ($request.HttpMethod -eq 'GET') {
+                $st = Load-TeamBattleSettings
+                Send-JsonResponse $response $st
+                continue
+            }
+            if ($request.HttpMethod -eq 'POST') {
+                $rawBody = ReadRequestBody $request
+                try {
+                    $d = $rawBody | ConvertFrom-Json
+                    Save-TeamBattleSettings $d
+                    Send-JsonResponse $response @{ status = "ok"; message = "Team Battle settings saved"; settings = (Load-TeamBattleSettings) }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                }
+                continue
+            }
+        }
+
         # 6a-2. Team Battle Endpoints (/api/teambattle/state and /api/teambattle/test)
         if ($reqPath -eq '/api/teambattle/state') {
+            $tbSet = Load-TeamBattleSettings
+            $t1Obj = if ($tbSet.team1) { $tbSet.team1 } else { $null }
+            $t2Obj = if ($tbSet.team2) { $tbSet.team2 } else { $null }
+
             $tbCards = LoadCards
             if (-not $tbCards -or $tbCards.Count -eq 0) {
                 Sync-ConfigToCards
@@ -6450,47 +6870,67 @@ INSTALLATION INSTRUCTIONS:
             $g1 = if ($cfg -and $cfg.gifts) { $cfg.gifts | Where-Object { [string]$_.id -eq "1" } | Select-Object -First 1 } else { $null }
             $g2 = if ($cfg -and $cfg.gifts) { $cfg.gifts | Where-Object { [string]$_.id -eq "2" } | Select-Object -First 1 } else { $null }
 
-            $pImg = if ($g1 -and $g1.unitIcon) { $g1.unitIcon } elseif ($c1 -and $c1.funcImg) { $c1.funcImg } elseif ($g1 -and $g1.command) { "images/game-icons/pvz/$($g1.command).webp" } else { "images/game-icons/pvz/spawn_overclocked_cherrybomber.webp" }
-            $zImg = if ($g2 -and $g2.unitIcon) { $g2.unitIcon } elseif ($c2 -and $c2.funcImg) { $c2.funcImg } elseif ($g2 -and $g2.command) { "images/game-icons/pvz/$($g2.command).webp" } else { "images/game-icons/pvz/spawn_trident_juggernut_gargantuar.webp" }
+            $t1Thresh = if ($t1Obj -and $t1Obj.threshold) { [int]$t1Obj.threshold } elseif ($g1 -and $g1.likeThreshold) { [int]$g1.likeThreshold } else { 20 }
+            $t2Thresh = if ($t2Obj -and $t2Obj.threshold) { [int]$t2Obj.threshold } elseif ($g2 -and $g2.likeThreshold) { [int]$g2.likeThreshold } else { 20 }
 
-            $pReps = if ($g1 -and $g1.repetition) { [int]$g1.repetition } elseif ($c1 -and $c1.repetition) { [int]$c1.repetition } else { 1 }
-            $zReps = if ($g2 -and $g2.repetition) { [int]$g2.repetition } elseif ($c2 -and $c2.repetition) { [int]$c2.repetition } else { 1 }
+            $t1Reps = if ($t1Obj -and $t1Obj.repetition) { [int]$t1Obj.repetition } elseif ($g1 -and $g1.repetition) { [int]$g1.repetition } else { 20 }
+            $t2Reps = if ($t2Obj -and $t2Obj.repetition) { [int]$t2Obj.repetition } elseif ($g2 -and $g2.repetition) { [int]$g2.repetition } else { 20 }
 
-            $t1 = if ($g1 -and $g1.likeThreshold) { [int]$g1.likeThreshold } elseif ($c1 -and $c1.triggerValue) { [int]$c1.triggerValue } else { 50 }
-            $t2 = if ($g2 -and $g2.likeThreshold) { [int]$g2.likeThreshold } elseif ($c2 -and $c2.triggerValue) { [int]$c2.triggerValue } else { 50 }
+            $t1Name = if ($t1Obj -and $t1Obj.name) { [string]$t1Obj.name } else { "Team Blue" }
+            $t2Name = if ($t2Obj -and $t2Obj.name) { [string]$t2Obj.name } else { "Team Red" }
 
-            $pUnit = if ($g1 -and $g1.label) { [string]$g1.label } elseif ($c1 -and $c1.funcName) { [string]$c1.funcName } else { "Team Plants Unit" }
-            $zUnit = if ($g2 -and $g2.label) { [string]$g2.label } elseif ($c2 -and $c2.funcName) { [string]$c2.funcName } else { "Team Zombies Unit" }
+            $t1Cmd = if ($t1Obj -and $t1Obj.command) { [string]$t1Obj.command } else { "!blue" }
+            $t2Cmd = if ($t2Obj -and $t2Obj.command) { [string]$t2Obj.command } else { "!red" }
+
+            $t1Icon = if ($t1Obj -and $t1Obj.icon) { [string]$t1Obj.icon } elseif ($g1 -and $g1.unitIcon) { $g1.unitIcon } else { "images/indicators/indicator_general.svg" }
+            $t2Icon = if ($t2Obj -and $t2Obj.icon) { [string]$t2Obj.icon } elseif ($g2 -and $g2.unitIcon) { $g2.unitIcon } else { "images/indicators/indicator_general.svg" }
 
             $cnt1 = if ($counts.Contains("1")) { [int]$counts["1"] } else { 0 }
             $cnt2 = if ($counts.Contains("2")) { [int]$counts["2"] } else { 0 }
 
+            $t1Data = @{
+                id = if ($t1Obj -and $t1Obj.id) { $t1Obj.id } else { "blue" }
+                team = "plants"
+                name = $t1Name
+                command = $t1Cmd
+                teamCommand = $t1Cmd
+                current = $teamPlantsLikes
+                threshold = $t1Thresh
+                count = $cnt1
+                unit = if ($t1Obj -and $t1Obj.unit) { $t1Obj.unit } else { "Blue Vanguard" }
+                icon = $t1Icon
+                repetition = $t1Reps
+                color = if ($t1Obj -and $t1Obj.color) { $t1Obj.color } else { "#38bdf8" }
+                colorGrad = if ($t1Obj -and $t1Obj.colorGrad) { $t1Obj.colorGrad } else { "linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #38bdf8 100%)" }
+                glow = if ($t1Obj -and $t1Obj.glow) { $t1Obj.glow } else { "rgba(56, 189, 248, 0.45)" }
+                emoji = if ($t1Obj -and $t1Obj.emoji) { $t1Obj.emoji } else { [char]::ConvertFromUtf32(0x1F535) }
+            }
+
+            $t2Data = @{
+                id = if ($t2Obj -and $t2Obj.id) { $t2Obj.id } else { "red" }
+                team = "zombies"
+                name = $t2Name
+                command = $t2Cmd
+                teamCommand = $t2Cmd
+                current = $teamZombiesLikes
+                threshold = $t2Thresh
+                count = $cnt2
+                unit = if ($t2Obj -and $t2Obj.unit) { $t2Obj.unit } else { "Red Vanguard" }
+                icon = $t2Icon
+                repetition = $t2Reps
+                color = if ($t2Obj -and $t2Obj.color) { $t2Obj.color } else { "#ef4444" }
+                colorGrad = if ($t2Obj -and $t2Obj.colorGrad) { $t2Obj.colorGrad } else { "linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)" }
+                glow = if ($t2Obj -and $t2Obj.glow) { $t2Obj.glow } else { "rgba(239, 68, 68, 0.45)" }
+                emoji = if ($t2Obj -and $t2Obj.emoji) { $t2Obj.emoji } else { [char]::ConvertFromUtf32(0x1F534) }
+            }
+
             Send-JsonResponse $response @{
                 status = "ok"
-                plants = @{
-                    team = "plants"
-                    name = "Team Plants"
-                    command = "!plants"
-                    teamCommand = "!teamplant"
-                    current = $teamPlantsLikes
-                    threshold = $t1
-                    count = $cnt1
-                    unit = $pUnit
-                    icon = $pImg
-                    repetition = $pReps
-                }
-                zombies = @{
-                    team = "zombies"
-                    name = "Team Zombies"
-                    command = "!zombies"
-                    teamCommand = "!teamzombie"
-                    current = $teamZombiesLikes
-                    threshold = $t2
-                    count = $cnt2
-                    unit = $zUnit
-                    icon = $zImg
-                    repetition = $zReps
-                }
+                preset = if ($tbSet.activePreset) { $tbSet.activePreset } else { "blue_vs_red" }
+                team1 = $t1Data
+                team2 = $t2Data
+                plants = $t1Data
+                zombies = $t2Data
             }
             continue
         }
@@ -6615,6 +7055,299 @@ INSTALLATION INSTRUCTIONS:
             AddEventLog @{ type = "spinner_history_update"; history = @(); enabled = [bool]$script:spinnerHistory.enabled }
             Send-JsonResponse $response $script:spinnerHistory
             continue
+        }
+
+        # 6.6 Song Request Endpoints
+        if ($reqPath -eq '/api/songrequest/state') {
+            if ($request.HttpMethod -eq 'GET') {
+                $script:songRequestState = Load-SongRequestState
+                Send-JsonResponse $response $script:songRequestState
+                continue
+            }
+            if ($request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                try {
+                    $data = $body | ConvertFrom-Json
+                    if ($data) {
+                        $script:songRequestState = $data
+                        Save-SongRequestState $script:songRequestState
+                        AddEventLog @{ type = "songrequest_update"; data = $script:songRequestState }
+                        Send-JsonResponse $response @{ status = "ok"; state = $script:songRequestState }
+                        continue
+                    }
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 400
+                    continue
+                }
+            }
+        }
+
+        # 6.6b Search Music Online for Direct Audio Stream, Singer Detection & Art
+        if ($reqPath -eq '/api/songrequest/search' -and $request.HttpMethod -eq 'GET') {
+            $query = $request.QueryString['q']
+            if (-not $query) {
+                Send-JsonResponse $response @{ status = "error"; message = "Missing query parameter 'q'" } 400
+                continue
+            }
+            $track = Resolve-MusicTrack $query
+            if ($track) {
+                Send-JsonResponse $response @{ status = "ok"; track = $track }
+            } else {
+                Send-JsonResponse $response @{ status = "not_found"; message = "No matching track found" } 404
+            }
+            continue
+        }
+
+        # 6.6c Direct Audio Stream Proxy (Eliminates Browser CORS & CDN Blocking)
+        if ($reqPath -eq '/api/songrequest/proxy-audio' -and ($request.HttpMethod -eq 'GET' -or $request.HttpMethod -eq 'HEAD')) {
+            $audioUrl = $request.QueryString['url']
+            if ($audioUrl) {
+                try {
+                    $webReq = [System.Net.HttpWebRequest]::Create($audioUrl)
+                    $webReq.Method = "GET"
+                    $webReq.Timeout = 8000
+                    $webReq.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    $webResp = $webReq.GetResponse()
+                    $cType = $webResp.ContentType
+                    if (-not $cType -or $cType -eq "") {
+                        if ($audioUrl.Contains(".m4a")) { $cType = "audio/mp4" }
+                        else { $cType = "audio/mpeg" }
+                    }
+                    $response.ContentType = $cType
+                    $response.StatusCode = 200
+                    $response.AddHeader("Access-Control-Allow-Origin", "*")
+                    $response.AddHeader("Accept-Ranges", "bytes")
+                    $respStream = $webResp.GetResponseStream()
+                    $respStream.CopyTo($response.OutputStream)
+                    $respStream.Close()
+                    $webResp.Close()
+                    $response.OutputStream.Close()
+                    continue
+                } catch {
+                    Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+                    continue
+                }
+            } else {
+                Send-JsonResponse $response @{ status = "error"; message = "Missing url parameter" } 400
+                continue
+            }
+        }
+
+        if ($reqPath -eq '/api/songrequest/queue' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            if (-not $script:songRequestState) { $script:songRequestState = Load-SongRequestState }
+            try {
+                $item = $body | ConvertFrom-Json
+                if ($item -and $item.title) {
+                    $qList = @()
+                    if ($script:songRequestState.queue) {
+                        $qList += @($script:songRequestState.queue)
+                    }
+
+                    $pUrl = if ($item.PSObject.Properties['previewUrl'] -and $item.previewUrl) { [string]$item.previewUrl } else { "" }
+                    $cUrl = if ($item.PSObject.Properties['coverUrl'] -and $item.coverUrl) { [string]$item.coverUrl } else { "" }
+                    $sArt = if ($item.PSObject.Properties['artist'] -and $item.artist) { [string]$item.artist } else { "" }
+
+                    # Auto detect singer and resolve preview audio if missing or generic
+                    if (-not $pUrl -or $pUrl -eq "" -or -not $sArt -or $sArt -eq "Requested Track" -or $sArt -eq "Unknown Artist") {
+                        $searchQuery = if ($sArt -and $sArt -ne "Requested Track" -and $sArt -ne "Unknown Artist") { "$($item.title) $sArt" } else { [string]$item.title }
+                        $resolved = Resolve-MusicTrack $searchQuery
+                        if ($resolved) {
+                            if (-not $pUrl -or $pUrl -eq "") { $pUrl = $resolved.previewUrl }
+                            if (-not $cUrl -or $cUrl -eq "" -or $cUrl.Contains("unsplash")) { $cUrl = $resolved.coverUrl }
+                            if (-not $sArt -or $sArt -eq "Requested Track" -or $sArt -eq "Unknown Artist") { $sArt = $resolved.artist }
+                            $item.title = $resolved.title
+                        }
+                    }
+
+                    $songObj = [PSCustomObject]@{
+                        id = if ($item.PSObject.Properties['id'] -and $item.id) { [string]$item.id } else { "req_" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+                        title = [string]$item.title
+                        artist = if ($sArt) { $sArt } else { "Unknown Artist" }
+                        singer = if ($sArt) { $sArt } else { "Unknown Artist" }
+                        album = if ($item.PSObject.Properties['album'] -and $item.album) { [string]$item.album } else { "Single" }
+                        coverUrl = $cUrl
+                        durationMs = if ($item.PSObject.Properties['durationMs'] -and $item.durationMs) { [int]$item.durationMs } else { 180000 }
+                        requestedBy = if ($item.PSObject.Properties['requestedBy'] -and $item.requestedBy) { [string]$item.requestedBy } else { "Viewer" }
+                        timestamp = if ($item.PSObject.Properties['timestamp'] -and $item.timestamp) { [string]$item.timestamp } else { [DateTime]::Now.ToString("h:mm tt") }
+                        status = "queued"
+                        uri = if ($item.PSObject.Properties['uri'] -and $item.uri) { [string]$item.uri } else { "" }
+                        previewUrl = $pUrl
+                    }
+                    $qList += $songObj
+                    $script:songRequestState.queue = $qList
+                    Save-SongRequestState $script:songRequestState
+                    AddEventLog @{ type = "songrequest_queue_add"; song = $songObj; queue = $script:songRequestState.queue }
+                    Send-JsonResponse $response @{ status = "ok"; song = $songObj; queue = $script:songRequestState.queue }
+                } else {
+                    Send-JsonResponse $response @{ status = "error"; message = "Invalid song payload" } 400
+                }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+            }
+            continue
+        }
+
+        if ($reqPath -eq '/api/songrequest/skip' -and $request.HttpMethod -eq 'POST') {
+            if (-not $script:songRequestState) { $script:songRequestState = Load-SongRequestState }
+            try {
+                $qList = @()
+                if ($script:songRequestState.queue) {
+                    $qList += @($script:songRequestState.queue)
+                }
+                $skipped = $script:songRequestState.nowPlaying
+                if ($skipped) {
+                    $hist = @()
+                    if ($script:songRequestState.history) {
+                        $hist += @($script:songRequestState.history)
+                    }
+                    $skippedRecord = [PSCustomObject]@{
+                        id = [string]$skipped.id
+                        title = [string]$skipped.title
+                        artist = [string]$skipped.artist
+                        singer = if ($skipped.PSObject.Properties['singer'] -and $skipped.singer) { [string]$skipped.singer } else { [string]$skipped.artist }
+                        requestedBy = [string]$skipped.requestedBy
+                        timestamp = [DateTime]::Now.ToString("h:mm tt")
+                        status = "skipped"
+                    }
+                    $hist = @($skippedRecord) + $hist
+                    if ($hist.Length -gt 40) { $hist = $hist[0..39] }
+                    $script:songRequestState.history = $hist
+                }
+                if ($qList.Length -gt 0) {
+                    $nextSong = $qList[0]
+                    $qList = if ($qList.Length -gt 1) { $qList[1..($qList.Length - 1)] } else { @() }
+                    $script:songRequestState.queue = $qList
+
+                    $nxtPrevUrl = if ($nextSong.PSObject.Properties['previewUrl'] -and $nextSong.previewUrl) { [string]$nextSong.previewUrl } else { "" }
+                    $nxtCovUrl = if ($nextSong.PSObject.Properties['coverUrl'] -and $nextSong.coverUrl) { [string]$nextSong.coverUrl } else { "" }
+                    $nxtArt = if ($nextSong.PSObject.Properties['artist'] -and $nextSong.artist) { [string]$nextSong.artist } else { "" }
+                    if (-not $nxtPrevUrl -or $nxtPrevUrl -eq "" -or -not $nxtArt -or $nxtArt -eq "Requested Track" -or $nxtArt -eq "Unknown Artist") {
+                        $searchQuery = if ($nxtArt -and $nxtArt -ne "Requested Track" -and $nxtArt -ne "Unknown Artist") { "$($nextSong.title) $nxtArt" } else { [string]$nextSong.title }
+                        $resolved = Resolve-MusicTrack $searchQuery
+                        if ($resolved) {
+                            if (-not $nxtPrevUrl -or $nxtPrevUrl -eq "") { $nxtPrevUrl = $resolved.previewUrl }
+                            if (-not $nxtCovUrl -or $nxtCovUrl -eq "" -or $nxtCovUrl.Contains("unsplash")) { $nxtCovUrl = $resolved.coverUrl }
+                            if (-not $nxtArt -or $nxtArt -eq "Requested Track" -or $nxtArt -eq "Unknown Artist") { $nxtArt = $resolved.artist }
+                        }
+                    }
+
+                    $script:songRequestState.nowPlaying = [PSCustomObject]@{
+                        id = [string]$nextSong.id
+                        title = [string]$nextSong.title
+                        artist = if ($nxtArt) { $nxtArt } else { "Unknown Artist" }
+                        singer = if ($nxtArt) { $nxtArt } else { "Unknown Artist" }
+                        album = if ($nextSong.album) { [string]$nextSong.album } else { "Single" }
+                        coverUrl = $nxtCovUrl
+                        durationMs = if ($nextSong.durationMs) { [int]$nextSong.durationMs } else { 180000 }
+                        progressMs = 0
+                        requestedBy = [string]$nextSong.requestedBy
+                        isPlaying = $true
+                        uri = if ($nextSong.uri) { [string]$nextSong.uri } else { "" }
+                        previewUrl = $nxtPrevUrl
+                    }
+                } else {
+                    $script:songRequestState.nowPlaying = $null
+                }
+                Save-SongRequestState $script:songRequestState
+                AddEventLog @{ type = "songrequest_skip"; nowPlaying = $script:songRequestState.nowPlaying; queue = $script:songRequestState.queue }
+                Send-JsonResponse $response @{ status = "ok"; nowPlaying = $script:songRequestState.nowPlaying; queue = $script:songRequestState.queue }
+            } catch {
+                Send-JsonResponse $response @{ status = "error"; message = $_.Exception.Message } 500
+            }
+            continue
+        }
+
+        # 6.7 Studio AI Neural Character Voice Audio Generator
+        if ($reqPath -eq '/api/tts/audio' -and $request.HttpMethod -eq 'GET') {
+            $voiceId = $request.QueryString['voice']
+            $text = $request.QueryString['text']
+            if (-not $text) { $text = "Hello chat, welcome to the stream!" }
+            
+            $bytes = $null
+            $mimeType = "audio/mpeg"
+
+            # Tier 1: Dedicated AI Character Voices
+            try {
+                $tiktokMap = @{
+                    'adam'     = 'en_us_006'
+                    'robot_x'  = 'en_male_c3po'
+                    'sakura'   = 'en_female_emotional'
+                    'jenny'    = 'en_us_001'
+                    'pinay'    = 'en_female_samc'
+                    'marcus'   = 'en_male_narration'
+                    'speedrun' = 'en_male_funny'
+                    'calm'     = 'en_female_f08_twinkle'
+                }
+                
+                $ttVoice = if ($tiktokMap.ContainsKey($voiceId)) { $tiktokMap[$voiceId] } else { $voiceId }
+                
+                if ($voiceId -eq 'pinay' -or $voiceId -eq 'ate_may') {
+                    $u = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=tl&q=" + [System.Uri]::EscapeDataString($text)
+                    $wc = New-Object System.Net.WebClient
+                    $wc.Headers.Add("User-Agent", "Mozilla/5.0")
+                    $bytes = $wc.DownloadData($u)
+                } elseif ($voiceId -eq 'robot_x') {
+                    $u = "https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=" + [System.Uri]::EscapeDataString($text)
+                    $wc = New-Object System.Net.WebClient
+                    $bytes = $wc.DownloadData($u)
+                } else {
+                    $genPayload = @{ text = $text; voice = $ttVoice } | ConvertTo-Json
+                    $ttRes = Invoke-RestMethod -Uri "https://tiktok-tts.weilnet.workers.dev/api/generation" -Method POST -Body $genPayload -ContentType "application/json" -TimeoutSec 5
+                    if ($ttRes -and $ttRes.success -and $ttRes.data) {
+                        $bytes = [System.Convert]::FromBase64String($ttRes.data)
+                    }
+                }
+            } catch {}
+
+            # Tier 2: StreamElements / Google TTS Fallback
+            if (-not $bytes -or $bytes.Length -eq 0) {
+                try {
+                    $fbVoice = if ($voiceId -in @('sakura', 'jenny', 'calm')) { 'Emma' } else { 'Brian' }
+                    $u = "https://api.streamelements.com/kappa/v2/speech?voice=$fbVoice&text=" + [System.Uri]::EscapeDataString($text)
+                    $wc = New-Object System.Net.WebClient
+                    $bytes = $wc.DownloadData($u)
+                } catch {
+                    try {
+                        $lang = if ($voiceId -in @('sakura')) { 'ja' } else { 'en' }
+                        $u = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=$lang&q=" + [System.Uri]::EscapeDataString($text)
+                        $wc = New-Object System.Net.WebClient
+                        $wc.Headers.Add("User-Agent", "Mozilla/5.0")
+                        $bytes = $wc.DownloadData($u)
+                    } catch {}
+                }
+            }
+
+            # Tier 3: Local Windows SAPI / OneCore Synthesizer (100% Offline Resilience)
+            if (-not $bytes -or $bytes.Length -eq 0) {
+                try {
+                    Add-Type -AssemblyName System.Speech -ErrorAction SilentlyContinue
+                    $synth = New-Object System.Speech.Synthesis.SpeechSynthesizer
+                    if ($voiceId -in @('sakura', 'jenny', 'pinay', 'calm')) {
+                        $synth.SelectVoiceByHints([System.Speech.Synthesis.VoiceGender]::Female)
+                    } else {
+                        $synth.SelectVoiceByHints([System.Speech.Synthesis.VoiceGender]::Male)
+                    }
+                    $ms = New-Object System.IO.MemoryStream
+                    $synth.SetOutputToWaveStream($ms)
+                    $synth.Speak($text)
+                    $bytes = $ms.ToArray()
+                    $mimeType = "audio/wav"
+                } catch {}
+            }
+
+            if ($bytes -and $bytes.Length -gt 0) {
+                $response.ContentType = $mimeType
+                $response.StatusCode = 200
+                $response.ContentLength64 = $bytes.Length
+                $response.Headers.Add("Cache-Control", "public, max-age=86400")
+                $response.OutputStream.Write($bytes, 0, $bytes.Length)
+                $response.Close()
+                continue
+            } else {
+                Send-JsonResponse $response @{ status = "error"; message = "TTS Audio generation failed" } 500
+                continue
+            }
         }
 
         # 7. Spin Lucky Wheel / Reel (Multi-Spinner Support)
@@ -6972,71 +7705,75 @@ INSTALLATION INSTRUCTIONS:
                     Update-LeaderboardCoins $user $giftCoinValue $avatar
 
                     # INTERACTIVE GIFT JAR: Physically drop every incoming TikTok gift into the jar!
-                    $dropCount = [Math]::Max(1, $repeatCount)
-                    $jarIcon = if ($icon) { $icon } else { "" }
-                    if (-not $jarIcon -and $script:verifiedGiftsCatalog) {
-                        $autoGift = Resolve-AutoCorrectGift $giftName $giftId
-                        if ($autoGift -and $autoGift.icon) { $jarIcon = [string]$autoGift.icon }
-                        elseif ($autoGift -and $autoGift.cdnIcon) { $jarIcon = [string]$autoGift.cdnIcon }
-                        else {
-                            $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq [string]$giftId -or [string]$_.name -eq [string]$giftName } | Select-Object -First 1
-                            if ($vg -and $vg.icon) { $jarIcon = [string]$vg.icon }
-                            elseif ($vg -and $vg.cdnIcon) { $jarIcon = [string]$vg.cdnIcon }
+                    # Only genuine live viewer gifts drop into the jar (tester commands/tests are excluded)
+                    $isTestStreamDrop = ($payload.isTest -eq $true -or $payload.noJarDrop -eq $true -or $user -in @('RENEarn', 'Tester', 'TestViewer', 'RENEarn_Streamer'))
+                    if (-not $isTestStreamDrop) {
+                        $dropCount = [Math]::Max(1, $repeatCount)
+                        $jarIcon = if ($icon) { $icon } else { "" }
+                        if (-not $jarIcon -and $script:verifiedGiftsCatalog) {
+                            $autoGift = Resolve-AutoCorrectGift $giftName $giftId
+                            if ($autoGift -and $autoGift.icon) { $jarIcon = [string]$autoGift.icon }
+                            elseif ($autoGift -and $autoGift.cdnIcon) { $jarIcon = [string]$autoGift.cdnIcon }
+                            else {
+                                $vg = $script:verifiedGiftsCatalog | Where-Object { [string]$_.id -eq [string]$giftId -or [string]$_.name -eq [string]$giftName } | Select-Object -First 1
+                                if ($vg -and $vg.icon) { $jarIcon = [string]$vg.icon }
+                                elseif ($vg -and $vg.cdnIcon) { $jarIcon = [string]$vg.cdnIcon }
+                            }
                         }
-                    }
-                    if (-not $jarIcon -or $jarIcon -eq "images/default_avatar.svg" -or $jarIcon -match "game-icons") {
-                        if ($giftName -match '(?i)heart\s*me') { $jarIcon = "images/tiktok-gifts/7934_heart_me.webp" }
-                        elseif ($giftName -match '(?i)finger\s*heart') { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
-                        elseif ($giftName -match '(?i)hand\s*heart') { $jarIcon = "images/tiktok-gifts/5660_hand_heart.webp" }
-                        elseif ($giftName -match '(?i)chicken') { $jarIcon = "images/tiktok-gifts/15328_fried_chicken.webp" }
-                        elseif ($giftName -match '(?i)arcade|game\s*controller|controller') { $jarIcon = "images/tiktok-gifts/5876_arcade_game.webp" }
-                        elseif ($giftName -match '(?i)panda') { $jarIcon = "images/tiktok-gifts/5659_panda.webp" }
-                        elseif ($giftName -match '(?i)confetti') { $jarIcon = "images/tiktok-gifts/7121_marvelous_confetti.webp" }
-                        elseif ($giftName -match '(?i)money\s*gun') { $jarIcon = "images/tiktok-gifts/5881_money_gun.webp" }
-                        elseif ($giftName -match '(?i)firework') { $jarIcon = "images/tiktok-gifts/6090_fireworks.webp" }
-                        elseif ($giftName -match '(?i)whale') { $jarIcon = "images/tiktok-gifts/6820_whale_diving.webp" }
-                        elseif ($giftName -match '(?i)swan') { $jarIcon = "images/tiktok-gifts/5897_swan.webp" }
-                        elseif ($giftName -match '(?i)corgi') { $jarIcon = "images/tiktok-gifts/6267_corgi.webp" }
-                        elseif ($giftName -match '(?i)perfume') { $jarIcon = "images/tiktok-gifts/5658_perfume.webp" }
-                        elseif ($giftName -match '(?i)cake') { $jarIcon = "images/tiktok-gifts/6784_cake_slice.webp" }
-                        elseif ($giftName -match '(?i)thumbs\s*up') { $jarIcon = "images/tiktok-gifts/6246_thumbs_up.webp" }
-                        elseif ($giftCoinValue -eq 5) { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
-                        elseif ($giftName -match '(?i)heart') { $jarIcon = "images/tiktok-gifts/7934_heart_me.webp" }
-                        elseif ($giftName -match '(?i)ice') { $jarIcon = "images/tiktok-gifts/5827_ice_cream_cone.webp" }
-                        elseif ($giftName -match '(?i)tiktok') { $jarIcon = "images/tiktok-gifts/5269_tiktok.webp" }
-                        elseif ($giftName -match '(?i)cap') { $jarIcon = "images/tiktok-gifts/6104_cap.webp" }
-                        elseif ($giftName -match '(?i)gg') { $jarIcon = "images/tiktok-gifts/6064_gg.webp" }
-                        elseif ($giftName -match '(?i)doughnut|donut') { $jarIcon = "images/tiktok-gifts/5879_doughnut.webp" }
-                        elseif ($giftName -match '(?i)galaxy') { $jarIcon = "images/tiktok-gifts/11046_galaxy.webp" }
-                        elseif ($giftName -match '(?i)lion') { $jarIcon = "images/tiktok-gifts/5962_lion.webp" }
-                        elseif ($giftName -match '(?i)universe') { $jarIcon = "images/tiktok-gifts/6059_tiktok_universe.webp" }
-                        elseif ($giftName -match '(?i)rose\s*bear') { $jarIcon = "images/tiktok-gifts/15862_rose_bear.webp" }
-                        elseif ($giftCoinValue -ge 1000) { $jarIcon = "images/tiktok-gifts/11046_galaxy.webp" }
-                        elseif ($giftCoinValue -ge 500) { $jarIcon = "images/tiktok-gifts/5881_money_gun.webp" }
-                        elseif ($giftCoinValue -ge 99) { $jarIcon = "images/tiktok-gifts/6104_cap.webp" }
-                        elseif ($giftCoinValue -ge 30) { $jarIcon = "images/tiktok-gifts/5879_doughnut.webp" }
-                        elseif ($giftCoinValue -ge 5) { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
-                        else { $jarIcon = "images/tiktok-gifts/5655_rose.webp" }
-                    }
-                    AddEventLog @{
-                        type = "jar_drop"
-                        giftName = if ($giftName) { $giftName } else { "Gift" }
-                        giftId = if ($giftId) { [string]$giftId } else { "" }
-                        icon = $jarIcon
-                        count = $dropCount
-                        coins = $giftCoinValue
-                        username = $user
-                        avatar = $avatar
-                    }
-                    if ($script:jarState) {
-                        $script:jarState.currentCount += $dropCount
-                        $script:jarState.totalCoins += $giftCoinValue
-                        $script:jarState.lastDropTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
-                        Save-JarState $script:jarState
-                    }
+                        if (-not $jarIcon -or $jarIcon -eq "images/default_avatar.svg" -or $jarIcon -match "game-icons") {
+                            if ($giftName -match '(?i)heart\s*me') { $jarIcon = "images/tiktok-gifts/7934_heart_me.webp" }
+                            elseif ($giftName -match '(?i)finger\s*heart') { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
+                            elseif ($giftName -match '(?i)hand\s*heart') { $jarIcon = "images/tiktok-gifts/5660_hand_heart.webp" }
+                            elseif ($giftName -match '(?i)chicken') { $jarIcon = "images/tiktok-gifts/15328_fried_chicken.webp" }
+                            elseif ($giftName -match '(?i)arcade|game\s*controller|controller') { $jarIcon = "images/tiktok-gifts/5876_arcade_game.webp" }
+                            elseif ($giftName -match '(?i)panda') { $jarIcon = "images/tiktok-gifts/5659_panda.webp" }
+                            elseif ($giftName -match '(?i)confetti') { $jarIcon = "images/tiktok-gifts/7121_marvelous_confetti.webp" }
+                            elseif ($giftName -match '(?i)money\s*gun') { $jarIcon = "images/tiktok-gifts/5881_money_gun.webp" }
+                            elseif ($giftName -match '(?i)firework') { $jarIcon = "images/tiktok-gifts/6090_fireworks.webp" }
+                            elseif ($giftName -match '(?i)whale') { $jarIcon = "images/tiktok-gifts/6820_whale_diving.webp" }
+                            elseif ($giftName -match '(?i)swan') { $jarIcon = "images/tiktok-gifts/5897_swan.webp" }
+                            elseif ($giftName -match '(?i)corgi') { $jarIcon = "images/tiktok-gifts/6267_corgi.webp" }
+                            elseif ($giftName -match '(?i)perfume') { $jarIcon = "images/tiktok-gifts/5658_perfume.webp" }
+                            elseif ($giftName -match '(?i)cake') { $jarIcon = "images/tiktok-gifts/6784_cake_slice.webp" }
+                            elseif ($giftName -match '(?i)thumbs\s*up') { $jarIcon = "images/tiktok-gifts/6246_thumbs_up.webp" }
+                            elseif ($giftCoinValue -eq 5) { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
+                            elseif ($giftName -match '(?i)heart') { $jarIcon = "images/tiktok-gifts/7934_heart_me.webp" }
+                            elseif ($giftName -match '(?i)ice') { $jarIcon = "images/tiktok-gifts/5827_ice_cream_cone.webp" }
+                            elseif ($giftName -match '(?i)tiktok') { $jarIcon = "images/tiktok-gifts/5269_tiktok.webp" }
+                            elseif ($giftName -match '(?i)cap') { $jarIcon = "images/tiktok-gifts/6104_cap.webp" }
+                            elseif ($giftName -match '(?i)gg') { $jarIcon = "images/tiktok-gifts/6064_gg.webp" }
+                            elseif ($giftName -match '(?i)doughnut|donut') { $jarIcon = "images/tiktok-gifts/5879_doughnut.webp" }
+                            elseif ($giftName -match '(?i)galaxy') { $jarIcon = "images/tiktok-gifts/11046_galaxy.webp" }
+                            elseif ($giftName -match '(?i)lion') { $jarIcon = "images/tiktok-gifts/5962_lion.webp" }
+                            elseif ($giftName -match '(?i)universe') { $jarIcon = "images/tiktok-gifts/6059_tiktok_universe.webp" }
+                            elseif ($giftName -match '(?i)rose\s*bear') { $jarIcon = "images/tiktok-gifts/15862_rose_bear.webp" }
+                            elseif ($giftCoinValue -ge 1000) { $jarIcon = "images/tiktok-gifts/11046_galaxy.webp" }
+                            elseif ($giftCoinValue -ge 500) { $jarIcon = "images/tiktok-gifts/5881_money_gun.webp" }
+                            elseif ($giftCoinValue -ge 99) { $jarIcon = "images/tiktok-gifts/6104_cap.webp" }
+                            elseif ($giftCoinValue -ge 30) { $jarIcon = "images/tiktok-gifts/5879_doughnut.webp" }
+                            elseif ($giftCoinValue -ge 5) { $jarIcon = "images/tiktok-gifts/5487_finger_heart.webp" }
+                            else { $jarIcon = "images/tiktok-gifts/5655_rose.webp" }
+                        }
+                        AddEventLog @{
+                            type = "jar_drop"
+                            giftName = if ($giftName) { $giftName } else { "Gift" }
+                            giftId = if ($giftId) { [string]$giftId } else { "" }
+                            icon = $jarIcon
+                            count = $dropCount
+                            coins = $giftCoinValue
+                            username = $user
+                            avatar = $avatar
+                        }
+                        if ($script:jarState) {
+                            $script:jarState.currentCount += $dropCount
+                            $script:jarState.totalCoins += $giftCoinValue
+                            $script:jarState.lastDropTime = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                            Save-JarState $script:jarState
+                        }
 
-                    # STREAMER GIFT GALLERY: Auto-detect if gift contributes to unobtained gallery items
-                    Process-GiftForGallery $giftName $giftId $user $avatar $repeatCount $jarIcon
+                        # STREAMER GIFT GALLERY: Auto-detect if gift contributes to unobtained gallery items
+                        Process-GiftForGallery $giftName $giftId $user $avatar $repeatCount $jarIcon
+                    }
 
                     # RAPID GIFTING PERMITTED:
                     # Consecutive gifts from the same viewer (even within 1 second) summon immediately!
@@ -7164,70 +7901,112 @@ INSTALLATION INSTRUCTIONS:
                     }
 
                     if ($matchedSpinner) {
-                        # Trigger that specific spinner!
+                        # Trigger that specific spinner with exact 1 gift = 1 spin = 1 command execution!
                         $spSlices = if ($matchedSpinner.slices) { $matchedSpinner.slices } else { @() }
-                        $picked = $null
-                        if ($spSlices.Count -gt 0) {
-                            $totalWeight = 0.0
-                            foreach ($s in $spSlices) {
-                                $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
-                                $totalWeight += $w
-                            }
-                            if ($totalWeight -le 0) { $totalWeight = 100.0 }
-                            $rnd = (Get-Random -Minimum 0.0 -Maximum $totalWeight)
-                            $cur = 0.0
-                            foreach ($s in $spSlices) {
-                                $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
-                                $cur += $w
-                                if ($rnd -le $cur) {
-                                    $picked = $s
-                                    break
-                                }
-                            }
-                            if (-not $picked) { $picked = $spSlices[0] }
-                        }
-
-                        if ($picked) {
-                            if ($picked.actionType -and $picked.actionType -ne "score" -and $picked.command) {
-                                # Summon the won unit directly in PvZ Fusion mod with exact repetition!
-                                $spReps = if ($picked.repetition) { [int]$picked.repetition } elseif ($picked.amount) { [int]$picked.amount } else { 1 }
-                                $spReps = $spReps * [Math]::Max(1, $repeatCount)
-                                $spAmt = if ($picked.amount) { [int]$picked.amount } else { $spReps }
-                                $spDelay = if ($picked.delay) { [int]$picked.delay } else { 0 }
-                                $spInt = if ($picked.interval) { [int]$picked.interval } else { 100 }
-                                SendToPvZGame $picked.actionType $picked.command $spAmt $user "" $spReps $spDelay $spInt | Out-Null
-                            }
-
-                            # Auto-adjust Win Widget score ONLY if slice is a number (never for plants or zombies)!
-                            $isNumSlice = ($picked.isNumber -eq $true) -or 
-                                          ($picked.actionType -eq "score") -or 
-                                          ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
-                                          ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
-
-                            if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
-                                $isNumSlice = $false
-                            }
-
-                            if ($isNumSlice) {
-                                $deltaVal = 0
-                                if ($picked.delta -ne $null) {
-                                    $deltaVal = [int]$picked.delta
-                                } elseif ($picked.value -ne $null) {
-                                    $deltaVal = [int]$picked.value
-                                } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                                    $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                                    $deltaVal = $sign * [int]$matches[2]
-                                }
-
-                                if ($deltaVal -ne 0) {
-                                    Update-WinWidgetScore $deltaVal "tiktok_gift" $picked.label
-                                }
-                            }
-                        }
-
+                        $totalSpins = [Math]::Max(1, [int]$repeatCount)
+                        $visualSpins = [Math]::Min($totalSpins, 15) # Keep visual queue silky smooth without freezing overlay on huge combos
                         $spName = $matchedSpinner.name
                         $spDuration = if ($matchedSpinner.duration) { [int]$matchedSpinner.duration } else { 2500 }
                         $spTicks = if ($matchedSpinner.ticks) { [int]$matchedSpinner.ticks } else { 100 }
+
+                        for ($spinIdx = 0; $spinIdx -lt $totalSpins; $spinIdx++) {
+                            $picked = $null
+                            if ($spSlices.Count -gt 0) {
+                                $totalWeight = 0.0
+                                foreach ($s in $spSlices) {
+                                    $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                                    $totalWeight += $w
+                                }
+                                if ($totalWeight -le 0) { $totalWeight = 100.0 }
+                                $rnd = (Get-Random -Minimum 0.0 -Maximum $totalWeight)
+                                $cur = 0.0
+                                foreach ($s in $spSlices) {
+                                    $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                                    $cur += $w
+                                    if ($rnd -le $cur) {
+                                        $picked = $s
+                                        break
+                                    }
+                                }
+                                if (-not $picked) { $picked = $spSlices[0] }
+                            }
+
+                            if ($picked) {
+                                if ($picked.actionType -and $picked.actionType -ne "score" -and ($picked.command -or $picked.commands)) {
+                                    # Summon the won unit directly in PvZ Fusion mod: exactly 1 command execution per gift!
+                                    $spReps = if ($picked.repetition) { [int]$picked.repetition } elseif ($picked.amount) { [int]$picked.amount } else { 1 }
+                                    $spAmt = if ($picked.amount) { [int]$picked.amount } else { $spReps }
+                                    $spDelay = if ($picked.delay) { [int]$picked.delay } else { 0 }
+                                    $spInt = if ($picked.interval) { [int]$picked.interval } else { 100 }
+
+                                    if ($picked.commands -and $picked.commands.Count -gt 0) {
+                                        foreach ($sc in $picked.commands) {
+                                            if ($sc.command) {
+                                                $scAct = if ($sc.actionType) { $sc.actionType } else { $picked.actionType }
+                                                $scAmt = if ($sc.amount) { [int]$sc.amount } else { $spAmt }
+                                                SendToPvZGame $scAct $sc.command $scAmt $user "" $spReps $spDelay $spInt | Out-Null
+                                            }
+                                        }
+                                    } else {
+                                        SendToPvZGame $picked.actionType $picked.command $spAmt $user "" $spReps $spDelay $spInt | Out-Null
+                                    }
+                                }
+
+                                # Auto-adjust Win Widget score ONLY if slice is a number (never for plants or zombies)!
+                                $isNumSlice = ($picked.isNumber -eq $true) -or 
+                                              ($picked.actionType -eq "score") -or 
+                                              ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
+                                              ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                                if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
+                                    $isNumSlice = $false
+                                }
+
+                                if ($isNumSlice) {
+                                    $deltaVal = 0
+                                    if ($picked.delta -ne $null) {
+                                        $deltaVal = [int]$picked.delta
+                                    } elseif ($picked.value -ne $null) {
+                                        $deltaVal = [int]$picked.value
+                                    } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                        $sign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                        $deltaVal = $sign * [int]$matches[2]
+                                    }
+
+                                    if ($deltaVal -ne 0) {
+                                        Update-WinWidgetScore $deltaVal "tiktok_gift" $picked.label
+                                    }
+                                }
+                            }
+
+                            if ($spinIdx -lt $visualSpins) {
+                                AddEventLog @{
+                                    type = "spin_result"
+                                    label = "$($spName) - $($picked.label)"
+                                    username = $user
+                                    avatar = $avatar
+                                    giftName = if ($giftName) { $giftName } else { $matchedSpinner.giftName }
+                                    slice = $picked
+                                    spinnerId = [string]$matchedSpinner.id
+                                    spinnerName = $spName
+                                    groupId = [string]$matchedSpinner.groupId
+                                    mode = if ($matchedSpinner -and $matchedSpinner.mode) { $matchedSpinner.mode } else { "wheel" }
+                                    wheelTheme = if ($matchedSpinner -and $matchedSpinner.wheelTheme) { $matchedSpinner.wheelTheme } else { "casino_royale" }
+                                    centerFinial = if ($matchedSpinner -and $matchedSpinner.centerFinial) { $matchedSpinner.centerFinial } else { "turret_3d" }
+                                    pointerTheme = if ($matchedSpinner -and $matchedSpinner.pointerTheme) { $matchedSpinner.pointerTheme } else { "brass_chevron" }
+                                    wheelRarityStyle = if ($matchedSpinner -and $matchedSpinner.wheelRarityStyle) { $matchedSpinner.wheelRarityStyle } else { "rarity_enamel" }
+                                    reelTheme = if ($matchedSpinner -and $matchedSpinner.reelTheme) { $matchedSpinner.reelTheme } else { "casino_felt" }
+                                    duration = $spDuration
+                                    ticks = $spTicks
+                                    pointerIcon = $matchedSpinner.pointerIcon
+                                    slices = $spSlices
+                                    icon = if ($matchedSpinner.giftIcon) { $matchedSpinner.giftIcon } else { $icon }
+                                    alreadySummoned = $true
+                                    success = $true
+                                }
+                                Add-SpinnerHistoryRecord $user $avatar $picked $spName $matchedSpinner.id
+                            }
+                        }
 
                         # Also execute and increment the matched gift card action (e.g. Card 32: Heart Me -> Spawn Big Sun Nut x50)
                         if ($config -and $config.gifts) {
@@ -7264,31 +8043,7 @@ INSTALLATION INSTRUCTIONS:
                             }
                         }
 
-                        AddEventLog @{
-                            type = "spin_result"
-                            label = "$($spName) - $($picked.label)"
-                            username = $user
-                            avatar = $avatar
-                            giftName = if ($giftName) { $giftName } else { $matchedSpinner.giftName }
-                            slice = $picked
-                            spinnerId = [string]$matchedSpinner.id
-                            spinnerName = $spName
-                            groupId = [string]$matchedSpinner.groupId
-                            mode = if ($matchedSpinner -and $matchedSpinner.mode) { $matchedSpinner.mode } else { "wheel" }
-                            wheelTheme = if ($matchedSpinner -and $matchedSpinner.wheelTheme) { $matchedSpinner.wheelTheme } else { "casino_royale" }
-                            centerFinial = if ($matchedSpinner -and $matchedSpinner.centerFinial) { $matchedSpinner.centerFinial } else { "turret_3d" }
-                            pointerTheme = if ($matchedSpinner -and $matchedSpinner.pointerTheme) { $matchedSpinner.pointerTheme } else { "brass_chevron" }
-                            wheelRarityStyle = if ($matchedSpinner -and $matchedSpinner.wheelRarityStyle) { $matchedSpinner.wheelRarityStyle } else { "rarity_enamel" }
-                            reelTheme = if ($matchedSpinner -and $matchedSpinner.reelTheme) { $matchedSpinner.reelTheme } else { "casino_felt" }
-                            duration = $spDuration
-                            ticks = $spTicks
-                            pointerIcon = $matchedSpinner.pointerIcon
-                            slices = $spSlices
-                            icon = if ($matchedSpinner.giftIcon) { $matchedSpinner.giftIcon } else { $icon }
-                            success = $true
-                        }
-                        Add-SpinnerHistoryRecord $user $avatar $picked $spName $matchedSpinner.id
-                        Send-JsonResponse $response @{ status = "ok"; type = "spin_result"; spinner = $spName }
+                        Send-JsonResponse $response @{ status = "ok"; type = "spin_result"; spinner = $spName; spins = $totalSpins }
                         continue
                     }
 
@@ -7435,91 +8190,112 @@ INSTALLATION INSTRUCTIONS:
                             }
 
                             $spCardSlices = if ($targetCardSp -and $targetCardSp.slices) { $targetCardSp.slices } elseif ($config.spinner -and $config.spinner.slices) { $config.spinner.slices } else { @() }
-                            $picked = $null
-                            if ($spCardSlices.Count -gt 0) {
-                                $totalWeight = 0.0
-                                foreach ($s in $spCardSlices) {
-                                    $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
-                                    $totalWeight += $w
+                            $totalSpins = [Math]::Max(1, [int]$repeatCount)
+                            $visualSpins = [Math]::Min($totalSpins, 15)
+                            $cardSpName = if ($targetCardSp -and $targetCardSp.name) { $targetCardSp.name } else { "Lucky Wheel" }
+                            $cardSpId = if ($targetCardSp -and $targetCardSp.id) { [string]$targetCardSp.id } else { "wheel" }
+                            $cardSpDuration = if ($targetCardSp -and $targetCardSp.duration) { [int]$targetCardSp.duration } else { 2500 }
+                            $cardSpTicks = if ($targetCardSp -and $targetCardSp.ticks) { [int]$targetCardSp.ticks } else { 100 }
+                            $cardSpPointer = if ($targetCardSp) { $targetCardSp.pointerIcon } else { "" }
+                            $cardSpGroup = if ($targetCardSp) { [string]$targetCardSp.groupId } else { "" }
+
+                            for ($spinIdx = 0; $spinIdx -lt $totalSpins; $spinIdx++) {
+                                $picked = $null
+                                if ($spCardSlices.Count -gt 0) {
+                                    $totalWeight = 0.0
+                                    foreach ($s in $spCardSlices) {
+                                        $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                                        $totalWeight += $w
+                                    }
+                                    if ($totalWeight -le 0) { $totalWeight = 100.0 }
+                                    $rnd = (Get-Random -Minimum 0.0 -Maximum $totalWeight)
+                                    $cur = 0.0
+                                    foreach ($s in $spCardSlices) {
+                                        $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
+                                        $cur += $w
+                                        if ($rnd -le $cur) {
+                                            $picked = $s
+                                            break
+                                        }
+                                    }
+                                    if (-not $picked) { $picked = $spCardSlices[0] }
                                 }
-                                if ($totalWeight -le 0) { $totalWeight = 100.0 }
-                                $rnd = (Get-Random -Minimum 0.0 -Maximum $totalWeight)
-                                $cur = 0.0
-                                foreach ($s in $spCardSlices) {
-                                    $w = if ($s.weight) { [double]$s.weight } elseif ($s.chance) { [double]$s.chance } else { 10.0 }
-                                    $cur += $w
-                                    if ($rnd -le $cur) {
-                                        $picked = $s
-                                        break
+                                if ($picked) {
+                                    $spReps = if ($picked.repetition) { [int]$picked.repetition } else { 1 }
+                                    $spDelay = if ($picked.delay) { [int]$picked.delay } else { 0 }
+                                    $spInterval = if ($picked.interval) { [int]$picked.interval } else { 100 }
+                                    $spHide = ($picked.hideInOverlay -eq $true -or $picked.hideInOverlay -eq "true")
+
+                                    if ($picked.actionType -and $picked.actionType -ne "score" -and ($picked.command -or $picked.commands)) {
+                                        if ($picked.commands -and $picked.commands.Count -gt 0) {
+                                            foreach ($sc in $picked.commands) {
+                                                if ($sc.command) {
+                                                    $scAct = if ($sc.actionType) { $sc.actionType } else { $picked.actionType }
+                                                    $scAmt = if ($sc.amount) { [int]$sc.amount } else { $spReps }
+                                                    SendToPvZGame $scAct $sc.command $scAmt $user "" $spReps $spDelay $spInterval | Out-Null
+                                                }
+                                            }
+                                        } else {
+                                            $spAmt = if ($picked.amount) { [int]$picked.amount } else { $spReps }
+                                            SendToPvZGame $picked.actionType $picked.command $spAmt $user "" $spReps $spDelay $spInterval | Out-Null
+                                        }
+                                    }
+
+                                    # Update Win Widget score ONLY on number slices (never on plants/zombies)!
+                                    $isNumSlice = ($picked.isNumber -eq $true) -or 
+                                                  ($picked.actionType -eq "score") -or 
+                                                  ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
+                                                  ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
+
+                                    if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
+                                        $isNumSlice = $false
+                                    }
+
+                                    if ($isNumSlice) {
+                                        $tkDelta = 0
+                                        if ($picked.delta -ne $null) {
+                                            $tkDelta = [int]$picked.delta
+                                        } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
+                                            $tkSign = if ($matches[1] -eq '-') { -1 } else { 1 }
+                                            $tkDelta = $tkSign * [int]$matches[2]
+                                        }
+                                        if ($tkDelta -ne 0) {
+                                            Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
+                                        }
+                                    }
+
+                                    if ($spinIdx -lt $visualSpins) {
+                                        AddEventLog @{
+                                            type = "spin_result"
+                                            label = "$($cardSpName): $($picked.label)"
+                                            username = $user
+                                            avatar = $avatar
+                                            giftName = if ($giftName) { $giftName } elseif ($matchedGift.giftName) { $matchedGift.giftName } else { "Gift" }
+                                            slice = $picked
+                                            spinnerId = $cardSpId
+                                            spinnerName = $cardSpName
+                                            groupId = $cardSpGroup
+                                            mode = if ($targetCardSp -and $targetCardSp.mode) { $targetCardSp.mode } else { "wheel" }
+                                            wheelTheme = if ($targetCardSp -and $targetCardSp.wheelTheme) { $targetCardSp.wheelTheme } else { "casino_royale" }
+                                            centerFinial = if ($targetCardSp -and $targetCardSp.centerFinial) { $targetCardSp.centerFinial } else { "turret_3d" }
+                                            pointerTheme = if ($targetCardSp -and $targetCardSp.pointerTheme) { $targetCardSp.pointerTheme } else { "brass_chevron" }
+                                            wheelRarityStyle = if ($targetCardSp -and $targetCardSp.wheelRarityStyle) { $targetCardSp.wheelRarityStyle } else { "rarity_enamel" }
+                                            reelTheme = if ($targetCardSp -and $targetCardSp.reelTheme) { $targetCardSp.reelTheme } else { "casino_felt" }
+                                            duration = $cardSpDuration
+                                            ticks = $cardSpTicks
+                                            pointerIcon = $cardSpPointer
+                                            slices = $spCardSlices
+                                            icon = if ($icon) { $icon } elseif ($matchedGift.icon) { $matchedGift.icon } else { "images/func_2.png" }
+                                            hideInOverlay = $spHide
+                                            alreadySummoned = $true
+                                            success = $true
+                                        }
+                                        Add-SpinnerHistoryRecord $user $avatar $picked $cardSpName $cardSpId
                                     }
                                 }
-                                if (-not $picked) { $picked = $spCardSlices[0] }
                             }
-                            if ($picked) {
-                                $spReps = if ($picked.repetition) { [int]$picked.repetition } else { 1 }
-                                $spDelay = if ($picked.delay) { [int]$picked.delay } else { 0 }
-                                $spInterval = if ($picked.interval) { [int]$picked.interval } else { 100 }
-                                $spHide = ($picked.hideInOverlay -eq $true -or $picked.hideInOverlay -eq "true")
-                                if ($picked.actionType -and $picked.actionType -ne "score" -and $picked.command) {
-                                    SendToPvZGame $picked.actionType $picked.command $picked.amount $user "" $spReps $spDelay $spInterval | Out-Null
-                                }
-
-                                # Update Win Widget score ONLY on number slices (never on plants/zombies)!
-                                $isNumSlice = ($picked.isNumber -eq $true) -or 
-                                              ($picked.actionType -eq "score") -or 
-                                              ($picked.delta -ne $null -and $picked.delta -ne 0) -or 
-                                              ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$')
-
-                                if ($picked.actionType -eq "plant" -or $picked.actionType -eq "zombie" -or $picked.actionType -eq "power") {
-                                    $isNumSlice = $false
-                                }
-
-                                if ($isNumSlice) {
-                                    $tkDelta = 0
-                                    if ($picked.delta -ne $null) {
-                                        $tkDelta = [int]$picked.delta
-                                    } elseif ($picked.label -match '^\s*([+-]?)\s*(\d+)\s*$') {
-                                        $tkSign = if ($matches[1] -eq '-') { -1 } else { 1 }
-                                        $tkDelta = $tkSign * [int]$matches[2]
-                                    }
-                                    if ($tkDelta -ne 0) {
-                                        Update-WinWidgetScore $tkDelta "tiktok_spin" $picked.label
-                                    }
-                                }
-
-                                $cardSpName = if ($targetCardSp -and $targetCardSp.name) { $targetCardSp.name } else { "Lucky Wheel" }
-                                $cardSpId = if ($targetCardSp -and $targetCardSp.id) { [string]$targetCardSp.id } else { "wheel" }
-                                $cardSpDuration = if ($targetCardSp -and $targetCardSp.duration) { [int]$targetCardSp.duration } else { 2500 }
-                                $cardSpTicks = if ($targetCardSp -and $targetCardSp.ticks) { [int]$targetCardSp.ticks } else { 100 }
-                                $cardSpPointer = if ($targetCardSp) { $targetCardSp.pointerIcon } else { "" }
-                                $cardSpGroup = if ($targetCardSp) { [string]$targetCardSp.groupId } else { "" }
-
-                                AddEventLog @{
-                                    type = "spin_result"
-                                    label = "$($cardSpName): $($picked.label)"
-                                    username = $user
-                                    avatar = $avatar
-                                    giftName = if ($giftName) { $giftName } elseif ($matchedGift.giftName) { $matchedGift.giftName } else { "Gift" }
-                                    slice = $picked
-                                    spinnerId = $cardSpId
-                                    spinnerName = $cardSpName
-                                    groupId = $cardSpGroup
-                                    mode = if ($targetCardSp -and $targetCardSp.mode) { $targetCardSp.mode } else { "wheel" }
-                                    wheelTheme = if ($targetCardSp -and $targetCardSp.wheelTheme) { $targetCardSp.wheelTheme } else { "casino_royale" }
-                                    centerFinial = if ($targetCardSp -and $targetCardSp.centerFinial) { $targetCardSp.centerFinial } else { "turret_3d" }
-                                    pointerTheme = if ($targetCardSp -and $targetCardSp.pointerTheme) { $targetCardSp.pointerTheme } else { "brass_chevron" }
-                                    wheelRarityStyle = if ($targetCardSp -and $targetCardSp.wheelRarityStyle) { $targetCardSp.wheelRarityStyle } else { "rarity_enamel" }
-                                    reelTheme = if ($targetCardSp -and $targetCardSp.reelTheme) { $targetCardSp.reelTheme } else { "casino_felt" }
-                                    duration = $cardSpDuration
-                                    ticks = $cardSpTicks
-                                    pointerIcon = $cardSpPointer
-                                    slices = $spCardSlices
-                                    icon = if ($icon) { $icon } elseif ($matchedGift.icon) { $matchedGift.icon } else { "images/func_2.png" }
-                                    hideInOverlay = $spHide
-                                    success = $true
-                                }
-                                Add-SpinnerHistoryRecord $user $avatar $picked $cardSpName $cardSpId
-                            }
+                            Send-JsonResponse $response @{ status = "ok"; type = "spin_result"; spinner = $cardSpName; spins = $totalSpins }
+                            continue
                         } else {
                             # 1=1 COMMAND INTEGRITY:
                             # 1 gift sent = exactly 1 command execution of the configured card count!
@@ -7592,24 +8368,38 @@ INSTALLATION INSTRUCTIONS:
                     $comment = if ($payload.comment) { [string]$payload.comment } elseif ($payload.text) { [string]$payload.text } else { "" }
                     $cLower = $comment.Trim().ToLower()
 
-                    if ($cLower -match '!plant(s)?|team\s*plant(s)?') {
+                    $tbSet = Load-TeamBattleSettings
+                    $t1Name = if ($tbSet -and $tbSet.team1 -and $tbSet.team1.name) { $tbSet.team1.name } else { "Team Blue" }
+                    $t2Name = if ($tbSet -and $tbSet.team2 -and $tbSet.team2.name) { $tbSet.team2.name } else { "Team Red" }
+                    $t1Cmd = if ($tbSet -and $tbSet.team1 -and $tbSet.team1.command) { ($tbSet.team1.command -replace '^!','').ToLower() } else { "blue" }
+                    $t2Cmd = if ($tbSet -and $tbSet.team2 -and $tbSet.team2.command) { ($tbSet.team2.command -replace '^!','').ToLower() } else { "red" }
+
+                    if ($cLower -match "!$t1Cmd|team\s*$t1Cmd|!blue|team\s*blue|blue\s*army|!plant(s)?|team\s*plant(s)?") {
                         $userTeams[$user] = "plants"
                         AddEventLog @{
                             type = "team_join"
-                            label = "$user joined Team Plants!"
+                            label = "$user joined $t1Name!"
                             team = "plants"
                             username = $user
-                            icon = "images/game-icons/pvz/spawn_ultimatecattail.webp"
+                            icon = "images/indicators/indicator_general.svg"
                         }
-                    } elseif ($cLower -match '!zombie(s)?|team\s*zombie(s)?') {
+                    } elseif ($cLower -match "!$t2Cmd|team\s*$t2Cmd|!red|team\s*red|red\s*army|!zombie(s)?|team\s*zombie(s)?") {
                         $userTeams[$user] = "zombies"
                         AddEventLog @{
                             type = "team_join"
-                            label = "$user joined Team Zombies!"
+                            label = "$user joined $t2Name!"
                             team = "zombies"
                             username = $user
-                            icon = "images/game-icons/pvz/ultimate_gold_gargantuar.webp"
+                            icon = "images/indicators/indicator_general.svg"
                         }
+                    }
+
+                    # Log all chat messages for live AI Voice TTS
+                    AddEventLog @{
+                        type = "chat"
+                        username = $user
+                        comment = $comment
+                        avatar = if ($payload.avatar) { $payload.avatar } elseif ($payload.profilePictureUrl) { $payload.profilePictureUrl } else { "" }
                     }
                 }
                 # Like event: Team Battle (50 likes) + Total Stream Likes milestone (e.g. 57K)
@@ -7961,6 +8751,10 @@ INSTALLATION INSTRUCTIONS:
                             $parsedBody = $cBody | ConvertFrom-Json
                         }
                         if ($parsedBody -and $parsedBody.id) {
+                            if ($parsedBody.isTest -eq $true -or $parsedBody.noOverlayCount -eq $true) {
+                                Send-JsonResponse $response $counts
+                                continue
+                            }
                             $cIdStr = [string]$parsedBody.id
                             $cInc = if ($parsedBody.count) { [int]$parsedBody.count } else { 1 }
                             if (-not $counts.ContainsKey($cIdStr)) {
@@ -8287,15 +9081,26 @@ INSTALLATION INSTRUCTIONS:
             "/goal"                 = "overlay-goal.html"
             "/renearn/gacha"        = "overlay-gacha.html"
             "/gacha"                = "overlay-gacha.html"
+            "/renearn/claw"         = "overlay-spinner.html"
+            "/claw"                 = "overlay-spinner.html"
             "/renearn/grid"         = "overlay-grid.html"
             "/grid"                 = "overlay-grid.html"
             "/renearn/hud"          = "groudon-hud-overlay.html"
             "/hud"                  = "groudon-hud-overlay.html"
             "/renearn"              = "app.html"
             "/app"                  = "app.html"
+            "/renearn/side"         = "overlay-side.html"
+            "/side"                 = "overlay-side.html"
+            "/side-overlay"         = "overlay-side.html"
+            "/renearn/normal"       = "overlay-side.html"
+            "/normal"               = "overlay-side.html"
+            "/overlay-normal"       = "overlay-side.html"
+            "/overlay-normal.html"  = "overlay-side.html"
             "/kingdom-siege"        = "kingdom-siege.html"
             "/siege"                = "kingdom-siege.html"
             "/castle"               = "kingdom-siege.html"
+            "/songrequest"          = "overlay-songrequest.html"
+            "/music"                = "overlay-songrequest.html"
         }
 
         $normPath = $reqPath.ToLower().TrimEnd('/')

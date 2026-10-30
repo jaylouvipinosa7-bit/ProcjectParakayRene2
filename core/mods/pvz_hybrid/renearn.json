@@ -1,0 +1,14 @@
+{
+  "name": "RENEarnPVZHybridMod",
+  "versionName": "47v",
+  "versionCode": 47,
+  "info": "renearn.studio",
+  "game": "PvZHybrid",
+  "version": "47v (BETA)",
+  "author": "RENEarn Studio",
+  "description": "RENEarn Live Stream Mod for PvZ Hybrid & MelonLoader",
+  "melonLoader": {
+    "autoLoad": true,
+    "version": "net6"
+  }
+}

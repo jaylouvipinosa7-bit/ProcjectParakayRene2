@@ -3644,7 +3644,12 @@
                 if (banner) banner.classList.add('visible');
                 if (wObj && (wObj.command || wObj.label)) {
                     if (typeof playWinFanfare === 'function') playWinFanfare(wObj.rarity || 'Legendary');
-                    if (typeof dispatchPvZCommand === 'function') dispatchPvZCommand(wObj, spinData.username);
+                    // 1 GIFT = 1 COMMAND INTEGRITY:
+                    // Backend server.ps1 already executed the won command directly upon gift receipt.
+                    // Never re-dispatch from overlay visualizer to prevent double command summons.
+                    if (spinData && spinData.needsClientDispatch && typeof dispatchPvZCommand === 'function') {
+                        dispatchPvZCommand(wObj, spinData.username);
+                    }
                 }
 
         async function dispatchPvZCommand(winnerItem, username = "RENEarn") {

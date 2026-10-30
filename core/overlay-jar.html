@@ -425,10 +425,10 @@
             <!-- JAR STAGE -->
             <div class="jar-stage" id="jarStage">
                 <div class="jar-premium-tag" id="jarPremiumTag">HOT 🔥</div>
-                <img id="imgJarBack" class="jar-glass-back" src="images/jars/jar_mason.png" alt="Jar Back">
+                <img id="imgJarBack" class="jar-glass-back" src="images/jars/jar_clean.png" alt="Jar Back">
                 <canvas id="physicsCanvas" width="440" height="540"></canvas>
                 <div class="jar-trapdoor-lid" id="jarTrapdoorLid"></div>
-                <img id="imgJarFront" class="jar-glass-front" src="images/jars/jar_mason.png" alt="Jar Front">
+                <img id="imgJarFront" class="jar-glass-front" src="images/jars/jar_clean.png" alt="Jar Front">
             </div>
 
             <!-- RECENT DROP ALERT TOAST -->
@@ -484,7 +484,10 @@
 
         // Available Skins Map
         const skinImageMap = {
-            'mason': 'images/jars/jar_mason.png',
+            'clean': 'images/jars/jar_clean.png',
+            'renearn': 'images/jars/jar_renearn.png',
+            'mason': 'images/jars/jar_clean.png',
+            'mason_vintage': 'images/jars/jar_mason.png',
             'piggy': 'images/jars/jar_piggy.png',
             'fishbowl': 'images/jars/jar_fishbowl.png',
             'crate': 'images/jars/jar_crate.png',
@@ -1381,7 +1384,7 @@
             let spawnSpread = 20;
             let spawnY = 25;
 
-            if (settings.skin === 'mason') {
+            if (settings.skin === 'mason' || settings.skin === 'clean' || settings.skin === 'renearn' || settings.skin === 'mason_vintage') {
                 spawnSpread = 40;
                 spawnY = 25;
             } else if (settings.skin === 'crate') {
@@ -1883,6 +1886,16 @@
                     loadJarSettings();
                 }
                 return;
+            }
+
+            // Reject all test events: tester commands/gifts must NEVER drop into the jar
+            if (payload.isTest || payload.noJarDrop || payload.isTesting || payload.testMode ||
+                payload.type === 'test' || payload.type === 'test_gift' || payload.type === 'game_trigger' ||
+                payload.username === 'RENEarn' || payload.username === 'Tester' || payload.username === 'TestViewer' ||
+                payload.user === 'RENEarn' || payload.user === 'Tester' || payload.username === 'RENEarn_Streamer') {
+                if (payload._allowJarTabDemoDrop !== true) {
+                    return;
+                }
             }
 
             // Accept any genuine gift event:

@@ -374,46 +374,140 @@
             background-clip: text;
         }
 
-        body.theme-groudon .info-sub-value {
+        /* ================= PRIMAL KYOGRE OCEANIC STORM THEME ================= */
+        body.theme-kyogre {
+            --streak-rose: #00f0ff;
+            --streak-light: #67e8f9;
+            --streak-glow: rgba(0, 240, 255, 0.85);
+            --streak-plasma: #2563eb;
+            --streak-dark: #070e1b;
+        }
+        body.theme-kyogre .sunburst-bg {
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.6) 0%, rgba(37, 99, 235, 0.35) 48%, transparent 72%),
+                        repeating-conic-gradient(from 0deg, rgba(0, 240, 255, 0.8) 0deg 12deg, rgba(37, 99, 235, 0.25) 12deg 20deg, transparent 20deg 30deg);
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.85), inset 0 0 35px rgba(37, 99, 235, 0.5);
+        }
+        body.theme-kyogre .streak-aura {
+            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.6), rgba(37, 99, 235, 0.25) 45%, transparent 70%);
+        }
+        body.theme-kyogre .streak-ring-wave {
+            border: 2.5px solid rgba(0, 240, 255, 0.95);
+            box-shadow: 0 0 28px rgba(0, 240, 255, 0.85), inset 0 0 18px rgba(37, 99, 235, 0.6);
+        }
+        body.theme-kyogre .ray-ring {
+            border: 2.5px solid rgba(56, 189, 248, 0.85);
+            box-shadow: 0 0 28px rgba(0, 240, 255, 0.9), inset 0 0 16px rgba(37, 99, 235, 0.5);
+        }
+        body.theme-kyogre .face-front {
+            background: radial-gradient(circle, rgba(10, 24, 46, 0.95) 0%, rgba(4, 10, 20, 0.98) 100%);
+            border: 2.5px solid rgba(0, 240, 255, 0.65);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(0, 240, 255, 0.45);
+        }
+        body.theme-kyogre .face-back {
+            background: radial-gradient(circle, #082f49 0%, #031326 100%);
+            border: 3px solid #38bdf8;
+            box-shadow: 0 0 26px rgba(0, 240, 255, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
+        }
+        body.theme-kyogre .info-pill {
+            background: linear-gradient(135deg, rgba(8, 20, 38, 0.98), rgba(4, 10, 20, 0.98));
+            border: 1.5px solid rgba(0, 240, 255, 0.65);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 240, 255, 0.45);
+        }
+        body.theme-kyogre .info-top-tag {
+            color: #38bdf8;
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.75);
+        }
+        body.theme-kyogre .info-main-title {
+            background: linear-gradient(96deg, #ffffff, #e0f2fe 50%, #7dd3fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        body.theme-kyogre .info-sub-value {
             background: linear-gradient(96deg, #0284c7, #f0f9ff 22%, #38bdf8 44%, #ffffff 57%, #38bdf8 66%, #0284c7);
             -webkit-background-clip: text;
             background-clip: text;
             background-size: 260% 100%;
         }
-
-        body.theme-groudon .streak-badge {
+        body.theme-kyogre .streak-badge {
             background: radial-gradient(circle, #38bdf8 0%, #2563eb 100%);
             border-color: #ffffff;
             color: #ffffff;
             box-shadow: 0 0 16px rgba(0, 240, 255, 0.95), 0 4px 10px rgba(0,0,0,0.8);
         }
-
-        /* Groudon Lightning Badge */
-        .groudon-lightning-badge {
-            position: absolute;
-            top: -10px;
-            right: 0px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        body.theme-kyogre .groudon-lightning-badge {
             background: radial-gradient(circle, #38bdf8 0%, #1d4ed8 100%);
             border: 2px solid #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
             box-shadow: 0 0 16px rgba(0, 240, 255, 0.95), 0 4px 12px rgba(0,0,0,0.8);
-            animation: groudonStreakBounce 2.2s ease-in-out infinite;
-            z-index: 10;
         }
 
-        @keyframes groudonStreakBounce {
-            0%, 100% { transform: translateY(0) scale(1) rotate(-6deg); }
-            50% { transform: translateY(-4px) scale(1.12) rotate(6deg); }
+        /* ================= PLASMA GROUDON VOLCANIC MAGMA THEME ================= */
+        body.theme-groudon {
+            --streak-rose: #f97316;
+            --streak-light: #fb923c;
+            --streak-glow: rgba(249, 115, 22, 0.85);
+            --streak-plasma: #dc2626;
+            --streak-dark: #1a0505;
+        }
+        body.theme-groudon .sunburst-bg {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.7) 0%, rgba(249, 115, 22, 0.35) 48%, transparent 72%),
+                        repeating-conic-gradient(from 0deg, rgba(239, 68, 68, 0.85) 0deg 12deg, rgba(245, 158, 11, 0.3) 12deg 20deg, transparent 20deg 30deg);
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.85), inset 0 0 35px rgba(249, 115, 22, 0.5);
+        }
+        body.theme-groudon .streak-aura {
+            background: radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.65), rgba(245, 158, 11, 0.3) 45%, transparent 70%);
+        }
+        body.theme-groudon .streak-ring-wave {
+            border: 2.5px solid rgba(249, 115, 22, 0.95);
+            box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), inset 0 0 18px rgba(245, 158, 11, 0.6);
+        }
+        body.theme-groudon .ray-ring {
+            border: 2.5px solid rgba(239, 68, 68, 0.85);
+            box-shadow: 0 0 28px rgba(245, 158, 11, 0.9), inset 0 0 16px rgba(239, 68, 68, 0.5);
+        }
+        body.theme-groudon .face-front {
+            background: radial-gradient(circle, rgba(46, 12, 12, 0.95) 0%, rgba(20, 4, 4, 0.98) 100%);
+            border: 2.5px solid rgba(249, 115, 22, 0.75);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+        body.theme-groudon .face-back {
+            background: radial-gradient(circle, #7f1d1d 0%, #200404 100%);
+            border: 3px solid #f97316;
+            box-shadow: 0 0 26px rgba(239, 68, 68, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
+        }
+        body.theme-groudon .info-pill {
+            background: linear-gradient(135deg, rgba(38, 8, 8, 0.98), rgba(18, 4, 4, 0.98));
+            border: 1.5px solid rgba(249, 115, 22, 0.75);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(239, 68, 68, 0.45);
+        }
+        body.theme-groudon .info-top-tag {
+            color: #f97316;
+            text-shadow: 0 0 12px rgba(249, 115, 22, 0.85);
+        }
+        body.theme-groudon .info-main-title {
+            background: linear-gradient(96deg, #ffffff, #fef08a 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        body.theme-groudon .info-sub-value {
+            background: linear-gradient(96deg, #dc2626, #fef08a 22%, #f97316 44%, #ffffff 57%, #f97316 66%, #dc2626);
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-size: 260% 100%;
+        }
+        body.theme-groudon .streak-badge {
+            background: radial-gradient(circle, #f97316 0%, #dc2626 100%);
+            border-color: #ffffff;
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.95), 0 4px 10px rgba(0,0,0,0.8);
+        }
+        body.theme-groudon .groudon-lightning-badge {
+            background: radial-gradient(circle, #f97316 0%, #b91c1c 100%);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.95), 0 4px 12px rgba(0,0,0,0.8);
         }
     </style>
 </head>
-<body class="theme-groudon">
+<body class="theme-kyogre">
 
     <div class="streak-stage" id="streakStage">
         <div class="icon-stage">
@@ -422,8 +516,8 @@
             <div class="streak-ring-wave"></div>
             <div class="ray-ring"></div>
 
-            <!-- Groudon Lightning Spark Crest -->
-            <div class="groudon-lightning-badge">⚡</div>
+            <!-- Lightning Spark Crest -->
+            <div class="groudon-lightning-badge" id="streakLightningBadge">⚡</div>
 
             <!-- Floating Sparkles -->
             <svg class="sparkle" style="top: 14px; left: 16px;" width="18" height="18" viewBox="0 0 24 24" fill="#38bdf8">
@@ -433,16 +527,16 @@
                 <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
             </svg>
 
-            <!-- 3D Flipping Disc (Center Gift & Plasma Groudon Avatar) -->
+            <!-- 3D Flipping Disc (Center Gift & Avatar) -->
             <div class="flip-wrapper">
                 <div class="flip-disc" id="flipDisc">
                     <div class="flip-face face-front">
                         <div class="gift-shine-sweep"></div>
                         <img id="streakGiftImg" src="images/tiktok-gifts/5655_rose.webp" alt="Streak Gift" class="gift-img-center" onerror="this.src='images/tiktok-gifts/7934_heart_me.webp'">
                     </div>
-                    <!-- Back Face: Plasma Groudon Avatar -->
+                    <!-- Back Face: Avatar -->
                     <div class="flip-face face-back">
-                        <img id="streakAvatarImg" src="images/groudon_top_streak.jpg" alt="Plasma Groudon Avatar" class="avatar-img-back" onerror="this.src='images/groudon_icon.png'">
+                        <img id="streakAvatarImg" src="images/groudon_top_streak.jpg" alt="Streak Avatar" class="avatar-img-back" onerror="this.src='images/groudon_icon.png'">
                     </div>
                 </div>
             </div>
@@ -452,23 +546,38 @@
         </div>
 
         <div class="info-pill" id="infoPill">
-            <span class="info-top-tag" id="topTag">⚡ PLASMA TOP STREAK</span>
+            <span class="info-top-tag" id="topTag">🌊 PRIMAL KYOGRE TOP STREAK</span>
             <span class="info-main-title" id="giftNameText">Rose</span>
-            <span class="info-sub-value" id="streakGifterSubText">Plasma Groudon Master • 99 Combo</span>
+            <span class="info-sub-value" id="streakGifterSubText">Primal Kyogre Master • 99 Combo</span>
         </div>
     </div>
 
+    <script>
         const params = new URLSearchParams(window.location.search);
-        const activeTheme = params.get('theme') || 'groudon';
+        const activeTheme = (params.get('theme') || 'kyogre').toLowerCase();
+        document.body.classList.remove('theme-groudon', 'theme-kyogre');
+
         if (activeTheme === 'classic' || activeTheme === 'pink') {
-            document.body.classList.remove('theme-groudon');
-            const spark = document.querySelector('.groudon-lightning-badge');
+            const spark = document.getElementById('streakLightningBadge');
             if (spark) spark.style.display = 'none';
             document.getElementById('topTag').textContent = 'TOP STREAK';
             document.getElementById('streakGifterSubText').textContent = 'Stream viewer • 5 Combo';
             document.getElementById('streakBadge').textContent = '5x';
-        } else {
+        } else if (activeTheme === 'groudon') {
             document.body.classList.add('theme-groudon');
+            document.getElementById('topTag').textContent = '🌋 PLASMA GROUDON TOP STREAK';
+            document.getElementById('streakGifterSubText').textContent = 'Plasma Groudon Master • 99 Combo';
+            document.getElementById('streakBadge').textContent = '99x';
+            const spark = document.getElementById('streakLightningBadge');
+            if (spark) spark.textContent = '🔥';
+        } else {
+            // Default to Primal Kyogre theme
+            document.body.classList.add('theme-kyogre');
+            document.getElementById('topTag').textContent = '🌊 PRIMAL KYOGRE TOP STREAK';
+            document.getElementById('streakGifterSubText').textContent = 'Primal Kyogre Master • 99 Combo';
+            document.getElementById('streakBadge').textContent = '99x';
+            const spark = document.getElementById('streakLightningBadge');
+            if (spark) spark.textContent = '🌊';
         }
 
         if (params.get('title')) document.getElementById('giftNameText').textContent = params.get('title');

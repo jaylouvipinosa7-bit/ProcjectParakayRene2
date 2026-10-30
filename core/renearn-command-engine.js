@@ -62,7 +62,10 @@
                         amount: payload.amount || 1,
                         username: payload.username || 'RENEarn',
                         branding: 'RENEarn',
-                        label: payload.label || command
+                        label: payload.label || command,
+                        isTest: true,
+                        noJarDrop: true,
+                        noOverlayCount: true
                     })
                 });
 

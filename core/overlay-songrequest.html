@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Request Live Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --spotify-green: #1db954;
+            --spotify-green-glow: rgba(29, 185, 84, 0.45);
+            --bg-card: rgba(15, 23, 42, 0.88);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: transparent;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 24px;
+        }
+
+        /* FLOATING MUSIC WIDGET CONTAINER */
+        .music-widget-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 440px;
+            width: 100%;
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* MAIN NOW PLAYING CARD */
+        .now-playing-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(10, 15, 28, 0.96) 100%);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(29, 185, 84, 0.15);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        .now-playing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--spotify-green), transparent);
+        }
+
+        /* VINYL ROTATING DISC & ART */
+        .vinyl-container {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+        }
+
+        .vinyl-disc {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2d3748 10%, #1a202c 30%, #000000 70%, #111 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), inset 0 0 0 2px rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spinVinyl 6s linear infinite;
+            animation-play-state: running;
+        }
+
+        .vinyl-disc.paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes spinVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .vinyl-artwork {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .vinyl-center-hole {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #0f172a;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        /* TRACK INFO */
+        .track-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .track-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .now-playing-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(29, 185, 84, 0.15);
+            border: 1px solid rgba(29, 185, 84, 0.35);
+            color: var(--spotify-green);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        /* LIVE EQUALIZER BARS */
+        .equalizer-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2.5px;
+            height: 12px;
+        }
+
+        .eq-bar {
+            width: 2.5px;
+            background: var(--spotify-green);
+            border-radius: 2px;
+            animation: eqBounce 1s ease-in-out infinite alternate;
+        }
+
+        .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { height: 90%; animation-delay: 0.3s; }
+        .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 100%; animation-delay: 0.4s; }
+
+        @keyframes eqBounce {
+            0% { height: 20%; }
+            100% { height: 100%; }
+        }
+
+        .track-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+
+        .track-artist {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-singer-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(168, 85, 247, 0.25) 100%);
+            border: 1px solid rgba(244, 114, 182, 0.65);
+            color: #f472b6;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-top: 2px;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.25);
+            letter-spacing: 0.4px;
+        }
+
+        .track-singer-chip strong {
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.1px;
+        }
+
+        .track-requester {
+            font-size: 10.5px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        /* PROGRESS BAR */
+        .progress-bar-wrap {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, var(--spotify-green));
+            border-radius: 999px;
+            width: 35%;
+            transition: width 1s linear;
+            box-shadow: 0 0 8px var(--spotify-green-glow);
+        }
+
+        .progress-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* UP NEXT QUEUE DRAWER */
+        .up-next-banner {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            backdrop-filter: blur(14px);
+            font-size: 11px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .up-next-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .up-next-badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 5px;
+            white-space: nowrap;
+        }
+
+        .up-next-song {
+            color: #cbd5e1;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .up-next-count {
+            color: var(--text-muted);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        /* COMMAND TIP */
+        .command-guide-bar {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 10.5px;
+            color: #94a3b8;
+            letter-spacing: 0.2px;
+        }
+
+        .cmd-chip {
+            background: rgba(29, 185, 84, 0.2);
+            color: #4ade80;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-widget-wrapper" id="musicWidget">
+        <!-- UP NEXT ROW -->
+        <div class="up-next-banner" id="upNextBanner">
+            <div class="up-next-left">
+                <span class="up-next-badge">UP NEXT</span>
+                <span class="up-next-song" id="upNextSongTitle">Bomba - Jessy (req by @ChatViewer)</span>
+            </div>
+            <span class="up-next-count" id="queueCountLabel">2 in queue</span>
+        </div>
+
+        <!-- MAIN NOW PLAYING WIDGET -->
+        <div class="now-playing-card">
+            <!-- VINYL ROTATING ARTWORK -->
+            <div class="vinyl-container">
+                <div class="vinyl-disc" id="vinylDisc">
+                    <img id="trackArtwork" class="vinyl-artwork" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop" alt="Album Cover" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop'">
+                    <div class="vinyl-center-hole"></div>
+                </div>
+            </div>
+
+            <!-- DETAILS -->
+            <div class="track-details">
+                <div class="track-badge-row">
+                    <div class="now-playing-pill">
+                        <span style="font-size: 10px;">🟢</span>
+                        <span>NOW PLAYING</span>
+                    </div>
+                    <div class="equalizer-bars" id="eqBars">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                    </div>
+                </div>
+
+                <div class="track-title" id="trackTitle">Blinding Lights</div>
+                <div class="track-singer-chip" id="singerChipWrap">
+                    <span>🎤 SINGER:</span>
+                    <strong id="trackSinger">The Weeknd</strong>
+                </div>
+                <div class="track-artist" id="trackArtist" style="display: none;">The Weeknd</div>
+
+                <div class="track-requester" id="trackRequesterRow">
+                    <span>💬</span>
+                    <span>Requested by: <strong id="requesterName" style="color: #ffffff;">@StreamHost</strong></span>
+                </div>
+
+                <!-- PROGRESS BAR -->
+                <div class="progress-bar-wrap">
+                    <span class="progress-time" id="currentTimeLabel">1:05</span>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill" style="width: 30%;"></div>
+                    </div>
+                    <span class="progress-time" id="totalTimeLabel">3:40</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMMAND GUIDE TICKER -->
+        <div class="command-guide-bar">
+            <span>Type in chat:</span>
+            <span class="cmd-chip">!play [song name]</span>
+            <span>to request music</span>
+        </div>
+    </div>
+
+    <script>
+        let currentState = null;
+        let progressTimer = null;
+        let currentProgressMs = 0;
+        let durationMs = 180000;
+
+        function formatTime(ms) {
+            if (!ms || ms < 0) return '0:00';
+            const totalSec = Math.floor(ms / 1000);
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        let overlayAudio = null;
+        let overlayYtIframe = null;
+        function syncOverlayAudio(now) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const audioEnabled = urlParams.get('audio') === '1' || urlParams.get('sound') === '1';
+            if (!audioEnabled || !now) {
+                if (overlayAudio) {
+                    overlayAudio.pause();
+                    overlayAudio = null;
+                }
+                if (overlayYtIframe) {
+                    overlayYtIframe.src = 'about:blank';
+                }
+                return;
+            }
+
+            // 1. Full YouTube Track Playback (Whole 3-5 Minute Song)
+            if (now.youtubeId) {
+                if (overlayAudio) {
+                    overlayAudio.pause();
+                    overlayAudio = null;
+                }
+                if (!overlayYtIframe) {
+                    overlayYtIframe = document.createElement('iframe');
+                    overlayYtIframe.id = 'overlayYtAudioFrame';
+                    overlayYtIframe.style.position = 'absolute';
+                    overlayYtIframe.style.width = '1px';
+                    overlayYtIframe.style.height = '1px';
+                    overlayYtIframe.style.opacity = '0';
+                    overlayYtIframe.style.pointerEvents = 'none';
+                    overlayYtIframe.setAttribute('allow', 'autoplay');
+                    document.body.appendChild(overlayYtIframe);
+                }
+                const startSec = Math.floor((now.progressMs || 0) / 1000);
+                const targetSrc = `https://www.youtube.com/embed/${now.youtubeId}?autoplay=${now.isPlaying !== false ? 1 : 0}&start=${startSec}&origin=${encodeURIComponent(window.location.origin)}`;
+                if (!overlayYtIframe.src || !overlayYtIframe.src.includes(now.youtubeId)) {
+                    overlayYtIframe.src = targetSrc;
+                }
+                return;
+            }
+
+            // 2. Local/Preview Fallback
+            if (now.previewUrl) {
+                if (!overlayAudio || overlayAudio.src !== now.previewUrl) {
+                    if (overlayAudio) overlayAudio.pause();
+                    overlayAudio = new Audio(now.previewUrl);
+                    overlayAudio.volume = 0.85;
+
+                    overlayAudio.onerror = () => {
+                        if (now.previewUrl && !overlayAudio.src.includes('/api/songrequest/proxy-audio')) {
+                            overlayAudio.src = '/api/songrequest/proxy-audio?url=' + encodeURIComponent(now.previewUrl);
+                            overlayAudio.load();
+                            if (now.isPlaying !== false) overlayAudio.play().catch(() => {});
+                        }
+                    };
+                }
+
+                if (now.isPlaying !== false) {
+                    overlayAudio.play().catch(() => {});
+                } else {
+                    overlayAudio.pause();
+                }
+            }
+        }
+
+        function updateUI(state) {
+            currentState = state;
+            if (!state) return;
+
+            const now = state.nowPlaying;
+            const vinyl = document.getElementById('vinylDisc');
+            const eq = document.getElementById('eqBars');
+
+            if (now && now.title) {
+                document.getElementById('trackTitle').textContent = now.title;
+                const singer = now.singer || now.artist || 'The Weeknd';
+                document.getElementById('trackSinger').textContent = singer;
+                document.getElementById('trackArtist').textContent = singer;
+                document.getElementById('requesterName').textContent = now.requestedBy ? `@${now.requestedBy}` : '@StreamHost';
+
+                if (now.coverUrl) {
+                    document.getElementById('trackArtwork').src = now.coverUrl;
+                }
+
+                currentProgressMs = now.progressMs || 0;
+                durationMs = now.durationMs || 180000;
+
+                const pct = Math.min(100, Math.max(0, (currentProgressMs / durationMs) * 100));
+                document.getElementById('progressFill').style.width = `${pct}%`;
+                document.getElementById('currentTimeLabel').textContent = formatTime(currentProgressMs);
+                document.getElementById('totalTimeLabel').textContent = formatTime(durationMs);
+
+                if (now.isPlaying !== false) {
+                    if (vinyl) vinyl.classList.remove('paused');
+                    if (eq) eq.style.opacity = '1';
+                } else {
+                    if (vinyl) vinyl.classList.add('paused');
+                    if (eq) eq.style.opacity = '0.3';
+                }
+
+                syncOverlayAudio(now);
+            } else {
+                syncOverlayAudio(null);
+            }
+
+            // Up next queue banner
+            const queue = state.queue || [];
+            const upNextBanner = document.getElementById('upNextBanner');
+            if (queue.length > 0) {
+                const next = queue[0];
+                document.getElementById('upNextSongTitle').textContent = `${next.title} - ${next.artist || ''} (req by @${next.requestedBy || 'Viewer'})`;
+                document.getElementById('queueCountLabel').textContent = `${queue.length} in queue`;
+                if (upNextBanner) upNextBanner.style.display = 'flex';
+            } else {
+                if (upNextBanner) upNextBanner.style.display = 'none';
+            }
+        }
+
+        async function fetchSongState() {
+            try {
+                const res = await fetch('/api/songrequest/state');
+                if (res.ok) {
+                    const data = await res.json();
+                    updateUI(data);
+                }
+            } catch (e) {}
+        }
+
+        // Live progress increment ticker
+        setInterval(() => {
+            if (currentState && currentState.nowPlaying && currentState.nowPlaying.isPlaying !== false) {
+                currentProgressMs += 1000;
+                if (currentProgressMs > durationMs) currentProgressMs = durationMs;
+                const pct = Math.min(100, (currentProgressMs / durationMs) * 100);
+                document.getElementById('progressFill').style.width = `${pct}%`;
+                document.getElementById('currentTimeLabel').textContent = formatTime(currentProgressMs);
+            }
+        }, 1000);
+
+        // Polling sync
+        fetchSongState();
+        setInterval(fetchSongState, 3500);
+
+        // SSE Event Stream for 0ms Instant Updates
+        if (typeof EventSource !== 'undefined') {
+            const evSource = new EventSource('/api/events');
+            evSource.onmessage = (event) => {
+                try {
+                    const parsed = JSON.parse(event.data);
+                    if (parsed.type && parsed.type.startsWith('songrequest')) {
+                        fetchSongState();
+                    }
+                } catch (e) {}
+            };
+        }
+    </script>
+</body>
+</html>

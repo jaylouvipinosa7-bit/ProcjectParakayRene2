@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="fireFlame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#b91c1c" />
+      <stop offset="35%" stop-color="#ea580c" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#fef08a" />
+    </linearGradient>
+    <linearGradient id="fireInner" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="50%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+    <linearGradient id="fireCupBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7f1d1d" />
+      <stop offset="50%" stop-color="#450a0a" />
+      <stop offset="100%" stop-color="#1c0505" />
+    </linearGradient>
+    <filter id="fireGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Sparks & Embers -->
+  <circle cx="45" cy="40" r="3" fill="#fef08a" opacity="0.9" />
+  <circle cx="155" cy="35" r="3.5" fill="#f59e0b" opacity="0.9" />
+  <circle cx="165" cy="85" r="2.5" fill="#ea580c" opacity="0.8" />
+  <circle cx="35" cy="90" r="2.5" fill="#f97316" opacity="0.8" />
+  <polygon points="150,25 152,30 157,31 152,33 150,38 148,33 143,31 148,30" fill="#fff" opacity="0.9" />
+
+  <!-- Flaming Handles -->
+  <path d="M 62 60 C 20 50, 15 110, 65 120 C 52 105, 48 85, 62 75 Z" fill="url(#fireFlame)" stroke="#ea580c" stroke-width="2" />
+  <path d="M 138 60 C 180 50, 185 110, 135 120 C 148 105, 152 85, 138 75 Z" fill="url(#fireFlame)" stroke="#ea580c" stroke-width="2" />
+
+  <!-- Outer Fire Flame Silhouette -->
+  <path d="M 100 20 Q 120 45 115 65 Q 135 48 142 75 Q 150 110 100 135 Q 50 110 58 75 Q 65 48 85 65 Q 80 45 100 20 Z" fill="url(#fireFlame)" stroke="#ef4444" stroke-width="2.5" filter="url(#fireGlow)" />
+
+  <!-- Inner Hot Core Flame -->
+  <path d="M 100 45 Q 112 65 108 80 Q 120 70 122 90 Q 125 115 100 128 Q 75 115 78 90 Q 80 70 92 80 Q 88 65 100 45 Z" fill="url(#fireInner)" />
+
+  <!-- Flame Core Highlight -->
+  <ellipse cx="100" cy="100" rx="12" ry="18" fill="#ffffff" opacity="0.85" />
+
+  <!-- Pedestal -->
+  <path d="M 90 135 L 110 135 L 114 158 L 86 158 Z" fill="url(#fireFlame)" stroke="#991b1b" stroke-width="2" />
+  <rect x="62" y="158" width="76" height="20" rx="4" fill="url(#fireCupBase)" stroke="#ea580c" stroke-width="2" />
+  <rect x="72" y="163" width="56" height="10" rx="2" fill="#f59e0b" opacity="0.85" />
+</svg>

@@ -1,0 +1,14 @@
+{
+  "name": "RENEarnPVZClassicMod",
+  "versionName": "47v",
+  "versionCode": 47,
+  "info": "renearn.studio",
+  "game": "PvZClassic",
+  "version": "47v (BETA)",
+  "author": "RENEarn Studio",
+  "description": "RENEarn Live Stream Mod for PvZ Classic & MelonLoader",
+  "melonLoader": {
+    "autoLoad": true,
+    "version": "net6"
+  }
+}

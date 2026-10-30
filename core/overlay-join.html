@@ -34,9 +34,9 @@
             pointer-events: none;
         }
 
-        /* Test preview background when ?preview=true */
+        /* Transparent background in all modes including preview */
         body.preview-mode {
-            background: radial-gradient(circle at center, #1a1f2c 0%, #0d1117 100%) !important;
+            background: transparent !important;
         }
 
         /* Master Alert Stage */
@@ -136,9 +136,10 @@
         }
 
         /* ----------------------------------------------------
-           ROTATING BACKGROUND SUNBURST RAYS
+           BACKGROUND SUNBURST RAYS (HIDDEN PER USER REQUEST)
            ---------------------------------------------------- */
         .sunburst-rays {
+            display: none !important;
             position: absolute;
             top: 25px;
             left: 50%;
@@ -993,7 +994,7 @@
             applyConfigUI();
             pollEvents();
 
-            if (isLoop) {
+            if (isLoop || isPreview || params.get('preview') === 'true' || window.self !== window.top) {
                 const previewUser = params.get('user') || 'renearn';
                 viewerUsername.textContent = '';
                 viewerUsername.style.display = 'none';

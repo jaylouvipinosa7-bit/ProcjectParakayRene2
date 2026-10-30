@@ -15,6 +15,51 @@
         "actionType":  "zombie"
     },
     {
+        "id":  "1793333183209",
+        "action":  "LikeAmount",
+        "giftId":  "",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn Burglar Bungee Zombie (63)",
+        "funcImg":  "images/game-icons/pvz/spawn_burglar_bungee.webp",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2242%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E5K%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
+        "triggerValue":  "5000",
+        "commands":  "spawn_burglar_bungee",
+        "repetition":  100,
+        "hideInOverlay":  false,
+        "triggerType":  "likes_all",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1793333262680",
+        "action":  "LikeAmount",
+        "giftId":  "",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)",
+        "funcImg":  "images/game-icons/pvz/spawn_football_boss.webp",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2236%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E10K%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
+        "triggerValue":  "10000",
+        "commands":  "spawn_football_boss",
+        "repetition":  50,
+        "hideInOverlay":  false,
+        "triggerType":  "likes_all",
+        "actionType":  "zombie"
+    },
+    {
+        "id":  "1793333399248",
+        "action":  "LikeAmount",
+        "giftId":  "",
+        "giftName":  "Total Likes",
+        "funcName":  "Spawn Giga Mecha-nut Zombie (210)",
+        "funcImg":  "images/game-icons/pvz/spawn_super_machine_nut_zombie.webp",
+        "trigImg":  "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22\u0027Inter\u0027%2C%20-apple-system%2C%20\u0027Segoe%20UI\u0027%2C%20\u0027Arial%20Black\u0027%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2236%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E30K%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
+        "triggerValue":  "30000",
+        "commands":  "spawn_super_machine_nut_zombie;spawn_submarine_c2",
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "likes_all",
+        "actionType":  "zombie"
+    },
+    {
         "id":  "3",
         "action":  "LikeAmount",
         "giftId":  "",
@@ -54,21 +99,6 @@
         "trigImg":  "images/tiktok-gifts/1429010_palm_of_protection.webp",
         "triggerValue":  "",
         "commands":  "spawn_kirov_c",
-        "repetition":  20,
-        "hideInOverlay":  false,
-        "triggerType":  "gift",
-        "actionType":  "zombie"
-    },
-    {
-        "id":  "5",
-        "action":  "SelectedGift",
-        "giftId":  "5655",
-        "giftName":  "Rose",
-        "funcName":  "Spawn Ultimate Football Zombie",
-        "funcImg":  "images/game-icons/pvz/spawn_burglar_bungee.webp",
-        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_burglar_bungee",
         "repetition":  20,
         "hideInOverlay":  false,
         "triggerType":  "gift",
@@ -150,6 +180,21 @@
         "actionType":  "zombie"
     },
     {
+        "id":  "5",
+        "action":  "SelectedGift",
+        "giftId":  "5655",
+        "giftName":  "Rose",
+        "funcName":  "Spawn Ultimate Football Zombie",
+        "funcImg":  "images/game-icons/pvz/spawn_burglar_bungee.webp",
+        "trigImg":  "images/tiktok-gifts/5655_rose.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_burglar_bungee",
+        "repetition":  20,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "zombie"
+    },
+    {
         "id":  "1792307359731",
         "action":  "SelectedGift",
         "giftId":  "59881",
@@ -163,6 +208,21 @@
         "hideInOverlay":  false,
         "triggerType":  "gift",
         "actionType":  "zombie"
+    },
+    {
+        "id":  "10",
+        "action":  "SelectedGift",
+        "giftId":  "6064",
+        "giftName":  "GG",
+        "funcName":  "Spawn Squalour Zombie",
+        "funcImg":  "images/game-icons/pvz/spawn_ultimatesunflower.webp",
+        "trigImg":  "images/tiktok-gifts/6064_gg.webp",
+        "triggerValue":  "",
+        "commands":  "spawn_ultimate_sunflower",
+        "repetition":  1,
+        "hideInOverlay":  false,
+        "triggerType":  "gift",
+        "actionType":  "plant"
     },
     {
         "id":  "64",
@@ -705,21 +765,6 @@
         "actionType":  "plant"
     },
     {
-        "id":  "10",
-        "action":  "SelectedGift",
-        "giftId":  "6064",
-        "giftName":  "GG",
-        "funcName":  "Spawn Squalour Zombie",
-        "funcImg":  "images/game-icons/pvz/spawn_ultimatesunflower.webp",
-        "trigImg":  "images/tiktok-gifts/6064_gg.webp",
-        "triggerValue":  "",
-        "commands":  "spawn_ultimate_sunflower",
-        "repetition":  1,
-        "hideInOverlay":  false,
-        "triggerType":  "gift",
-        "actionType":  "plant"
-    },
-    {
         "id":  "44",
         "action":  "SelectedGift",
         "giftId":  "15231",
@@ -925,7 +970,7 @@
         "triggerValue":  "",
         "commands":  "start_lawnmower",
         "repetition":  1,
-        "hideInOverlay":  false,
+        "hideInOverlay":  true,
         "triggerType":  "gift",
         "actionType":  "custom"
     },
@@ -940,7 +985,7 @@
         "triggerValue":  "",
         "commands":  "restart_lawnmower",
         "repetition":  1,
-        "hideInOverlay":  false,
+        "hideInOverlay":  true,
         "triggerType":  "gift",
         "actionType":  "custom"
     },
@@ -985,8 +1030,8 @@
         "triggerValue":  "",
         "commands":  "plant_everywahre",
         "repetition":  1,
-        "hideInOverlay":  false,
-        "triggerType":  "gift",
+        "hideInOverlay":  true,
+        "triggerType":  "custom",
         "actionType":  "power"
     }
 ];

@@ -640,8 +640,11 @@
             try {
                 const bc = new BroadcastChannel('renearn_overlay_events');
                 bc.onmessage = function(e) {
-                    if (e.data && (e.data.type === 'trigger_counter' || e.data.type === 'gift' || e.data.type === 'spin_result')) {
-                        syncTriggerCounter();
+                    if (e.data) {
+                        if (e.data.isTest || e.data.noOverlayCount || e.data.username === 'RENEarn' || e.data.username === 'Tester') return;
+                        if (e.data.type === 'trigger_counter' || e.data.type === 'gift' || e.data.type === 'spin_result') {
+                            syncTriggerCounter();
+                        }
                     }
                 };
             } catch (err) {}
@@ -661,6 +664,7 @@
                     if (data.serverTime) lastEvtTime = data.serverTime;
                     if (Array.isArray(data.events) && data.events.length > 0) {
                         for (const ev of data.events) {
+                            if (ev.isTest || ev.noOverlayCount || ev.username === 'RENEarn' || ev.username === 'Tester') continue;
                             if (ev.type === 'trigger_counter' || ev.type === 'gift' || ev.type === 'spin_result') {
                                 syncTriggerCounter();
                                 break;

@@ -1,24 +1,24 @@
 ﻿{
     "split1":  {
-                   "cols":  "6",
+                   "cols":  "10",
                    "offset":  0,
-                   "limit":  35,
+                   "limit":  37,
                    "style":  "strip"
                },
     "split2":  {
-                   "cols":  "6",
-                   "offset":  35,
+                   "cols":  "10",
+                   "offset":  37,
                    "limit":  32,
                    "style":  "strip"
                },
     "single":  {
-                   "cols":  "2",
+                   "cols":  "12",
                    "limit":  0,
                    "style":  "detailed"
                },
     "common":  {
                    "preset":  "pvz",
-                   "theme":  "blackhole",
+                   "theme":  "cyber-neon",
                    "margin":  1,
                    "height":  46,
                    "padding":  4,
