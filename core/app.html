@@ -16031,6 +16031,392 @@
         }
 
 </style>
+<style>
+
+        /* ==================== 5-GAME MOVING PICTURE GAMEPLAY PREVIEW SYSTEM ==================== */
+        .game-poster-box {
+            position: relative;
+            width: 100%;
+            height: 255px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #090d16;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .game-poster-img {
+            width: 120% !important;
+            height: 120% !important;
+            max-width: none !important;
+            object-fit: cover !important;
+            object-position: center !important;
+            position: absolute !important;
+            top: -10% !important;
+            left: -10% !important;
+            transform-origin: center center;
+            will-change: transform, filter;
+            transition: filter 0.4s ease;
+        }
+
+        /* CARD 1: PvZ Fusion 4.0 - Dragon Peashooter & Horde Camera Movement */
+        .cam-fusion {
+            animation: moveFusionGameplayCam 11s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+        }
+
+        @keyframes moveFusionGameplayCam {
+            0% {
+                transform: scale(1.05) translate(0%, 0%) rotate(0deg);
+                filter: brightness(1) contrast(1.05);
+            }
+            25% {
+                transform: scale(1.18) translate(-4%, -3%) rotate(-0.6deg);
+                filter: brightness(1.1) contrast(1.12);
+            }
+            50% {
+                transform: scale(1.22) translate(3%, -1%) rotate(0.4deg);
+                filter: brightness(1.15) contrast(1.15);
+            }
+            75% {
+                transform: scale(1.14) translate(4%, 3%) rotate(-0.3deg);
+                filter: brightness(1.08) contrast(1.08);
+            }
+            100% {
+                transform: scale(1.08) translate(-2%, 2%) rotate(0.2deg);
+                filter: brightness(1.02) contrast(1.05);
+            }
+        }
+
+        /* CARD 2: PvZ Hybrid Edition - Mecha Gargantuar Heavy Recoil & Storm Camera Movement */
+        .cam-hybrid {
+            animation: moveHybridGameplayCam 9.5s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+        }
+
+        @keyframes moveHybridGameplayCam {
+            0% {
+                transform: scale(1.06) translate(0%, 0%) rotate(0deg);
+                filter: brightness(1) saturate(1.05);
+            }
+            30% {
+                transform: scale(1.20) translate(2%, -4%) rotate(0.5deg);
+                filter: brightness(1.2) saturate(1.25);
+            }
+            60% {
+                transform: scale(1.15) translate(-4%, 2%) rotate(-0.5deg);
+                filter: brightness(1.12) saturate(1.15);
+            }
+            85% {
+                transform: scale(1.24) translate(1%, -2%) rotate(0.8deg);
+                filter: brightness(1.25) saturate(1.3);
+            }
+            100% {
+                transform: scale(1.09) translate(0%, 1%) rotate(0deg);
+                filter: brightness(1) saturate(1.05);
+            }
+        }
+
+        /* CARD 3: PvZ Classic / GOTY - Smooth Lawn Sweep Camera Movement */
+        .cam-classic {
+            animation: moveClassicGameplayCam 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveClassicGameplayCam {
+            0% {
+                transform: scale(1.05) translate(-4%, 0%) rotate(0deg);
+                filter: brightness(1.02);
+            }
+            45% {
+                transform: scale(1.18) translate(3%, -2%) rotate(0.4deg);
+                filter: brightness(1.14);
+            }
+            80% {
+                transform: scale(1.12) translate(1%, 3%) rotate(-0.3deg);
+                filter: brightness(1.08);
+            }
+            100% {
+                transform: scale(1.06) translate(-2%, 1%) rotate(0deg);
+                filter: brightness(1.04);
+            }
+        }
+
+        /* CARD 4: Zombie Tsunami PC - Massive Surging Wave Motion */
+        .cam-tsunami {
+            animation: moveTsunamiGameplayCam 8s cubic-bezier(0.35, 0.1, 0.25, 1) infinite alternate;
+        }
+
+        @keyframes moveTsunamiGameplayCam {
+            0% {
+                transform: scale(1.06) translate(0%, 2%) rotate(0deg);
+                filter: brightness(1);
+            }
+            30% {
+                transform: scale(1.16) translate(-2%, -3%) rotate(-0.8deg);
+                filter: brightness(1.12) saturate(1.15);
+            }
+            65% {
+                transform: scale(1.25) translate(2%, -6%) rotate(1deg);
+                filter: brightness(1.22) saturate(1.25);
+            }
+            100% {
+                transform: scale(1.10) translate(0%, 1%) rotate(0deg);
+                filter: brightness(1.05);
+            }
+        }
+
+        /* CARD 5: Minecraft Chaos - Ender Dragon Swoop & TNT Shockwave Motion */
+        .cam-minecraft {
+            animation: moveMinecraftGameplayCam 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveMinecraftGameplayCam {
+            0% {
+                transform: scale(1.06) translate(0%, -3%) rotate(0deg);
+                filter: brightness(1);
+            }
+            35% {
+                transform: scale(1.22) translate(-3%, 3%) rotate(0.6deg);
+                filter: brightness(1.18) contrast(1.15);
+            }
+            70% {
+                transform: scale(1.18) translate(3%, -1%) rotate(-0.5deg);
+                filter: brightness(1.12) contrast(1.1);
+            }
+            100% {
+                transform: scale(1.08) translate(0%, 1%) rotate(0deg);
+                filter: brightness(1.02);
+            }
+        }
+
+        /* Hover acceleration: speeds up and intensifies the gameplay motion! */
+        .stream-game-card:hover .game-poster-img {
+            filter: brightness(1.22) contrast(1.18) saturate(1.2) !important;
+            animation-duration: 5s !important;
+        }
+
+        /* Live Gameplay Preview Badge */
+        .gameplay-preview-pill {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #34d399;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.04em;
+            backdrop-filter: blur(6px);
+            z-index: 5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .stream-game-card:hover .gameplay-preview-pill {
+            border-color: #34d399;
+            background: rgba(0, 0, 0, 0.88);
+            transform: scale(1.05);
+        }
+
+        .preview-rec-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: previewDotBlink 0.9s infinite alternate;
+        }
+
+        @keyframes previewDotBlink {
+            0% { opacity: 0.2; transform: scale(0.75); }
+            100% { opacity: 1; transform: scale(1.25); }
+        }
+
+        /* ==================== ATMOSPHERIC GAMEPLAY MOTION FX LAYERS ==================== */
+        .game-fx-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        /* Fusion Flame Embers */
+        .fx-fusion-embers {
+            background: radial-gradient(circle at 30% 40%, rgba(245, 158, 11, 0.12) 0%, transparent 60%);
+        }
+
+        .fx-ember {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fbbf24;
+            box-shadow: 0 0 10px #f59e0b, 0 0 18px #ef4444;
+            opacity: 0;
+        }
+
+        .fx-ember.e1 {
+            bottom: 10%;
+            left: 25%;
+            animation: emberRise 3s ease-out infinite;
+        }
+
+        .fx-ember.e2 {
+            bottom: 15%;
+            left: 45%;
+            animation: emberRise 3.5s ease-out infinite 1.2s;
+        }
+
+        .fx-ember.e3 {
+            bottom: 8%;
+            left: 65%;
+            animation: emberRise 2.8s ease-out infinite 0.7s;
+        }
+
+        @keyframes emberRise {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-160px) translateX(20px) scale(1.6); opacity: 0; }
+        }
+
+        .fx-dragon-flame {
+            position: absolute;
+            top: 25%;
+            left: 35%;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 80%);
+            animation: dragonPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes dragonPulse {
+            0% { transform: scale(0.85); opacity: 0.4; }
+            100% { transform: scale(1.25); opacity: 0.9; }
+        }
+
+        /* Hybrid Lightning Strobe */
+        .fx-hybrid-lightning {
+            background: radial-gradient(circle at 50% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+        }
+
+        .fx-lightning-flash {
+            position: absolute;
+            inset: 0;
+            background: rgba(192, 132, 252, 0.22);
+            opacity: 0;
+            animation: lightningFlicker 5s infinite;
+        }
+
+        @keyframes lightningFlicker {
+            0%, 88%, 100% { opacity: 0; }
+            89% { opacity: 0.8; }
+            90% { opacity: 0.1; }
+            91% { opacity: 0.9; }
+            93% { opacity: 0; }
+        }
+
+        .fx-laser-beam {
+            position: absolute;
+            top: 48%;
+            left: 45%;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #ef4444, #f43f5e, transparent);
+            box-shadow: 0 0 10px #ef4444;
+            opacity: 0;
+            animation: laserPulse 4s infinite 1.5s;
+        }
+
+        @keyframes laserPulse {
+            0%, 70%, 100% { opacity: 0; transform: scaleX(0.2); }
+            75% { opacity: 1; transform: scaleX(1.4); }
+            85% { opacity: 0.8; transform: scaleX(1); }
+            90% { opacity: 0; }
+        }
+
+        /* Classic Sunbeam & Sun Orbs */
+        .fx-sun-orb {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fef08a 0%, #f59e0b 60%, transparent 100%);
+            box-shadow: 0 0 16px #facc15;
+            animation: sunDrift 6s ease-in-out infinite alternate;
+        }
+
+        .fx-sun-orb.s1 {
+            top: 45%;
+            left: 42%;
+        }
+
+        .fx-sun-orb.s2 {
+            top: 60%;
+            left: 25%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes sunDrift {
+            0% { transform: translateY(0) scale(0.9); opacity: 0.6; }
+            50% { transform: translateY(-12px) scale(1.15); opacity: 0.95; }
+            100% { transform: translateY(-4px) scale(1); opacity: 0.7; }
+        }
+
+        /* Tsunami Wave Roll */
+        .fx-wave-roller {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45%;
+            background: linear-gradient(to top, rgba(14, 165, 233, 0.25) 0%, transparent 100%);
+            animation: waveRoll 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes waveRoll {
+            0% { transform: translateY(12px) scaleY(0.85); opacity: 0.4; }
+            100% { transform: translateY(0px) scaleY(1.2); opacity: 0.8; }
+        }
+
+        /* Minecraft Chaos TNT & Ender Sparks */
+        .fx-tnt-spark {
+            position: absolute;
+            top: 65%;
+            left: 15%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 12px #f43f5e, 0 0 24px #fbbf24;
+            animation: tntSpark 1.2s infinite alternate;
+        }
+
+        @keyframes tntSpark {
+            0% { opacity: 0.3; transform: scale(0.6); }
+            100% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .fx-ender-particles {
+            position: absolute;
+            top: 20%;
+            right: 20%;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+            animation: enderAura 3s infinite alternate;
+        }
+
+        @keyframes enderAura {
+            0% { transform: scale(0.8); opacity: 0.3; }
+            100% { transform: scale(1.3); opacity: 0.85; }
+        }
+
+</style>
 </head>
 
 <body>
@@ -17038,138 +17424,7 @@
                 </div>
 
                 
-                <!-- ===================== ENHANCED CONNECTION GUIDELINE (3 SIMPLE STEPS) ===================== -->
-                <div class="dashboard-section enhanced-connection-guide" id="dashboardConnectionGuideline" style="margin-top: 20px; margin-bottom: 24px;">
-                    <div class="guide-banner-header">
-                        <div class="guide-header-left">
-                            <div class="guide-pulse-icon-box">
-                                <span class="guide-main-icon">🔌</span>
-                                <span class="guide-icon-ring"></span>
-                            </div>
-                            <div>
-                                <h3 class="guide-banner-title">
-                                    Quick Connection Guideline <span class="guide-title-pill">Game • TikTok • OBS</span>
-                                </h3>
-                                <p class="guide-banner-desc">
-                                    Follow these 3 simple steps to connect your game, live TikTok chat/gifts, and OBS stream overlay in 60 seconds.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="guide-header-right">
-                            <span class="guide-live-status-pill">
-                                <span class="guide-beacon-dot"></span>
-                                <span class="guide-status-text">System Pipeline: <strong>Ready &amp; Active</strong></span>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- ANIMATED LIVE DATAFLOW PIPELINE -->
-                    <div class="connection-pipeline-wrapper">
-                        <!-- Node 1: Game -->
-                        <div class="pipeline-node active">
-                            <div class="node-icon-box">🎮</div>
-                            <div class="node-meta">
-                                <div class="node-name">1. Streaming Game</div>
-                                <div class="node-status"><span class="node-dot online"></span> Port 5003 Mod Hooked</div>
-                            </div>
-                        </div>
-
-                        <!-- Animated Stream Flow Beam 1 -->
-                        <div class="pipeline-flow-connector">
-                            <div class="flow-pulse-particle"></div>
-                            <span class="flow-label">Viewer Spawns ➔</span>
-                        </div>
-
-                        <!-- Node 2: RENEarn Studio Bridge -->
-                        <div class="pipeline-node active node-hub">
-                            <div class="node-icon-box">⚡</div>
-                            <div class="node-meta">
-                                <div class="node-name">2. RENEarn Studio</div>
-                                <div class="node-status"><span class="node-dot online"></span> Webcast Engine Active</div>
-                            </div>
-                        </div>
-
-                        <!-- Animated Stream Flow Beam 2 -->
-                        <div class="pipeline-flow-connector">
-                            <div class="flow-pulse-particle" style="animation-delay: 0.75s;"></div>
-                            <span class="flow-label">Live Broadcast ➔</span>
-                        </div>
-
-                        <!-- Node 3: OBS / TikTok LIVE Studio -->
-                        <div class="pipeline-node active">
-                            <div class="node-icon-box">📺</div>
-                            <div class="node-meta">
-                                <div class="node-name">3. Stream Overlay</div>
-                                <div class="node-status"><span class="node-dot online"></span> OBS Source 1080p</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3 HIGH-CONTRAST READABLE STEP CARDS -->
-                    <div class="connection-steps-grid">
-                        <!-- STEP 1: GAME CONNECTION -->
-                        <div class="step-guide-card step-card-game">
-                            <div class="step-card-header">
-                                <span class="step-number-badge step-emerald">STEP 1</span>
-                                <span class="step-target-tag tag-emerald">Game &amp; Mod</span>
-                            </div>
-                            <h4 class="step-guide-title">Launch Game &amp; MelonLoader Mod</h4>
-                            <p class="step-guide-desc">
-                                Open your game (e.g. <strong>PvZ Fusion 4.0</strong>) from its folder. The installed RENEarn MelonLoader mod connects automatically on port <code class="guide-code">5003</code>.
-                            </p>
-                            <div class="step-actions-row">
-                                <button type="button" class="btn-guide-action" onclick="openModFolder()" title="Open game folder">
-                                    📁 Open Game Folder
-                                </button>
-                                <button type="button" class="btn-guide-verify" onclick="testGameConnectionPing(this)" title="Test connection to game mod">
-                                    ⚡ Test Game Ping
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 2: TIKTOK LIVE STUDIO CONNECTION -->
-                        <div class="step-guide-card step-card-tiktok">
-                            <div class="step-card-header">
-                                <span class="step-number-badge step-cyan">STEP 2</span>
-                                <span class="step-target-tag tag-cyan">TikTok LIVE</span>
-                            </div>
-                            <h4 class="step-guide-title">Start TikTok Stream &amp; Connect</h4>
-                            <p class="step-guide-desc">
-                                Start your live stream in <strong>TikTok LIVE Studio</strong>, type your TikTok <strong>@username</strong> in the bar above, and click <strong>Connect</strong>.
-                            </p>
-                            <div class="step-actions-row">
-                                <button type="button" class="btn-guide-action btn-guide-cyan" onclick="document.getElementById('tiktokUsernameInput').focus(); document.getElementById('tiktokUsernameInput').scrollIntoView({behavior:'smooth', block:'center'});">
-                                    👆 Go to Connect Bar
-                                </button>
-                                <button type="button" class="btn-guide-verify" onclick="simulateTestGiftToGame('rose')" title="Simulate a test TikTok gift">
-                                    🎁 Test Gift Trigger
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 3: OBS STUDIO OVERLAY SETUP -->
-                        <div class="step-guide-card step-card-obs">
-                            <div class="step-card-header">
-                                <span class="step-number-badge step-gold">STEP 3</span>
-                                <span class="step-target-tag tag-gold">OBS Studio</span>
-                            </div>
-                            <h4 class="step-guide-title">Add Browser Source in OBS</h4>
-                            <p class="step-guide-desc">
-                                In OBS Studio or TikTok Studio, add a new <strong>Browser Source</strong> with URL <code class="guide-code">http://localhost:8080/overlay.html</code> set to <strong>1920×1080</strong>.
-                            </p>
-                            <div class="step-actions-row">
-                                <button type="button" class="btn-guide-action btn-guide-gold" onclick="copyRunetifyLink('http://127.0.0.1:8080/overlay.html')">
-                                    📋 Copy Overlay Link
-                                </button>
-                                <a href="/overlay.html" target="_blank" class="btn-guide-verify" style="text-decoration: none; text-align: center;">
-                                    ↗ Open Preview
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-<!-- SECTION 1: SELECT STREAMING GAME -->
+                <!-- SECTION 1: SELECT STREAMING GAME -->
                 <div class="dashboard-section">
                     <div class="section-header-row">
                         <div>
@@ -17179,28 +17434,22 @@
                         </div>
                         <div class="section-counter">5 Games Available</div>
                     </div>
-                    <div class="game-cards-grid">
-                        <!-- Card 1: Plants vs. Zombies: Fusion 4.0 -->
+                                        <div class="game-cards-grid">
+                        <!-- PvZ Fusion 4.0 Moving Gameplay Card -->
                         <div class="stream-game-card active" id="gameCard_pvz_fusion_4"
                             onclick="selectStreamingGame('pvz_fusion_4')">
                             <div class="game-poster-box">
                                 <img src="images/games/pvz_fusion_poster.jpg" alt="PvZ Fusion 4.0"
-                                    class="game-poster-img">
+                                    class="game-poster-img cam-fusion">
                                 <div class="game-poster-gradient"></div>
-                                <div class="gameplay-poster-hud">
-                                    <div class="hud-scanline"></div>
-                                    <div class="hud-radar-sweep"></div>
-                                    <div class="hud-live-tag"><span class="hud-live-rec"></span> LIVE GAMEPLAY</div>
-                                    <div class="hud-projectile hud-p1"></div>
-                                    <div class="hud-projectile hud-p2"></div>
-                                    <div class="hud-gift-bubble g-rose">🌹 @Viewer: +1 Zombie</div>
-                                    <div class="hud-gift-bubble g-lion">🦁 @StreamerFan: BOSS!</div>
-                                    <div class="hud-dmg-burst d1">💥 350 DMG</div>
-                                    <div class="hud-dmg-burst d2">⚡ COMBO x8</div>
+                                <div class="game-fx-layer fx-fusion-embers"><div class="fx-ember e1"></div><div class="fx-ember e2"></div><div class="fx-ember e3"></div><div class="fx-dragon-flame"></div></div>
+                                <div class="gameplay-preview-pill">
+                                    <span class="preview-rec-dot"></span>
+                                    <span>LIVE PREVIEW</span>
                                 </div>
                                 <span class="game-card-badge badge-connected" id="badge_pvz_fusion_4">CONNECTED</span>
                             </div>
-                            <div class="game-card-title">PvZ: Fusion 4.0</div>
+                            <div class="game-card-title">PvZ Fusion 4.0</div>
                             <div class="game-card-footer">
                                 <span class="game-card-tag">Official • Live Ready</span>
                                 <button type="button" class="btn-game-select active"
@@ -17208,215 +17457,96 @@
                             </div>
                         </div>
 
-                        <!-- Card 2: PvZ: Hybrid Edition -->
-                        <div class="stream-game-card" id="gameCard_pvz_hybrid"
+                        <!-- PvZ: Hybrid Edition Moving Gameplay Card -->
+                        <div class="stream-game-card " id="gameCard_pvz_hybrid"
                             onclick="selectStreamingGame('pvz_hybrid')">
                             <div class="game-poster-box">
                                 <img src="images/games/pvz_hybrid_poster.jpg" alt="PvZ: Hybrid Edition"
-                                    class="game-poster-img">
+                                    class="game-poster-img cam-hybrid">
                                 <div class="game-poster-gradient"></div>
-                                <div class="gameplay-poster-hud">
-                                    <div class="hud-scanline"></div>
-                                    <div class="hud-radar-sweep"></div>
-                                    <div class="hud-live-tag"><span class="hud-live-rec"></span> HYBRID ACTION</div>
-                                    <div class="hud-projectile hud-p1" style="background:#a855f7; box-shadow:0 0 10px #a855f7;"></div>
-                                    <div class="hud-gift-bubble g-rose" style="border-color:#c084fc;">🍩 @Alex: Hybrid Spawns</div>
-                                    <div class="hud-dmg-burst d1" style="color:#e879f9;">⚡ 480 CRIT</div>
+                                <div class="game-fx-layer fx-hybrid-lightning"><div class="fx-lightning-flash"></div><div class="fx-laser-beam"></div></div>
+                                <div class="gameplay-preview-pill">
+                                    <span class="preview-rec-dot"></span>
+                                    <span>LIVE PREVIEW</span>
                                 </div>
                                 <span class="game-card-badge badge-ready" id="badge_pvz_hybrid">READY</span>
                             </div>
                             <div class="game-card-title">PvZ: Hybrid Edition</div>
                             <div class="game-card-footer">
                                 <span class="game-card-tag">Hybrid • Ready</span>
-                                <button type="button" class="btn-game-select" id="btnSelect_pvz_hybrid">Switch
-                                    Game</button>
+                                <button type="button" class="btn-game-select "
+                                    id="btnSelect_pvz_hybrid">Switch Game</button>
                             </div>
                         </div>
 
-                        <!-- Card 3: PvZ: Original / GOTY Edition -->
-                        <div class="stream-game-card" id="gameCard_pvz_classic"
+                        <!-- PvZ: Classic / GOTY Moving Gameplay Card -->
+                        <div class="stream-game-card " id="gameCard_pvz_classic"
                             onclick="selectStreamingGame('pvz_classic')">
                             <div class="game-poster-box">
-                                <img src="images/games/pvz_classic_poster.jpg" alt="PvZ: Original / GOTY"
-                                    class="game-poster-img">
+                                <img src="images/games/pvz_classic_poster.jpg" alt="PvZ: Classic / GOTY"
+                                    class="game-poster-img cam-classic">
                                 <div class="game-poster-gradient"></div>
-                                <div class="gameplay-poster-hud">
-                                    <div class="hud-scanline"></div>
-                                    <div class="hud-radar-sweep"></div>
-                                    <div class="hud-live-tag"><span class="hud-live-rec"></span> CLASSIC GOTY</div>
-                                    <div class="hud-projectile hud-p1" style="background:#22c55e;"></div>
-                                    <div class="hud-gift-bubble g-rose">🍦 @Chill: Freeze Wave</div>
-                                    <div class="hud-dmg-burst d1">💥 120 DMG</div>
+                                <div class="game-fx-layer fx-classic-sun"><div class="fx-sun-orb s1"></div><div class="fx-sun-orb s2"></div><div class="fx-sunbeam-sweep"></div></div>
+                                <div class="gameplay-preview-pill">
+                                    <span class="preview-rec-dot"></span>
+                                    <span>LIVE PREVIEW</span>
                                 </div>
                                 <span class="game-card-badge badge-ready" id="badge_pvz_classic">READY</span>
                             </div>
                             <div class="game-card-title">PvZ: Classic / GOTY</div>
                             <div class="game-card-footer">
                                 <span class="game-card-tag">Classic PvZ1 • Ready</span>
-                                <button type="button" class="btn-game-select" id="btnSelect_pvz_classic">Switch
-                                    Game</button>
+                                <button type="button" class="btn-game-select "
+                                    id="btnSelect_pvz_classic">Switch Game</button>
                             </div>
                         </div>
 
-                        <!-- Card 4: Zombie Tsunami (Interactive PC) -->
-                        <div class="stream-game-card" id="gameCard_zombie_tsunami"
+                        <!-- Zombie Tsunami (PC) Moving Gameplay Card -->
+                        <div class="stream-game-card " id="gameCard_zombie_tsunami"
                             onclick="selectStreamingGame('zombie_tsunami')">
                             <div class="game-poster-box">
-                                <img src="images/games/zombie_tsunami_poster.jpg" alt="Zombie Tsunami"
-                                    class="game-poster-img">
+                                <img src="images/games/zombie_tsunami_poster.jpg" alt="Zombie Tsunami (PC)"
+                                    class="game-poster-img cam-tsunami">
                                 <div class="game-poster-gradient"></div>
-                                <div class="gameplay-poster-hud">
-                                    <div class="hud-scanline"></div>
-                                    <div class="hud-radar-sweep"></div>
-                                    <div class="hud-live-tag"><span class="hud-live-rec"></span> TSUNAMI WAVE</div>
-                                    <div class="hud-gift-bubble g-lion" style="border-color:#38bdf8;">🌊 @Tide: +15 Horde!</div>
-                                    <div class="hud-dmg-burst d2" style="color:#38bdf8;">🌊 TSUNAMI SURGE</div>
+                                <div class="game-fx-layer fx-tsunami-surge"><div class="fx-wave-roller"></div><div class="fx-splash-mist"></div></div>
+                                <div class="gameplay-preview-pill">
+                                    <span class="preview-rec-dot"></span>
+                                    <span>LIVE PREVIEW</span>
                                 </div>
                                 <span class="game-card-badge badge-ready" id="badge_zombie_tsunami">LIVE READY</span>
                             </div>
                             <div class="game-card-title">Zombie Tsunami (PC)</div>
                             <div class="game-card-footer">
                                 <span class="game-card-tag">Interactive Web • Ready</span>
-                                <button type="button" class="btn-game-select" id="btnSelect_zombie_tsunami">Switch
-                                    Game</button>
+                                <button type="button" class="btn-game-select "
+                                    id="btnSelect_zombie_tsunami">Switch Game</button>
                             </div>
                         </div>
 
-                        <!-- Card 5: Minecraft Chaos & Universal -->
-                        <div class="stream-game-card" id="gameCard_universal_stream"
+                        <!-- Minecraft & Universal Moving Gameplay Card -->
+                        <div class="stream-game-card " id="gameCard_universal_stream"
                             onclick="selectStreamingGame('universal_stream')">
                             <div class="game-poster-box">
-                                <img src="images/games/minecraft_chaos_poster.jpg" alt="Minecraft & Universal Stream"
-                                    class="game-poster-img">
+                                <img src="images/games/minecraft_chaos_poster.jpg" alt="Minecraft & Universal"
+                                    class="game-poster-img cam-minecraft">
                                 <div class="game-poster-gradient"></div>
-                                <div class="gameplay-poster-hud">
-                                    <div class="hud-scanline"></div>
-                                    <div class="hud-radar-sweep"></div>
-                                    <div class="hud-live-tag"><span class="hud-live-rec"></span> CHAOS ENGINE</div>
-                                    <div class="hud-gift-bubble g-lion" style="border-color:#f43f5e;">💣 @TNT: Creeper Rain!</div>
-                                    <div class="hud-dmg-burst d1" style="color:#fbbf24;">⚡ CHAOS TRIGGER</div>
+                                <div class="game-fx-layer fx-minecraft-chaos"><div class="fx-tnt-spark"></div><div class="fx-ender-particles"></div><div class="fx-sword-shine"></div></div>
+                                <div class="gameplay-preview-pill">
+                                    <span class="preview-rec-dot"></span>
+                                    <span>LIVE PREVIEW</span>
                                 </div>
-                                <span class="game-card-badge badge-universal"
-                                    id="badge_universal_stream">UNIVERSAL</span>
+                                <span class="game-card-badge badge-universal" id="badge_universal_stream">UNIVERSAL</span>
                             </div>
                             <div class="game-card-title">Minecraft & Universal</div>
                             <div class="game-card-footer">
                                 <span class="game-card-tag">Universal Stream • Ready</span>
-                                <button type="button" class="btn-game-select" id="btnSelect_universal_stream">Switch
-                                    Game</button>
+                                <button type="button" class="btn-game-select "
+                                    id="btnSelect_universal_stream">Switch Game</button>
                             </div>
                         </div>
+
                     </div>
                 </div>
-
-                
-                    <!-- ===================== INTERACTIVE GAMEPLAY SIMULATION & HOW-IT-WORKS PREVIEW ===================== -->
-                    <div class="gameplay-simulation-container" id="gameplaySimContainer">
-                        <div class="gameplay-sim-topbar">
-                            <div class="sim-title-group">
-                                <div class="sim-live-badge">
-                                    <span class="sim-red-dot"></span>
-                                    <span>LIVE SIMULATOR</span>
-                                </div>
-                                <h4 class="sim-heading">How The Game &amp; Viewer Spawns Work (Gameplay Preview)</h4>
-                                <span class="sim-subheading">Watch real-time how viewer TikTok gifts spawn zombies and trigger plant defense in PvZ Fusion</span>
-                            </div>
-                            <div class="sim-controls-group">
-                                <button type="button" class="btn-sim-toggle" onclick="toggleGameplaySimCollapse(this)" title="Toggle Simulator View">
-                                    <span id="simToggleText">▲ Minimize</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="gameplay-arena-wrapper" id="gameplayArenaWrapper">
-                            <!-- Left: Garden Defense (Plants) -->
-                            <div class="sim-lawn-side plants-side">
-                                <div class="sim-side-label"><span class="side-dot-green"></span> STREAMER LAWN (Plants Defense)</div>
-                                <div class="plant-unit peashooter-fusion" id="simPlantUnit">
-                                    <div class="plant-aura"></div>
-                                    <div class="plant-sprite">🌱🔥</div>
-                                    <div class="plant-name">Flame Peashooter</div>
-                                    <div class="plant-status">⚡ Firing (Auto)</div>
-                                </div>
-                                <div class="plant-unit sunflower-unit">
-                                    <div class="plant-sprite">🌻✨</div>
-                                    <div class="plant-name">Twin Sun</div>
-                                    <div class="plant-status">☀️ +50 Sun/s</div>
-                                </div>
-                            </div>
-
-                            <!-- Middle: Combat Field with Projectiles & Damage -->
-                            <div class="sim-combat-field" id="simCombatField">
-                                <div class="sim-grid-lines"></div>
-                                <div class="sim-live-ticker" id="simLiveTicker">
-                                    <span class="ticker-badge">TIKTOK FEED</span>
-                                    <span class="ticker-text" id="simTickerText">💬 @Viewer: "Let's test this mod!"</span>
-                                </div>
-                                <!-- Projectiles and Zombies will be animated here by JS -->
-                            </div>
-
-                            <!-- Right: Viewer Spawns (Zombies) -->
-                            <div class="sim-lawn-side zombies-side">
-                                <div class="sim-side-label"><span class="side-dot-red"></span> TIKTOK SPAWN FIELD (Viewer Invasions)</div>
-                                <div class="zombie-spawner-stats">
-                                    <div class="sim-stat-box">
-                                        <div class="sim-stat-val" id="simZombiesDefeatedCount">0</div>
-                                        <div class="sim-stat-lbl">Zombies Defeated</div>
-                                    </div>
-                                    <div class="sim-stat-box">
-                                        <div class="sim-stat-val" id="simTotalCoinsHarvested">0</div>
-                                        <div class="sim-stat-lbl">Coins Harvested</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Interactive Test Action Bar (Streamer can click to simulate gifts!) -->
-                        <div class="sim-action-toolbar">
-                            <span class="toolbar-hint">🎮 Click to Test Live Spawn:</span>
-                            <div class="sim-button-row">
-                                <button type="button" class="btn-sim-action btn-sim-rose" onclick="window.simTriggerGiftAction('rose')">
-                                    <span class="btn-icon">🌹</span> 1x Rose ➔ Regular Zombie
-                                </button>
-                                <button type="button" class="btn-sim-action btn-sim-doughnut" onclick="window.simTriggerGiftAction('doughnut')">
-                                    <span class="btn-icon">🍩</span> Doughnut ➔ Conehead (+Shield)
-                                </button>
-                                <button type="button" class="btn-sim-action btn-sim-freeze" onclick="window.simTriggerGiftAction('freeze')">
-                                    <span class="btn-icon">🍦</span> Ice Cream ➔ Freeze All 5s
-                                </button>
-                                <button type="button" class="btn-sim-action btn-sim-boss" onclick="window.simTriggerGiftAction('lion')">
-                                    <span class="btn-icon">🦁</span> Lion ➔ GARGANTUAR BOSS!
-                                </button>
-                                <button type="button" class="btn-sim-action btn-sim-clear" onclick="window.simTriggerGiftAction('sun')">
-                                    <span class="btn-icon">☀️</span> Sun Burst (Clear Field)
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 4-STEP HOW-IT-WORKS EXPLANATION BAR -->
-                        <div class="sim-explainer-bar">
-                            <div class="sim-step-item">
-                                <span class="step-circle">1</span>
-                                <div><strong>Viewer sends Gift</strong><br><span class="step-sub">In TikTok LIVE Chat</span></div>
-                            </div>
-                            <span class="sim-step-arrow">➔</span>
-                            <div class="sim-step-item">
-                                <span class="step-circle">2</span>
-                                <div><strong>RENEarn Relays</strong><br><span class="step-sub">WebSocket port 5003 (&lt;10ms)</span></div>
-                            </div>
-                            <span class="sim-step-arrow">➔</span>
-                            <div class="sim-step-item">
-                                <span class="step-circle">3</span>
-                                <div><strong>In-Game Spawns</strong><br><span class="step-sub">Mod creates live action</span></div>
-                            </div>
-                            <span class="sim-step-arrow">➔</span>
-                            <div class="sim-step-item">
-                                <span class="step-circle">4</span>
-                                <div><strong>Stream Overlay</strong><br><span class="step-sub">Shows viewer avatar &amp; combo</span></div>
-                            </div>
-                        </div>
-                    </div>
-
 
                 <!-- SECTION 2: UNIVERSAL PRESETS -->
                 <div class="dashboard-section" style="margin-top: 26px;">
@@ -51861,345 +51991,7 @@
     </script>
 
 
-        <script>
-        // ==================== INTERACTIVE GAMEPLAY SIMULATOR SCRIPT ====================
-        (function() {
-            let simZombies = [];
-            let simProjectiles = [];
-            let simDefeated = 0;
-            let simCoins = 0;
-            let simIsFrozen = false;
-            let simFreezeTimer = null;
-            let simAnimFrame = null;
-            let simLastShootTime = 0;
-
-            const tickerMessages = [
-                '💬 @Viewer99: "!spawn conehead lets go!"',
-                '🎁 @AnimeFan sent 🌹 Rose!',
-                '💬 @GamerGuy: "Watch out for the gargantuar!"',
-                '🎁 @SuperStar sent 🍩 Doughnut!',
-                '💬 @TikTokLive: "Stream connected to PvZ Fusion!"',
-                '🎁 @Legend_Stream sent 🦁 Lion! (Boss Spawned)'
-            ];
-            let tickerIdx = 0;
-
-            setInterval(() => {
-                const el = document.getElementById('simTickerText');
-                if (el) {
-                    tickerIdx = (tickerIdx + 1) % tickerMessages.length;
-                    el.style.opacity = '0';
-                    setTimeout(() => {
-                        el.textContent = tickerMessages[tickerIdx];
-                        el.style.opacity = '1';
-                    }, 200);
-                }
-            }, 3600);
-
-            window.toggleGameplaySimCollapse = function(btn) {
-                const wrapper = document.getElementById('gameplayArenaWrapper');
-                const text = document.getElementById('simToggleText');
-                if (!wrapper || !text) return;
-                if (wrapper.style.display === 'none') {
-                    wrapper.style.display = 'grid';
-                    text.textContent = '▲ Minimize';
-                } else {
-                    wrapper.style.display = 'none';
-                    text.textContent = '▼ Expand Preview';
-                }
-            };
-
-            function playSynthSfx(type) {
-                try {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (!AudioContext) return;
-                    const ctx = new AudioContext();
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    const now = ctx.currentTime;
-
-                    if (type === 'shoot') {
-                        osc.frequency.setValueAtTime(600, now);
-                        osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-                        gain.gain.setValueAtTime(0.08, now);
-                        gain.gain.linearRampToValueAtTime(0.001, now + 0.1);
-                        osc.start(now);
-                        osc.stop(now + 0.1);
-                    } else if (type === 'hit') {
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(200, now);
-                        osc.frequency.linearRampToValueAtTime(80, now + 0.08);
-                        gain.gain.setValueAtTime(0.12, now);
-                        gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
-                        osc.start(now);
-                        osc.stop(now + 0.08);
-                    } else if (type === 'spawn') {
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(180, now);
-                        osc.frequency.exponentialRampToValueAtTime(450, now + 0.2);
-                        gain.gain.setValueAtTime(0.15, now);
-                        gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
-                        osc.start(now);
-                        osc.stop(now + 0.2);
-                    } else if (type === 'freeze') {
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(800, now);
-                        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.25);
-                        gain.gain.setValueAtTime(0.15, now);
-                        gain.gain.linearRampToValueAtTime(0.001, now + 0.25);
-                        osc.start(now);
-                        osc.stop(now + 0.25);
-                    } else if (type === 'boss') {
-                        osc.type = 'square';
-                        osc.frequency.setValueAtTime(120, now);
-                        osc.frequency.linearRampToValueAtTime(60, now + 0.4);
-                        gain.gain.setValueAtTime(0.2, now);
-                        gain.gain.linearRampToValueAtTime(0.001, now + 0.4);
-                        osc.start(now);
-                        osc.stop(now + 0.4);
-                    }
-                } catch (_) {}
-            }
-
-            window.simTriggerGiftAction = function(giftType) {
-                const field = document.getElementById('simCombatField');
-                if (!field) return;
-
-                if (giftType === 'sun') {
-                    // Clear all zombies with solar supernova explosion
-                    playSynthSfx('freeze');
-                    simZombies.forEach(z => {
-                        createImpactSpark(z.x, z.y, '☀️ 999 SUPERNOVA', '#fde047');
-                        if (z.el && z.el.parentNode) z.el.parentNode.removeChild(z.el);
-                    });
-                    simDefeated += simZombies.length;
-                    simCoins += simZombies.length * 100;
-                    simZombies = [];
-                    updateSimStats();
-                    if (typeof showToast === 'function') showToast('☀️ Solar Burst cleared all zombies!', 'success');
-                    return;
-                }
-
-                if (giftType === 'freeze') {
-                    playSynthSfx('freeze');
-                    simIsFrozen = true;
-                    if (simFreezeTimer) clearTimeout(simFreezeTimer);
-                    field.style.boxShadow = 'inset 0 0 35px rgba(56, 189, 248, 0.7)';
-                    simZombies.forEach(z => {
-                        if (z.el) z.el.style.filter = 'drop-shadow(0 0 10px #38bdf8) hue-rotate(180deg)';
-                    });
-                    if (typeof showToast === 'function') showToast('🍦 All zombies frozen for 5 seconds!', 'info');
-                    simFreezeTimer = setTimeout(() => {
-                        simIsFrozen = false;
-                        field.style.boxShadow = '';
-                        simZombies.forEach(z => {
-                            if (z.el) z.el.style.filter = '';
-                        });
-                    }, 5000);
-                    return;
-                }
-
-                // Spawn Zombie
-                let zombieType = 'normal';
-                let hp = 100;
-                let speed = 0.55;
-                let sprite = '🧟';
-                let name = 'Regular Zombie';
-                let color = '#22c55e';
-
-                if (giftType === 'rose') {
-                    playSynthSfx('spawn');
-                    zombieType = 'normal';
-                    hp = 100;
-                    speed = 0.6;
-                    sprite = '🧟';
-                    name = 'Rose Zombie';
-                    color = '#f43f5e';
-                    if (typeof showToast === 'function') showToast('🌹 1x Rose ➔ Spawned Rose Zombie!', 'info');
-                } else if (giftType === 'doughnut') {
-                    playSynthSfx('spawn');
-                    zombieType = 'conehead';
-                    hp = 220;
-                    speed = 0.45;
-                    sprite = '🧟‍♂️⚠️';
-                    name = 'Conehead Zombie';
-                    color = '#f59e0b';
-                    if (typeof showToast === 'function') showToast('🍩 Doughnut ➔ Spawned Armored Conehead!', 'info');
-                } else if (giftType === 'lion') {
-                    playSynthSfx('boss');
-                    zombieType = 'gargantuar';
-                    hp = 500;
-                    speed = 0.28;
-                    sprite = '👹⚡';
-                    name = 'GARGANTUAR BOSS';
-                    color = '#ef4444';
-                    if (typeof showToast === 'function') showToast('🦁 LION GIFT ➔ SUMMONED GARGANTUAR BOSS!', 'warning');
-                }
-
-                const zEl = document.createElement('div');
-                zEl.style.position = 'absolute';
-                zEl.style.right = '10px';
-                zEl.style.top = (45 + Math.random() * 80) + 'px';
-                zEl.style.display = 'flex';
-                zEl.style.flexDirection = 'column';
-                zEl.style.alignItems = 'center';
-                zEl.style.transition = 'transform 0.1s linear';
-                zEl.style.zIndex = '6';
-
-                zEl.innerHTML = `
-                    <div style="background: rgba(0,0,0,0.7); border-radius: 4px; width: 44px; height: 5px; overflow: hidden; margin-bottom: 2px;">
-                        <div class="sim-z-hp-bar" style="background: ${color}; width: 100%; height: 100%;"></div>
-                    </div>
-                    <div style="font-size: ${zombieType === 'gargantuar' ? '34px' : '26px'}; animation: zombieWobble 0.6s infinite alternate;">${sprite}</div>
-                    <div style="font-size: 9px; font-weight: 800; color: ${color}; white-space: nowrap;">${name}</div>
-                `;
-
-                field.appendChild(zEl);
-                simZombies.push({
-                    el: zEl,
-                    type: zombieType,
-                    hp: hp,
-                    maxHp: hp,
-                    speed: speed,
-                    x: field.clientWidth - 50,
-                    y: parseFloat(zEl.style.top) + 20
-                });
-            };
-
-            function createImpactSpark(x, y, text, color = '#fbbf24') {
-                const field = document.getElementById('simCombatField');
-                if (!field) return;
-                const pop = document.createElement('div');
-                pop.textContent = text;
-                pop.style.position = 'absolute';
-                pop.style.left = x + 'px';
-                pop.style.top = y + 'px';
-                pop.style.fontSize = '12px';
-                pop.style.fontWeight = '900';
-                pop.style.color = color;
-                pop.style.textShadow = '0 0 6px rgba(0,0,0,0.9)';
-                pop.style.pointerEvents = 'none';
-                pop.style.zIndex = '15';
-                pop.style.transition = 'all 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
-                field.appendChild(pop);
-
-                setTimeout(() => {
-                    pop.style.transform = 'translateY(-24px) scale(1.2)';
-                    pop.style.opacity = '0';
-                }, 20);
-
-                setTimeout(() => {
-                    if (pop.parentNode) pop.parentNode.removeChild(pop);
-                }, 700);
-            }
-
-            function updateSimStats() {
-                const zCount = document.getElementById('simZombiesDefeatedCount');
-                const cCount = document.getElementById('simTotalCoinsHarvested');
-                if (zCount) zCount.textContent = simDefeated;
-                if (cCount) cCount.textContent = simCoins;
-            }
-
-            function simGameLoop(timestamp) {
-                const field = document.getElementById('simCombatField');
-                if (field) {
-                    const width = field.clientWidth;
-                    const height = field.clientHeight;
-
-                    // 1. Plants shoot projectiles periodically if zombies exist
-                    if (simZombies.length > 0 && timestamp - simLastShootTime > 850) {
-                        simLastShootTime = timestamp;
-                        playSynthSfx('shoot');
-
-                        const projEl = document.createElement('div');
-                        projEl.style.position = 'absolute';
-                        projEl.style.left = '20px';
-                        projEl.style.top = (65 + Math.random() * 40) + 'px';
-                        projEl.style.width = '12px';
-                        projEl.style.height = '12px';
-                        projEl.style.borderRadius = '50%';
-                        projEl.style.background = '#34d399';
-                        projEl.style.boxShadow = '0 0 12px #10b981, 0 0 20px #34d399';
-                        projEl.style.zIndex = '8';
-                        field.appendChild(projEl);
-
-                        simProjectiles.push({
-                            el: projEl,
-                            x: 20,
-                            y: parseFloat(projEl.style.top),
-                            speed: 4.8
-                        });
-                    }
-
-                    // 2. Move projectiles
-                    for (let i = simProjectiles.length - 1; i >= 0; i--) {
-                        const p = simProjectiles[i];
-                        p.x += p.speed;
-                        p.el.style.left = p.x + 'px';
-
-                        // Check collision with zombies
-                        let hit = false;
-                        for (let j = simZombies.length - 1; j >= 0; j--) {
-                            const z = simZombies[j];
-                            if (Math.abs(p.x - z.x) < 28 && Math.abs(p.y - z.y) < 38) {
-                                hit = true;
-                                playSynthSfx('hit');
-                                const dmg = (Math.random() > 0.7) ? 70 : 35;
-                                z.hp -= dmg;
-                                createImpactSpark(z.x - 10, z.y - 20, `💥 -${dmg}`, dmg > 50 ? '#f43f5e' : '#fbbf24');
-
-                                const hpBar = z.el.querySelector('.sim-z-hp-bar');
-                                if (hpBar) {
-                                    hpBar.style.width = Math.max(0, (z.hp / z.maxHp) * 100) + '%';
-                                }
-
-                                if (z.hp <= 0) {
-                                    createImpactSpark(z.x, z.y, '🪙 +50 COINS', '#38bdf8');
-                                    if (z.el.parentNode) z.el.parentNode.removeChild(z.el);
-                                    simZombies.splice(j, 1);
-                                    simDefeated++;
-                                    simCoins += 50;
-                                    updateSimStats();
-                                }
-                                break;
-                            }
-                        }
-
-                        if (hit || p.x > width + 20) {
-                            if (p.el.parentNode) p.el.parentNode.removeChild(p.el);
-                            simProjectiles.splice(i, 1);
-                        }
-                    }
-
-                    // 3. Move zombies
-                    if (!simIsFrozen) {
-                        for (let j = simZombies.length - 1; j >= 0; j--) {
-                            const z = simZombies[j];
-                            z.x -= z.speed;
-                            z.el.style.left = z.x + 'px';
-
-                            if (z.x < 30) {
-                                // Reached plant line, reset or attack
-                                createImpactSpark(30, z.y, '⚠️ BITE!', '#ef4444');
-                                if (z.el.parentNode) z.el.parentNode.removeChild(z.el);
-                                simZombies.splice(j, 1);
-                            }
-                        }
-                    }
-                }
-
-                simAnimFrame = requestAnimationFrame(simGameLoop);
-            }
-
-            // Start simulation loop after page load
-            setTimeout(() => {
-                simAnimFrame = requestAnimationFrame(simGameLoop);
-                // Pre-spawn one demo zombie so the streamer sees it right away
-                window.simTriggerGiftAction('rose');
-            }, 800);
-        })();
-        </script>
+        
 
 </body>
 
