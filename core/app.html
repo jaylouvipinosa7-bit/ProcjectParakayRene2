@@ -15989,7 +15989,7 @@
 
 
                     <!-- 8. OVERLAYS COLLAPSIBLE ACCORDION (PHOTO 1 AUTHENTIC REPLICA) -->
-                    <div class="sidebar-nav-group overlay-nav-group open" id="sidebarOverlaysGroup">
+                    <div class="sidebar-nav-group overlay-nav-group" id="sidebarOverlaysGroup">
                         <button type="button" class="sidebar-nav-item nav-parent-item tab-btn" data-tab="settings" id="sideBtnSettings"
                             onclick="toggleOverlaysMenu()" title="Overlays & Widgets">
                             <div class="nav-item-left">
@@ -34438,11 +34438,14 @@
                         group.classList.add('open');
                     }
 
-                    const savedOverlaysOpen = localStorage.getItem('renearn_overlays_menu_open');
+                    // Ensure Overlays menu starts collapsed on initial app launch (only shows when user clicks it)
                     const overlaysGroup = document.getElementById('sidebarOverlaysGroup');
-                    if (overlaysGroup && savedOverlaysOpen !== '0') {
-                        overlaysGroup.classList.add('open');
+                    if (overlaysGroup) {
+                        overlaysGroup.classList.remove('open');
                     }
+                    try {
+                        localStorage.setItem('renearn_overlays_menu_open', '0');
+                    } catch (_) {}
                 } catch (_) {}
             });
 
@@ -34463,6 +34466,12 @@
                         item.classList.remove('active');
                     }
                 });
+
+                // Overlays group auto-collapse when switching away to another tab
+                const overlaysGroup = document.getElementById('sidebarOverlaysGroup');
+                if (overlaysGroup && tabId !== 'settings') {
+                    overlaysGroup.classList.remove('open');
+                }
 
                 // Audio group auto-open & child-active highlight
                 const isAudioTab = ['tts', 'songrequest', 'soundboard', 'music', 'sfx'].includes(tabId);
