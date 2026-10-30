@@ -1,22 +1,23 @@
 {
-    "enabled":  true,
-    "spotifyConnected":  false,
-    "spotifyUser":  null,
-    "spotifyAccessToken":  "",
-    "spotifyRefreshToken":  "",
-    "spotifyClientId":  "",
+    "enabled": true,
+    "spotifyConnected": false,
+    "spotifyUser": null,
+    "spotifyAccessToken": "",
+    "spotifyRefreshToken": "",
+    "spotifyClientId": "",
     "nowPlaying": {
         "id": "demo_natalie",
         "title": "Starting Over Again",
         "artist": "Natalie Cole",
         "singer": "Natalie Cole",
         "album": "Unforgettable... with Love",
-        "coverUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop",
-        "durationMs": 254000,
-        "progressMs": 42000,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/28/46/a828467f-4718-b698-9719-de205cdd6278/18CRGIM06004.rgb.jpg/400x400bb.jpg",
+        "durationMs": 255493,
+        "progressMs": 47500,
         "requestedBy": "StreamHost",
-        "isPlaying": false,
-        "youtubeId": "b1G8R5J4tD4"
+        "isPlaying": true,
+        "youtubeId": "MpuyU3lPbsw",
+        "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ab/50/9c/ab509cef-7179-b269-df9e-92f61a4b0db0/mzaf_13067098433636272147.plus.aac.p.m4a"
     },
     "queue": [
         {
@@ -28,7 +29,8 @@
             "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
             "requestedBy": "@LiveChatFan",
             "timestamp": "Just now",
-            "status": "queued"
+            "status": "queued",
+            "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/83/80/f0/8380f08a-2c8b-6be6-1463-548d7d8e622b/mzaf_11304535313317071025.plus.aac.p.m4a"
         },
         {
             "id": "req_2",
@@ -39,73 +41,31 @@
             "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
             "requestedBy": "@TopGifter",
             "timestamp": "2m ago",
-            "status": "queued"
+            "status": "queued",
+            "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/a4/9b/7f/a49b7f52-8700-ee7e-7c58-bc41f92e3a7a/mzaf_17206121408169128082.plus.aac.p.m4a"
         }
     ],
-    "history":  [
-                    {
-                        "id":  "hist_1793320588142",
-                        "title":  "That\u0027s What I Like",
-                        "artist":  "Bruno Mars",
-                        "requestedBy":  "@LiveChatFan",
-                        "timestamp":  "08:36 AM",
-                        "status":  "skipped"
-                    },
-                    {
-                        "id":  "hist_1793319479172",
-                        "title":  "Starting Over Again",
-                        "artist":  "Natalie Cole",
-                        "requestedBy":  "@TestViewer",
-                        "timestamp":  "08:17 AM",
-                        "status":  "skipped"
-                    },
-                    {
-                        "id":  "hist_1793272956482",
-                        "title":  "Starting Over Again",
-                        "artist":  "Natalie Cole",
-                        "requestedBy":  "TestViewer",
-                        "timestamp":  "07:22 PM",
-                        "status":  "skipped"
-                    },
-                    {
-                        "id":  "hist_1793272926235",
-                        "title":  "Starting Over Again",
-                        "artist":  "Natalie Cole",
-                        "requestedBy":  "TestViewer",
-                        "timestamp":  "07:22 PM",
-                        "status":  "skipped"
-                    },
-                    {
-                        "id":  "hist_1793272895611",
-                        "title":  "Starting Over Again",
-                        "artist":  "Natalie Cole",
-                        "requestedBy":  "TestViewer",
-                        "timestamp":  "07:21 PM",
-                        "status":  "skipped"
-                    },
-                    {
-                        "id":  "demo_1",
-                        "title":  "Starboy",
-                        "artist":  "The Weeknd",
-                        "singer":  "The Weeknd",
-                        "requestedBy":  "CoolGamer",
-                        "timestamp":  "7:20 PM",
-                        "status":  "played"
-                    }
-                ],
-    "settings":  {
-                     "commandPrefix":  "!play",
-                     "aliases":  [
-                                     "!sr",
-                                     "!song",
-                                     "!request"
-                                 ],
-                     "allowEveryone":  true,
-                     "maxQueuePerUser":  3,
-                     "maxSongDurationMinutes":  7,
-                     "ttsAnnouncement":  true,
-                     "overlayTheme":  "modern_glass",
-                     "volume":  30
-                 },
-    "spotifyExpiresAt":  0
+    "history": [
+        {
+            "id": "hist_1",
+            "title": "Levitating",
+            "artist": "Dua Lipa",
+            "requestedBy": "@CoolGamer",
+            "timestamp": "07:20 PM",
+            "status": "played"
+        }
+    ],
+    "settings": {
+        "commandPrefix": "!play",
+        "aliases": [
+            "!sr",
+            "!song",
+            "!request"
+        ],
+        "allowEveryone": true,
+        "maxQueuePerUser": 3,
+        "maxSongDurationMinutes": 7,
+        "ttsAnnouncement": true,
+        "volume": 85
+    }
 }

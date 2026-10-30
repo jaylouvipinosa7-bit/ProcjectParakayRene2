@@ -21,16 +21,19 @@
         spotifyRefreshToken: localStorage.getItem('spotify_refresh_token') || '',
         spotifyClientId: (localStorage.getItem('spotify_client_id') === 'a4413156cf9e45138ce3ca8f7b7cf7a8') ? '' : (localStorage.getItem('spotify_client_id') || ''),
         nowPlaying: {
-            id: 'demo_1',
-            title: 'Just the Way You Are',
-            artist: 'Bruno Mars',
-            album: 'Doo-Wops & Hooligans',
-            coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop',
-            durationMs: 220000,
-            progressMs: 65000,
+            id: 'demo_natalie',
+            title: 'Starting Over Again',
+            artist: 'Natalie Cole',
+            singer: 'Natalie Cole',
+            album: 'Unforgettable... with Love',
+            coverUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/28/46/a828467f-4718-b698-9719-de205cdd6278/18CRGIM06004.rgb.jpg/400x400bb.jpg',
+            durationMs: 255493,
+            progressMs: 47500,
             requestedBy: 'StreamHost',
             isPlaying: true,
-            uri: 'spotify:track:7BqBn9nzAq8spo5e79Z0dJ'
+            youtubeId: 'MpuyU3lPbsw',
+            previewUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ab/50/9c/ab509cef-7179-b269-df9e-92f61a4b0db0/mzaf_13067098433636272147.plus.aac.p.m4a',
+            uri: 'itunes:track:1576793255'
         },
         queue: [
             {
@@ -878,9 +881,8 @@
             }
         }
 
-        // 1. YouTube Full-Length Audio/Video Player (PRIMARY ENGINE - Plays entire 3-5 min song)
-        if (now.youtubeId) {
-            // Silence & kill local 30-sec preview so there is ZERO echo or double sound!
+        // 1. If in Video View Mode: Play YouTube embed in visible slot
+        if (playerViewMode === 'video' && now.youtubeId) {
             if (localAudioPreview) {
                 localAudioPreview.pause();
                 localAudioPreview = null;
@@ -888,12 +890,26 @@
             playYouTubeFullTrack(now.youtubeId, Math.floor((now.progressMs || 0) / 1000), autoPlay && now.isPlaying);
             startTimelineTicker();
             updatePlayingUI(now.isPlaying);
-            return; // Guaranteed SINGLE audio output
+            return;
         }
 
-        // 2. HTML5 Audio Fallback (Only if no YouTube ID exists)
+        // 2. In Vinyl / Streamer Mode (DEFAULT): Direct Audible HTML5 Audio
+        // Reliable direct audio stream that plays through streamer's audio device without YouTube iframe blocking
         if (now.previewUrl) {
+            // Pause any background YouTube frame
+            const iframe = document.getElementById('studioPersistentYtFrame');
+            if (iframe && iframe.contentWindow) {
+                try { iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch (_) {}
+            }
             playLocalAudioDirect(now.previewUrl, autoPlay && now.isPlaying);
+            startTimelineTicker();
+            updatePlayingUI(now.isPlaying);
+            return;
+        }
+
+        // 3. Fallback to YouTube
+        if (now.youtubeId) {
+            playYouTubeFullTrack(now.youtubeId, Math.floor((now.progressMs || 0) / 1000), autoPlay && now.isPlaying);
             startTimelineTicker();
             updatePlayingUI(now.isPlaying);
             return;
@@ -1042,15 +1058,21 @@
         const now = songState.nowPlaying;
         now.isPlaying = true;
 
-        if (now.youtubeId) {
-            // Kill any local preview to prevent double sound!
-            if (localAudioPreview) {
-                localAudioPreview.pause();
-                localAudioPreview = null;
-            }
-            playYouTubeFullTrack(now.youtubeId, Math.floor((now.progressMs || 0) / 1000), true);
-        } else if (now.previewUrl) {
+        // Ensure previewUrl exists for instant audible playback
+        if (!now.previewUrl) {
+            try {
+                const track = await searchTrack(`${now.title} ${now.singer || now.artist || ''}`);
+                if (track && track.previewUrl) {
+                    now.previewUrl = track.previewUrl;
+                    if (track.youtubeId) now.youtubeId = track.youtubeId;
+                }
+            } catch (_) {}
+        }
+
+        if (now.previewUrl) {
             playLocalAudioDirect(now.previewUrl, true);
+        } else if (now.youtubeId) {
+            playYouTubeFullTrack(now.youtubeId, Math.floor((now.progressMs || 0) / 1000), true);
         }
 
         updatePlayingUI(true);
@@ -1058,7 +1080,7 @@
         await saveSongState();
 
         if (typeof showToast === 'function') {
-            showToast(`🔊 Playing Full Song: "${now.title}" by ${now.singer || now.artist}!`, 'success');
+            showToast(`🔊 Playing Audio: "${now.title}" by ${now.singer || now.artist}!`, 'success');
         }
     };
 
@@ -1323,9 +1345,14 @@
                                             <span style="font-size: 9.5px; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 7px; border-radius: 999px;">✓ FULL MUSIC DETECTED</span>
                                         </div>
 
-                                        <div style="font-size: 11.5px; color: #38bdf8; margin-top: 3px; display: flex; align-items: center; gap: 4px;">
-                                            <span>💬</span><span>Requested by: <strong style="color: #fff;">@${now.requestedBy || 'Streamer'}</strong></span>
-                                            ${now.album ? `<span style="color: rgba(255,255,255,0.25); margin: 0 4px;">•</span><span style="color: #94a3b8; font-size: 11px;">💿 ${now.album}</span>` : ''}
+                                        <div style="font-size: 11.5px; margin-top: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; color: #38bdf8; white-space: nowrap;">
+                                                <span>💬</span><span>Requested by: <strong style="color: #ffffff;">@${now.requestedBy || 'StreamHost'}</strong></span>
+                                            </span>
+                                            ${now.album ? `
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; color: #94a3b8; font-size: 10.5px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 1px 7px; border-radius: 6px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                <span>💿</span><span>${now.album}</span>
+                                            </span>` : ''}
                                         </div>
                                         <div style="font-size: 10.5px; font-weight: 700; margin-top: 4px; display: flex; align-items: center; gap: 5px; ${isConnected ? 'color: #34d399;' : 'color: #38bdf8;'}">
                                             <span>${isConnected ? '🎧' : '🔊'}</span>

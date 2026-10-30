@@ -1389,7 +1389,7 @@
 
         /* SIDEBAR STYLES */
         .app-sidebar {
-            width: 220px;
+            width: 236px; box-sizing: border-box;
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border-color);
             padding: 16px 10px;
@@ -1571,8 +1571,7 @@
             display: none;
             flex-direction: column;
             gap: 3px;
-            margin-left: 17px;
-            padding-left: 9px;
+            margin-left: 12px; padding-left: 7px; box-sizing: border-box;
             border-left: 1.5px solid rgba(255, 255, 255, 0.12);
             position: relative;
             margin-top: 2px;
@@ -1597,8 +1596,26 @@
 
         .sub-nav-item {
             font-size: 12.5px;
-            padding: 7px 9px;
+            padding: 7px 8px;
             border-radius: 7px;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+        .sub-nav-item .nav-item-left {
+            min-width: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+        .sub-nav-item .nav-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub-nav-item .nav-badge {
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-size: 8px !important;
+            padding: 1.5px 5.5px !important;
         }
 
         .sub-nav-item::after {
@@ -15486,8 +15503,7 @@
                                     <span class="nav-icon" style="font-size: 15px;">🔊</span>
                                     <span class="nav-text">Soundboard</span>
                                 </div>
-                                <span class="nav-badge" id="sideSoundboardBadge"
-                                    style="background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 999px;">325+ FX</span>
+                                <span class="nav-badge" id="sideSoundboardBadge" style="background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); font-size: 8px; font-weight: 800; padding: 1.5px 5.5px; border-radius: 999px; flex-shrink: 0;">325+ FX</span>
                             </button>
                         </div>
                     </div>
@@ -23442,9 +23458,13 @@
                                             <span style="font-size: 9.5px; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 7px; border-radius: 999px;">✓ FULL MUSIC DETECTED</span>
                                         </div>
 
-                                        <div style="font-size: 11.5px; color: #38bdf8; margin-top: 3px; display: flex; align-items: center; gap: 4px;">
-                                            <span>💬</span><span>Requested by: <strong style="color: #fff;">@StreamHost</strong></span>
-                                            <span style="color: rgba(255,255,255,0.25); margin: 0 4px;">•</span><span style="color: #94a3b8; font-size: 11px;">💿 Doo-Wops & Hooligans</span>
+                                        <div style="font-size: 11.5px; margin-top: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; color: #38bdf8; white-space: nowrap;">
+                                                <span>💬</span><span>Requested by: <strong style="color: #ffffff;">@StreamHost</strong></span>
+                                            </span>
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; color: #94a3b8; font-size: 10.5px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 1px 7px; border-radius: 6px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                <span>💿</span><span>Unforgettable... with Love</span>
+                                            </span>
                                         </div>
                                         <div style="font-size: 10.5px; font-weight: 700; margin-top: 4px; display: flex; align-items: center; gap: 5px; color: #38bdf8;">
                                             <span>🔊</span>
