@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="crownBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="16" fill="url(#crownBg)" stroke="#f59e0b" stroke-width="2"/>
+  <!-- Crossed Swords -->
+  <line x1="20" y1="80" x2="80" y2="20" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+  <line x1="80" y1="80" x2="20" y2="20" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+  <!-- Golden Crown -->
+  <polygon points="22,64 78,64 82,34 64,48 50,24 36,48 18,34" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+  <!-- Jewels -->
+  <circle cx="50" cy="54" r="4" fill="#ef4444"/>
+  <circle cx="34" cy="54" r="3" fill="#3b82f6"/>
+  <circle cx="66" cy="54" r="3" fill="#10b981"/>
+</svg>

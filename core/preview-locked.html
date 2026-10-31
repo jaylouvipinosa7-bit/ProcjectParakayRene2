@@ -68,6 +68,174 @@
             gap: 16px;
             margin-bottom: 8px;
         }
+
+        /* GAME-SPECIFIC SUBSCRIPTION BANNER (IMAGE 1 PARITY) */
+        .game-subscription-required-banner {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 18px 26px;
+            background: linear-gradient(135deg, #231f1c 0%, #191614 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .game-subscription-required-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #f59e0b, #ea580c);
+            opacity: 0.9;
+        }
+
+        .game-sub-char-box {
+            width: 145px;
+            height: 108px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .game-sub-char-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: center;
+            filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.75));
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .game-subscription-required-banner:hover .game-sub-char-img {
+            transform: scale(1.06);
+        }
+
+        .game-sub-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .game-sub-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .game-sub-game-title {
+            font-size: 21px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-sub-badge {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #60a5fa;
+            background: rgba(37, 99, 235, 0.14);
+            border: 1.5px solid #2563eb;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .game-sub-badge.badge-active-sub {
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .game-sub-desc {
+            font-size: 13.5px;
+            color: #a8a29e;
+            margin: 2px 0 8px 0;
+            line-height: 1.45;
+            font-weight: 500;
+        }
+
+        .game-sub-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-game-sub-subscribe {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-game-sub-subscribe:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .btn-game-sub-subscribe:active {
+            transform: translateY(0);
+        }
+
+        .game-pill-btn {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .game-pill-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .game-pill-btn.active {
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(217, 119, 6, 0.2));
+            color: #fb923c;
+            border-color: #ea580c;
+            box-shadow: 0 0 10px rgba(234, 88, 12, 0.3);
+        }
     </style>
 </head>
 
@@ -91,8 +259,46 @@
             </div>
         </div>
 
+        <!-- GAME-SPECIFIC SUBSCRIPTION BANNER (IMAGE 1 PARITY) -->
+        <div style="margin-top: 10px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 800; color: #f8fafc; text-transform: uppercase; letter-spacing: 0.8px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span>🎮</span> Game-Specific Subscription UI (Image 1 Replica)
+                    </h3>
+                    <p style="font-size: 12px; color: #94a3b8; margin-top: 3px; margin-bottom: 0;">
+                        Click any game below to preview this exact UI featuring that game's character image/icon and subscription requirement status:
+                    </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" id="btnToggleSubState" onclick="toggleDemoSubscriptionState()" style="background: rgba(234, 88, 12, 0.15); color: #fb923c; border: 1px solid rgba(234, 88, 12, 0.4); padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer; transition: all 0.2s ease;">
+                        🔒 State: Subscription Required
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Pills Switcher -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;" id="gameDemoSelectorBar">
+                <button type="button" class="game-pill-btn active" onclick="selectDemoGame('l4d2', this)">🧟 Left 4 Dead 2</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('gta_sa', this)">🚗 GTA San Andreas</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('re4', this)">🩸 Resident Evil 4</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('PvZFusion', this)">🌻 PvZ Fusion</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('gtav_chaos', this)">💥 GTA V Chaos</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('gtav_koth', this)">🛡️ GTA V KotH</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('gtav_airport', this)">✈️ GTA V Airport</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('Minecraft', this)">⛏️ Minecraft</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('zombie_tsunami', this)">🌊 Zombie Tsunami</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('pvz_classic', this)">🌱 PvZ Classic</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('pvz_hybrid', this)">🧬 PvZ Hybrid</button>
+                <button type="button" class="game-pill-btn" onclick="selectDemoGame('tabs', this)">⚔️ TABS Battle</button>
+            </div>
+
+            <!-- Target Container for the Exact Banner from Image 1 -->
+            <div id="gameSpecificSubBannerBox"></div>
+        </div>
+
         <h3
-            style="font-size: 14px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;">
+            style="font-size: 14px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; margin-top: 24px;">
             Command Management Deck
         </h3>
 
@@ -326,8 +532,161 @@
             `;
         }
 
+        // Game Specific Subscription Metadata
+        const GAME_SUB_DATA = {
+            'l4d2': {
+                name: 'Left 4 Dead 2',
+                charImg: 'images/games/chars/l4d2.png',
+                fallbackArt: 'images/games/l4d2.jpg',
+                desc: 'A Plus or Ultra subscription is required to install mods and execute in-game actions.',
+                genre: 'Co-op Survival'
+            },
+            'gta_sa': {
+                name: 'GTA San Andreas',
+                charImg: 'images/games/chars/gta_sa.png',
+                fallbackArt: 'images/games/gta_sa.jpg',
+                desc: 'A Plus or Ultra subscription is required to install CLEO mods and execute in-game actions.',
+                genre: 'Action Sandbox'
+            },
+            're4': {
+                name: 'Resident Evil 4 Remake',
+                charImg: 'images/games/chars/re4.png',
+                fallbackArt: 'images/games/re4.jpg',
+                desc: 'A Plus or Ultra subscription is required to install REFramework mods and execute in-game actions.',
+                genre: 'Action Survival Horror'
+            },
+            'PvZFusion': {
+                name: 'Plants vs. Zombies Fusion',
+                charImg: 'images/games/chars/pvz_fusion.png',
+                fallbackArt: '../images/pvz_fusion_cover.jpg',
+                desc: 'A Plus or Ultra subscription is required to install mods and execute in-game actions.',
+                genre: 'Strategy Tower Defense'
+            },
+            'gtav_chaos': {
+                name: 'Grand Theft Auto V Chaos',
+                charImg: 'images/games/chars/gtav_chaos.png',
+                fallbackArt: 'images/games/gtav_chaos.jpg',
+                desc: 'A Plus or Ultra subscription is required to install ScriptHookV mods and execute in-game actions.',
+                genre: 'Action Sandbox'
+            },
+            'gtav_koth': {
+                name: 'GTA V King of the Hill',
+                charImg: 'images/games/chars/gtav_koth.png',
+                fallbackArt: 'images/games/gtav_koth.jpg',
+                desc: 'A Plus or Ultra subscription is required to install arena mods and execute in-game actions.',
+                genre: 'Competitive Arena'
+            },
+            'gtav_airport': {
+                name: 'GTA V Airport',
+                charImg: 'images/games/chars/gtav_airport.png',
+                fallbackArt: 'images/games/gtav_airport.jpg',
+                desc: 'A Plus or Ultra subscription is required to install sandbox mods and execute in-game actions.',
+                genre: 'Action Sandbox'
+            },
+            'Minecraft': {
+                name: 'Minecraft Chaos Live',
+                charImg: 'images/games/chars/minecraft.png',
+                fallbackArt: 'images/games/minecraft.jpg',
+                desc: 'A Plus or Ultra subscription is required to install Spigot/Forge mods and execute in-game actions.',
+                genre: 'Sandbox Survival'
+            },
+            'zombie_tsunami': {
+                name: 'Zombie Tsunami PC',
+                charImg: 'images/games/chars/zombie_tsunami.png',
+                fallbackArt: 'images/games/zombie_tsunami_poster.jpg',
+                desc: 'A Plus or Ultra subscription is required to install runner mods and execute in-game actions.',
+                genre: 'Arcade Runner'
+            },
+            'pvz_classic': {
+                name: 'Plants vs. Zombies GOTY',
+                charImg: 'images/games/chars/pvz_classic.png',
+                fallbackArt: 'images/games/pvz_classic_poster.jpg',
+                desc: 'A Plus or Ultra subscription is required to install classic mods and execute in-game actions.',
+                genre: 'Strategy Tower Defense'
+            },
+            'pvz_hybrid': {
+                name: 'PvZ: Hybrid Edition',
+                charImg: 'images/games/chars/pvz_hybrid.png',
+                fallbackArt: 'images/games/pvz_hybrid_poster.jpg',
+                desc: 'A Plus or Ultra subscription is required to install hybrid mods and execute in-game actions.',
+                genre: 'Strategy Mutant Defense'
+            },
+            'tabs': {
+                name: 'Totally Accurate Battle Simulator',
+                charImg: 'images/games/chars/tabs.svg',
+                fallbackArt: 'images/games/tabs.svg',
+                desc: 'A Plus or Ultra subscription is required to install physics mods and execute in-game actions.',
+                genre: 'Simulation Physics'
+            }
+        };
+
+        let currentDemoGame = 'l4d2';
+        let demoSubActive = false;
+
+        function selectDemoGame(gameKey, btn) {
+            currentDemoGame = gameKey;
+            document.querySelectorAll('#gameDemoSelectorBar .game-pill-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderGameSpecificSubBanner();
+        }
+
+        function toggleDemoSubscriptionState() {
+            demoSubActive = !demoSubActive;
+            const btn = document.getElementById('btnToggleSubState');
+            if (btn) {
+                if (demoSubActive) {
+                    btn.innerHTML = '👑 State: Owner Lifetime Active';
+                    btn.style.background = 'rgba(16, 185, 129, 0.15)';
+                    btn.style.color = '#34d399';
+                    btn.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                } else {
+                    btn.innerHTML = '🔒 State: Subscription Required';
+                    btn.style.background = 'rgba(234, 88, 12, 0.15)';
+                    btn.style.color = '#fb923c';
+                    btn.style.borderColor = 'rgba(234, 88, 12, 0.4)';
+                }
+            }
+            renderGameSpecificSubBanner();
+        }
+
+        function renderGameSpecificSubBanner() {
+            const container = document.getElementById('gameSpecificSubBannerBox');
+            if (!container) return;
+            const game = GAME_SUB_DATA[currentDemoGame] || GAME_SUB_DATA['l4d2'];
+
+            container.innerHTML = `
+                <div class="game-subscription-required-banner">
+                    <!-- Specific Game Character Icon/Picture (Image 1 Parity) -->
+                    <div class="game-sub-char-box">
+                        <img src="${game.charImg}" onerror="this.onerror=null; this.src='${game.fallbackArt}';" alt="${game.name}" class="game-sub-char-img">
+                    </div>
+
+                    <!-- Right Content Column -->
+                    <div class="game-sub-content">
+                        <div class="game-sub-header-row">
+                            <h3 class="game-sub-game-title">${game.name}</h3>
+                            <span class="game-sub-badge ${demoSubActive ? 'badge-active-sub' : ''}">
+                                ${demoSubActive ? '👑 OWNER LIFETIME ACTIVE' : 'SUBSCRIPTION REQUIRED'}
+                            </span>
+                        </div>
+                        <p class="game-sub-desc">
+                            ${demoSubActive ? `Owner Lifetime subscription active. Mods, audience gift triggers, and in-game director actions unlocked for ${game.name}.` : game.desc}
+                        </p>
+                        <div class="game-sub-actions-row">
+                            <button type="button" class="btn-game-sub-subscribe" onclick="alert('Opens Manage Subscription Modal')">
+                                <span style="font-size: 15px;">✦</span>
+                                <span>${demoSubActive ? 'Manage Subscription' : 'Subscribe to access'}</span>
+                                <span style="font-size: 14px; margin-left: 2px;">→</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         // Initialize with Free Full (Locked)
         renderState(document.getElementById('commandUsageQuotaBanner'), 10, 10, 'free', false, 'Free Starter');
+        renderGameSpecificSubBanner();
     </script>
 </body>
 

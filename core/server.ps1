@@ -7430,6 +7430,42 @@ INSTALLATION INSTRUCTIONS:
                     $spAmount = if ($pickedSlice.amount) { [int]$pickedSlice.amount } else { $spReps }
                     $exec = SendToPvZGame $pickedSlice.actionType $pickedSlice.command $spAmount $username "" $spReps $spDelay $spInterval
                 }
+
+                # Also execute any configured gift card commands bound to this spinner's gift
+                if ($targetSpinner -and $config -and $config.gifts) {
+                    $spGId = if ($targetSpinner.giftId) { [string]$targetSpinner.giftId.Trim() } else { "" }
+                    $spGName = if ($targetSpinner.giftName) { ($targetSpinner.giftName -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
+                    if ($spGId -or $spGName) {
+                        foreach ($g in $config.gifts) {
+                            if (-not $g.enabled) { continue }
+                            $cMatch = $false
+                            $cGId = if ($g.giftId) { [string]$g.giftId.Trim() } else { "" }
+                            $cGName = if ($g.giftName) { ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
+                            if ($spGId -and $cGId -and $spGId -eq $cGId) { $cMatch = $true }
+                            elseif (($spGId -eq '7934' -or $spGName -eq 'heartme' -or $spGName -eq 'heart') -and ($cGId -eq '7934' -or $cGName -eq 'heartme' -or $cGName -eq 'heart')) { $cMatch = $true }
+                            elseif ($spGName -and $cGName -and ($spGName -eq $cGName -or $cGName.Contains($spGName) -or $spGName.Contains($cGName))) { $cMatch = $true }
+                            if ($cMatch) {
+                                $isCardSpinnerCmd = ($g.command -eq "spin_wheel" -or $g.actionType -eq "spinner" -or $g.command -match '^spinner_')
+                                if (-not $isCardSpinnerCmd -and ($g.command -or ($g.commands -and $g.commands.Count -gt 0))) {
+                                    $cReps = if ($g.repetition -and [int]$g.repetition -gt 0) { [int]$g.repetition } elseif ($g.amount) { [int]$g.amount } else { 1 }
+                                    $cDelay = if ($g.delay) { [int]$g.delay } else { 0 }
+                                    $cInterval = if ($g.interval) { [int]$g.interval } else { 100 }
+                                    if ($g.commands -and $g.commands.Count -gt 0) {
+                                        foreach ($sc in $g.commands) {
+                                            if ($sc.command -and $sc.command -ne "spin_wheel" -and $sc.command -notmatch '^spinner_') {
+                                                $scAct = if ($sc.actionType) { $sc.actionType } else { $g.actionType }
+                                                SendToPvZGame $scAct $sc.command $cReps $username "" 1 $cDelay $cInterval | Out-Null
+                                            }
+                                        }
+                                    } elseif ($g.command) {
+                                        SendToPvZGame $g.actionType $g.command $cReps $username "" 1 $cDelay $cInterval | Out-Null
+                                    }
+                                }
+                                break
+                            }
+                        }
+                    }
+                }
             }
 
             # ONLY update Win Widget if number slice! DO NOT add points for plants or zombies!
@@ -8009,34 +8045,113 @@ INSTALLATION INSTRUCTIONS:
                         }
 
                         # Also execute and increment the matched gift card action (e.g. Card 32: Heart Me -> Spawn Big Sun Nut x50)
+                        # Guarantees that when both a spinner and a gift card share the same gift, THEY BOTH WORK TOGETHER!
                         if ($config -and $config.gifts) {
                             foreach ($g in $config.gifts) {
                                 $cardMatch = $false
-                                if ($g.enabled -and $g.giftId -and (($giftId -and [string]$g.giftId.Trim() -eq [string]$giftId.Trim()) -or ($autoGift -and $autoGift.id -and [string]$g.giftId.Trim() -eq [string]$autoGift.id.Trim()))) {
+                                $gGId = if ($g.giftId) { [string]$g.giftId.Trim() } else { "" }
+                                $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
+                                $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
+
+                                if ($g.enabled -and $gGId -and (($reqGId -and $gGId -eq $reqGId) -or ($autoGId -and $gGId -eq $autoGId))) {
                                     $cardMatch = $true
-                                } elseif ($g.enabled -and $g.giftName) {
-                                    $cleanG = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
-                                    $cleanR = if ($giftName) { ($giftName -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
-                                    $cleanA = if ($autoGift -and $autoGift.name) { ($autoGift.name -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
-                                    if ($cleanG -and (($cleanR -and $cleanG -eq $cleanR) -or ($cleanA -and $cleanG -eq $cleanA))) { $cardMatch = $true }
+                                } elseif ($g.enabled) {
+                                    $cleanGGId = ($gGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                    $cleanReqGId = ($reqGId -replace '[^a-zA-Z0-9]','').ToLower()
+                                    if ($cleanGGId -and $cleanReqGId -and ($cleanGGId -eq $cleanReqGId)) {
+                                        $cardMatch = $true
+                                    } elseif (($cleanGGId -eq '7934' -or $cleanGGId -eq 'heartme' -or $cleanGGId -eq 'heart') -and ($cleanReqGId -eq '7934' -or $cleanReqGId -eq 'heartme' -or $cleanReqGId -eq 'heart')) {
+                                        $cardMatch = $true
+                                    } elseif ($g.giftName) {
+                                        $cleanG = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                                        $cleanR = if ($giftName) { ($giftName -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
+                                        $cleanA = if ($autoGift -and $autoGift.name) { ($autoGift.name -replace '[^a-zA-Z0-9]','').ToLower() } else { "" }
+                                        if ($cleanG -and (($cleanR -and ($cleanG -eq $cleanR -or $cleanR.Contains($cleanG) -or $cleanG.Contains($cleanR))) -or ($cleanA -and ($cleanG -eq $cleanA -or $cleanA.Contains($cleanG) -or $cleanG.Contains($cleanA))))) {
+                                            $cardMatch = $true
+                                        }
+                                    }
                                 }
 
                                 if ($cardMatch) {
                                     $cardIdStr = [string]$g.id
-                                    if ($cardIdStr -and $counts.ContainsKey($cardIdStr)) {
+                                    if ($cardIdStr) {
+                                        if (-not $counts.ContainsKey($cardIdStr)) {
+                                            $counts[$cardIdStr] = 0
+                                        }
                                         $counts[$cardIdStr] = [int]$counts[$cardIdStr] + $repeatCount
                                         SaveCounts
                                     }
 
-                                    # SPINNER 1 GIFT = 1 COMMAND:
-                                    # Update card count for overlay UI tracking, but DO NOT dispatch
-                                    # card commands to PvZ Fusion because the spinner slice prize was ALREADY summoned above!
                                     AddEventLog @{
                                         type = "card_count_updated"
                                         cardId = $cardIdStr
-                                        count = [int]$counts[$cardIdStr]
+                                        count = if ($cardIdStr -and $counts.ContainsKey($cardIdStr)) { [int]$counts[$cardIdStr] } else { $repeatCount }
                                         amount = $repeatCount
                                         timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                                    }
+
+                                    # SUMMON CARD COMMANDS TOGETHER WITH SPINNER:
+                                    # If this card has in-game summon commands (e.g. Card 32: Heart Me -> Spawn Big Sun Nut x50),
+                                    # dispatch them directly to Plants vs. Zombies Fusion mod!
+                                    $isCardSpinnerCmd = ($g.command -eq "spin_wheel" -or $g.actionType -eq "spinner" -or $g.command -match '^spinner_')
+                                    if (-not $isCardSpinnerCmd -and ($g.command -or ($g.commands -and $g.commands.Count -gt 0))) {
+                                        $baseUnitCount = if ($g.repetition -and [int]$g.repetition -gt 0) {
+                                            [int]$g.repetition
+                                        } elseif ($g.amount -and [int]$g.amount -gt 0) {
+                                            [int]$g.amount
+                                        } else {
+                                            1
+                                        }
+
+                                        $isMultiplierActive = if ($null -eq $g.repetitionMultiplier) { $true } elseif ($g.repetitionMultiplier -is [bool]) { [bool]$g.repetitionMultiplier } else { (([string]$g.repetitionMultiplier).Trim().ToLower() -eq "true" -or ([string]$g.repetitionMultiplier).Trim() -eq "1") }
+                                        $giftRepeatQty = [Math]::Max(1, [int]$repeatCount)
+                                        $totalSpawns = if ($isMultiplierActive) { $baseUnitCount * $giftRepeatQty } else { $baseUnitCount }
+
+                                        $giftDelay = if ($g.delay) { [int]$g.delay } else { 0 }
+                                        $giftInterval = if ($g.interval) { [int]$g.interval } else { 100 }
+                                        $giftHide = ($g.hideInOverlay -eq $true -or $g.hideInOverlay -eq "true")
+
+                                        $cardGameCmds = @()
+                                        if ($g.commands -and $g.commands.Count -gt 0) {
+                                            foreach ($sc in $g.commands) {
+                                                if ($sc.command -and $sc.command -ne "spin_wheel" -and $sc.command -notmatch '^spinner_') {
+                                                    $cardGameCmds += $sc
+                                                }
+                                            }
+                                        }
+
+                                        # Add overlay gift event so the card animates and flashes on stream overlays
+                                        AddEventLog @{
+                                            type = "gift"
+                                            cardId = [string]$g.id
+                                            label = $g.label
+                                            giftName = if ($giftName) { $giftName } elseif ($g.giftName) { $g.giftName } else { "Gift" }
+                                            repeatCount = $repeatCount
+                                            totalRepeatCount = $totReps
+                                            repeatEnd = $repEnd
+                                            isStreak = $isStreak
+                                            command = $g.command
+                                            amount = $totalSpawns
+                                            username = $user
+                                            icon = if ($g.unitIcon) { $g.unitIcon } elseif ($icon) { $icon } else { "images/func_2.png" }
+                                            hideInOverlay = $giftHide
+                                            noSpinnerTrigger = $true
+                                        }
+
+                                        # Dispatch summons to PvZ Fusion mod
+                                        if ($cardGameCmds.Count -gt 0) {
+                                            foreach ($sc in $cardGameCmds) {
+                                                $scAct = if ($sc.actionType) { $sc.actionType } else { $g.actionType }
+                                                SendToPvZGame $scAct $sc.command $totalSpawns $user "" 1 $giftDelay $giftInterval | Out-Null
+                                            }
+                                        } elseif ($g.command) {
+                                            SendToPvZGame $g.actionType $g.command $totalSpawns $user "" 1 $giftDelay $giftInterval | Out-Null
+                                        }
+
+                                        # Route trigger event to dedicated on-screen counter
+                                        $triggerLbl = if ($g.label) { [string]$g.label } elseif ($giftName) { [string]$giftName } else { "In-game Event" }
+                                        $triggerIcon = if ($g.unitIcon) { [string]$g.unitIcon } elseif ($icon) { [string]$icon } else { "images/trig_7.svg" }
+                                        Record-TriggerEvent $giftName $giftId $repeatCount $user $avatar $triggerIcon $triggerLbl
                                     }
                                     break
                                 }
