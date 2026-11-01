@@ -35,3 +35,4 @@ if ($text.Contains($target)) {
 } else {
     Write-Error "Target string not found!"
 }
+
