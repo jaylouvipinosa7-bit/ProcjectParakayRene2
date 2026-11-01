@@ -39777,6 +39777,26 @@
                                 commands: subCmds
                             })
                         });
+                        // DUAL TRIGGER: If this gift is also bound to a spinner (e.g. Card 32 Heart Me -> Spinner 4 Heart Me),
+                        // trigger the spinner visualizer so both summon and work together!
+                        const boundSpinner = (config.spinners || []).find(sp => {
+                            if (sp.enabled === false) return false;
+                            const spGId = String(sp.giftId || '').trim();
+                            const cardGId = String(gift.giftId || '').trim();
+                            if (spGId && cardGId && (spGId === cardGId || (spGId === '7934' && cardGId === '7934'))) return true;
+                            const spName = String(sp.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const cardName = String(gift.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            return spName && cardName && (spName === cardName || spName.includes(cardName) || cardName.includes(spName));
+                        });
+                        if (boundSpinner && !skipAudio) {
+                            try {
+                                const spParam = boundSpinner.id ? ('&spinnerId=' + encodeURIComponent(boundSpinner.id)) : '';
+                                fetch('/api/spin?username=' + encodeURIComponent(prof.name) + '&avatar=' + encodeURIComponent(prof.avatar) + spParam, { method: 'POST' }).catch(() => {});
+                                if (typeof spinWheel === 'function') {
+                                    setTimeout(() => { spinWheel(boundSpinner.id, true); }, 50);
+                                }
+                            } catch (e) { }
+                        }
                     }
                 } catch (err) {
                     showToast("Test failed: " + err.message, "ERR");
@@ -44359,7 +44379,29 @@
             }
 
             let _lastSpinTriggerTime = 0;
-            async function spinWheel(spinnerId = null) {
+            async function spinWheel(spinnerId = null, skipLinkedCards = false) {
+                // DUAL TRIGGER: If this spinner shares its gift with a gift card (e.g. Spinner 4 Heart Me -> Card 32 Spawn Big Sun Nut),
+                // summon the gift card together with the spinner!
+                if (!skipLinkedCards && typeof config !== 'undefined' && config.gifts) {
+                    const listAllSp = getSpinners();
+                    const activeSp = spinnerId ? listAllSp.find(s => s.id === spinnerId) : getActiveSpinner();
+                    if (activeSp) {
+                        const linkedCards = config.gifts.filter(g => {
+                            if (g.enabled === false) return false;
+                            const gGId = String(g.giftId || '').trim();
+                            const spGId = String(activeSp.giftId || '').trim();
+                            if (gGId && spGId && (gGId === spGId || (gGId === '7934' && spGId === '7934'))) return true;
+                            const gName = String(g.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const spName = String(activeSp.giftName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                            return gName && spName && (gName === spName || gName.includes(spName) || spName.includes(gName));
+                        });
+                        linkedCards.forEach(card => {
+                            if (card.command && !card.command.startsWith('spinner_') && card.command !== 'spin_wheel') {
+                                setTimeout(() => { testGift(card.id, true); }, 60);
+                            }
+                        });
+                    }
+                }
                 const now = Date.now();
                 if (now - _lastSpinTriggerTime < 150) {
                     return; // Prevent accidental physical mouse bounce

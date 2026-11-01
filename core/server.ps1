@@ -6523,8 +6523,7 @@ INSTALLATION INSTRUCTIONS:
                     spinnerId = $targetSpId
                     spinnerName = $spName
                     groupId = if ($targetSpinner) { [string]$targetSpinner.groupId } else { "1" }
-                    $reqMode = if ($request.QueryString['mode']) { $request.QueryString['mode'] } elseif ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
-                mode = $reqMode
+                    mode = if ($request.QueryString['mode']) { $request.QueryString['mode'] } elseif ($targetSpinner -and $targetSpinner.mode) { $targetSpinner.mode } else { "wheel" }
                     wheelTheme = if ($targetSpinner -and $targetSpinner.wheelTheme) { $targetSpinner.wheelTheme } else { "casino_royale" }
                     centerFinial = if ($targetSpinner -and $targetSpinner.centerFinial) { $targetSpinner.centerFinial } else { "turret_3d" }
                     pointerTheme = if ($targetSpinner -and $targetSpinner.pointerTheme) { $targetSpinner.pointerTheme } else { "brass_chevron" }
@@ -6534,6 +6533,36 @@ INSTALLATION INSTRUCTIONS:
                     icon = $icon
                     hideInOverlay = $hideInOverlay
                     success = $true
+                }
+                # DUAL TRIGGER: If this spinner shares its gift with a gift card (e.g. Spinner 4 Heart Me -> Card 32 Spawn Big Sun Nut),
+                # also execute that card's summons so both work together seamlessly!
+                if ($targetSpinner -and $cfg -and $cfg.gifts) {
+                    $spGiftId = if ($targetSpinner.giftId) { [string]$targetSpinner.giftId.Trim() } else { "" }
+                    $spGiftName = if ($targetSpinner.giftName) { [string]$targetSpinner.giftName.Trim() } else { "" }
+                    foreach ($g in $cfg.gifts) {
+                        if ($g.enabled -eq $false -or $g.command -eq "spin_wheel" -or $g.command -match '^spinner_') { continue }
+                        $isMatch = $false
+                        $gGId = if ($g.giftId) { [string]$g.giftId.Trim() } else { "" }
+                        if ($spGiftId -and $gGId -and ($spGiftId -eq $gGId -or ($spGiftId -eq '7934' -and $gGId -eq '7934'))) { $isMatch = $true }
+                        elseif ($spGiftName -and $g.giftName) {
+                            $cleanSp = ($spGiftName -replace '[^a-zA-Z0-9]','').ToLower()
+                            $cleanG = ($g.giftName -replace '[^a-zA-Z0-9]','').ToLower()
+                            if ($cleanSp -and $cleanG -and ($cleanSp -eq $cleanG -or $cleanSp.Contains($cleanG) -or $cleanG.Contains($cleanSp))) { $isMatch = $true }
+                        }
+                        if ($isMatch) {
+                            $reps = if ($g.repetition) { [int]$g.repetition } elseif ($g.amount) { [int]$g.amount } else { 1 }
+                            $cDelay = if ($g.delay) { [int]$g.delay } else { 0 }
+                            $cInt = if ($g.interval) { [int]$g.interval } else { 100 }
+                            if ($g.commands -and $g.commands.Count -gt 0) {
+                                foreach ($sc in $g.commands) {
+                                    $scAct = if ($sc.actionType) { $sc.actionType } else { $g.actionType }
+                                    SendToPvZGame $scAct $sc.command $reps $username "" 1 $cDelay $cInt | Out-Null
+                                }
+                            } elseif ($g.command) {
+                                SendToPvZGame $g.actionType $g.command $reps $username "" 1 $cDelay $cInt | Out-Null
+                            }
+                        }
+                    }
                 }
             } elseif (($data.commands -and $data.commands.Count -gt 0) -or ($command -and $command -ne "spin_wheel")) {
                 $exec = @{ success = $true; message = "OK" }
@@ -8226,7 +8255,6 @@ INSTALLATION INSTRUCTIONS:
                                         $triggerIcon = if ($g.unitIcon) { [string]$g.unitIcon } elseif ($icon) { [string]$icon } else { "images/trig_7.svg" }
                                         Record-TriggerEvent $giftName $giftId $repeatCount $user $avatar $triggerIcon $triggerLbl
                                     }
-                                    break
                                 }
                             }
                         }
