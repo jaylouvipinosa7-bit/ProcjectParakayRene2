@@ -4,7 +4,7 @@
                               "game":  "PvZFusion",
                               "createdAt":  "09/17/2026",
                               "coverIcon":  "images/pvz_fusion_cover.jpg",
-                              "eventsCount":  69,
+                              "eventsCount":  73,
                               "overflowCount":  "+17",
                               "previewSprites":  [
                                                      "images/game-icons/pvz/spawn_tall_nut.webp",
@@ -547,44 +547,6 @@
                                                  "allowImport":  true
                                              },
                                              {
-                                                 "id":  "10",
-                                                 "giftName":  "GG",
-                                                 "giftId":  "6064",
-                                                 "coins":  1,
-                                                 "icon":  "images/tiktok-gifts/6064_gg.webp",
-                                                 "unitIcon":  "images/game-icons/pvz/spawn_solarsunflower.webp",
-                                                 "funcImg":  "images/game-icons/pvz/spawn_solarsunflower.webp",
-                                                 "actionType":  "plant",
-                                                 "command":  "spawn_solar_sunflower",
-                                                 "label":  "Spawn Squalour Zombie",
-                                                 "targetGame":  "PvZFusion",
-                                                 "amount":  1,
-                                                 "enabled":  true,
-                                                 "likeThreshold":  50,
-                                                 "commands":  [
-                                                                  {
-                                                                      "name":  "Commands #1",
-                                                                      "command":  "spawn_solar_sunflower",
-                                                                      "label":  "Spawn Enlightened Solarnova (304)",
-                                                                      "icon":  "images/game-icons/pvz/spawn_solarsunflower.webp",
-                                                                      "actionType":  "plant",
-                                                                      "amount":  1
-                                                                  }
-                                                              ],
-                                                 "functionName":  "Spawn Squalour Zombie",
-                                                 "repetition":  1,
-                                                 "delay":  0,
-                                                 "interval":  100,
-                                                 "repetitionMultiplier":  true,
-                                                 "hideInOverlay":  false,
-                                                 "triggerType":  "gift",
-                                                 "triggerValue":  "1",
-                                                 "platform":  "tiktok",
-                                                 "availableFor":  "Anyone",
-                                                 "allowImport":  true,
-                                                 "funcName":  "Spawn Squalour Zombie"
-                                             },
-                                             {
                                                  "id":  "64",
                                                  "giftName":  "Bibingka",
                                                  "giftId":  "16757",
@@ -1093,7 +1055,7 @@
                                                  "command":  "spawn_football_boss",
                                                  "label":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)",
                                                  "targetGame":  "PvZFusion",
-                                                 "amount":  20,
+                                                 "amount":  50,
                                                  "enabled":  true,
                                                  "likeThreshold":  50,
                                                  "commands":  [
@@ -1103,11 +1065,11 @@
                                                                       "label":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)",
                                                                       "icon":  "images/game-icons/pvz/spawn_football_boss.webp",
                                                                       "actionType":  "zombie",
-                                                                      "amount":  1
+                                                                      "amount":  50
                                                                   }
                                                               ],
                                                  "functionName":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)",
-                                                 "repetition":  20,
+                                                 "repetition":  50,
                                                  "delay":  0,
                                                  "interval":  100,
                                                  "repetitionMultiplier":  true,
@@ -1116,7 +1078,8 @@
                                                  "triggerValue":  "1",
                                                  "platform":  "tiktok",
                                                  "availableFor":  "Anyone",
-                                                 "allowImport":  true
+                                                 "allowImport":  true,
+                                                 "funcName":  "Spawn \u003cu\u003e\u003ci\u003eLast Striker\u003c/i\u003e\u003c/u\u003e (260)"
                                              },
                                              {
                                                  "id":  "15",
@@ -1503,6 +1466,44 @@
                                                  "platform":  "tiktok",
                                                  "availableFor":  "Anyone",
                                                  "allowImport":  true
+                                             },
+                                             {
+                                                 "id":  "10",
+                                                 "giftName":  "GG",
+                                                 "giftId":  "6064",
+                                                 "coins":  1,
+                                                 "icon":  "images/tiktok-gifts/6064_gg.webp",
+                                                 "unitIcon":  "images/game-icons/pvz/spawn_solarsunflower.webp",
+                                                 "funcImg":  "images/game-icons/pvz/spawn_solarsunflower.webp",
+                                                 "actionType":  "plant",
+                                                 "command":  "spawn_solar_sunflower",
+                                                 "label":  "Spawn Squalour Zombie",
+                                                 "targetGame":  "PvZFusion",
+                                                 "amount":  1,
+                                                 "enabled":  true,
+                                                 "likeThreshold":  50,
+                                                 "commands":  [
+                                                                  {
+                                                                      "name":  "Commands #1",
+                                                                      "command":  "spawn_solar_sunflower",
+                                                                      "label":  "Spawn Enlightened Solarnova (304)",
+                                                                      "icon":  "images/game-icons/pvz/spawn_solarsunflower.webp",
+                                                                      "actionType":  "plant",
+                                                                      "amount":  1
+                                                                  }
+                                                              ],
+                                                 "functionName":  "Spawn Squalour Zombie",
+                                                 "repetition":  1,
+                                                 "delay":  0,
+                                                 "interval":  100,
+                                                 "repetitionMultiplier":  true,
+                                                 "hideInOverlay":  false,
+                                                 "triggerType":  "gift",
+                                                 "triggerValue":  "1",
+                                                 "platform":  "tiktok",
+                                                 "availableFor":  "Anyone",
+                                                 "allowImport":  true,
+                                                 "funcName":  "Spawn Squalour Zombie"
                                              },
                                              {
                                                  "id":  "38",
@@ -2621,6 +2622,148 @@
                                                  "platform":  "tiktok",
                                                  "availableFor":  "Anyone",
                                                  "allowImport":  true
+                                             },
+                                             {
+                                                 "id":  "1793515837720",
+                                                 "giftName":  "Star Light",
+                                                 "coins":  5,
+                                                 "likeThreshold":  50,
+                                                 "giftId":  "12963",
+                                                 "actionType":  "plant",
+                                                 "command":  "spawn_super_furnace",
+                                                 "commands":  [
+                                                                  {
+                                                                      "name":  "Commands #1",
+                                                                      "command":  "spawn_super_furnace",
+                                                                      "label":  "Spawn Firnurse (1234)",
+                                                                      "icon":  "images/game-icons/pvz/spawn_super_furnace.webp",
+                                                                      "actionType":  "plant",
+                                                                      "amount":  10
+                                                                  }
+                                                              ],
+                                                 "functionName":  "Spawn Axion Orbiter (989)",
+                                                 "label":  "Spawn Axion Orbiter (989)",
+                                                 "unitIcon":  "images/game-icons/pvz/spawn_super_furnace.webp",
+                                                 "amount":  10,
+                                                 "repetition":  10,
+                                                 "delay":  0,
+                                                 "interval":  100,
+                                                 "repetitionMultiplier":  true,
+                                                 "allowImport":  true,
+                                                 "hideInOverlay":  false,
+                                                 "triggerType":  "gift",
+                                                 "triggerValue":  "1",
+                                                 "platform":  "tiktok",
+                                                 "availableFor":  "Anyone",
+                                                 "enabled":  true,
+                                                 "icon":  "images/tiktok-gifts/12963_shining_starlight.webp",
+                                                 "funcImg":  "images/game-icons/pvz/spawn_super_furnace.webp",
+                                                 "funcName":  "Spawn Axion Orbiter (989)"
+                                             },
+                                             {
+                                                 "id":  "1793515984987",
+                                                 "giftName":  "Carnival Tent",
+                                                 "coins":  20,
+                                                 "likeThreshold":  50,
+                                                 "giftId":  "1487605",
+                                                 "actionType":  "plant",
+                                                 "command":  "spawn_big_wall_nut",
+                                                 "commands":  [
+                                                                  {
+                                                                      "name":  "Commands #1",
+                                                                      "command":  "spawn_big_wall_nut",
+                                                                      "label":  "Spawn Big Wall Nut",
+                                                                      "icon":  "images/game-icons/pvz/spawn_big_wall_nut.webp",
+                                                                      "actionType":  "plant",
+                                                                      "amount":  1
+                                                                  }
+                                                              ],
+                                                 "functionName":  "Spawn Big Wall Nut",
+                                                 "label":  "Spawn Big Wall Nut",
+                                                 "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_big_wall_nut.webp",
+                                                 "amount":  50,
+                                                 "repetition":  50,
+                                                 "delay":  0,
+                                                 "interval":  100,
+                                                 "repetitionMultiplier":  true,
+                                                 "allowImport":  true,
+                                                 "hideInOverlay":  false,
+                                                 "triggerType":  "gift",
+                                                 "triggerValue":  "1",
+                                                 "platform":  "tiktok",
+                                                 "availableFor":  "Anyone",
+                                                 "enabled":  true,
+                                                 "icon":  "images/tiktok-gifts/1487605_carnival_tent.webp"
+                                             },
+                                             {
+                                                 "id":  "1793516058048",
+                                                 "giftName":  "Huh?",
+                                                 "coins":  20,
+                                                 "likeThreshold":  50,
+                                                 "giftId":  "1473093",
+                                                 "actionType":  "plant",
+                                                 "command":  "spawn_ultimate_present_kelp",
+                                                 "commands":  [
+                                                                  {
+                                                                      "name":  "Commands #1",
+                                                                      "command":  "spawn_ultimate_present_kelp",
+                                                                      "label":  "Spawn Sea-greed Zombox (5003)",
+                                                                      "icon":  "images/game-icons/pvz/spawn_ultimate_present_kelp.webp",
+                                                                      "actionType":  "plant",
+                                                                      "amount":  1
+                                                                  }
+                                                              ],
+                                                 "functionName":  "Spawn Sea-greed Zombox (5003)",
+                                                 "label":  "Spawn Sea-greed Zombox (5003)",
+                                                 "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_ultimate_present_kelp.webp",
+                                                 "amount":  40,
+                                                 "repetition":  40,
+                                                 "delay":  0,
+                                                 "interval":  100,
+                                                 "repetitionMultiplier":  true,
+                                                 "allowImport":  true,
+                                                 "hideInOverlay":  false,
+                                                 "triggerType":  "gift",
+                                                 "triggerValue":  "1",
+                                                 "platform":  "tiktok",
+                                                 "availableFor":  "Anyone",
+                                                 "enabled":  true,
+                                                 "icon":  "images/tiktok-gifts/1473093_huh.webp"
+                                             },
+                                             {
+                                                 "id":  "1793522059029",
+                                                 "giftName":  "Treasure Clover",
+                                                 "coins":  1,
+                                                 "likeThreshold":  50,
+                                                 "giftId":  "637990",
+                                                 "actionType":  "plant",
+                                                 "command":  "spawn_nucleardoomcherry",
+                                                 "commands":  [
+                                                                  {
+                                                                      "name":  "Commands #1",
+                                                                      "command":  "spawn_nucleardoomcherry",
+                                                                      "label":  "Spawn Big Bang Cherry (959)",
+                                                                      "icon":  "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                                                      "actionType":  "plant",
+                                                                      "amount":  1
+                                                                  }
+                                                              ],
+                                                 "functionName":  "Spawn Big Bang Cherry (959)",
+                                                 "label":  "Spawn Big Bang Cherry (959)",
+                                                 "unitIcon":  "http://localhost:8080/images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+                                                 "amount":  1,
+                                                 "repetition":  1,
+                                                 "delay":  0,
+                                                 "interval":  100,
+                                                 "repetitionMultiplier":  true,
+                                                 "allowImport":  true,
+                                                 "hideInOverlay":  false,
+                                                 "triggerType":  "gift",
+                                                 "triggerValue":  "1",
+                                                 "platform":  "tiktok",
+                                                 "availableFor":  "Anyone",
+                                                 "enabled":  true,
+                                                 "icon":  "images/tiktok-gifts/637990_treasure_clover.webp"
                                              }
                                          ],
                               "_key":  "preset_pvz_custom",

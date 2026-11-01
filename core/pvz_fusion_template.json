@@ -1798,7 +1798,7 @@
                                             "actionType":  "zombie",
                                             "command":  "spawn_boat_imp",
                                             "amount":  2,
-                                            "unitIcon":  "images/game-icons/pvz/spawn_boat_imp.webp",
+                                            "unitIcon":  "images/game-icons/pvz/spawn_imp_zombie.webp",
                                             "rarity":  "Epic",
                                             "weight":  6
                                         },

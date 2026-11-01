@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # PvZ Fusion 4.0 - Live Stream Control Server & In-Game Bridge
 # ==============================================================================
 
@@ -2020,7 +2020,29 @@ function Resolve-PlantId([string]$name) {
     $clean = $name.ToLower() -replace '^spawn[_\-]?', '' -replace '[^a-z0-9]', ''
     if ($plantMap.ContainsKey($clean)) { return $plantMap[$clean] }
 
-    switch ($clean) {
+    switch -Regex ($clean) {
+        'bigsunnut'              { return 251 }
+        'bigwallnut'             { return 255 }
+        'dragonpot'              { return 5005 }
+        'solarsunflower'         { return 304 }
+        'supergatlingfume|flurrycommando' { return 1445 }
+        'overclockedcherrybomber|blazersnipea' { return 301 }
+        'ultimatespruce'         { return 947 }
+        'ultimatecorn'           { return 943 }
+        'ultimatecabbagecannon'  { return 966 }
+        'ultimateholystar'       { return 311 }
+        'ultimatechomper'        { return 903 }
+        'doomsniper'             { return 1272 }
+        'magicsnowpea2'          { return 5001 }
+        'obsidianjuggernaut'     { return 997 }
+        'ultimateseashroom'      { return 960 }
+        'bedrocktallnut'         { return 308 }
+        'ultimatebamboo'         { return 980 }
+        'superthreepeatersp'     { return 999 }
+        'superfurnace|axionorbiter' { return 1234 }
+        'ultimatepresentkelp'    { return 5003 }
+        'cherryjalapeno'         { return 1179 }
+        'nuclearsquash'          { return 965 }
         'ultimatesnipergatling'  { return 309 }
         'alec'                   { return 309 }
         'snipergatling'          { return 309 }
@@ -2058,6 +2080,17 @@ function Resolve-ZombieId([string]$name) {
     if ($zombieMap.ContainsKey($clean)) { return $zombieMap[$clean] }
 
     switch -Regex ($clean) {
+        'summonhorse|summonedhorse' { return 232 }
+        'supermachinenut|supermachinenutzombie|super_machine_nut_zombie' { return 210 }
+        'knightcaptain|knight_captain' { return 70 }
+        'burglarbungee|burglar_bungee' { return 63 }
+        'footballboss|laststriker' { return 260 }
+        'submarinec2|submarine_c2' { return 314 }
+        'snowcrab|snow_crab' { return 97 }
+        'lostpenguin|lost_penguin' { return 95 }
+        'lostsnowmonster|lost_snow_monster' { return 96 }
+        'lostmachineiv|lost_machine_iv' { return 99 }
+        'lostmachineiii|lost_machine_iii' { return 94 }
         'blackknight|blackhorse|blackknightzombie' { return 251 }
         'buckshotknight|superblackhorse|buckshotknightcaptain' { return 252 }
         'trident.*jugger|ultiwatergargantuar' { return 240 }
@@ -2103,6 +2136,21 @@ function AddEventLog($eventObj) {
     while ($eventsList.Count -gt 100) {
         $eventsList.RemoveAt(0)
     }
+}
+
+function Ensure-SinglePvZInstance {
+    try {
+        $procs = @(Get-Process -Name "PlantsVsZombiesRH" -ErrorAction SilentlyContinue)
+        if ($procs.Count -gt 1) {
+            # Multiple game instances detected: Keep the active one (highest memory), kill ghost instances
+            $sorted = $procs | Sort-Object WorkingSet64 -Descending
+            for ($i = 1; $i -lt $sorted.Count; $i++) {
+                try {
+                    Stop-Process -Id $sorted[$i].Id -Force -ErrorAction SilentlyContinue
+                } catch {}
+            }
+        }
+    } catch {}
 }
 
 function Test-GamePort([int]$p) {
@@ -2945,10 +2993,12 @@ while ($true) {
             $cards = LoadCards
             
             # Check if game is responding
-            $gameActive = $true
+            Ensure-SinglePvZInstance
+            $gameActive = $false
             foreach ($p in $gamePorts) {
                 if (Test-GamePort $p) {
                     $script:activeGamePort = $p
+                    $gameActive = $true
                     break
                 }
             }
@@ -8053,7 +8103,8 @@ INSTALLATION INSTRUCTIONS:
                                 $reqGId = if ($giftId) { [string]$giftId.Trim() } else { "" }
                                 $autoGId = if ($autoGift -and $autoGift.id) { [string]$autoGift.id.Trim() } else { "" }
 
-                                if ($g.enabled -and $gGId -and (($reqGId -and $gGId -eq $reqGId) -or ($autoGId -and $gGId -eq $autoGId))) {
+                                $isCardEnabled = ($null -eq $g.enabled -or $g.enabled -eq $true -or [string]$g.enabled -eq "true")
+                                if ($isCardEnabled -and $gGId -and (($reqGId -and $gGId -eq $reqGId) -or ($autoGId -and $gGId -eq $autoGId))) {
                                     $cardMatch = $true
                                 } elseif ($g.enabled) {
                                     $cleanGGId = ($gGId -replace '[^a-zA-Z0-9]','').ToLower()
@@ -8168,7 +8219,7 @@ INSTALLATION INSTRUCTIONS:
                         $giftCards = @($config.gifts | Where-Object { 
                             $_.enabled -and 
                             [string]$_.id -notin @("1", "2", "3", "4") -and 
-                            $_.triggerType -notin @("follow", "likes", "likes_person", "likes_all", "share") -and 
+                            $_.triggerType -notin @("follow", "likes", "likes_person", "likes_all", "share", "custom") -and 
                             $_.eventType -notin @("follow", "likes", "likes_person", "likes_all", "share") -and 
                             $_.giftName -notmatch "^(Follower|Team plants likes|Team zombies likes|Total Likes)$" 
                         })

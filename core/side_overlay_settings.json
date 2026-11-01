@@ -2,13 +2,13 @@
     "split1":  {
                    "cols":  "8",
                    "offset":  0,
-                   "limit":  37,
+                   "limit":  36,
                    "style":  "strip"
                },
     "split2":  {
                    "cols":  "8",
-                   "offset":  37,
-                   "limit":  32,
+                   "offset":  36,
+                   "limit":  33,
                    "style":  "strip"
                },
     "single":  {
