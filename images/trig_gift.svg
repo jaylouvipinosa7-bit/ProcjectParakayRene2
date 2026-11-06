@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <defs>
+      <linearGradient id="boxg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff2e63"/>
+        <stop offset="100%" stop-color="#be123c"/>
+      </linearGradient>
+      <linearGradient id="ribg" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#fde047"/>
+        <stop offset="100%" stop-color="#f59e0b"/>
+      </linearGradient>
+      <filter id="giftglow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="50" cy="50" r="44" fill="#1f1418" stroke="#f43f5e" stroke-width="2.5" opacity="0.9"/>
+    <rect x="23" y="42" width="54" height="40" rx="6" fill="url(#boxg)" filter="url(#giftglow)"/>
+    <rect x="18" y="33" width="64" height="13" rx="4" fill="#fb7185"/>
+    <rect x="44" y="33" width="12" height="49" fill="url(#ribg)"/>
+    <path d="M44 33 C34 20 28 26 44 33 Z" fill="url(#ribg)"/>
+    <path d="M56 33 C66 20 72 26 56 33 Z" fill="url(#ribg)"/>
+    <circle cx="50" cy="33" r="4.5" fill="#fef08a"/>
+  </svg>
