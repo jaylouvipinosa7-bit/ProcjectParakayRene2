@@ -28242,6 +28242,42 @@
       "icon": "images/tiktok-gifts/9072_tiktok_universe.webp",
       "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp",
       "isCommunity": true
+    },
+    {
+      "id": "909798",
+      "name": "Fantastic Fly Love",
+      "coins": 19999,
+      "icon": "images/tiktok-gifts/909798_fantastic_fly_love.webp",
+      "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/013ebb335b996fe6ed80ae862a2f3e38.png~tplv-obj.webp",
+      "isNew": true,
+      "isCommunity": true
+    },
+    {
+      "id": "1447278",
+      "name": "Grand show",
+      "coins": 999,
+      "icon": "images/tiktok-gifts/1447278_grand_show.webp",
+      "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f77726227c37e46cd608ca76ef5b8bbb.png~tplv-obj.webp",
+      "isNew": true,
+      "isCommunity": true
+    },
+    {
+      "id": "1447277",
+      "name": "Vinyl Flip",
+      "coins": 349,
+      "icon": "images/tiktok-gifts/1447277_vinyl_flip.webp",
+      "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6a9048ebc24e4cbe29dfd11cb60e22f3.png~tplv-obj.webp",
+      "isNew": true,
+      "isCommunity": true
+    },
+    {
+      "id": "1447275",
+      "name": "Music  Album",
+      "coins": 1,
+      "icon": "images/tiktok-gifts/1447275_music_album.webp",
+      "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/21caa7b21e45339b955264912fb7caa4.png~tplv-obj.webp",
+      "isNew": true,
+      "isCommunity": true
     }
   ]
 }

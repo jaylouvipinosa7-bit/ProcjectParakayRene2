@@ -333,6 +333,49 @@
             overflow: visible;
         }
 
+        /* Lawnmower Action Indicator Badges (ONLY for Start, Restart/Remove, and Delete Lawnmowers) */
+        .mower-indicator-badge {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 1.5px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 5px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .mower-badge-start {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(16, 185, 129, 0.5);
+        }
+
+        .mower-badge-restart {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(2, 132, 199, 0.5);
+        }
+
+        .mower-badge-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(239, 68, 68, 0.5);
+        }
+
         /* Left Side: Plant / Zombie Image */
         .function-image-wrapper {
             display: flex;
@@ -1178,6 +1221,28 @@
         return found ? String(found.id) : null;
     }
 
+    function getMowerIndicator(card) {
+            if (!card) return null;
+            const id = String(card.id || '');
+            const cmd = String(card.commands || card.command || '').toLowerCase();
+            const func = String(card.funcName || card.functionName || card.label || '').toLowerCase();
+            const gift = String(card.giftName || '').toLowerCase();
+
+            // 1. Restart / Remove LawnMower (Slow motion / Snail) -> Blue RESTART (must be checked BEFORE start)
+            if (id === '57' || cmd.includes('restart') || func.includes('restart') || cmd.includes('remove') || func.includes('remove') || gift.includes('slow motion')) {
+                return { type: 'restart', text: (cmd.includes('remove') || func.includes('remove')) ? 'REMOVE' : 'RESTART' };
+            }
+            // 2. Delete LawnMower (I\'m Yours) -> Red DELETE
+            if (id === '58' || cmd.includes('delete') || func.includes('delete') || gift.includes("i'm yours") || gift.includes("i\u0027m yours")) {
+                return { type: 'delete', text: 'DELETE' };
+            }
+            // 3. Start LawnMower (Lyric Mail) -> Green START
+            if (id === '56' || cmd.includes('start') || func.includes('start') || gift.includes('lyric mail')) {
+                return { type: 'start', text: 'START' };
+            }
+            return null;
+        }
+
     // Render all cards dynamically into cardsGrid matching StreamToEarn layout
     function renderAllCards(cards) {
         const grid = document.getElementById('cardsGrid');
@@ -1215,11 +1280,14 @@
             const cardCost = card.coins ? `${card.coins} Coins` : (card.triggerValue ? `${card.triggerValue} Likes` : '');
             const cardTooltip = `${cardGiftName}${cardCost ? ' • ' + cardCost : ''} ➔ ${card.funcName || ''}`;
             const showGiftTag = (card.action !== 'Follow' && !String(card.action || '').startsWith('Like') && cardGiftName && cardGiftName !== 'Gift');
+            const mowerInfo = getMowerIndicator(card);
+            const mowerBadgeHtml = mowerInfo ? ('<span class="mower-indicator-badge mower-badge-' + mowerInfo.type + '">' + mowerInfo.text + '</span>') : '';
 
             cardEl.innerHTML = `
                 <div class="event" title="${cardTooltip}">
                     <span class="donation-badge" id="badge-${card.id}">${countVal.toLocaleString()}</span>
                     <div class="function-image-wrapper">
+                        \
                         <img class="function-icon" src="${funcSrc}" alt="${card.funcName || ''}" onerror="this.onerror=null; this.src='images/game-icons/pvz/spawn_gatling_pea.webp';">
                     </div>
                     <div class="trigger-img-wrapper" title="${cardTooltip}">
@@ -1378,7 +1446,20 @@
         }
     }
     loadCardsConfig();
-    setInterval(loadCardsConfig, 5000);
+    setInterval(loadCardsConfig, 3000);
+    try {
+        const bcSync = new BroadcastChannel('s2e_overlay_sync');
+        bcSync.onmessage = () => {
+            console.log("[Overlay] Instant preset sync signal received via BroadcastChannel");
+            loadCardsConfig();
+        };
+    } catch(e) {}
+    window.addEventListener('storage', (e) => {
+        if (e.key === 's2e_last_preset_update') {
+            console.log("[Overlay] Instant preset sync signal received via StorageEvent");
+            loadCardsConfig();
+        }
+    });
 
     function matchGift(giftId, giftName) {
         const gIdStr = String(giftId || '').trim();

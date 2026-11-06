@@ -163,6 +163,96 @@
         }
     }
 
+    class L4D2Adapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 'l4d2',
+                name: 'Left 4 Dead 2',
+                badge: 'LIVE READY',
+                badgeClass: 'badge-ready',
+                icon: '🧟',
+                iconColor: '#22c55e',
+                tag: 'Co-op Survival • Ready',
+                port: 8080
+            });
+        }
+    }
+
+    class GTASAAdapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 'gta_sa',
+                name: 'GTA San Andreas',
+                badge: 'CLEO READY',
+                badgeClass: 'badge-ready',
+                icon: '🚗',
+                iconColor: '#f59e0b',
+                tag: 'Action Sandbox • Ready',
+                port: 8080
+            });
+        }
+    }
+
+    class GTAVChaosAdapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 'gtav_chaos',
+                name: 'Grand Theft Auto V Chaos',
+                badge: 'CHAOS READY',
+                badgeClass: 'badge-ready',
+                icon: '💥',
+                iconColor: '#ef4444',
+                tag: 'Action Sandbox • Ready',
+                port: 8080
+            });
+        }
+    }
+
+    class GTAVKothAdapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 'gtav_koth',
+                name: 'GTA V King of the Hill',
+                badge: 'ARENA READY',
+                badgeClass: 'badge-ready',
+                icon: '🎯',
+                iconColor: '#38bdf8',
+                tag: 'Competitive Arena • Ready',
+                port: 8080
+            });
+        }
+    }
+
+    class GTAVAirportAdapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 'gtav_airport',
+                name: 'GTA V Airport Sandbox',
+                badge: 'AIRPORT READY',
+                badgeClass: 'badge-ready',
+                icon: '✈️',
+                iconColor: '#06b6d4',
+                tag: 'Sandbox Stunts • Ready',
+                port: 8080
+            });
+        }
+    }
+
+    class RE4RemakeAdapter extends BaseRENEarnGameAdapter {
+        constructor() {
+            super({
+                id: 're4',
+                name: 'Resident Evil 4 Remake',
+                badge: 'HORROR READY',
+                badgeClass: 'badge-ready',
+                icon: '🩸',
+                iconColor: '#e11d48',
+                tag: 'Action Survival Horror • Ready',
+                port: 8080
+            });
+        }
+    }
+
     // Master RENEarn Command & Game Engine
     class RENEarnGameEngine {
         constructor() {
@@ -185,6 +275,12 @@
             this.registerGame(new PvZClassicAdapter());
             this.registerGame(new UniversalGameAdapter());
             this.registerGame(new ZombieTsunamiAdapter());
+            this.registerGame(new L4D2Adapter());
+            this.registerGame(new GTASAAdapter());
+            this.registerGame(new GTAVChaosAdapter());
+            this.registerGame(new GTAVKothAdapter());
+            this.registerGame(new GTAVAirportAdapter());
+            this.registerGame(new RE4RemakeAdapter());
         }
 
         registerDefaultPresets() {

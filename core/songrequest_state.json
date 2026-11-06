@@ -5,21 +5,7 @@
     "spotifyAccessToken":  "",
     "spotifyRefreshToken":  "",
     "spotifyClientId":  "",
-    "nowPlaying":  {
-                       "id":  "req_2",
-                       "title":  "That\u0027s What I Like",
-                       "artist":  "Bruno Mars",
-                       "singer":  "Bruno Mars",
-                       "album":  "24K Magic",
-                       "coverUrl":  "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/e3/47/a0/e347a0cc-87ce-5d05-d560-176c7d48f66e/075679904119.jpg/400x400bb.jpg",
-                       "durationMs":  206697,
-                       "progressMs":  29500,
-                       "requestedBy":  "@TopGifter",
-                       "isPlaying":  false,
-                       "uri":  "",
-                       "previewUrl":  "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0f/a6/81/0fa681ef-af42-7b3f-7f62-9a43c2d8c222/mzaf_5126272821207786596.plus.aac.p.m4a",
-                       "youtubeId":  "h6kQSxZL_3k"
-                   },
+    "nowPlaying":  null,
     "queue":  [
 
               ],

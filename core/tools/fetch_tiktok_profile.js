@@ -2,7 +2,7 @@ const { TikTokLiveConnection } = require('tiktok-live-connector');
 const fs = require('fs');
 const path = require('path');
 
-const targetUser = (process.argv[2] || 'gohanmalunggay').replace(/^@+/, '').trim();
+const targetUser = (process.argv[2] || '').replace(/^@+/, '').trim();
 if (!targetUser) {
     console.log(JSON.stringify({ success: false, error: 'No username provided' }));
     process.exit(0);

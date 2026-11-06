@@ -1,6 +1,6 @@
 # Full TikTok Live Simulation Suite for RENEarn
 param(
-    [string]$username = "gohanmalunggay",
+    [string]$username = "streamer",
     [int]$viewers = 188,
     [int]$likes = 42500
 )

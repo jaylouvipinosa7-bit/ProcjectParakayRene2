@@ -1,7 +1,7 @@
 ﻿{
-    "totalTriggers":  2213,
-    "streak":  1,
-    "lastTriggerTime":  1793540518687,
+    "totalTriggers":  2217,
+    "streak":  3,
+    "lastTriggerTime":  1793593211250,
     "goal":  100,
     "goalTitle":  "Mega Wave Boss",
     "gifts":  {
@@ -82,13 +82,6 @@
                                      "icon":  "images/game-icons/pvz/spawn_ultimatesunnut.webp",
                                      "lastGifter":  "DoMo PhoN 🇨🇦🇵🇭"
                                  },
-                  "galaxy":  {
-                                 "name":  "Galaxy",
-                                 "giftId":  "11046",
-                                 "count":  1,
-                                 "icon":  "images/game-icons/pvz/spawn_ultimateimpking.webp",
-                                 "lastGifter":  "Monsterrized23"
-                             },
                   "divine_fingers":  {
                                          "name":  "Divine Fingers",
                                          "giftId":  "118812",
@@ -414,52 +407,19 @@
                   "heart_me":  {
                                    "name":  "Heart Me",
                                    "giftId":  "7934",
-                                   "count":  37,
+                                   "count":  39,
                                    "icon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
-                                   "lastGifter":  "GifterTest"
-                               }
+                                   "lastGifter":  "RENEarn"
+                               },
+                  "galaxy":  {
+                                 "name":  "Galaxy",
+                                 "giftId":  "5658",
+                                 "count":  3,
+                                 "icon":  "images/game-icons/pvz/spawn_ultimateimpking.webp",
+                                 "lastGifter":  "RENEarn"
+                             }
               },
     "recentTriggers":  [
-                           {
-                               "id":  "1793527284306_3318",
-                               "username":  "aninggggggg",
-                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8383e61b5e32c5ff400a6f943ff39a89~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=336be6fd\u0026x-expires=1793700000\u0026x-signature=ctp1Y9yB5NwD%2B%2B4%2FLb4aymKLCzU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
-                               "giftName":  "Hamsa Protect",
-                               "giftIcon":  "images/game-icons/pvz/spawn_kirov_c.webp",
-                               "commandLabel":  "Spawn Kirov_c",
-                               "count":  1,
-                               "timestamp":  1793527284306
-                           },
-                           {
-                               "id":  "1793527320039_6673",
-                               "username":  "GOten2🫪",
-                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/51ba2fce0909d25e90a23c527db09e21~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=54346709\u0026x-expires=1793700000\u0026x-signature=ASWYhgooNyRwP9gzYM3FL5yp3FI%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
-                               "giftName":  "TikTok",
-                               "giftIcon":  "images/game-icons/pvz/charm_all_zombies.webp",
-                               "commandLabel":  "Charm all zombies",
-                               "count":  1,
-                               "timestamp":  1793527320039
-                           },
-                           {
-                               "id":  "1793527327278_6557",
-                               "username":  "M0nsteriZzed👹",
-                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3b18963876950f08bf9f4666ed8fea09~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=0c0f7b87\u0026x-expires=1793700000\u0026x-signature=fmkQp8gGGUIKS0ulP95EeAwNPLk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my3",
-                               "giftName":  "GOten",
-                               "giftIcon":  "images/game-icons/pvz/spawn_squalour_zombie.webp",
-                               "commandLabel":  "Ultimate Gold Gargantuar",
-                               "count":  1,
-                               "timestamp":  1793527327278
-                           },
-                           {
-                               "id":  "1793527328071_2910",
-                               "username":  "M0nsteriZzed👹",
-                               "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3b18963876950f08bf9f4666ed8fea09~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=0c0f7b87\u0026x-expires=1793700000\u0026x-signature=fmkQp8gGGUIKS0ulP95EeAwNPLk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my3",
-                               "giftName":  "GOten",
-                               "giftIcon":  "images/game-icons/pvz/spawn_squalour_zombie.webp",
-                               "commandLabel":  "Ultimate Gold Gargantuar",
-                               "count":  1,
-                               "timestamp":  1793527328071
-                           },
                            {
                                "id":  "1793527328240_3685",
                                "username":  "M0nsteriZzed👹",
@@ -539,6 +499,46 @@
                                "commandLabel":  "Spawn Big Sun Nut",
                                "count":  1,
                                "timestamp":  1793540518687
+                           },
+                           {
+                               "id":  "1793545549004_5954",
+                               "username":  "TestUser",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1793545549004
+                           },
+                           {
+                               "id":  "1793593202096_3595",
+                               "username":  "RENEarn",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Heart Me",
+                               "giftIcon":  "images/game-icons/pvz/spawn_big_sun_nut.webp",
+                               "commandLabel":  "Spawn Big Sun Nut",
+                               "count":  1,
+                               "timestamp":  1793593202096
+                           },
+                           {
+                               "id":  "1793593210885_3298",
+                               "username":  "RENEarn",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Galaxy",
+                               "giftIcon":  "images/game-icons/pvz/spawn_ultimateimpking.webp",
+                               "commandLabel":  "Spawn UltimateImpKing",
+                               "count":  1,
+                               "timestamp":  1793593210885
+                           },
+                           {
+                               "id":  "1793593211250_5199",
+                               "username":  "RENEarn",
+                               "avatar":  "images/default_avatar.svg",
+                               "giftName":  "Galaxy",
+                               "giftIcon":  "images/game-icons/pvz/spawn_ultimateimpking.webp",
+                               "commandLabel":  "Spawn UltimateImpKing",
+                               "count":  1,
+                               "timestamp":  1793593211250
                            }
                        ]
 }

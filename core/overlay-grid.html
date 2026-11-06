@@ -695,7 +695,28 @@
                 return true;
             });
 
-            validCards.forEach(card => {
+            let displayCards = validCards;
+            const splitParam = urlParams.get('split');
+            const limitParam = parseInt(urlParams.get('limit') || urlParams.get('count'), 10);
+            const offsetParam = parseInt(urlParams.get('offset') || urlParams.get('from'), 10);
+
+            if (splitParam === '1') {
+                const count = !isNaN(limitParam) && limitParam > 0 ? limitParam : Math.ceil(validCards.length / 2);
+                displayCards = validCards.slice(0, count);
+            } else if (splitParam === '2') {
+                let from = !isNaN(offsetParam) ? offsetParam : Math.ceil(validCards.length / 2);
+                if (urlParams.get('from') && from > 0) from = from - 1;
+                from = Math.max(0, Math.min(validCards.length, from));
+                const count = !isNaN(limitParam) && limitParam > 0 ? limitParam : (validCards.length - from);
+                displayCards = validCards.slice(from, from + count);
+            } else if (!isNaN(offsetParam) || !isNaN(limitParam)) {
+                let off = !isNaN(offsetParam) ? offsetParam : 0;
+                if (urlParams.get('from') && off > 0) off = off - 1;
+                const lim = !isNaN(limitParam) ? limitParam : (validCards.length - off);
+                displayCards = validCards.slice(off, off + lim);
+            }
+
+            displayCards.forEach(card => {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell';
                 cell.id = `cell_${card.id}`;

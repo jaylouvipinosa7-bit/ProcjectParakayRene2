@@ -14,11 +14,11 @@
     "single":  {
                    "cols":  "12",
                    "limit":  0,
-                   "style":  "detailed"
+                   "style":  "strip"
                },
     "common":  {
                    "preset":  "pvz",
-                   "theme":  "cyber-neon",
+                   "theme":  "gargantua",
                    "margin":  1,
                    "height":  46,
                    "padding":  4,

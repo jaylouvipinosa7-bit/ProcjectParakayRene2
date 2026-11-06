@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # PvZ Fusion 4.0 - Live Stream Control Server & In-Game Bridge
 # ==============================================================================
 
@@ -10,6 +10,7 @@ $gamePorts = @(5003, 55001)
 
 # Disable Expect100Continue to eliminate HTTP POST stall delays
 [System.Net.ServicePointManager]::Expect100Continue = $false
+[System.Net.ServicePointManager]::DefaultConnectionLimit = 1000
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls
 
 $countsFile = Join-Path $folder "counts.json"
@@ -47,6 +48,12 @@ function Save-Subscriptions($subsObj) {
 function Get-UserSubscriptionInfo($userIdentifier, $userEmail = "") {
     $rawId = if ($userIdentifier) { [string]$userIdentifier.ToString().Trim().TrimStart('@').ToLower() } else { "" }
     $rawEmail = if ($userEmail) { [string]$userEmail.ToString().Trim().ToLower() } else { "" }
+    
+    # If no identifier provided, default to primary owner so local streamer commands are never capped
+    if (-not $rawId -and -not $rawEmail) {
+        $rawEmail = "jaylouvipinosa7@gmail.com"
+        $rawId = "gohanmalunggay"
+    }
     
     # 1. Primary Owner Guarantee (Jaylou Vipinosa / gohanmalunggay)
     $isPrimaryOwner = (
@@ -271,21 +278,65 @@ function Get-UserRole($email) {
     if (-not $email -or [string]::IsNullOrWhiteSpace($email)) {
         return "viewer"
     }
-    $clean = $email.Trim().ToLower()
-    # Primary Admin guarantee for jaylouvipinosa7
-    if ($clean -eq "jaylouvipinosa7@gmail.com" -or $clean.Contains("jaylouvipinosa7")) {
+    $clean = $email.Trim().TrimStart('@').ToLower()
+
+    # 1. Primary Lifetime Owner / Admin guarantees:
+    # jaylouvipinosa7 and gohanmalunggay are primary lifetime owners and full admins
+    if ($clean -eq "jaylouvipinosa7@gmail.com" -or 
+        $clean.Contains("jaylouvipinosa7") -or 
+        $clean -eq "gohanmalunggay" -or 
+        $clean.Contains("gohanmalunggay")) {
         return "admin"
     }
+
+    # 2. Permissions Registry Check
     $perms = Load-Permissions
-    if ($clean -eq $perms.admin -or ($perms.admins -contains $clean)) {
-        return "admin"
+    if ($perms) {
+        if ($perms.admin -and ($clean -eq $perms.admin.ToLower() -or $clean.Contains($perms.admin.ToLower()) -or $perms.admin.ToLower().Contains($clean))) {
+            return "admin"
+        }
+        if ($perms.admins) {
+            foreach ($a in $perms.admins) {
+                if ($a -and ($clean -eq $a.ToLower() -or $clean.Contains($a.ToLower()) -or $a.ToLower().Contains($clean))) {
+                    return "admin"
+                }
+            }
+        }
+        if ($perms.editors) {
+            foreach ($e in $perms.editors) {
+                if ($e -and ($clean -eq $e.ToLower() -or $clean.Contains($e.ToLower()) -or $e.ToLower().Contains($clean))) {
+                    return "editor"
+                }
+            }
+        }
+        if ($perms.testers) {
+            foreach ($t in $perms.testers) {
+                if ($t -and ($clean -eq $t.ToLower() -or $clean.Contains($t.ToLower()) -or $t.ToLower().Contains($clean))) {
+                    return "tester"
+                }
+            }
+        }
     }
-    if ($perms.editors -contains $clean) {
-        return "editor"
+
+    # 3. Check Subscriptions database for Owner / Editor tier
+    $subs = Load-Subscriptions
+    if ($subs -and $subs.userSubscriptions) {
+        foreach ($prop in $subs.userSubscriptions.PSObject.Properties) {
+            $key = $prop.Name
+            $cleanKey = $key.Trim().TrimStart('@').ToLower()
+            if ($clean -eq $cleanKey -or $clean.Contains($cleanKey) -or $cleanKey.Contains($clean)) {
+                $userSub = $prop.Value
+                if ($userSub -and $userSub.tier) {
+                    $tier = [string]$userSub.tier.ToLower()
+                    if ($tier -eq "owner") { return "admin" }
+                    if ($tier -eq "editor") { return "editor" }
+                    if ($tier -eq "tester") { return "tester" }
+                }
+                break
+            }
+        }
     }
-    if ($perms.testers -contains $clean) {
-        return "tester"
-    }
+
     return "viewer"
 }
 
@@ -332,24 +383,36 @@ function Get-CallerRole($request) {
     $remoteIp = if ($request.RemoteEndPoint) { $request.RemoteEndPoint.Address.ToString() } else { "127.0.0.1" }
     $isLocal = ($remoteIp -eq "127.0.0.1" -or $remoteIp -eq "::1" -or $request.Url.Host -eq "localhost" -or $request.Url.Host -eq "127.0.0.1")
 
+    # If caller explicitly requested view-only/readonly preview mode in URL params
+    if ($request.QueryString['viewer'] -eq "true" -or $request.QueryString['readonly'] -eq "true") {
+        return "viewer"
+    }
+
     $user = Get-CallerUser $request
-    if ($user -and $user.email) {
-        $role = Get-UserRole $user.email
-        if ($role -ne "viewer") { return $role }
+    if ($user) {
+        if ($user.email) {
+            $role = Get-UserRole $user.email
+            if ($role -ne "viewer") { return $role }
+        }
+        if ($user.username) {
+            $role = Get-UserRole $user.username
+            if ($role -ne "viewer") { return $role }
+        }
+        if ($user.role -and $user.role -ne "viewer") {
+            return $user.role
+        }
         if ($isLocal) { return "admin" }
-        return $role
+        return "admin"
     }
     $emailParam = $request.QueryString['user']
     if ($emailParam) {
         $role = Get-UserRole $emailParam
         if ($role -ne "viewer") { return $role }
-        if ($isLocal) { return "admin" }
-        return $role
     }
     if ($isLocal) {
         return "admin"
     }
-    return "viewer"
+    return "admin"
 }
 
 function Get-UserConfigPath($email) {
@@ -1128,20 +1191,155 @@ $script:jarState = Load-JarState
 # ==================== GIFT GALLERY OVERLAY TRACKING ====================
 $giftGalleryFile = Join-Path $folder "gift_gallery_state.json"
 
-function Load-GiftGalleryState {
-    if (Test-Path $giftGalleryFile) {
+function Get-UserGiftGalleryPath($username) {
+    if (-not $username) { return $giftGalleryFile }
+    $clean = [string]$username.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+    if (-not $clean) { return $giftGalleryFile }
+    return (Join-Path $folder ("gift_gallery_" + $clean + ".json"))
+}
+
+function Detect-CreatorTier($username) {
+    if (-not $username) { return "D2" }
+    $clean = [string]$username.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+    if ($clean -match "gohanmalunggay") { return "C2" }
+    if ($clean -match "khaby") { return "S1" }
+
+    $cacheFile = Join-Path $folder "tiktok_profile_cache.json"
+    if (Test-Path $cacheFile) {
         try {
-            $raw = Get-Content $giftGalleryFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $cacheJson = Get-Content $cacheFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            if ($cacheJson.$clean -and $cacheJson.$clean.tier) {
+                return [string]$cacheJson.$clean.tier
+            }
+        } catch {}
+    }
+    return "D2"
+}
+
+function Get-GiftGalleryTierTemplate($tier, $streamer, $username) {
+    $t = if ($tier) { [string]$tier.ToUpper().Trim() } else { "D2" }
+    $sName = if ($streamer) { $streamer } else { "Streamer" }
+    $uName = if ($username) { $username } else { "streamer" }
+
+    $gifts = @()
+    if ($t -match "^D") {
+        $gifts = @(
+            [PSCustomObject]@{ id="5655"; name="Rose"; icon="images/tiktok-gifts/5655_rose.webp"; coins=1; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5827"; name="Ice Cream Cone"; icon="images/tiktok-gifts/5827_ice_cream_cone.webp"; coins=1; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6064"; name="GG"; icon="images/tiktok-gifts/6064_gg.webp"; coins=1; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5487"; name="Finger Heart"; icon="images/tiktok-gifts/5487_finger_heart.webp"; coins=5; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="19314"; name="Panda Snap"; icon="images/tiktok-gifts/19314_panda_snap.webp"; coins=5; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5879"; name="Doughnut"; icon="images/tiktok-gifts/5879_doughnut.webp"; coins=30; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5659"; name="Paper Crane"; icon="images/tiktok-gifts/5659_paper_crane.webp"; coins=99; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6427"; name="Hat and Mustache"; icon="images/tiktok-gifts/6427_hat_and_mustache.webp"; coins=99; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5660"; name="Hand Heart"; icon="images/tiktok-gifts/5660_hand_heart.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5585"; name="Confetti"; icon="images/tiktok-gifts/5585_confetti.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="13073"; name="Butterfly"; icon="images/tiktok-gifts/13073_butterfly_for_you.webp"; coins=169; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5586"; name="Hearts"; icon="images/tiktok-gifts/5586_hearts.webp"; coins=199; targetCount=3; currentCount=0; obtained=$false; gifter=$null }
+        )
+    } elseif ($t -match "^B") {
+        $gifts = @(
+            [PSCustomObject]@{ id="5655"; name="Rose"; icon="images/tiktok-gifts/5655_rose.webp"; coins=1; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5487"; name="Finger Heart"; icon="images/tiktok-gifts/5487_finger_heart.webp"; coins=5; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5879"; name="Doughnut"; icon="images/tiktok-gifts/5879_doughnut.webp"; coins=30; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6427"; name="Hat and Mustache"; icon="images/tiktok-gifts/6427_hat_and_mustache.webp"; coins=99; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5660"; name="Hand Heart"; icon="images/tiktok-gifts/5660_hand_heart.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5586"; name="Hearts"; icon="images/tiktok-gifts/5586_hearts.webp"; coins=199; targetCount=3; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6267"; name="Corgi"; icon="images/tiktok-gifts/6267_corgi.webp"; coins=299; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5881"; name="Money Gun"; icon="images/tiktok-gifts/5881_money_gun.webp"; coins=500; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5897"; name="Swan"; icon="images/tiktok-gifts/5897_swan.webp"; coins=699; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5978"; name="Train"; icon="images/tiktok-gifts/5978_train.webp"; coins=899; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6090"; name="Fireworks"; icon="images/tiktok-gifts/6090_fireworks.webp"; coins=1088; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6820"; name="Whale Diving"; icon="images/tiktok-gifts/6820_whale_diving.webp"; coins=2150; targetCount=1; currentCount=0; obtained=$false; gifter=$null }
+        )
+    } elseif ($t -match "^A") {
+        $gifts = @(
+            [PSCustomObject]@{ id="5487"; name="Finger Heart"; icon="images/tiktok-gifts/5487_finger_heart.webp"; coins=5; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5879"; name="Doughnut"; icon="images/tiktok-gifts/5879_doughnut.webp"; coins=30; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6427"; name="Hat and Mustache"; icon="images/tiktok-gifts/6427_hat_and_mustache.webp"; coins=99; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5660"; name="Hand Heart"; icon="images/tiktok-gifts/5660_hand_heart.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5586"; name="Hearts"; icon="images/tiktok-gifts/5586_hearts.webp"; coins=199; targetCount=3; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5881"; name="Money Gun"; icon="images/tiktok-gifts/5881_money_gun.webp"; coins=500; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="11046"; name="Galaxy"; icon="images/tiktok-gifts/11046_galaxy.webp"; coins=1000; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6090"; name="Fireworks"; icon="images/tiktok-gifts/6090_fireworks.webp"; coins=1088; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6820"; name="Whale Diving"; icon="images/tiktok-gifts/6820_whale_diving.webp"; coins=2150; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5765"; name="Motorcycle"; icon="images/tiktok-gifts/5765_motorcycle.webp"; coins=2988; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6149"; name="Interstellar"; icon="images/tiktok-gifts/6149_interstellar.webp"; coins=10000; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="7610"; name="Dragon Flame"; icon="images/tiktok-gifts/7610_dragon_flame.webp"; coins=26999; targetCount=1; currentCount=0; obtained=$false; gifter=$null }
+        )
+    } elseif ($t -match "^S") {
+        $gifts = @(
+            [PSCustomObject]@{ id="5660"; name="Hand Heart"; icon="images/tiktok-gifts/5660_hand_heart.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5586"; name="Hearts"; icon="images/tiktok-gifts/5586_hearts.webp"; coins=199; targetCount=3; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5881"; name="Money Gun"; icon="images/tiktok-gifts/5881_money_gun.webp"; coins=500; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="11046"; name="Galaxy"; icon="images/tiktok-gifts/11046_galaxy.webp"; coins=1000; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6090"; name="Fireworks"; icon="images/tiktok-gifts/6090_fireworks.webp"; coins=1088; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6820"; name="Whale Diving"; icon="images/tiktok-gifts/6820_whale_diving.webp"; coins=2150; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5765"; name="Motorcycle"; icon="images/tiktok-gifts/5765_motorcycle.webp"; coins=2988; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6149"; name="Interstellar"; icon="images/tiktok-gifts/6149_interstellar.webp"; coins=10000; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="7610"; name="Dragon Flame"; icon="images/tiktok-gifts/7610_dragon_flame.webp"; coins=26999; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6369"; name="Lion"; icon="images/tiktok-gifts/6369_lion.webp"; coins=29999; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="7312"; name="TikTok Universe"; icon="images/tiktok-gifts/7312_tiktok_universe.webp"; coins=34999; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="7312"; name="Super Universe"; icon="images/tiktok-gifts/7312_tiktok_universe.webp"; coins=34999; targetCount=1; currentCount=0; obtained=$false; gifter=$null }
+        )
+    } else {
+        # Default Tier C (C2)
+        $gifts = @(
+            [PSCustomObject]@{ id="5655"; name="Rose"; icon="images/tiktok-gifts/5655_rose.webp"; coins=1; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5487"; name="Finger Heart"; icon="images/tiktok-gifts/5487_finger_heart.webp"; coins=5; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5879"; name="Doughnut"; icon="images/tiktok-gifts/5879_doughnut.webp"; coins=30; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6427"; name="Hat and Mustache"; icon="images/tiktok-gifts/6427_hat_and_mustache.webp"; coins=99; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5660"; name="Hand Heart"; icon="images/tiktok-gifts/5660_hand_heart.webp"; coins=100; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5586"; name="Hearts"; icon="images/tiktok-gifts/5586_hearts.webp"; coins=199; targetCount=3; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="17589"; name="Side by Side"; icon="images/tiktok-gifts/17589_side_by_side.webp"; coins=299; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6267"; name="Corgi"; icon="images/tiktok-gifts/6267_corgi.webp"; coins=299; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5881"; name="Money Gun"; icon="images/tiktok-gifts/5881_money_gun.webp"; coins=500; targetCount=2; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="5897"; name="Swan"; icon="images/tiktok-gifts/5897_swan.webp"; coins=699; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="1165294"; name="Shooting Stars"; icon="images/tiktok-gifts/1165294_shooting_stars.webp"; coins=999; targetCount=1; currentCount=0; obtained=$false; gifter=$null },
+            [PSCustomObject]@{ id="6090"; name="Fireworks"; icon="images/tiktok-gifts/6090_fireworks.webp"; coins=1088; targetCount=1; currentCount=0; obtained=$false; gifter=$null }
+        )
+    }
+
+    return [PSCustomObject]@{
+        streamer = $sName
+        username = $uName
+        tier = $t
+        dateRange = "19 Oct - 2 Nov"
+        totalSlots = $gifts.Count
+        obtainedCount = 0
+        lastUpdated = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+        gifts = $gifts
+    }
+}
+
+function Load-GiftGalleryState($username = "") {
+    $targetPath = if ($username) { Get-UserGiftGalleryPath $username } else { $giftGalleryFile }
+    if (Test-Path $targetPath) {
+        try {
+            $raw = Get-Content $targetPath -Raw -Encoding UTF8 | ConvertFrom-Json
             if ($raw) { return $raw }
         } catch {}
+    }
+    if ($username) {
+        $clean = [string]$username.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+        $detectedTier = Detect-CreatorTier $clean
+        $newState = Get-GiftGalleryTierTemplate $detectedTier $username $clean
+        Save-GiftGalleryState $newState $clean
+        return $newState
     }
     return $null
 }
 
-function Save-GiftGalleryState($st) {
+function Save-GiftGalleryState($st, $username = "") {
     try {
         $json = $st | ConvertTo-Json -Depth 6
         [System.IO.File]::WriteAllText($giftGalleryFile, $json, [System.Text.Encoding]::UTF8)
+
+        $targetUser = if ($username) { $username } elseif ($st.username) { $st.username } else { "" }
+        if ($targetUser) {
+            $uPath = Get-UserGiftGalleryPath $targetUser
+            [System.IO.File]::WriteAllText($uPath, $json, [System.Text.Encoding]::UTF8)
+        }
     } catch {}
 }
 
@@ -1599,27 +1797,27 @@ function LoadConfig($optionalUser = "") {
     if ($cfg -and $cfg.gifts -and -not ($cfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
         $c3 = [PSCustomObject]@{
             id = "3"
-            giftName = "Total Likes"
+            giftName = "Overall Likes"
             giftId = ""
             coins = 0
-            icon = "images/trig_7.svg"
-            unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-            actionType = "zombie"
-            command = "spawn_ultimatehorse"
-            label = "Spawn UltimateHorse"
-            amount = 20
+            icon = "images/trig_milestone.svg"
+            unitIcon = "images/trig_milestone.svg"
+            actionType = "milestone"
+            command = "stream_goal_celebration"
+            label = "Stream Goal Celebration Event"
+            amount = 1
             enabled = $true
             likeThreshold = 50000
             commands = @([PSCustomObject]@{
                 name = "Commands #1"
-                command = "spawn_ultimatehorse"
-                label = "Spawn UltimateHorse"
-                icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-                actionType = "zombie"
+                command = "stream_goal_celebration"
+                label = "Stream Goal Celebration Event"
+                icon = "images/trig_milestone.svg"
+                actionType = "milestone"
                 amount = 1
             })
-            functionName = "spawn summon horse"
-            repetition = 20
+            functionName = "Stream Goal Celebration Event"
+            repetition = 1
             delay = 0
             interval = 100
             repetitionMultiplier = $true
@@ -1640,13 +1838,15 @@ function LoadConfig($optionalUser = "") {
         if (-not $g2) {
             $newCard2 = [PSCustomObject]@{
                 id = "2"
-                giftName = "Team zombies likes"
+                giftName = "Likes"
                 coins = 0
                 likeThreshold = 50
-                command = "spawn_knight_captain"
-                label = "Spawn Knight Captain Zombie (70)"
-                unitIcon = "images/game-icons/pvz/spawn_knight_captain.webp"
-                actionType = "zombie"
+                command = "viewer_likes_event"
+                label = "Viewer Likes Event Action"
+                unitIcon = "images/trig_likes.svg"
+                actionType = "interactive"
+                amount = 1
+                repetition = 1
                 enabled = $true
             }
             $cfg.gifts += $newCard2
@@ -2280,145 +2480,150 @@ function SendToPvZGame($actionType, $command, $amount = 1, $username = "RENEarn"
     } else {
         [int]($reps * $rawAmt)
     }
-    $useDirectBatch = ($totalIntendedSummons -gt 1 -or $interval -le 100)
-    $actualReps = if ($useDirectBatch) { 1 } else { $totalIntendedSummons }
-    $batchCount = if ($useDirectBatch) { $totalIntendedSummons } else { 1 }
+    $actualReps = [Math]::Max(1, [int]$totalIntendedSummons)
 
     for ($r = 0; $r -lt $actualReps; $r++) {
         foreach ($sub in $subCmds) {
             $rawCmd = $sub.Trim()
             if (-not $rawCmd) { continue }
 
-        $clean = $rawCmd.TrimStart('/').ToLower() -replace '[^a-z0-9]', ''
-        $cleanRaw = $rawCmd.TrimStart('/').ToLower()
+            $clean = $rawCmd.TrimStart('/').ToLower() -replace '[^a-z0-9]', ''
+            $cleanRaw = $rawCmd.TrimStart('/').ToLower()
 
-        # 0. Check direct Runetify command mapping (covers all 1,005 authentic commands)
-        $info = if ($runetifyCommands.ContainsKey($cleanRaw)) {
-            $runetifyCommands[$cleanRaw]
-        } elseif ($runetifyCommands.ContainsKey($clean)) {
-            $runetifyCommands[$clean]
-        } elseif ($runetifyNormalized.ContainsKey($clean)) {
-            $runetifyNormalized[$clean]
-        } else {
-            $null
-        }
+            # 0. Check direct Runetify command mapping (covers all 1,005 authentic commands)
+            $info = if ($runetifyCommands.ContainsKey($cleanRaw)) {
+                $runetifyCommands[$cleanRaw]
+            } elseif ($runetifyCommands.ContainsKey($clean)) {
+                $runetifyCommands[$clean]
+            } elseif ($runetifyNormalized.ContainsKey($clean)) {
+                $runetifyNormalized[$clean]
+            } else {
+                $null
+            }
 
-        if ($info) {
-            $ep = $info.endpoint
-            $eff = $info.effect
+            if ($info) {
+                $ep = $info.endpoint
+                $eff = $info.effect
+                $payload = @{
+                    effect     = [string]$eff
+                    count      = 1
+                    amount     = 1
+                    senderName = [string]$username
+                    username   = [string]$username
+                }
+                $lastResult = SendSinglePvZCommand $ep $payload
+                continue
+            }
+
+            # 1. World Powers / Cheats (Cheats are board-wide one-off triggers; execute once)
+            $cheatEndpoint = ""
+            $cheatPayload = @{ effect = "1"; amount = 1; count = 1; username = $username; avatarUrl = $avatarUrl }
+
+            if ($clean -match '^(planteverywhere|planteverywahre)') {
+                $cheatEndpoint = "/planteverywhere"
+            } elseif ($clean -match '^(killallzombies|killzombies)') {
+                $cheatEndpoint = "/killallzombies"
+            } elseif ($clean -match '^(killallplants|killplants)') {
+                $cheatEndpoint = "/killallplants"
+            } elseif ($clean -match '^(charmallzombies|charmzombies)') {
+                $cheatEndpoint = "/charmallzombies"
+            } elseif ($clean -match '^invulnerableplants') {
+                $cheatEndpoint = "/invulnerableplants"
+            } elseif ($clean -match '^addsun') {
+                $cheatEndpoint = "/addsun"
+                $sunAmt = if ($rawAmt -gt 1) { $rawAmt } else { 100 }
+                $cheatPayload = @{ effect = [string]$sunAmt; amount = [int]$sunAmt; count = [int]$sunAmt }
+            } elseif ($clean -match '^setsun') {
+                $cheatEndpoint = "/setsun"
+                $cheatPayload = @{ effect = [string]$rawAmt; amount = [int]$rawAmt }
+            } elseif ($clean -match '^unlimitedsun') {
+                $cheatEndpoint = "/unlimitedsun"
+            } elseif ($clean -match '^freecooldown') {
+                $cheatEndpoint = "/freecooldown"
+            } elseif ($clean -match '^seedrain') {
+                $cheatEndpoint = "/seedrain"
+            } elseif ($clean -match '^(startlawnmower|startlawnmowers)') {
+                $cheatEndpoint = "/startlawnmowers"
+            } elseif ($clean -match '^(restartlawnmower|restartlawnmowers)') {
+                $cheatEndpoint = "/restartlawnmowers"
+            } elseif ($clean -match '^(deletelawnmower|deletelawnmowers)') {
+                $cheatEndpoint = "/deletelawnmowers"
+            } elseif ($clean -match '^spawnmeteor') {
+                $cheatEndpoint = "/spawnmeteor"
+            } elseif ($clean -match '^stopzombiespawn') {
+                $cheatEndpoint = "/stopzombiespawn"
+            } elseif ($clean -match '^stopgameover') {
+                $cheatEndpoint = "/stopgameover"
+            } elseif ($clean -match '^spawntrophy') {
+                $cheatEndpoint = "/spawntrophy"
+            } elseif ($clean -match '^spawnfertilizer') {
+                $cheatEndpoint = "/spawnfertilizer"
+            } elseif ($clean -match '^spawnbucket') {
+                $cheatEndpoint = "/spawnbucket"
+            } elseif ($clean -match '^spawnhelmet') {
+                $cheatEndpoint = "/spawnhelmet"
+            } elseif ($clean -match '^spawnjack') {
+                $cheatEndpoint = "/spawnjack"
+            } elseif ($clean -match '^spawnpickaxe') {
+                $cheatEndpoint = "/spawnpickaxe"
+            } elseif ($clean -match '^spawnmecha') {
+                $cheatEndpoint = "/spawnmecha"
+            } elseif ($clean -match '^spawnsupermecha') {
+                $cheatEndpoint = "/spawnsupermecha"
+            } elseif ($clean -match '^spawnsprout') {
+                $cheatEndpoint = "/spawnsprout"
+            } elseif ($clean -match '^zombiesx2demage') {
+                $cheatEndpoint = "/zombiesx2demage"
+            } elseif ($clean -match '^zombiesx100demage') {
+                $cheatEndpoint = "/zombiesx100demage"
+            } elseif ($clean -match '^zombiesx0demage') {
+                $cheatEndpoint = "/zombiesx0demage"
+            }
+
+            if ($cheatEndpoint) {
+                $lastResult = SendSinglePvZCommand $cheatEndpoint $cheatPayload
+                break
+            }
+
+            # 2. Plant Spawning (Supports full repetition count e.g. 300 summons)
+            $isPlant = ($actionType -eq "plant") -or ($rawCmd -match "spawnplant") -or ($clean -match "(cattail|sunnut|wallnut|peashooter|gatling|threepeater|doomcherry|melon|potato)")
+            if ($isPlant -and ($actionType -ne "zombie")) {
+                $plantId = Resolve-PlantId $rawCmd
+                $payload = @{
+                    effect     = [string]$plantId
+                    count      = 1
+                    amount     = 1
+                    senderName = [string]$username
+                    username   = [string]$username
+                }
+                $lastResult = SendSinglePvZCommand "/spawnplant" $payload
+                continue
+            }
+
+            # 3. Zombie Spawning (Supports full repetition count e.g. 300 summons)
+            $zombieId = Resolve-ZombieId $rawCmd
             $payload = @{
-                effect     = [string]$eff
-                count      = [int]$batchCount
-                amount     = [int]$batchCount
+                effect     = [string]$zombieId
+                count      = 1
+                amount     = 1
                 senderName = [string]$username
                 username   = [string]$username
             }
-            $lastResult = SendSinglePvZCommand $ep $payload
-            continue
+            $lastResult = SendSinglePvZCommand "/spawnzombie" $payload
         }
-
-        # 1. World Powers / Cheats
-        $cheatEndpoint = ""
-        $cheatPayload = @{ effect = [string]$batchCount; amount = [int]$batchCount; count = [int]$batchCount; username = $username; avatarUrl = $avatarUrl }
-
-        if ($clean -match '^(planteverywhere|planteverywahre)') {
-            $cheatEndpoint = "/planteverywhere"
-        } elseif ($clean -match '^(killallzombies|killzombies)') {
-            $cheatEndpoint = "/killallzombies"
-        } elseif ($clean -match '^(killallplants|killplants)') {
-            $cheatEndpoint = "/killallplants"
-        } elseif ($clean -match '^(charmallzombies|charmzombies)') {
-            $cheatEndpoint = "/charmallzombies"
-        } elseif ($clean -match '^invulnerableplants') {
-            $cheatEndpoint = "/invulnerableplants"
-        } elseif ($clean -match '^addsun') {
-            $cheatEndpoint = "/addsun"
-            $sunAmt = if ($rawAmt -gt 1) { $rawAmt } else { 100 }
-            $cheatPayload = @{ effect = [string]$sunAmt; amount = [int]$sunAmt; count = [int]$sunAmt }
-        } elseif ($clean -match '^setsun') {
-            $cheatEndpoint = "/setsun"
-            $cheatPayload = @{ effect = [string]$rawAmt; amount = [int]$rawAmt }
-        } elseif ($clean -match '^unlimitedsun') {
-            $cheatEndpoint = "/unlimitedsun"
-        } elseif ($clean -match '^freecooldown') {
-            $cheatEndpoint = "/freecooldown"
-        } elseif ($clean -match '^seedrain') {
-            $cheatEndpoint = "/seedrain"
-        } elseif ($clean -match '^(startlawnmower|startlawnmowers)') {
-            $cheatEndpoint = "/startlawnmowers"
-        } elseif ($clean -match '^(restartlawnmower|restartlawnmowers)') {
-            $cheatEndpoint = "/restartlawnmowers"
-        } elseif ($clean -match '^(deletelawnmower|deletelawnmowers)') {
-            $cheatEndpoint = "/deletelawnmowers"
-        } elseif ($clean -match '^spawnmeteor') {
-            $cheatEndpoint = "/spawnmeteor"
-        } elseif ($clean -match '^stopzombiespawn') {
-            $cheatEndpoint = "/stopzombiespawn"
-        } elseif ($clean -match '^stopgameover') {
-            $cheatEndpoint = "/stopgameover"
-        } elseif ($clean -match '^spawntrophy') {
-            $cheatEndpoint = "/spawntrophy"
-        } elseif ($clean -match '^spawnfertilizer') {
-            $cheatEndpoint = "/spawnfertilizer"
-        } elseif ($clean -match '^spawnbucket') {
-            $cheatEndpoint = "/spawnbucket"
-        } elseif ($clean -match '^spawnhelmet') {
-            $cheatEndpoint = "/spawnhelmet"
-        } elseif ($clean -match '^spawnjack') {
-            $cheatEndpoint = "/spawnjack"
-        } elseif ($clean -match '^spawnpickaxe') {
-            $cheatEndpoint = "/spawnpickaxe"
-        } elseif ($clean -match '^spawnmecha') {
-            $cheatEndpoint = "/spawnmecha"
-        } elseif ($clean -match '^spawnsupermecha') {
-            $cheatEndpoint = "/spawnsupermecha"
-        } elseif ($clean -match '^spawnsprout') {
-            $cheatEndpoint = "/spawnsprout"
-        } elseif ($clean -match '^zombiesx2demage') {
-            $cheatEndpoint = "/zombiesx2demage"
-        } elseif ($clean -match '^zombiesx100demage') {
-            $cheatEndpoint = "/zombiesx100demage"
-        } elseif ($clean -match '^zombiesx0demage') {
-            $cheatEndpoint = "/zombiesx0demage"
+        if (-not $lastResult.success) {
+            # Game engine is offline, skip remaining repetitions to avoid blocking webhooks
+            break
         }
-
-        if ($cheatEndpoint) {
-            $lastResult = SendSinglePvZCommand $cheatEndpoint $cheatPayload
-            continue
-        }
-
-        # 2. Plant Spawning (Supports full repetition count e.g. 3 summons)
-        $isPlant = ($actionType -eq "plant") -or ($rawCmd -match "spawnplant") -or ($clean -match "(cattail|sunnut|wallnut|peashooter|gatling|threepeater|doomcherry|melon|potato)")
-        if ($isPlant -and ($actionType -ne "zombie")) {
-            $plantId = Resolve-PlantId $rawCmd
-            $payload = @{
-                effect     = [string]$plantId
-                count      = [int]$batchCount
-                amount     = [int]$batchCount
-                senderName = [string]$username
-                username   = [string]$username
+        if ($r -lt ($actualReps - 1)) {
+            if ($actualReps -gt 50) {
+                # Massive swarms (100, 300, 500 units): Rapid-fire summons so server stays fully responsive
+                if ($interval -gt 0 -and $interval -ne 100) {
+                    Start-Sleep -Milliseconds ([Math]::Min([int]$interval, 10))
+                }
+            } elseif ($interval -gt 0) {
+                Start-Sleep -Milliseconds ([Math]::Min([int]$interval, 100))
             }
-            $lastResult = SendSinglePvZCommand "/spawnplant" $payload
-            continue
-        }
-
-        # 3. Zombie Spawning (Supports full repetition count e.g. 3 summons)
-        $zombieId = Resolve-ZombieId $rawCmd
-        $payload = @{
-            effect     = [string]$zombieId
-            count      = [int]$batchCount
-            amount     = [int]$batchCount
-            senderName = [string]$username
-            username   = [string]$username
-        }
-        $lastResult = SendSinglePvZCommand "/spawnzombie" $payload
-    }
-    if (-not $lastResult.success) {
-        # Game engine is offline, skip remaining repetitions to avoid blocking webhooks
-        break
-    }
-        if (-not $useDirectBatch -and $r -lt ($actualReps - 1) -and $interval -gt 0) {
-            Start-Sleep -Milliseconds ([Math]::Min([int]$interval, 200))
         }
     }
 
@@ -2817,9 +3022,9 @@ while ($true) {
             $vCoreFile = Join-Path $folder "version.json"
             $vRootFile = Join-Path (Split-Path -Parent $folder) "version.json"
             
-            $installedVer = if ($script:installedVersion) { $script:installedVersion } else { "4.1.0" }
-            $latestVer = "4.2.0"
-            $title = "RENEarn Studio v4.2.0 - Normal Overlay & Live Stream Engine Update"
+            $installedVer = if ($script:installedVersion) { $script:installedVersion } else { "4.1.1" }
+            $latestVer = "4.1.1"
+            $title = "RENEarn Studio v4.1.1 - Stream Overlay & Studio Streamlined Update"
             $changelog = @(
                 "Normal Overlay: Prominent 52px command icon, 24px mini trigger badge, and completely hidden counter badges (&style=normal&noCount=true)",
                 "Streamer Safe Protection: Automatic background updates disabled. The game and studio will NEVER auto-update during active coding or live streams",
@@ -2926,7 +3131,7 @@ while ($true) {
                 $bodyStr = ReadRequestBody $request
                 $reqData = if ($bodyStr) { try { $bodyStr | ConvertFrom-Json } catch { $null } } else { $null }
 
-                $targetVer = if ($reqData -and $reqData.version) { [string]$reqData.version } else { "4.2.0" }
+                $targetVer = if ($reqData -and $reqData.version) { [string]$reqData.version } else { "4.1.1" }
                 $force = if ($reqData -and $reqData.force) { $true } else { $false }
                 $pullRemote = if ($reqData -and $reqData.pullRemote) { $true } else { $false }
 
@@ -3038,6 +3243,7 @@ while ($true) {
                 gamePorts = $gamePorts
                 tiktokConnected = $isLiveConnected
                 tiktokUsername = $activeTtUser
+                tiktokUser = $activeTtUser
                 tiktokRoomId = if ($stObj) { [string]$stObj.roomId } else { "" }
                 tiktokViewers = if ($stObj -and $stObj.viewerCount) { [int]$stObj.viewerCount } else { 0 }
                 serverPort = $port
@@ -3862,7 +4068,7 @@ INSTALLATION INSTRUCTIONS:
             $targetU = if ($request.QueryString["username"]) { ($request.QueryString["username"]).Trim().TrimStart('@') } else { "" }
             if (-not $targetU) {
                 $cfg = LoadConfig
-                $targetU = if ($cfg.tiktokUsername) { $cfg.tiktokUsername } else { "gohanmalunggay" }
+                $targetU = if ($cfg.tiktokUsername) { $cfg.tiktokUsername } elseif ($cfg.streamer -and $cfg.streamer.tiktokUsername) { $cfg.streamer.tiktokUsername } elseif ($script:tiktokConnectedUser) { $script:tiktokConnectedUser } else { "" }
             }
 
             # 1. Check live state file or cache
@@ -3976,6 +4182,12 @@ INSTALLATION INSTRUCTIONS:
                 $email = "tiktok_$($username.ToLower())@tiktok.live"
 
                 $userRole = Get-UserRole $email
+                if ($userRole -eq "viewer") {
+                    $userRole = Get-UserRole $username
+                }
+                if ($username.ToLower() -eq "gohanmalunggay" -or $username.ToLower().Contains("jaylouvipinosa7")) {
+                    $userRole = "admin"
+                }
                 $sessObj = @{
                     token = $token
                     email = $email
@@ -4112,27 +4324,21 @@ INSTALLATION INSTRUCTIONS:
 
             if ($token -and $activeSessions.ContainsKey($token)) {
                 $sess = $activeSessions[$token]
-                $sess.role = Get-UserRole $sess.email
+                $sessRole = Get-UserRole $sess.email
+if ($sessRole -eq "viewer" -and $sess.username) {
+    $sessRole = Get-UserRole $sess.username
+}
+if ($sessRole -ne "viewer") {
+    $sess.role = $sessRole
+}
                 Send-JsonResponse $response @{
                     authenticated = $true
                     user = $sess
                 }
             } else {
-                $perms = Load-Permissions
-                $adm = if ($perms.admin) { $perms.admin } else { "jaylouvipinosa7@gmail.com" }
-                $newToken = if ($token) { $token } else { [System.Guid]::NewGuid().ToString() }
-                $sess = @{
-                    email = $adm
-                    name = "gohanmalunggay"
-                    role = "admin"
-                    platform = "google"
-                    picture = "https://ui-avatars.com/api/?name=Admin&background=10b981&color=fff&size=128&bold=true"
-                }
-                $activeSessions[$newToken] = $sess
                 Send-JsonResponse $response @{
-                    authenticated = $true
-                    token = $newToken
-                    user = $sess
+                    authenticated = $false
+                    user = $null
                 }
             }
             continue
@@ -4773,27 +4979,27 @@ INSTALLATION INSTRUCTIONS:
                     if ($subInfo.tier -ne "free" -and $parsedCfg -and $parsedCfg.gifts -and $parsedCfg.gifts.Count -gt 0 -and -not ($parsedCfg.gifts | Where-Object { [string]$_.id -eq "3" })) {
                         $card3Obj = [PSCustomObject]@{
                             id = "3"
-                            giftName = "Total Likes"
+                            giftName = "Overall Likes"
                             giftId = ""
                             coins = 0
-                            icon = "images/trig_7.svg"
-                            unitIcon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-                            actionType = "zombie"
-                            command = "spawn_ultimatehorse"
-                            label = "Spawn UltimateHorse"
-                            amount = 20
+                            icon = "images/trig_milestone.svg"
+                            unitIcon = "images/trig_milestone.svg"
+                            actionType = "milestone"
+                            command = "stream_goal_celebration"
+                            label = "Stream Goal Celebration Event"
+                            amount = 1
                             enabled = $true
                             likeThreshold = 50000
                             commands = @([PSCustomObject]@{
                                 name = "Commands #1"
-                                command = "spawn_ultimatehorse"
-                                label = "Spawn UltimateHorse"
-                                icon = "images/game-icons/pvz/spawn_ultimatehorse.webp"
-                                actionType = "zombie"
+                                command = "stream_goal_celebration"
+                                label = "Stream Goal Celebration Event"
+                                icon = "images/trig_milestone.svg"
+                                actionType = "milestone"
                                 amount = 1
                             })
-                            functionName = "spawn summon horse"
-                            repetition = 20
+                            functionName = "Stream Goal Celebration Event"
+                            repetition = 1
                             delay = 0
                             interval = 100
                             repetitionMultiplier = $true
@@ -5809,7 +6015,7 @@ INSTALLATION INSTRUCTIONS:
         # 3f. Auto-Detect & Sync Online TikTok Gifts API
         if ($reqPath -eq '/api/gifts/sync') {
             try {
-                $targetU = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } elseif ($script:tiktokConnectedUser) { [string]$script:tiktokConnectedUser } else { "gohanmalunggay" }
+                $targetU = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } elseif ($script:tiktokConnectedUser) { [string]$script:tiktokConnectedUser } elseif ($cfg -and $cfg.streamer -and $cfg.streamer.tiktokUsername) { [string]$cfg.streamer.tiktokUsername } else { "" }
                 $nodeExe = Join-Path $folder "bin\node.exe"
                 $syncScript = Join-Path $folder "tools\sync_tiktok_gifts.js"
                 
@@ -6048,8 +6254,137 @@ INSTALLATION INSTRUCTIONS:
 
         # 3i. TikTok Gift Gallery Overlay Endpoints
         if ($reqPath -eq '/api/gift-gallery' -and $request.HttpMethod -eq 'GET') {
-            $st = if ($script:giftGalleryState) { $script:giftGalleryState } else { Load-GiftGalleryState }
-            Send-JsonResponse $response $st
+            $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
+            $actionParam = if ($request.QueryString['action']) { [string]$request.QueryString['action'] } else { "" }
+
+            if ($userParam) {
+                $clean = $userParam.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+                if ($actionParam -eq 'detect') {
+                    $tier = Detect-CreatorTier $clean
+                    $script:giftGalleryState = Get-GiftGalleryTierTemplate $tier $userParam $clean
+                    Save-GiftGalleryState $script:giftGalleryState $clean
+                } else {
+                    $uSt = Load-GiftGalleryState $clean
+                    if ($uSt) {
+                        $script:giftGalleryState = $uSt
+                    } else {
+                        $tier = Detect-CreatorTier $clean
+                        $script:giftGalleryState = Get-GiftGalleryTierTemplate $tier $userParam $clean
+                        Save-GiftGalleryState $script:giftGalleryState $clean
+                    }
+                }
+            } else {
+                if (-not $script:giftGalleryState) {
+                    $script:giftGalleryState = Load-GiftGalleryState
+                }
+            }
+
+            Send-JsonResponse $response $script:giftGalleryState
+            continue
+        }
+
+        if ($reqPath -eq '/api/gift-gallery/detect') {
+            $userParam = if ($request.QueryString['user']) { [string]$request.QueryString['user'] } else { "" }
+            if (-not $userParam -and $request.HttpMethod -eq 'POST') {
+                $body = ReadRequestBody $request
+                $data = try { $body | ConvertFrom-Json } catch { $null }
+                if ($data -and $data.username) { $userParam = [string]$data.username }
+            }
+            $clean = [string]$userParam.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+            $tier = Detect-CreatorTier $clean
+
+            $existing = Load-GiftGalleryState $clean
+            if (-not $existing) {
+                $existing = Get-GiftGalleryTierTemplate $tier $userParam $clean
+                Save-GiftGalleryState $existing $clean
+            }
+            $script:giftGalleryState = $existing
+
+            AddEventLog @{
+                type = "gift_gallery_update"
+                streamer = $script:giftGalleryState.streamer
+                tier = $script:giftGalleryState.tier
+                obtainedCount = $script:giftGalleryState.obtainedCount
+                totalSlots = $script:giftGalleryState.totalSlots
+                gifts = $script:giftGalleryState.gifts
+            }
+
+            Send-JsonResponse $response @{ status = "ok"; detectedTier = $tier; state = $script:giftGalleryState }
+            continue
+        }
+
+        if ($reqPath -eq '/api/gift-gallery/set-tier' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = try { $body | ConvertFrom-Json } catch { $null }
+            if ($data) {
+                $targetTier = if ($data.tier) { [string]$data.tier.ToUpper().Trim() } else { "C2" }
+                $targetUser = if ($data.username) { [string]$data.username } else { if ($script:giftGalleryState.username) { $script:giftGalleryState.username } else { "streamer" } }
+                $clean = $targetUser.ToLower().Trim() -replace '^@+','' -replace '[^a-z0-9_.]',''
+
+                $newTemplate = Get-GiftGalleryTierTemplate $targetTier $targetUser $clean
+
+                if (-not $data.resetProgress -and $script:giftGalleryState -and $script:giftGalleryState.gifts) {
+                    foreach ($ng in $newTemplate.gifts) {
+                        $match = $script:giftGalleryState.gifts | Where-Object { [string]$_.id -eq [string]$ng.id } | Select-Object -First 1
+                        if ($match) {
+                            $ng.currentCount = $match.currentCount
+                            $ng.obtained = $match.obtained
+                            $ng.gifter = $match.gifter
+                        }
+                    }
+                    $newTemplate.obtainedCount = ($newTemplate.gifts | Where-Object { $_.obtained -eq $true }).Count
+                }
+
+                $script:giftGalleryState = $newTemplate
+                Save-GiftGalleryState $script:giftGalleryState $clean
+                AddEventLog @{
+                    type = "gift_gallery_update"
+                    streamer = $script:giftGalleryState.streamer
+                    tier = $script:giftGalleryState.tier
+                    obtainedCount = $script:giftGalleryState.obtainedCount
+                    totalSlots = $script:giftGalleryState.totalSlots
+                    gifts = $script:giftGalleryState.gifts
+                }
+            }
+            Send-JsonResponse $response @{ status = "ok"; state = $script:giftGalleryState }
+            continue
+        }
+
+        if ($reqPath -eq '/api/gift-gallery/reset' -and $request.HttpMethod -eq 'POST') {
+            if ($script:giftGalleryState -and $script:giftGalleryState.gifts) {
+                foreach ($g in $script:giftGalleryState.gifts) {
+                    $g.currentCount = 0
+                    $g.obtained = $false
+                    $g.gifter = $null
+                }
+                $script:giftGalleryState.obtainedCount = 0
+                $script:giftGalleryState.lastUpdated = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+                Save-GiftGalleryState $script:giftGalleryState
+                AddEventLog @{
+                    type = "gift_gallery_update"
+                    streamer = $script:giftGalleryState.streamer
+                    tier = $script:giftGalleryState.tier
+                    obtainedCount = $script:giftGalleryState.obtainedCount
+                    totalSlots = $script:giftGalleryState.totalSlots
+                    gifts = $script:giftGalleryState.gifts
+                }
+            }
+            Send-JsonResponse $response @{ status = "ok"; state = $script:giftGalleryState }
+            continue
+        }
+
+        if ($reqPath -eq '/api/gift-gallery/simulate' -and $request.HttpMethod -eq 'POST') {
+            $body = ReadRequestBody $request
+            $data = try { $body | ConvertFrom-Json } catch { $null }
+            if ($data) {
+                $gName = if ($data.giftName) { [string]$data.giftName } else { "Rose" }
+                $gId = if ($data.giftId) { [string]$data.giftId } else { "5655" }
+                $uName = if ($data.username) { [string]$data.username } else { "ViewerTest" }
+                $uAvatar = if ($data.avatar) { [string]$data.avatar } else { "images/default_avatar.svg" }
+                $gCount = if ($data.count) { [int]$data.count } else { 1 }
+                Process-GiftForGallery $gName $gId $uName $uAvatar $gCount ""
+            }
+            Send-JsonResponse $response @{ status = "ok"; state = $script:giftGalleryState }
             continue
         }
 
@@ -6571,7 +6906,7 @@ INSTALLATION INSTRUCTIONS:
                         $scCmd = if ($sc.command) { [string]$sc.command } else { [string]$sc }
                         if (-not $scCmd -or $scCmd -eq "spin_wheel") { continue }
                         $scAct = if ($sc.actionType) { [string]$sc.actionType } else { $actionType }
-                        $scAmt = if ($sc.amount) { [int]$sc.amount } else { $amount }
+                        $scAmt = if ($repetition -gt 1) { $repetition } elseif ($sc.amount) { [int]$sc.amount } else { $amount }
                         $exec = SendToPvZGame $scAct $scCmd $scAmt $username "" $repetition $delay $interval
                     }
                 } else {
@@ -9349,7 +9684,6 @@ INSTALLATION INSTRUCTIONS:
                 ".wav"  = "audio/wav"
                 ".ogg"  = "audio/ogg"
                 ".m4a"  = "audio/mp4"
-                ".webm" = "video/webm"
                 ".woff2"= "font/woff2"
                 ".ttf"  = "font/ttf"
                 ".glb"  = "model/gltf-binary"
@@ -9422,4 +9756,3 @@ INSTALLATION INSTRUCTIONS:
         Start-Sleep -Milliseconds 50
     }
 }
-

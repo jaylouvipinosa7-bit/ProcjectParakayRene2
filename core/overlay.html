@@ -164,6 +164,49 @@
             margin-left: auto;
         }
 
+        /* Lawnmower Action Indicator Badges (ONLY for Start, Restart/Remove, and Delete Lawnmowers) */
+        .mower-indicator-badge {
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7px;
+            font-weight: 900;
+            line-height: 1;
+            padding: 1.5px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 5px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .mower-badge-start {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(16, 185, 129, 0.5);
+        }
+
+        .mower-badge-restart {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(2, 132, 199, 0.5);
+        }
+
+        .mower-badge-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 6px rgba(239, 68, 68, 0.5);
+        }
+
         .action-icon-box {
             width: 42px;
             height: 42px;
@@ -700,6 +743,28 @@
             }
         }
 
+        function getMowerIndicator(card) {
+            if (!card) return null;
+            const id = String(card.id || '');
+            const cmd = String(card.commands || card.command || '').toLowerCase();
+            const func = String(card.funcName || card.functionName || card.label || '').toLowerCase();
+            const gift = String(card.giftName || '').toLowerCase();
+
+            // 1. Restart / Remove LawnMower (Slow motion / Snail) -> Blue RESTART (must be checked BEFORE start)
+            if (id === '57' || cmd.includes('restart') || func.includes('restart') || cmd.includes('remove') || func.includes('remove') || gift.includes('slow motion')) {
+                return { type: 'restart', text: (cmd.includes('remove') || func.includes('remove')) ? 'REMOVE' : 'RESTART' };
+            }
+            // 2. Delete LawnMower (I\'m Yours) -> Red DELETE
+            if (id === '58' || cmd.includes('delete') || func.includes('delete') || gift.includes("i'm yours") || gift.includes("i\u0027m yours")) {
+                return { type: 'delete', text: 'DELETE' };
+            }
+            // 3. Start LawnMower (Lyric Mail) -> Green START
+            if (id === '56' || cmd.includes('start') || func.includes('start') || gift.includes('lyric mail')) {
+                return { type: 'start', text: 'START' };
+            }
+            return null;
+        }
+
         // Render Cards
         function renderCards() {
             const dock = document.getElementById('cardsDock');
@@ -710,8 +775,20 @@
             const overlayLimit = parseInt(urlParams.get('limit')) || 12;
             let activeGifts = (config && config.gifts && Array.isArray(config.gifts)) ? config.gifts.filter(g => {
                 if (!g || g.enabled === false) return false;
+                const idStr = String(g.id || '');
+                const rawCmds = JSON.stringify(g.commands || g.command || '').toLowerCase();
+                const giftStr = String(g.giftName || '').toLowerCase();
+                const funcStr = String(g.label || g.functionName || '').toLowerCase();
+
+                // Lawnmower commands (Start, Restart, Delete) are always visible on overlay
+                if (idStr === '56' || idStr === '57' || idStr === '58' ||
+                    rawCmds.includes('lawnmower') ||
+                    giftStr.includes('lyric mail') || giftStr.includes('slow motion') || giftStr.includes("i'm yours") ||
+                    funcStr.includes('lawnmower')) {
+                    return true;
+                }
                 if (g.hideInOverlay === true || g.hideInOverlay === 'true') return false;
-                if (g.triggerType === 'custom' || g.actionType === 'custom' || g.action === 'custom' || g.action === 'Custom' || String(g.id) === '59') return false;
+                if (g.triggerType === 'custom' || g.actionType === 'custom' || g.action === 'custom' || g.action === 'Custom' || idStr === '59') return false;
                 return true;
             }) : [];
 
@@ -733,6 +810,8 @@
                 const currentCount = counts[gift.id] || 0;
 
                 const isCustom = gift.triggerType === 'custom' || gift.actionType === 'custom' || (gift.giftName && gift.giftName.toLowerCase().includes('custom'));
+                const mowerInfo = getMowerIndicator(gift);
+                const mowerBadgeHtml = mowerInfo ? ('<span class="mower-indicator-badge mower-badge-' + mowerInfo.type + '">' + mowerInfo.text + '</span>') : '';
                 const unitImgSrc = (gift.unitIcon || ('images/game-icons/pvz/' + (gift.command ? gift.command.split(';')[0].trim() : '') + '.webp')).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
                 let giftIconSrc = (gift.icon || (isCustom ? 'images/game-icons/stream/custom_action.webp' : 'images/tiktok-gifts/18508_mystery_box.webp')).replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i, '');
                 if (giftIconSrc === 'images/trig_3.svg') giftIconSrc = 'images/trig_3.webp';
@@ -760,8 +839,9 @@
                     </div>
                     <div class="card-arrow">&rarr;</div>
                     <div class="card-action-section">
-                        <div class="action-icon-box" style="padding: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                            <img src="${unitImgSrc}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${gift.label || ''}" onerror="this.outerHTML='<span style=\'font-size:20px;\'>${actionEmoji}</span>'">
+                        <div class="action-icon-box" style="position: relative; padding: 2px; overflow: visible; display: flex; align-items: center; justify-content: center;">
+                            \
+                            <img src="\" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;" alt="${gift.label || ''}" onerror="this.outerHTML='<span style=\'font-size:20px;\'>${actionEmoji}</span>'">
                         </div>
                         <div id="countPill_${gift.id}" class="count-pill">${currentCount}</div>
                     </div>

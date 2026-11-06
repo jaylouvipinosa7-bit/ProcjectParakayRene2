@@ -2061,9 +2061,11 @@
         }
 
         // Render Cute Top Donators Card (Screenshot 2)
-        function renderCuteDonatorCard(data, customTitle, maxCount) {
-            const title = customTitle || `TOP ${maxCount} DONATORS`;
+        function renderCuteDonatorCard(data, customTitle, maxCount, type = 'coins') {
+            const isLikes = type === 'likes' || type === 'taptap';
+            const title = customTitle || (isLikes ? `TOP ${maxCount} TAP LIKES` : `TOP ${maxCount} DONATORS`);
             const shapeClass = `shape-${settings.avatarStyle || 'circle'}`;
+            const tokenIcon = isLikes ? ICONS.heart : ICONS.coin;
 
             // Top 1 Big Showcase
             const top1 = data[0] && data[0].value > 0 ? data[0] : { username: 'Top 1', value: 0, avatar: '' };
@@ -2089,7 +2091,7 @@
                         ` : ''}
                         <span class="cute-user-name" title="${username}">${username}</span>
                         <div class="cute-metric-pill">
-                            ${ICONS.coin}
+                            ${tokenIcon}
                             <span>${valFormatted}</span>
                         </div>
                     </div>
@@ -2114,7 +2116,7 @@
                         ` : ''}
                         <span class="cute-user-name" title="${username}">${username}</span>
                         <div class="cute-metric-pill">
-                            ${ICONS.coin}
+                            ${tokenIcon}
                             <span>${valFormatted}</span>
                         </div>
                     </div>
@@ -2166,8 +2168,8 @@
                             <div class="cute-user-info">
                                 <span class="cute-user-name-1" title="${top1.username}">${top1.username}</span>
                                 <div class="cute-metric-badge-1">
-                                    ${ICONS.coin}
-                                    <span>${top1.value.toLocaleString()} coins</span>
+                                    ${tokenIcon}
+                                    <span>${top1.value.toLocaleString()} ${isLikes ? 'likes' : 'coins'}</span>
                                 </div>
                             </div>
                         </div>
@@ -2204,25 +2206,41 @@
             const dStyle = overlayStyle || settings.donatorsStyle || 'cute';
 
             if (overlayType === 'coins') {
-                html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
-            } else if (overlayType === 'likes') {
-                html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle, likesCount, lStyle);
+                if (cStyle === 'cute') {
+                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, 'coins');
+                } else {
+                    html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
+                }
+            } else if (overlayType === 'likes' || overlayType === 'taptap') {
+                if (lStyle === 'cute') {
+                    html += renderCuteDonatorCard(lastLeaderboard.likes || [], settings.likesTitle || (overlayType === 'taptap' ? 'Top 10 TapTap Likes' : 'Top 10 Likes'), likesCount, 'likes');
+                } else {
+                    html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle || (overlayType === 'taptap' ? 'Top 10 TapTap Likes' : 'Top 10 Likes'), likesCount, lStyle);
+                }
             } else if (overlayType === 'donators') {
                 if (dStyle === 'cute') {
-                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount);
+                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount, 'coins');
                 } else {
                     html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount, dStyle);
                 }
             } else {
                 // ALL / DUAL MODE (Screenshot 1: Coins on left, Likes on right, or Donators card)
                 if (settings.coinsEnabled) {
-                    html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
+                    if (cStyle === 'cute') {
+                        html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, 'coins');
+                    } else {
+                        html += renderClassicCard('coins', lastLeaderboard.coins || [], settings.coinsTitle, coinsCount, cStyle);
+                    }
                 }
                 if (settings.likesEnabled) {
-                    html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle, likesCount, lStyle);
+                    if (lStyle === 'cute') {
+                        html += renderCuteDonatorCard(lastLeaderboard.likes || [], settings.likesTitle, likesCount, 'likes');
+                    } else {
+                        html += renderClassicCard('likes', lastLeaderboard.likes || [], settings.likesTitle, likesCount, lStyle);
+                    }
                 }
                 if (settings.donatorsEnabled && overlayType === 'all_with_donators') {
-                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount);
+                    html += renderCuteDonatorCard(lastLeaderboard.coins || [], settings.donatorsTitle, donatorsCount, 'coins');
                 }
             }
 

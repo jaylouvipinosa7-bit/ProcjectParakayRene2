@@ -1,4 +1,4 @@
-{
+﻿{
     "plans":  {
                   "free":  {
                                "id":  "free",
@@ -110,7 +110,16 @@
                                                          "activatedAt":  "2026-10-23T19:07:37.6026609+08:00",
                                                          "licenseKey":  "PREM-999-START-DEMO",
                                                          "referenceNo":  ""
-                                                     }
+                                                     },
+                              "tiktok_gohanmalunggay@tiktok.live":  {
+                                                                        "tier":  "owner",
+                                                                        "commandLimit":  999999,
+                                                                        "hasSpinner":  true,
+                                                                        "hasJar":  true,
+                                                                        "hasOverlays":  true,
+                                                                        "activatedAt":  "2026-10-23T00:00:00Z",
+                                                                        "note":  "Owner TikTok Channel Email"
+                                                                    }
                           },
     "licenseKeys":  {
                         "PREM-999-START-DEMO":  {

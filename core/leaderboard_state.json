@@ -77,7 +77,6 @@
                     "the jomblo 🥶":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b96d113efeb105875bbb151ef20fe242~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=814bc6ea\u0026x-expires=1792990800\u0026x-signature=phc5xzMLVC%2F%2B3IgKyBK6R%2Bw5H%2Bo%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
                     "Ainsleysdigiproducts":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/34e83178c57da240f3db66f8f82ef608~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=8681161d\u0026x-expires=1792990800\u0026x-signature=GtfQ9%2BO7mkneUGAX5ia1YqmFQCk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
                     "RENEarn_Streamer":  "images/renearn_icon.png",
-                    "RENEarn":  "images/default_avatar.svg",
                     "the caryb and the minis":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c76fae2a1f2a128f7a64cdec3b08ba24~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=5f8c69a1\u0026x-expires=1793599200\u0026x-signature=BjAAI0fcTr4ztEVdHURJBVapPXU%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
                     "S E A N N🍃🔦 🦋":  "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/72201c268a13898567c34095378b053b~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=db41d4bb\u0026x-expires=1793599200\u0026x-signature=2b0b0Xz1Wd1%2B4uHp8ySb%2BdA%2Bfeg%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
                     "TANtan":  "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4fb66dcb0d90dfc2c6d93679a5336386~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=38de0ea5\u0026x-expires=1793599200\u0026x-signature=xOa3k4MMNrKcYNsKiKuIMr93%2F50%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
@@ -176,7 +175,9 @@
                     "ScreenGazer_G":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/6fa0ee080c042045240a9d270bd147be~tplv-tiktok-shrink:72:72.webp?dr=14561\u0026refresh_token=4f29a672\u0026x-expires=1793700000\u0026x-signature=Htqz9ZX%2BR8LaSr4dorN%2Bae2jcfc%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
                     "°itsmecutieerox°":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/136b7dea10afb3925b5dd00928703cbd~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=c290103f\u0026x-expires=1793700000\u0026x-signature=HyTyLPjoPstsigS%2B1D88BS1%2BpzY%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my2",
                     "M0nsteriZzed👹":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3b18963876950f08bf9f4666ed8fea09~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=0c0f7b87\u0026x-expires=1793700000\u0026x-signature=fmkQp8gGGUIKS0ulP95EeAwNPLk%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my3",
-                    "GifterTest":  "images/default_avatar.svg"
+                    "GifterTest":  "images/default_avatar.svg",
+                    "TestUser":  "images/default_avatar.svg",
+                    "RENEarn":  "images/default_avatar.svg"
                 },
     "likes":  {
                   "DahdahMhiemhie":  78,
@@ -246,6 +247,8 @@
                   "ScreenGazer_G":  3857,
                   "°itsmecutieerox°":  1,
                   "M0nsteriZzed👹":  393,
-                  "GifterTest":  1
+                  "GifterTest":  1,
+                  "TestUser":  1,
+                  "RENEarn":  1001
               }
 }

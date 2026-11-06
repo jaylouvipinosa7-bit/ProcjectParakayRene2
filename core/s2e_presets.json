@@ -1,11 +1,11 @@
-﻿{
+{
     "preset_pvz_custom":  {
                               "name":  "Preset Name",
                               "game":  "PvZFusion",
                               "createdAt":  "09/17/2026",
                               "coverIcon":  "images/pvz_fusion_cover.jpg",
-                              "eventsCount":  73,
-                              "overflowCount":  "+17",
+                              "eventsCount":  10,
+                              "overflowCount":  "",
                               "previewSprites":  [
                                                      "images/game-icons/pvz/spawn_tall_nut.webp",
                                                      "images/game-icons/pvz/spawn_football_zombie.webp",
@@ -26,7 +26,7 @@
                                                  "funcImg":  "images/game-icons/pvz/spawn_knight_captain.webp",
                                                  "actionType":  "zombie",
                                                  "command":  "spawn_knight_captain",
-                                                 "label":  "Spawn Knight Captain Zombie (70)",
+                                                 "label": "Viewer Likes Event Action",
                                                  "targetGame":  "PvZFusion",
                                                  "amount":  1,
                                                  "enabled":  true,
@@ -35,13 +35,13 @@
                                                                   {
                                                                       "name":  "Commands #1",
                                                                       "command":  "spawn_knight_captain",
-                                                                      "label":  "Spawn Knight Captain Zombie (70)",
+                                                                      "label": "Viewer Likes Event Action",
                                                                       "icon":  "images/game-icons/pvz/spawn_knight_captain.webp",
                                                                       "actionType":  "zombie",
                                                                       "amount":  1
                                                                   }
                                                               ],
-                                                 "functionName":  "Spawn Knight Captain Zombie (70)",
+                                                 "functionName": "Viewer Likes Event Action",
                                                  "repetition":  1,
                                                  "delay":  0,
                                                  "interval":  100,
@@ -178,7 +178,7 @@
                                                  "funcImg":  "images/game-icons/pvz/spawn_ultimatehorse.webp",
                                                  "actionType":  "zombie",
                                                  "command":  "spawn_ultimatehorse",
-                                                 "label":  "spawn summon horse",
+                                                 "label": "Stream Goal Celebration Event",
                                                  "targetGame":  "PvZFusion",
                                                  "amount":  20,
                                                  "enabled":  true,
@@ -193,7 +193,7 @@
                                                                       "amount":  1
                                                                   }
                                                               ],
-                                                 "functionName":  "spawn summon horse",
+                                                 "functionName": "Stream Goal Celebration Event",
                                                  "repetition":  20,
                                                  "delay":  0,
                                                  "interval":  100,
@@ -215,7 +215,7 @@
                                                  "funcImg":  "images/game-icons/pvz/spawn_summonedhorse.webp",
                                                  "actionType":  "zombie",
                                                  "command":  "spawn_summonedhorse",
-                                                 "label":  "Spawn SummonedHorse",
+                                                 "label": "New Follower Alert & Sound Effect",
                                                  "targetGame":  "PvZFusion",
                                                  "amount":  20,
                                                  "enabled":  true,
@@ -224,13 +224,13 @@
                                                                   {
                                                                       "name":  "Commands #1",
                                                                       "command":  "spawn_summonedhorse",
-                                                                      "label":  "Spawn SummonedHorse",
+                                                                      "label": "New Follower Alert & Sound Effect",
                                                                       "icon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
                                                                       "actionType":  "zombie",
                                                                       "amount":  1
                                                                   }
                                                               ],
-                                                 "functionName":  "Spawn SummonedHorse",
+                                                 "functionName": "New Follower Alert & Sound Effect",
                                                  "repetition":  20,
                                                  "delay":  0,
                                                  "interval":  100,
@@ -289,7 +289,7 @@
                                                  "funcImg":  "images/game-icons/pvz/spawn_summonedhorse.webp",
                                                  "actionType":  "zombie",
                                                  "command":  "spawn_summonedhorse",
-                                                 "label":  "Spawn SummonedHorse",
+                                                 "label": "New Follower Alert & Sound Effect",
                                                  "targetGame":  "PvZFusion",
                                                  "amount":  5,
                                                  "enabled":  true,
@@ -298,13 +298,13 @@
                                                                   {
                                                                       "name":  "Commands #1",
                                                                       "command":  "spawn_summonedhorse",
-                                                                      "label":  "Spawn SummonedHorse",
+                                                                      "label": "New Follower Alert & Sound Effect",
                                                                       "icon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
                                                                       "actionType":  "zombie",
                                                                       "amount":  1
                                                                   }
                                                               ],
-                                                 "functionName":  "Spawn SummonedHorse",
+                                                 "functionName": "New Follower Alert & Sound Effect",
                                                  "repetition":  5,
                                                  "delay":  0,
                                                  "interval":  100,
@@ -4035,5 +4035,112 @@
                                              "funcName":  "SPEEDFREAK 10x Nitro Cars"
                                          }
                                      ]
-                      }
+                      },
+    "preset_kingdom_siege":  {
+                                 "_id":  "preset_kingdom_siege",
+                                 "id":  "preset_kingdom_siege",
+                                 "name":  "Kingdom Siege 3D Defense",
+                                 "game":  "kingdom_siege",
+                                 "createdAt":  "11/03/2026",
+                                 "coverIcon":  "images/games/kingdom_siege_poster.jpg",
+                                 "eventsCount":  6,
+                                 "events":  [
+                                                {
+                                                    "id":  "ks_1",
+                                                    "giftName":  "Rose (1 Coin)",
+                                                    "coins":  1,
+                                                    "label":  "Spawn Orc Berserker",
+                                                    "actionType":  "spawn",
+                                                    "command":  "spawn_orc",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/5655_rose.webp",
+                                                    "trigImg":  "images/tiktok-gifts/5655_rose.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "Spawn Orc Berserker"
+                                                },
+                                                {
+                                                    "id":  "ks_2",
+                                                    "giftName":  "Finger Heart (5 Coins)",
+                                                    "coins":  5,
+                                                    "label":  "Deploy Armored Battering Ram",
+                                                    "actionType":  "spawn",
+                                                    "command":  "spawn_ram",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/5487_finger_heart.webp",
+                                                    "trigImg":  "images/tiktok-gifts/5487_finger_heart.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "Deploy Armored Battering Ram"
+                                                },
+                                                {
+                                                    "id":  "ks_3",
+                                                    "giftName":  "Doughnut (30 Coins)",
+                                                    "coins":  30,
+                                                    "label":  "Dark Trebuchet Catapult",
+                                                    "actionType":  "spawn",
+                                                    "command":  "spawn_trebuchet",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/5879_doughnut.webp",
+                                                    "trigImg":  "images/tiktok-gifts/5879_doughnut.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "Dark Trebuchet Catapult"
+                                                },
+                                                {
+                                                    "id":  "ks_4",
+                                                    "giftName":  "Paper Crane (99 Coins)",
+                                                    "coins":  99,
+                                                    "label":  "Summon Flying Shadow Dragon",
+                                                    "actionType":  "spawn",
+                                                    "command":  "spawn_dragon",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/5659_paper_crane.webp",
+                                                    "trigImg":  "images/tiktok-gifts/5659_paper_crane.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "Summon Flying Shadow Dragon"
+                                                },
+                                                {
+                                                    "id":  "ks_5",
+                                                    "giftName":  "Dragon (399 Coins)",
+                                                    "coins":  399,
+                                                    "label":  "Shenlong Dragon Ultimate Burst",
+                                                    "actionType":  "special",
+                                                    "command":  "dragon_burst",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/13604_fiery_dragon.webp",
+                                                    "trigImg":  "images/tiktok-gifts/13604_fiery_dragon.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "Shenlong Dragon Ultimate Burst"
+                                                },
+                                                {
+                                                    "id":  "ks_6",
+                                                    "giftName":  "Galaxy / Lion (1000 Coins)",
+                                                    "coins":  1000,
+                                                    "label":  "SUMMON THE COLOSSAL TITAN BOSS",
+                                                    "actionType":  "boss",
+                                                    "command":  "spawn_titan_boss",
+                                                    "repetition":  1,
+                                                    "triggerType":  "gift",
+                                                    "targetGame":  "kingdom_siege",
+                                                    "unitIcon":  "images/games/kingdom_siege_poster.jpg",
+                                                    "icon":  "images/tiktok-gifts/6833_castle_fantasy.webp",
+                                                    "trigImg":  "images/tiktok-gifts/6833_castle_fantasy.webp",
+                                                    "funcImg":  "images/games/kingdom_siege_poster.jpg",
+                                                    "funcName":  "SUMMON THE COLOSSAL TITAN BOSS"
+                                                }
+                                            ]
+                             }
 }

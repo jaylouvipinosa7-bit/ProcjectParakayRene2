@@ -251,3 +251,4 @@ Copy-Item $outDll "$gameDir\Mods\RENEarnPVZFusionMod.dll" -Force
 Copy-Item $outDll "$gameDir\Mods\RunetifyPVZFusionMod.dll" -Force
 Copy-Item $outDll "C:\Users\pc\Downloads\ano na\core\mods\pvz_fusion_4\RENEarnPVZFusionMod.dll" -Force
 Write-Host "DEPLOYED TO ALL DIRS!"
+

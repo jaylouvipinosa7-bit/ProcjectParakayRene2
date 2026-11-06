@@ -20,55 +20,9 @@
         spotifyAccessToken: localStorage.getItem('spotify_access_token') || '',
         spotifyRefreshToken: localStorage.getItem('spotify_refresh_token') || '',
         spotifyClientId: (localStorage.getItem('spotify_client_id') === 'a4413156cf9e45138ce3ca8f7b7cf7a8') ? '' : (localStorage.getItem('spotify_client_id') || ''),
-        nowPlaying: {
-            id: 'demo_natalie',
-            title: 'Starting Over Again',
-            artist: 'Natalie Cole',
-            singer: 'Natalie Cole',
-            album: 'Unforgettable... with Love',
-            coverUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/28/46/a828467f-4718-b698-9719-de205cdd6278/18CRGIM06004.rgb.jpg/400x400bb.jpg',
-            durationMs: 255493,
-            progressMs: 47500,
-            requestedBy: 'StreamHost',
-            isPlaying: true,
-            youtubeId: 'MpuyU3lPbsw',
-            previewUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ab/50/9c/ab509cef-7179-b269-df9e-92f61a4b0db0/mzaf_13067098433636272147.plus.aac.p.m4a',
-            uri: 'itunes:track:1576793255'
-        },
-        queue: [
-            {
-                id: 'req_1',
-                title: 'Bomba',
-                artist: 'Jessy',
-                album: 'Bomba Hits',
-                coverUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop',
-                requestedBy: 'ChatViewer',
-                timestamp: '7:35 PM',
-                status: 'queued',
-                uri: 'spotify:track:bomba'
-            },
-            {
-                id: 'req_2',
-                title: 'Blinding Lights',
-                artist: 'The Weeknd',
-                album: 'After Hours',
-                coverUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
-                requestedBy: 'StreamFan99',
-                timestamp: '7:38 PM',
-                status: 'queued',
-                uri: 'spotify:track:0VjIjW4GlUZAMYd2vXMi3b'
-            }
-        ],
-        history: [
-            {
-                id: 'hist_1',
-                title: 'Levitating',
-                artist: 'Dua Lipa',
-                requestedBy: 'CoolGamer',
-                timestamp: '7:20 PM',
-                status: 'played'
-            }
-        ],
+        nowPlaying: null,
+        queue: [],
+        history: [],
         settings: {
             commandPrefix: '!play',
             aliases: ['!sr', '!song', '!request'],
@@ -200,7 +154,14 @@
             if (res.ok) {
                 const data = await res.json();
                 if (data && typeof data === 'object') {
+                    // If audio is actively playing locally, preserve progressMs and isPlaying so queue additions don't stutter playback
+                    const isLocalPlaying = !!(localAudioPreview && !localAudioPreview.paused && !localAudioPreview.ended);
+                    const prevProgress = songState.nowPlaying ? songState.nowPlaying.progressMs : 0;
                     songState = Object.assign({}, songState, data);
+                    if (isLocalPlaying && songState.nowPlaying && data.nowPlaying && songState.nowPlaying.id === data.nowPlaying.id) {
+                        songState.nowPlaying.progressMs = prevProgress;
+                        songState.nowPlaying.isPlaying = true;
+                    }
                 }
             }
         } catch (e) {
@@ -590,8 +551,8 @@
             return;
         }
 
-        // 3. Check for Play/Request Command (!play, !sr, !song, !request, !p, /play, /sr, etc.)
-        const playMatch = text.match(/^[!/](play|sr|song|request|p)(?:[\s:]+(.+)|$)/i);
+        // 3. Check for Play/Request Command (!play, !paly, !sr, !song, !request, !p, /play, /sr, etc.)
+        const playMatch = text.match(/^[!/](play|paly|sr|song|request|p)(?:[\s:]+(.+)|$)/i);
         if (playMatch) {
             const songQuery = (playMatch[2] || '').trim();
             if (!songQuery) {
@@ -612,9 +573,11 @@
                 }
             }
 
-            const isCurrentlyPlaying = !!(songState.nowPlaying && songState.nowPlaying.title && songState.nowPlaying.isPlaying !== false);
+            // If there is ANY active song currently playing, loading, buffering, or loaded in nowPlaying:
+            // ALWAYS queue the new song so the 1st song is NEVER interrupted or cut off!
+            const hasActiveSong = !!(songState.nowPlaying && songState.nowPlaying.title && songState.nowPlaying.title.trim().length > 0);
 
-            if (isCurrentlyPlaying) {
+            if (hasActiveSong) {
                 // SMOOTH QUEUE ADDITION: Instantly appears on Upcoming Queue list (0ms delay)
                 const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
                 const optimisticItem = {
@@ -1215,9 +1178,11 @@
         updatePlayingUI(true);
         startTimelineTicker();
 
-        // Direct audible playback if previewUrl is already known
+        // Direct audible playback if previewUrl or youtubeId is already known
         if (songState.nowPlaying.previewUrl) {
             playLocalAudioDirect(songState.nowPlaying.previewUrl, true);
+        } else if (songState.nowPlaying.youtubeId) {
+            playYouTubeFullTrack(songState.nowPlaying.youtubeId, 0, true);
         } else {
             // Non-blocking async audio resolution if needed
             ensureAudioPlaying(true);
@@ -1256,17 +1221,24 @@
                 artist: songState.nowPlaying.singer || songState.nowPlaying.artist || 'Artist',
                 requestedBy: songState.nowPlaying.requestedBy || 'Viewer',
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                status: 'skipped'
+                status: (reason === 'Song Completed') ? 'played' : 'skipped'
             });
             if (songState.history.length > 40) songState.history.pop();
         }
 
-        // 3. ADVANCE TO NEXT SONG IN QUEUE ASAP (0ms UI & Audio switch)
+        // 3. ADVANCE TO NEXT SONG IN QUEUE (Plays queued track after current one is done or skipped)
         if (songState.queue.length > 0) {
             const next = songState.queue.shift();
             playTrackImmediately(next);
             if (typeof showToast === 'function') {
-                showToast(`⏭️ Skipped! Now Playing: "${next.title}"`, 'success');
+                if (reason === 'Song Completed') {
+                    showToast(`🎵 Song finished! Now playing next in queue: "${next.title}" (Requested by @${next.requestedBy || 'Viewer'})`, 'success');
+                } else {
+                    showToast(`⏭️ Skipped! Now Playing: "${next.title}"`, 'success');
+                }
+            }
+            if (songState.settings.ttsAnnouncement && typeof window.handleIncomingChatTTS === 'function') {
+                window.handleIncomingChatTTS('MusicBot', `Now playing next: ${next.title}, requested by ${next.requestedBy || 'Viewer'}.`);
             }
         } else {
             songState.nowPlaying = null;
@@ -1354,6 +1326,13 @@
     function renderSongRequestUI() {
         const container = document.getElementById('tab-songrequest');
         if (!container) return;
+
+        // Ensure persistent audio host is safely anchored to document.body so YouTube iframe is NEVER wiped or cut off
+        const audioHost = document.getElementById('studioPersistentAudioHost');
+        if (audioHost && audioHost.parentElement && audioHost.parentElement !== document.body) {
+            document.body.appendChild(audioHost);
+            audioHost.style.cssText = 'position: fixed; width: 220px; height: 124px; right: -9999px; bottom: 0; opacity: 0.01; pointer-events: none; z-index: -1;';
+        }
 
         const isConnected = songState.spotifyConnected;
         const user = songState.spotifyUser;
@@ -1904,10 +1883,28 @@
         await window.testSubmitSongCommand();
     };
 
-    window.seekSongPosition = seekSongPosition;
-    window.togglePlayerViewMode = togglePlayerViewMode;
-    window.testAudioClip = testAudioClip;
-    window.duckSongVolume = duckSongVolume;
+    // YouTube iframe onStateChange message listener (automatically advances to next song in queue when track ends)
+    window.addEventListener('message', (event) => {
+        try {
+            let msg = event.data;
+            if (typeof msg === 'string') {
+                try { msg = JSON.parse(msg); } catch (_) { return; }
+            }
+            if (!msg || typeof msg !== 'object') return;
+            if (msg.event === 'onStateChange') {
+                // YT.PlayerState: 0 = ENDED, 1 = PLAYING, 2 = PAUSED
+                if (msg.info === 0) {
+                    console.log('[SongRequest] YouTube track ended naturally -> advancing queue to next song');
+                    skipCurrentTrack('Song Completed');
+                } else if (msg.info === 1) {
+                    if (songState.nowPlaying) songState.nowPlaying.isPlaying = true;
+                    updatePlayingUI(true);
+                }
+            }
+        } catch (_) {}
+    });
+
+    if (typeof duckSongVolume === 'function') window.duckSongVolume = duckSongVolume;
     window.handleIncomingSongRequest = handleIncomingSongRequest;
     window.loadSongState = loadSongState;
     window.renderSongRequestUI = renderSongRequestUI;

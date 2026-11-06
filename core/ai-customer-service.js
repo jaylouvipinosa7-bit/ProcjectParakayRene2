@@ -9,7 +9,7 @@
     // Application Knowledge Base (Public app documentation ONLY - Zero personal data)
     const APP_KNOWLEDGE_BASE = {
         name: "Live Studio Streaming Suite & Interactive Game Automation Platform",
-        version: "4.2.0",
+        version: "4.1.1",
         summary: "An interactive live streaming and game automation platform that bridges live stream viewers directly into active PC gameplay. It turns live chat comments, TikTok gifts, likes, and lucky wheel spins into real-time in-game events, spells, summons, keystrokes, and interactive stream overlays.",
         coreIdentity: "The app is NOT just a single game mod or PvZ tool. It is a universal Live Stream Interactive Gaming Platform that connects viewer interactions (TikTok gifts, comments, likes) directly into PC gameplay via real-time automated commands, simulated keystrokes, coordinate clicks, and visual stream overlays for any supported game.",
         modules: [

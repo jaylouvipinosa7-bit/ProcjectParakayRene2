@@ -18403,10 +18403,7 @@
                                 Organize, duplicate, edit, and assign live stream trigger presets across games.
                             </p>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="openNewPresetModal()"
-                            style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 7px 16px; border-radius: 6px; cursor: pointer;">
-                            <span>➕</span> New Preset
-                        </button>
+                        
                     </div>
 
                     <!-- Search and Game Filter Bar (Picture 2) -->
@@ -18457,30 +18454,11 @@
                                 style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 11px; padding: 2px 8px; border-radius: 6px;">Live
                                 OBS Active</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <div
-                                style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <span style="font-size: 11px; color: #8b949e; font-weight: 700;">OBS Link:</span>
-                                <span
-                                    style="font-size: 12px; color: #38bdf8; font-weight: 800; font-family: monospace;">/overlay-win.html</span>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="copyWinOverlayUrl()"
-                                    style="padding: 2px 8px; font-size: 10.5px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">Copy</button>
-                                <button type="button" class="btn btn-sm btn-secondary"
-                                    onclick="openInAppOverlay('/overlay-win.html', 'Win Overlay')"
-                                    style="padding: 2px 8px; font-size: 10.5px; color: #f0f6fc;">Open</button>
-                            </div>
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"
-                                title="Enable/Disable Win Widget in stream overlays">
-                                <input type="checkbox" id="winWidgetEnabledToggle" checked
-                                    onchange="toggleWinWidgetEnabled(this.checked)"
-                                    style="width: 18px; height: 18px; accent-color: #3b82f6; cursor: pointer;">
-                            </label>
-                        </div>
                     </div>
 
                     <!-- Dual Cards: LOSE & WIN (Pixel-matching Image 3) + Score & Goal Streak Bar (Image 2) -->
                     <div
-                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
                         <!-- 1. LOSE CARD -->
                         <div
                             style="background: linear-gradient(180deg, rgba(239, 68, 68, 0.14) 0%, rgba(20, 10, 14, 0.95) 100%); border: 1.5px solid rgba(239, 68, 68, 0.45); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.12);">
@@ -18529,47 +18507,7 @@
                             </div>
                         </div>
 
-                        <!-- 3. SCORE & TARGET STREAK CARD (IMAGE 2 INTEGRATION) -->
-                        <div
-                            style="background: rgba(18, 22, 34, 0.92); border: 1.5px solid #30363d; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div
-                                style="font-size: 12px; font-weight: 800; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">
-                                Stream Overlay Streak (Win / Goal)
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0 12px 0;">
-                                <div
-                                    style="background: rgba(0,0,0,0.5); border: 1px solid #30363d; border-radius: 10px; padding: 6px 12px; flex: 1; text-align: center;">
-                                    <div
-                                        style="font-size: 10.5px; color: #8b949e; font-weight: 700; margin-bottom: 2px;">
-                                        Score (Can be − or +)</div>
-                                    <input type="number" id="dashScoreInput" value="-4"
-                                        onchange="updateWinScoreFromInput()"
-                                        style="width: 100%; background: transparent; border: none; font-size: 26px; font-weight: 900; font-family: 'Outfit', sans-serif; text-align: center; color: #ff007f; outline: none;">
-                                </div>
-                                <span style="font-size: 24px; font-weight: 900; color: #8b949e;">/</span>
-                                <div
-                                    style="background: rgba(0,0,0,0.5); border: 1px solid #30363d; border-radius: 10px; padding: 6px 12px; flex: 1; text-align: center;">
-                                    <div
-                                        style="font-size: 10.5px; color: #8b949e; font-weight: 700; margin-bottom: 2px;">
-                                        Target Goal</div>
-                                    <input type="number" id="dashTargetInput" value="5" min="1"
-                                        onchange="updateWinTargetFromInput()"
-                                        style="width: 100%; background: transparent; border: none; font-size: 26px; font-weight: 900; font-family: 'Outfit', sans-serif; text-align: center; color: #ffffff; outline: none;">
-                                </div>
-                            </div>
-                            <!-- Quick delta buttons -->
-                            <div style="display: flex; gap: 6px;">
-                                <button type="button" class="btn btn-sm" onclick="adjustWinScore(-5)"
-                                    style="flex: 1; background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-size: 11px; font-weight: 800;">−5</button>
-                                <button type="button" class="btn btn-sm" onclick="adjustWinScore(-1)"
-                                    style="flex: 1; background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-size: 11px; font-weight: 800;">−1</button>
-                                <button type="button" class="btn btn-sm" onclick="adjustWinScore(1)"
-                                    style="flex: 1; background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); font-size: 11px; font-weight: 800;">+1</button>
-                                <button type="button" class="btn btn-sm" onclick="adjustWinScore(5)"
-                                    style="flex: 1; background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); font-size: 11px; font-weight: 800;">+5</button>
-                            </div>
                         </div>
-                    </div>
 
                     <!-- Hotkeys & Settings Row (Matches Image 3) -->
                     <div
@@ -18630,32 +18568,7 @@
                                     IP)</button>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-primary btn-sm" id="btnCopyGridUrl"
-                                onclick="copyGridOverlayUrl()" style="background: #0969da; border-color: #388bfd;">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                                </svg>
-                                Copy URL
-                            </button>
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                style="background: #238636; border-color: #2ea043; color: #ffffff;"
-                                onclick="openSideOverlayCustomizerModal('split')"
-                                title="Open Split Overlay Customizer in app">
-                                Split
-                            </button>
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                onclick="openSideOverlayCustomizerModal('single')"
-                                title="Customize Side Stream Overlay in app">
-                                ⚙ Overlay Settings
-                            </button>
-                            <button type="button" class="btn btn-secondary btn-sm" id="btnToggleGridPreview"
-                                onclick="openSideOverlayCustomizerModal('single')" style="color: #58a6ff;">
-                                👁 Preview & Customize
-                            </button>
-                        </div>
+                        
                     </div>
 
                     <!-- COLLAPSIBLE LIVE PREVIEW IFRAME -->
@@ -18691,10 +18604,7 @@
                             onmouseleave="this.style.transform='none'; this.style.boxShadow='0 4px 14px rgba(16, 185, 129, 0.45)';">
                             <span>🎁</span> Choose a Preset
                         </button>
-                        <button class="btn btn-sm btn-primary" onclick="openNewPresetModal()" type="button"
-                            style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-weight: 800; border-radius: 8px;">
-                            <span>➕</span> Add Blank Preset
-                        </button>
+                        
                     </div>
                 </div>
 
@@ -18851,18 +18761,6 @@
                                     style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
                                     <span>➕</span> Add Command Trigger
                                 </button>
-                                <button type="button" class="btn btn-sm"
-                                    onclick="openSideOverlayCustomizerModal('single')"
-                                    style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #ec4899, #06b6d4); color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(236,72,153,0.3); padding: 5px 12px; border-radius: 6px; cursor: pointer;"
-                                    title="Customize Overlay rows, columns & style in app">
-                                    <span>🎨</span> Customize Overlay
-                                </button>
-                                <button type="button" class="btn btn-sm btn-secondary"
-                                    onclick="openSideOverlayCustomizerModal('split')"
-                                    style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;"
-                                    title="Open Split Overlay View (Photo 4) in app">
-                                    <span>📑</span> Split Overlay
-                                </button>
                                 <button type="button" class="btn btn-sm btn-secondary" onclick="resetAllCommandCounts()"
                                     style="font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; border-color: rgba(239, 68, 68, 0.4); color: #f87171;"
                                     title="Reset all counted commands back to 0">
@@ -18999,18 +18897,7 @@
                                     </svg>
                                     Split
                                 </button>
-                                <button type="button" class="btn btn-sm btn-secondary"
-                                    onclick="openSideOverlayCustomizerModal('single')"
-                                    style="background: #238636; border: 1px solid #2ea043; color: #ffffff; font-weight: 700; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2.5">
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                        <path
-                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                        </path>
-                                    </svg>
-                                    Overlay Settings
-                                </button>
+                                
                                 <button type="button" class="btn btn-sm btn-secondary"
                                     onclick="reloadCommandsLiveOverlay()"
                                     style="background: #161b22; border: 1px solid #30363d; color: #8b949e; padding: 6px 10px; border-radius: 6px; cursor: pointer;"
@@ -19867,27 +19754,7 @@
                                         Wheel</strong>
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 4px;">
-                                <button type="button" class="btn btn-xs" onclick="quickSwitchActiveVisualizer('reel')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(59,130,246,0.18); color: #60a5fa; border: 1px solid rgba(59,130,246,0.4);"
-                                    title="Horizontal CS:GO Roulette">🎰 Reel</button>
-                                <button type="button" class="btn btn-xs" onclick="quickSwitchActiveVisualizer('wheel')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(234,179,8,0.22); color: #facc15; border: 1px solid rgba(234,179,8,0.5); font-weight: 700;"
-                                    title="Classic 3D Fortune Wheel">🎡 Wheel</button>
-                                <button type="button" class="btn btn-xs"
-                                    onclick="quickSwitchActiveVisualizer('wheel3d')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4);"
-                                    title="High-End 3D Lucky Wheel">🌟 3D</button>
-                                <button type="button" class="btn btn-xs" onclick="quickSwitchActiveVisualizer('gacha')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(236,72,153,0.18); color: #f472b6; border: 1px solid rgba(236,72,153,0.4);"
-                                    title="Photorealistic 3D Gacha Machine">🔮 Gacha</button>
-                                <button type="button" class="btn btn-xs" onclick="quickSwitchActiveVisualizer('slots')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(16,185,129,0.18); color: #34d399; border: 1px solid rgba(16,185,129,0.4);"
-                                    title="3D Vegas Slot Machine">🍒 Slots</button>
-                                <button type="button" class="btn btn-xs" onclick="quickSwitchActiveVisualizer('claw')"
-                                    style="padding: 2px 7px; font-size: 10px; background: rgba(168,85,247,0.18); color: #c084fc; border: 1px solid rgba(168,85,247,0.4); font-weight: 700;"
-                                    title="Photorealistic 3D Claw Machine">🕹️ Claw</button>
-                            </div>
+                            
                         </div>
 
                         <!-- EMBEDDED LIVE VISUALIZER STAGE CONTAINER -->
