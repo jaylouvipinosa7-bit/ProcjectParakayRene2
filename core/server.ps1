@@ -4071,19 +4071,27 @@ INSTALLATION INSTRUCTIONS:
                 $targetU = if ($cfg.tiktokUsername) { $cfg.tiktokUsername } elseif ($cfg.streamer -and $cfg.streamer.tiktokUsername) { $cfg.streamer.tiktokUsername } elseif ($script:tiktokConnectedUser) { $script:tiktokConnectedUser } else { "" }
             }
 
-            # 1. Check live state file or cache
+            $cleanU = $targetU.ToLower()
+            $localAvPath = Join-Path $folder "images\avatars\$cleanU.jpg"
             $stateFile = Join-Path $folder "tiktok_live_state.json"
             $cacheFile = Join-Path $folder "tiktok_profile_cache.json"
             $foundAvatar = ""
             $foundNick = ""
 
+            if (Test-Path $localAvPath) {
+                $foundAvatar = "/images/avatars/$cleanU.jpg"
+            }
+
             if (Test-Path $cacheFile) {
                 try {
                     $cJson = Get-Content $cacheFile -Raw -Encoding UTF8 | ConvertFrom-Json
-                    $uProp = $cJson.PSObject.Properties[$targetU]
-                    if ($uProp -and $uProp.Value -and $uProp.Value.avatar) {
-                        $foundAvatar = [string]$uProp.Value.avatar
+                    $uProp = $cJson.PSObject.Properties[$cleanU]
+                    if (-not $uProp) { $uProp = $cJson.PSObject.Properties[$targetU] }
+                    if ($uProp -and $uProp.Value) {
                         if ($uProp.Value.nickname) { $foundNick = [string]$uProp.Value.nickname }
+                        if (-not $foundAvatar -and $uProp.Value.avatar -and -not ([string]$uProp.Value.avatar).Contains("tiktokcdn.com")) {
+                            $foundAvatar = [string]$uProp.Value.avatar
+                        }
                     }
                 } catch {}
             }
@@ -4091,24 +4099,25 @@ INSTALLATION INSTRUCTIONS:
             if (-not $foundAvatar -and (Test-Path $stateFile)) {
                 try {
                     $sJson = Get-Content $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json
-                    if ($sJson.username -and ($sJson.username.ToLower() -eq $targetU.ToLower()) -and $sJson.avatar) {
+                    if ($sJson.username -and ($sJson.username.ToLower() -eq $cleanU) -and $sJson.avatar -and -not ([string]$sJson.avatar).Contains("tiktokcdn.com")) {
                         $foundAvatar = [string]$sJson.avatar
                         if ($sJson.nickname) { $foundNick = [string]$sJson.nickname }
                     }
                 } catch {}
             }
 
-            if ($foundAvatar) {
+            if ($foundAvatar -and $foundNick -and -not ($request.QueryString["refresh"] -eq "1")) {
                 Send-JsonResponse $response @{
                     success = $true
                     username = $targetU
-                    nickname = if ($foundNick) { $foundNick } else { $targetU }
+                    nickname = $foundNick
                     avatar = $foundAvatar
+                    fallbackAvatar = "https://unavatar.io/tiktok/$targetU"
                 }
                 continue
             }
 
-            # 2. Invoke fetch_tiktok_profile.js tool
+            # 2. Invoke fetch_tiktok_profile.js tool for real-time fetch
             try {
                 $fetcherScript = Join-Path $folder "tools\fetch_tiktok_profile.js"
                 $nodeBin = Join-Path $folder "bin\node.exe"
@@ -4123,7 +4132,8 @@ INSTALLATION INSTRUCTIONS:
                 }
             } catch {}
 
-            Send-JsonResponse $response @{ success = $false; username = $targetU; avatar = "" }
+            $fallbackAv = if (Test-Path $localAvPath) { "/images/avatars/$cleanU.jpg" } else { "https://unavatar.io/tiktok/$targetU" }
+            Send-JsonResponse $response @{ success = $true; username = $targetU; nickname = if ($foundNick) { $foundNick } else { $targetU }; avatar = $fallbackAv; fallbackAvatar = "https://unavatar.io/tiktok/$targetU" }
             continue
         }
 

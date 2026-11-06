@@ -17069,16 +17069,16 @@
                         style="background: #0284c7; color: #ffffff; font-weight: 800; overflow: hidden; padding: 0;"
                         title="Active Streamer Account">
                         <img id="headerProfileAvatarImg"
-                            src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&refresh_token=99df98ca&x-expires=1792922400&x-signature=%2BqTmP1WO2r1V%2FXglZ9lCTSEtVH0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2"
+                            src="/images/avatars/gohanmalunggay.jpg"
                             alt="Avatar"
                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;"
-                            onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                            onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='https://unavatar.io/tiktok/gohanmalunggay';}else{this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';}">
                         <span style="display: none;">GO</span>
                     </div>
                     <div class="header-profile-info">
-                        <span class="header-profile-name" id="headerProfileUsername">gohanmalunggay</span>
+                        <span class="header-profile-name" id="headerProfileUsername">GOten🫪</span>
                         <span class="header-profile-handle" id="headerProfileHandle"
-                            style="color: #38bdf8;">jaylouvipinosa7@gmail.com</span>
+                            style="color: #38bdf8;">@gohanmalunggay</span>
                     </div>
                     <button type="button" class="btn-header-switch"
                         onclick="event.stopPropagation(); toggleUserAccountDropdown(event)">
@@ -17092,12 +17092,13 @@
                             <div
                                 style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid #10b981; overflow: hidden; flex-shrink: 0; background: #0284c7; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);">
                                 <img id="dropdownUserAvatarImg"
-                                    src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&refresh_token=99df98ca&x-expires=1792922400&x-signature=%2BqTmP1WO2r1V%2FXglZ9lCTSEtVH0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2"
-                                    alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                    src="/images/avatars/gohanmalunggay.jpg"
+                                    alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;"
+                                    onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='https://unavatar.io/tiktok/gohanmalunggay';}">
                             </div>
                             <div>
-                                <div class="account-dropdown-name" id="dropdownUserTitle">Goten</div>
-                                <div class="account-dropdown-sub" id="dropdownUserSubtitle">gohanmalunggay</div>
+                                <div class="account-dropdown-name" id="dropdownUserTitle">GOten🫪</div>
+                                <div class="account-dropdown-sub" id="dropdownUserSubtitle">@gohanmalunggay</div>
                             </div>
                         </div>
 
@@ -32979,48 +32980,63 @@
                 const clean = username.replace(/^@+/, '').trim();
                 if (!clean) return;
 
-                // 1. Instant cache check from localStorage
+                // 1. Instant local/cache apply so UI updates immediately without delay
+                const localAvatar = `/images/avatars/${clean.toLowerCase()}.jpg`;
                 const cached = localStorage.getItem('pvz_tiktok_avatar_' + clean);
-                if (cached) {
-                    applyAvatarToUI(cached);
-                }
+                const activeAvatar = (cached && !cached.includes('tiktokcdn.com') && !cached.includes('ui-avatars.com')) ? cached : localAvatar;
+                applyAvatarToUI(activeAvatar, clean);
 
                 try {
                     const res = await fetch('/api/tiktok/profile?username=' + encodeURIComponent(clean));
                     if (res.ok) {
                         const data = await res.json();
                         if (data.success && data.avatar) {
-                            localStorage.setItem('pvz_tiktok_avatar_' + clean, data.avatar);
-                            applyAvatarToUI(data.avatar);
+                            const freshAvatar = data.avatar;
+                            localStorage.setItem('pvz_tiktok_avatar_' + clean, freshAvatar);
+                            applyAvatarToUI(freshAvatar, clean);
                             if (currentUser) {
-                                currentUser.picture = data.avatar;
-                                if (data.nickname && (!currentUser.name || currentUser.name.startsWith('@') || currentUser.name === clean)) {
+                                currentUser.picture = freshAvatar;
+                                if (data.nickname) {
                                     currentUser.name = data.nickname;
+                                    currentUser.nickname = data.nickname;
                                 }
                                 try { localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser)); } catch (e) { }
                             }
                             if (data.nickname) {
                                 const headerUsername = document.getElementById('headerProfileUsername');
                                 const dropTitle = document.getElementById('dropdownUserTitle');
-                                if (headerUsername && (!currentUser || !currentUser.name || currentUser.name.startsWith('@'))) headerUsername.innerText = data.nickname;
+                                if (headerUsername) headerUsername.innerText = data.nickname;
                                 if (dropTitle) dropTitle.textContent = data.nickname;
                             }
+                            const headerHandle = document.getElementById('headerProfileHandle');
+                            const dropSub = document.getElementById('dropdownUserSubtitle');
+                            if (headerHandle) headerHandle.innerText = '@' + clean;
+                            if (dropSub) dropSub.textContent = '@' + clean;
                         }
                     }
                 } catch (err) { }
             }
 
-            function applyAvatarToUI(avatarUrl) {
+            function applyAvatarToUI(avatarUrl, optUsername) {
                 if (!avatarUrl) return;
-                const displayName = (currentUser && (currentUser.name || currentUser.username || (currentUser.email ? currentUser.email.split('@')[0] : ''))) || 'Streamer';
-                const initials = displayName.split(/[\s_.-]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'ST';
+                const cleanUser = (optUsername || (currentUser && (currentUser.username || (currentUser.platform === 'tiktok' ? currentUser.name : ''))) || localStorage.getItem('pvz_tiktok_username') || 'gohanmalunggay').replace(/^@+/, '').trim();
+                const displayName = (currentUser && (currentUser.name || currentUser.username || (currentUser.email ? currentUser.email.split('@')[0] : ''))) || cleanUser || 'Streamer';
+                const initials = displayName.replace(/^@/, '').split(/[s_.-]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'ST';
 
                 const headerAvatar = document.getElementById('headerProfileAvatar');
                 if (headerAvatar) {
-                    headerAvatar.innerHTML = `<img id="headerProfileAvatarImg" src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';"><span style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 13px; font-weight: 800; color: #fff;">${initials}</span>`;
+                    headerAvatar.innerHTML = `<img id="headerProfileAvatarImg" src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='https://unavatar.io/tiktok/' + encodeURIComponent('${cleanUser}');}else{this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';}"><span style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 13px; font-weight: 800; color: #fff;">${initials}</span>`;
                 }
                 const dropImg = document.getElementById('dropdownUserAvatarImg');
-                if (dropImg) dropImg.src = avatarUrl;
+                if (dropImg) {
+                    dropImg.src = avatarUrl;
+                    dropImg.onerror = function() {
+                        if (!this.dataset.retry) {
+                            this.dataset.retry = '1';
+                            this.src = 'https://unavatar.io/tiktok/' + encodeURIComponent(cleanUser);
+                        }
+                    };
+                }
 
                 const userAvatarImg = document.getElementById('userAvatarImg');
                 if (userAvatarImg) userAvatarImg.src = avatarUrl;
@@ -33120,8 +33136,8 @@
 
                     // Apply Real TikTok / Profile Photo for this specific user
                     const userTt = (user.username || (user.platform === 'tiktok' ? user.name : '') || localStorage.getItem('pvz_tiktok_username') || (window.config && window.config.tiktokUsername) || 'gohanmalunggay').replace(/^@+/, '');
-                    if (user.picture && !user.picture.includes('ui-avatars.com')) {
-                        applyAvatarToUI(user.picture);
+                    if (user.picture && !user.picture.includes('ui-avatars.com') && !user.picture.includes('tiktokcdn.com')) {
+                        applyAvatarToUI(user.picture, userTt);
                     } else if (userTt) {
                         fetchAndApplyRealTikTokAvatar(userTt);
                     } else if (user.picture) {
@@ -48632,8 +48648,11 @@
                     currentUser.platform = 'tiktok';
                     currentUser.email = `tiktok_${cleanUser.toLowerCase()}@tiktok.live`;
                     currentUser.name = `@${cleanUser}`;
+                    currentUser.picture = `/images/avatars/${cleanUser.toLowerCase()}.jpg`;
                     localStorage.setItem('pvz_google_auth_user', JSON.stringify(currentUser));
+                    localStorage.setItem('pvz_tiktok_username', cleanUser);
                     if (typeof updateUserProfileUI === 'function') updateUserProfileUI(currentUser);
+                    if (typeof fetchAndApplyRealTikTokAvatar === 'function') fetchAndApplyRealTikTokAvatar(cleanUser);
                 } catch (err) { }
 
                 showToast(`Connecting to TikTok @${cleanUser}...`);

@@ -2,12 +2,9 @@
   "gohanmalunggay": {
     "username": "gohanmalunggay",
     "nickname": "GOten🫪",
-    "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:720:720.webp?dr=14579&refresh_token=99df98ca&x-expires=1792922400&x-signature=%2BqTmP1WO2r1V%2FXglZ9lCTSEtVH0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
-    "avatarLarger": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:1080:1080.webp?dr=14579&refresh_token=9f8c4966&x-expires=1792922400&x-signature=dloDjhSw24u01XhUy9PSRigXUs0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
-    "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d4abe4f27b6a3882eb240590b98b6026~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=58ce08de&x-expires=1792922400&x-signature=YuOYdLCaO9ScgY56bn3b4z%2BXedU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
-    "userId": "7350873073535173637",
-    "secUid": "MS4wLjABAAAAvZxGhSIra27_CQxLWTyKLx6iKRBbcF6pumSajbCBxChgggPQFCgAM4kbHtV_lrnY",
-    "cachedAt": 1792750180204
+    "avatar": "/images/avatars/gohanmalunggay.jpg",
+    "fallbackAvatar": "https://unavatar.io/tiktok/gohanmalunggay",
+    "cachedAt": 1793938495261
   },
   "khaby.lame": {
     "username": "khaby.lame",
@@ -18,5 +15,12 @@
     "userId": "127905465618821121",
     "secUid": "MS4wLjABAAAAwAg0rSzO65WQfz4RzQgGv2Xdv108BgPXhRrrmNVIHQZ9PO8-flwwRtEppYTS0OjA",
     "cachedAt": 1792751495543
+  },
+  "mrbeast": {
+    "username": "mrbeast",
+    "nickname": "MrBeast",
+    "avatar": "/images/avatars/mrbeast.jpg",
+    "fallbackAvatar": "https://unavatar.io/tiktok/mrbeast",
+    "cachedAt": 1793938463287
   }
 }
