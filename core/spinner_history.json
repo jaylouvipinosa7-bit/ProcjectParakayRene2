@@ -2,6 +2,23 @@
     "history":  [
                     {
                         "spinnerId":  "spinner_1",
+                        "id":  "sh_1794019709034_516",
+                        "username":  "RENEarn",
+                        "timestamp":  1794019709036,
+                        "avatar":  "images/default_avatar.svg",
+                        "rarity":  "Rare",
+                        "sliceId":  "p10",
+                        "timeStr":  "10:48:29",
+                        "isNumber":  false,
+                        "label":  "Ultimate Corn",
+                        "icon":  "images/game-icons/pvz/spawn_ultimate_corn.webp",
+                        "spinnerName":  "Plants Lucky Wheel",
+                        "actionType":  "plant",
+                        "color":  "#eab308",
+                        "delta":  null
+                    },
+                    {
+                        "spinnerId":  "spinner_1",
                         "id":  "sh_1793593739152_829",
                         "username":  "RENEarn",
                         "timestamp":  1793593739152,
@@ -661,23 +678,6 @@
                         "spinnerName":  "Plants Lucky Wheel",
                         "actionType":  "plant",
                         "color":  "#3b82f6",
-                        "delta":  null
-                    },
-                    {
-                        "spinnerId":  "spinner_2",
-                        "id":  "sh_1793523414087_312",
-                        "username":  "ScreenGazer_G",
-                        "timestamp":  1793523414087,
-                        "avatar":  "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/6fa0ee080c042045240a9d270bd147be~tplv-tiktokx-cropcenter:100:100.webp?dr=14579\u0026refresh_token=439342f4\u0026x-expires=1793692800\u0026x-signature=ShwwZKR3TIIRusslMOsnfZJNWfs%3D\u0026t=4d5b0474\u0026ps=13740610\u0026shp=a5d48078\u0026shcp=fdd36af4\u0026idc=my",
-                        "rarity":  "Uncommon",
-                        "sliceId":  "z5",
-                        "timeStr":  "16:56:54",
-                        "isNumber":  false,
-                        "label":  "mamaaaa",
-                        "icon":  "images/game-icons/pvz/spawn_summonedhorse.webp",
-                        "spinnerName":  "Zombies Lucky Wheel",
-                        "actionType":  "zombie",
-                        "color":  "#94a3b8",
                         "delta":  null
                     }
                 ],

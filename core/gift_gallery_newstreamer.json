@@ -1,0 +1,131 @@
+﻿{
+    "streamer":  "newstreamer",
+    "username":  "newstreamer",
+    "tier":  "B1",
+    "dateRange":  "19 Oct - 2 Nov",
+    "totalSlots":  12,
+    "obtainedCount":  0,
+    "lastUpdated":  1793600597829,
+    "gifts":  [
+                  {
+                      "id":  "5655",
+                      "name":  "Rose",
+                      "icon":  "images/tiktok-gifts/5655_rose.webp",
+                      "coins":  1,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5487",
+                      "name":  "Finger Heart",
+                      "icon":  "images/tiktok-gifts/5487_finger_heart.webp",
+                      "coins":  5,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5879",
+                      "name":  "Doughnut",
+                      "icon":  "images/tiktok-gifts/5879_doughnut.webp",
+                      "coins":  30,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6427",
+                      "name":  "Hat and Mustache",
+                      "icon":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
+                      "coins":  99,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5660",
+                      "name":  "Hand Heart",
+                      "icon":  "images/tiktok-gifts/5660_hand_heart.webp",
+                      "coins":  100,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5586",
+                      "name":  "Hearts",
+                      "icon":  "images/tiktok-gifts/5586_hearts.webp",
+                      "coins":  199,
+                      "targetCount":  3,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6267",
+                      "name":  "Corgi",
+                      "icon":  "images/tiktok-gifts/6267_corgi.webp",
+                      "coins":  299,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5881",
+                      "name":  "Money Gun",
+                      "icon":  "images/tiktok-gifts/5881_money_gun.webp",
+                      "coins":  500,
+                      "targetCount":  2,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5897",
+                      "name":  "Swan",
+                      "icon":  "images/tiktok-gifts/5897_swan.webp",
+                      "coins":  699,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5978",
+                      "name":  "Train",
+                      "icon":  "images/tiktok-gifts/5978_train.webp",
+                      "coins":  899,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6090",
+                      "name":  "Fireworks",
+                      "icon":  "images/tiktok-gifts/6090_fireworks.webp",
+                      "coins":  1088,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6820",
+                      "name":  "Whale Diving",
+                      "icon":  "images/tiktok-gifts/6820_whale_diving.webp",
+                      "coins":  2150,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  }
+              ]
+}

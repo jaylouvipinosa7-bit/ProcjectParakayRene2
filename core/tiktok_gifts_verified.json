@@ -343,6 +343,15 @@
     "isCommunity": true
   },
   {
+    "id": "1447275",
+    "name": "Music  Album",
+    "coins": 1,
+    "icon": "images/tiktok-gifts/1447275_music_album.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/21caa7b21e45339b955264912fb7caa4.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
     "id": "133119",
     "name": "Music on Stage",
     "coins": 1,
@@ -724,6 +733,14 @@
     "isCommunity": true
   },
   {
+    "id": "6560",
+    "name": "Tiny Diny",
+    "coins": 10,
+    "icon": "images/tiktok-gifts/6560_tiny_diny.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3851a489dea62b3a9fe99f61de5470ae~tplv-obj.webp",
+    "isCommunity": false
+  },
+  {
     "id": "638002",
     "name": "Treasure's Key",
     "coins": 10,
@@ -877,6 +894,14 @@
     "icon": "images/tiktok-gifts/5780_bouquet_flower.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/b158b8493b51a3f30c59710c39d1dc96~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "14488",
+    "name": "Capybara",
+    "coins": 30,
+    "icon": "images/tiktok-gifts/14488_capybara.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6703facdac34caefbd0617a6321afe9b.png~tplv-obj.webp",
+    "isCommunity": false
   },
   {
     "id": "59316",
@@ -1320,6 +1345,14 @@
     "isCommunity": true
   },
   {
+    "id": "5524",
+    "name": "Tsar",
+    "coins": 100,
+    "icon": "images/tiktok-gifts/5524_tsar.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cb1c3e6263d4b6c08301f8798dcb5a9b.png~tplv-obj.webp",
+    "isCommunity": false
+  },
+  {
     "id": "1354584",
     "name": "Wooden Box",
     "coins": 100,
@@ -1570,6 +1603,14 @@
     "icon": "images/tiktok-gifts/17360_chirpy_kisses.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/c75ec50c453f5b09e4d25c5c69c30ed5.png~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "5794",
+    "name": "Coconut",
+    "coins": 199,
+    "icon": "images/tiktok-gifts/5794_coconut.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb0923dbab5251f4c2e0496b11b55c4f~tplv-obj.webp",
+    "isCommunity": false
   },
   {
     "id": "17101",
@@ -2677,6 +2718,15 @@
     "icon": "images/tiktok-gifts/16748_vinyl_flip.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/5f5ed81e3e714fc1a30ec6efd379cd91.png~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "1447277",
+    "name": "Vinyl Flip",
+    "coins": 349,
+    "icon": "images/tiktok-gifts/1447277_vinyl_flip.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6a9048ebc24e4cbe29dfd11cb60e22f3.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
   },
   {
     "id": "15192",
@@ -4127,6 +4177,15 @@
     "isCommunity": true
   },
   {
+    "id": "1447278",
+    "name": "Grand show",
+    "coins": 999,
+    "icon": "images/tiktok-gifts/1447278_grand_show.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f77726227c37e46cd608ca76ef5b8bbb.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
     "id": "9717",
     "name": "Lucky Airdrop Box",
     "coins": 999,
@@ -4264,12 +4323,28 @@
     "isCommunity": true
   },
   {
+    "id": "6842",
+    "name": "Gerry the Giraffe",
+    "coins": 1000,
+    "icon": "images/tiktok-gifts/6842_gerry_the_giraffe.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e2c021bc1ec2e83448ddc91c6123caf~tplv-obj.webp",
+    "isCommunity": false
+  },
+  {
     "id": "11476",
     "name": "Giraffe",
     "coins": 1000,
     "icon": "images/tiktok-gifts/11476_giraffe.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/4e2c021bc1ec2e83448ddc91c6123caf.png~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "11491",
+    "name": "Giraffe",
+    "coins": 1000,
+    "icon": "images/tiktok-gifts/11491_giraffe.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/4e2c021bc1ec2e83448ddc91c6123caf.png~tplv-obj.webp",
+    "isCommunity": false
   },
   {
     "id": "973086",
@@ -4303,6 +4378,14 @@
     "icon": "images/tiktok-gifts/7123_shiny_air_balloon.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/de1e4ae3f578dc6a8b4918cd3d4c1abd.png~tplv-obj.webp",
     "isCommunity": true
+  },
+  {
+    "id": "12277",
+    "name": "Silver Sports Car",
+    "coins": 1000,
+    "icon": "images/tiktok-gifts/12277_silver_sports_car.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f9d784269da31a71e58b10de6fc34cde.png~tplv-obj.webp",
+    "isCommunity": false
   },
   {
     "id": "15708",
@@ -4958,6 +5041,14 @@
     "isNew": true
   },
   {
+    "id": "8086",
+    "name": "Car Drifting",
+    "coins": 3000,
+    "icon": "images/tiktok-gifts/8086_car_drifting.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d214113a72527ce758ca79c1106f784d~tplv-obj.webp",
+    "isCommunity": false
+  },
+  {
     "id": "6563",
     "name": "Meteor Shower",
     "coins": 3000,
@@ -5607,6 +5698,22 @@
     "isCommunity": true
   },
   {
+    "id": "16194",
+    "name": "Falcon",
+    "coins": 10999,
+    "icon": "images/tiktok-gifts/16194_falcon.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/1d91543decd90e6905aa134ca01a9a43.png~tplv-obj.webp",
+    "isCommunity": true
+  },
+  {
+    "id": "11068",
+    "name": "Falcon",
+    "coins": 10999,
+    "icon": "images/tiktok-gifts/11068_falcon.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d91543decd90e6905aa134ca01a9a43.png~tplv-obj.webp",
+    "isCommunity": true
+  },
+  {
     "id": "169261",
     "name": "Verified Glider",
     "coins": 10999,
@@ -5916,6 +6023,14 @@
     "isNew": true
   },
   {
+    "id": "14440",
+    "name": "White Tiger",
+    "coins": 15999,
+    "icon": "images/tiktok-gifts/14440_white_tiger.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/b7d2532e9e175722cac92a0685d5a5ca.png~tplv-obj.webp",
+    "isCommunity": true
+  },
+  {
     "id": "9466",
     "name": "Amusement Park",
     "coins": 17000,
@@ -5955,6 +6070,15 @@
     "coins": 19000,
     "icon": "images/tiktok-gifts/1322378_super_car.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/cf223238fbf3c17e71125f6cdd0d8319.png~tplv-obj.webp",
+    "isCommunity": true,
+    "isNew": true
+  },
+  {
+    "id": "909798",
+    "name": "Fantastic Fly Love",
+    "coins": 19999,
+    "icon": "images/tiktok-gifts/909798_fantastic_fly_love.webp",
+    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/013ebb335b996fe6ed80ae862a2f3e38.png~tplv-obj.webp",
     "isCommunity": true,
     "isNew": true
   },
@@ -6221,42 +6345,6 @@
     "coins": 44999,
     "icon": "images/tiktok-gifts/9072_tiktok_universe.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp",
-    "isCommunity": true
-  },
-  {
-    "id": "909798",
-    "name": "Fantastic Fly Love",
-    "coins": 19999,
-    "icon": "images/tiktok-gifts/909798_fantastic_fly_love.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/013ebb335b996fe6ed80ae862a2f3e38.png~tplv-obj.webp",
-    "isNew": true,
-    "isCommunity": true
-  },
-  {
-    "id": "1447278",
-    "name": "Grand show",
-    "coins": 999,
-    "icon": "images/tiktok-gifts/1447278_grand_show.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/f77726227c37e46cd608ca76ef5b8bbb.png~tplv-obj.webp",
-    "isNew": true,
-    "isCommunity": true
-  },
-  {
-    "id": "1447277",
-    "name": "Vinyl Flip",
-    "coins": 349,
-    "icon": "images/tiktok-gifts/1447277_vinyl_flip.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6a9048ebc24e4cbe29dfd11cb60e22f3.png~tplv-obj.webp",
-    "isNew": true,
-    "isCommunity": true
-  },
-  {
-    "id": "1447275",
-    "name": "Music  Album",
-    "coins": 1,
-    "icon": "images/tiktok-gifts/1447275_music_album.webp",
-    "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/21caa7b21e45339b955264912fb7caa4.png~tplv-obj.webp",
-    "isNew": true,
     "isCommunity": true
   }
 ]

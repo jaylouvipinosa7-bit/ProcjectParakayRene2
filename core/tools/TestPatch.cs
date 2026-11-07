@@ -1,0 +1,1 @@
+using System; public class TestPatch { public static void Hello() { Console.WriteLine("Hello"); } }

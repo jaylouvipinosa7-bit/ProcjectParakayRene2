@@ -1,0 +1,134 @@
+﻿{
+    "streamer":  "testuser123",
+    "username":  "testuser123",
+    "tier":  "A1",
+    "dateRange":  "19 Oct - 2 Nov",
+    "totalSlots":  12,
+    "obtainedCount":  null,
+    "lastUpdated":  1793600960888,
+    "gifts":  [
+                  {
+                      "id":  "5487",
+                      "name":  "Finger Heart",
+                      "icon":  "images/tiktok-gifts/5487_finger_heart.webp",
+                      "coins":  5,
+                      "targetCount":  1,
+                      "currentCount":  1,
+                      "obtained":  true,
+                      "gifter":  {
+                                     "username":  "ViewerTest",
+                                     "avatar":  "images/default_avatar.svg"
+                                 }
+                  },
+                  {
+                      "id":  "5879",
+                      "name":  "Doughnut",
+                      "icon":  "images/tiktok-gifts/5879_doughnut.webp",
+                      "coins":  30,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6427",
+                      "name":  "Hat and Mustache",
+                      "icon":  "images/tiktok-gifts/6427_hat_and_mustache.webp",
+                      "coins":  99,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5660",
+                      "name":  "Hand Heart",
+                      "icon":  "images/tiktok-gifts/5660_hand_heart.webp",
+                      "coins":  100,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5586",
+                      "name":  "Hearts",
+                      "icon":  "images/tiktok-gifts/5586_hearts.webp",
+                      "coins":  199,
+                      "targetCount":  3,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5881",
+                      "name":  "Money Gun",
+                      "icon":  "images/tiktok-gifts/5881_money_gun.webp",
+                      "coins":  500,
+                      "targetCount":  2,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "11046",
+                      "name":  "Galaxy",
+                      "icon":  "images/tiktok-gifts/11046_galaxy.webp",
+                      "coins":  1000,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6090",
+                      "name":  "Fireworks",
+                      "icon":  "images/tiktok-gifts/6090_fireworks.webp",
+                      "coins":  1088,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6820",
+                      "name":  "Whale Diving",
+                      "icon":  "images/tiktok-gifts/6820_whale_diving.webp",
+                      "coins":  2150,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "5765",
+                      "name":  "Motorcycle",
+                      "icon":  "images/tiktok-gifts/5765_motorcycle.webp",
+                      "coins":  2988,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "6149",
+                      "name":  "Interstellar",
+                      "icon":  "images/tiktok-gifts/6149_interstellar.webp",
+                      "coins":  10000,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  },
+                  {
+                      "id":  "7610",
+                      "name":  "Dragon Flame",
+                      "icon":  "images/tiktok-gifts/7610_dragon_flame.webp",
+                      "coins":  26999,
+                      "targetCount":  1,
+                      "currentCount":  0,
+                      "obtained":  false,
+                      "gifter":  null
+                  }
+              ]
+}
