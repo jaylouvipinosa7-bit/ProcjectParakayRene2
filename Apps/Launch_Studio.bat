@@ -61,7 +61,7 @@ if exist "%~dp0RENEarn_Studio.exe" (
 ) else if exist "%~dp0..\PvZ_Fusion_Studio.exe" (
     start "" "%~dp0..\PvZ_Fusion_Studio.exe"
 ) else (
-    start msedge.exe --app=http://localhost:8080/app.html
+    start msedge.exe --app=http://127.0.0.1:8080/app.html
 )
 
 echo.

@@ -62,13 +62,13 @@ if exist "%~dp0RENEarn_Studio.exe" (
 ) else if exist "%~dp0..\PvZ_Fusion_Studio.exe" (
     start "" "%~dp0..\PvZ_Fusion_Studio.exe"
 ) else if exist "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" (
-    start "" "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --app=http://localhost:8080/app.html
+    start "" "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --app=http://127.0.0.1:8080/app.html
 ) else if exist "C:\Program Files\Microsoft\Edge\Application\msedge.exe" (
-    start "" "C:\Program Files\Microsoft\Edge\Application\msedge.exe" --app=http://localhost:8080/app.html
+    start "" "C:\Program Files\Microsoft\Edge\Application\msedge.exe" --app=http://127.0.0.1:8080/app.html
 ) else if exist "C:\Program Files\Google\Chrome\Application\chrome.exe" (
-    start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --app=http://localhost:8080/app.html
+    start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --app=http://127.0.0.1:8080/app.html
 ) else (
-    start http://localhost:8080/app.html
+    start http://127.0.0.1:8080/app.html
 )
 
 echo.

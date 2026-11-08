@@ -1,0 +1,547 @@
+/* ==========================================================================
+   RENEarn Game-HUD Custom Modal System
+   Dark Neon Game-HUD Aesthetic (Navy/Black, Hot Pink #FF4D8D, Cyan #38BDF8)
+   ========================================================================== */
+
+:root {
+    --modal-bg: #0c101c;
+    --modal-surface: rgba(14, 20, 36, 0.94);
+    --modal-card-border: rgba(255, 255, 255, 0.12);
+    --modal-text-main: #f8fafc;
+    --modal-text-muted: #94a3b8;
+    --modal-text-dim: #64748b;
+    --modal-radius: 18px;
+    --modal-anim-speed: 220ms;
+
+    /* Variants */
+    --modal-accent: #ff4d8d;
+    --modal-accent-glow: rgba(255, 77, 141, 0.45);
+    --modal-danger: #ff4d8d;
+    --modal-danger-gradient: linear-gradient(135deg, #ff4d8d 0%, #ef4444 100%);
+    --modal-danger-glow: rgba(255, 77, 141, 0.4);
+
+    --modal-warning: #f59e0b;
+    --modal-warning-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    --modal-warning-glow: rgba(245, 158, 11, 0.4);
+
+    --modal-info: #38bdf8;
+    --modal-info-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    --modal-info-glow: rgba(56, 189, 248, 0.4);
+
+    --modal-success: #10b981;
+    --modal-success-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    --modal-success-glow: rgba(16, 185, 129, 0.4);
+}
+
+body.ren-modal-open {
+    overflow: hidden !important;
+}
+
+/* Modal Host Backdrop */
+.ren-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999999;
+    background: rgba(5, 7, 12, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: auto;
+    transition: opacity 150ms ease;
+}
+
+.ren-modal-backdrop.ren-modal-visible {
+    opacity: 1;
+}
+
+.ren-modal-backdrop.ren-modal-closing {
+    opacity: 0;
+}
+
+/* Modal Card */
+.ren-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    background: var(--modal-surface);
+    border-radius: var(--modal-radius);
+    padding: 26px 26px 22px 26px;
+    color: var(--modal-text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 28px rgba(0, 0, 0, 0.5);
+    border: 1.5px solid var(--modal-card-border);
+    transform: scale(0.92) translateY(12px);
+    opacity: 0;
+    transition: transform var(--modal-anim-speed) cubic-bezier(0.22, 1, 0.36, 1),
+                opacity var(--modal-anim-speed) cubic-bezier(0.22, 1, 0.36, 1);
+    outline: none;
+    overflow: hidden;
+}
+
+/* Subtle holographic grid on modal surface */
+.ren-modal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ren-modal-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.ren-modal-backdrop.ren-modal-visible .ren-modal-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.ren-modal-backdrop.ren-modal-closing .ren-modal-card {
+    transform: scale(0.94) translateY(8px);
+    opacity: 0;
+}
+
+/* Card Variants Styling */
+.ren-modal-card.ren-variant-danger {
+    border-color: rgba(255, 77, 141, 0.45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px var(--modal-danger-glow);
+}
+.ren-modal-card.ren-variant-warning {
+    border-color: rgba(245, 158, 11, 0.45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px var(--modal-warning-glow);
+}
+.ren-modal-card.ren-variant-info {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px var(--modal-info-glow);
+}
+.ren-modal-card.ren-variant-success {
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px var(--modal-success-glow);
+}
+
+/* Top Icon Badge */
+.ren-modal-icon-badge {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    margin: 0 auto 16px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    position: relative;
+}
+
+.ren-variant-danger .ren-modal-icon-badge {
+    background: rgba(255, 77, 141, 0.16);
+    border: 1.5px solid rgba(255, 77, 141, 0.55);
+    color: #ff4d8d;
+    box-shadow: 0 0 20px rgba(255, 77, 141, 0.35);
+    animation: renIconPulseDanger 2.2s infinite ease-in-out;
+}
+
+.ren-variant-warning .ren-modal-icon-badge {
+    background: rgba(245, 158, 11, 0.16);
+    border: 1.5px solid rgba(245, 158, 11, 0.55);
+    color: #fbbf24;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+    animation: renIconPulseWarning 2.2s infinite ease-in-out;
+}
+
+.ren-variant-info .ren-modal-icon-badge {
+    background: rgba(56, 189, 248, 0.16);
+    border: 1.5px solid rgba(56, 189, 248, 0.55);
+    color: #38bdf8;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+    animation: renIconPulseInfo 2.2s infinite ease-in-out;
+}
+
+.ren-variant-success .ren-modal-icon-badge {
+    background: rgba(16, 185, 129, 0.16);
+    border: 1.5px solid rgba(16, 185, 129, 0.55);
+    color: #34d399;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    animation: renIconPulseSuccess 2.2s infinite ease-in-out;
+}
+
+@keyframes renIconPulseDanger {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(255, 77, 141, 0.25); }
+    50% { transform: scale(1.05); box-shadow: 0 0 26px rgba(255, 77, 141, 0.55); }
+}
+
+@keyframes renIconPulseWarning {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(245, 158, 11, 0.25); }
+    50% { transform: scale(1.05); box-shadow: 0 0 26px rgba(245, 158, 11, 0.55); }
+}
+
+@keyframes renIconPulseInfo {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(56, 189, 248, 0.25); }
+    50% { transform: scale(1.05); box-shadow: 0 0 26px rgba(56, 189, 248, 0.55); }
+}
+
+@keyframes renIconPulseSuccess {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(16, 185, 129, 0.25); }
+    50% { transform: scale(1.05); box-shadow: 0 0 26px rgba(16, 185, 129, 0.55); }
+}
+
+/* Modal Shake (Danger Variant Backdrop Click) */
+.ren-modal-card.ren-shake {
+    animation: renCardShake 340ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes renCardShake {
+    10%, 90% { transform: translate3d(-3px, 0, 0); }
+    20%, 80% { transform: translate3d(5px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+    40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+/* Modal Header & Text */
+.ren-modal-title {
+    font-size: 19px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--modal-text-main);
+    letter-spacing: -0.3px;
+    margin: 0 0 8px 0;
+}
+
+.ren-modal-message {
+    font-size: 13.5px;
+    color: var(--modal-text-muted);
+    line-height: 1.5;
+    text-align: center;
+    margin: 0 0 16px 0;
+}
+
+/* Preview Container (e.g. Deleted Trigger Card) */
+.ren-modal-preview-box {
+    background: rgba(7, 11, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 0 0 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.ren-modal-preview-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.ren-modal-preview-icon img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.ren-modal-preview-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ren-modal-preview-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ren-modal-preview-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.ren-modal-chip {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.ren-modal-chip-cmd {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.ren-modal-chip-reps {
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Prompt Input / Bulk Confirm Input */
+.ren-modal-input-wrap {
+    margin-bottom: 18px;
+}
+
+.ren-modal-input {
+    width: 100%;
+    background: #080d1a;
+    border: 1.5px solid rgba(255, 255, 255, 0.16);
+    color: #f8fafc;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.ren-modal-input:focus {
+    border-color: var(--modal-accent);
+    box-shadow: 0 0 12px var(--modal-accent-glow);
+}
+
+/* Don't ask again checkbox */
+.ren-modal-dont-ask {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--modal-text-dim);
+    margin: 0 0 16px 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ren-modal-dont-ask input {
+    cursor: pointer;
+    accent-color: var(--modal-accent);
+}
+
+/* Action Buttons */
+.ren-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.ren-modal-btn {
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.18s ease;
+    outline: none;
+    user-select: none;
+}
+
+.ren-modal-btn:focus-visible {
+    box-shadow: 0 0 0 2px #0c101c, 0 0 0 4px var(--modal-accent);
+}
+
+.ren-modal-btn:active {
+    transform: scale(0.97);
+}
+
+/* Ghost / Cancel Button */
+.ren-modal-btn-cancel {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.ren-modal-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* Confirm / Primary Button */
+.ren-modal-btn-confirm {
+    border: none;
+    color: #ffffff;
+}
+
+.ren-variant-danger .ren-modal-btn-confirm {
+    background: var(--modal-danger-gradient);
+    box-shadow: 0 4px 16px var(--modal-danger-glow);
+}
+.ren-variant-danger .ren-modal-btn-confirm:hover {
+    box-shadow: 0 6px 22px rgba(255, 77, 141, 0.6);
+    filter: brightness(1.08);
+}
+
+.ren-variant-warning .ren-modal-btn-confirm {
+    background: var(--modal-warning-gradient);
+    color: #000;
+    box-shadow: 0 4px 16px var(--modal-warning-glow);
+}
+.ren-variant-warning .ren-modal-btn-confirm:hover {
+    box-shadow: 0 6px 22px rgba(245, 158, 11, 0.6);
+    filter: brightness(1.08);
+}
+
+.ren-variant-info .ren-modal-btn-confirm {
+    background: var(--modal-info-gradient);
+    box-shadow: 0 4px 16px var(--modal-info-glow);
+}
+.ren-variant-info .ren-modal-btn-confirm:hover {
+    box-shadow: 0 6px 22px rgba(56, 189, 248, 0.6);
+    filter: brightness(1.08);
+}
+
+.ren-variant-success .ren-modal-btn-confirm {
+    background: var(--modal-success-gradient);
+    box-shadow: 0 4px 16px var(--modal-success-glow);
+}
+.ren-variant-success .ren-modal-btn-confirm:hover {
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.6);
+    filter: brightness(1.08);
+}
+
+.ren-modal-btn:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* Deleted Row Slide-out Animation */
+.ren-row-deleted-anim {
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 250ms ease,
+                max-height 250ms ease,
+                padding 250ms ease,
+                margin 250ms ease !important;
+    transform: translateX(-24px) scale(0.98) !important;
+    opacity: 0 !important;
+    max-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    overflow: hidden !important;
+    border-width: 0 !important;
+}
+
+/* Undo Toast Container & Toast Pill */
+.ren-undo-toast-host {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.ren-undo-toast {
+    pointer-events: auto;
+    background: #0d1222;
+    border: 1.5px solid rgba(255, 77, 141, 0.5);
+    border-radius: 14px;
+    padding: 12px 16px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 77, 141, 0.3);
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 290px;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.ren-undo-toast.ren-toast-visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.ren-undo-toast.ren-toast-closing {
+    transform: translateY(12px) scale(0.95);
+    opacity: 0;
+}
+
+.ren-undo-toast-body {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ren-undo-btn {
+    background: rgba(255, 77, 141, 0.18);
+    border: 1px solid rgba(255, 77, 141, 0.5);
+    color: #ff4d8d;
+    padding: 6px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ren-undo-btn:hover {
+    background: #ff4d8d;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 77, 141, 0.5);
+}
+
+.ren-undo-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff4d8d, #ef4444);
+    width: 100%;
+    transform-origin: left;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+    .ren-modal-backdrop,
+    .ren-modal-card,
+    .ren-undo-toast,
+    .ren-row-deleted-anim {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+

@@ -7158,6 +7158,7 @@ if ($sessRole -ne "viewer") {
                     if ($data.colorPositive) { $cur.colorPositive = [string]$data.colorPositive }
                     if ($data.colorZero) { $cur.colorZero = [string]$data.colorZero }
                     if ($data.scale -ne $null) { $cur.scale = [double]$data.scale }
+                    if ($data.iconSize -ne $null) { $cur.iconSize = [int]$data.iconSize }
                     if ($data.bgTheme) { $cur.bgTheme = [string]$data.bgTheme }
                     if ($data.showTrophy -ne $null) { $cur.showTrophy = [bool]$data.showTrophy }
                     
@@ -7175,6 +7176,7 @@ if ($sessRole -ne "viewer") {
                         label = $cur.label
                         style = $cur.style
                         trophyIcon = $cur.trophyIcon
+                        iconSize = $cur.iconSize
                         colorNegative = $cur.colorNegative
                         colorPositive = $cur.colorPositive
                         colorZero = $cur.colorZero
@@ -9694,6 +9696,8 @@ if ($sessRole -ne "viewer") {
                 ".wav"  = "audio/wav"
                 ".ogg"  = "audio/ogg"
                 ".m4a"  = "audio/mp4"
+                ".mp4"  = "video/mp4"
+                ".webm" = "video/webm"
                 ".woff2"= "font/woff2"
                 ".ttf"  = "font/ttf"
                 ".glb"  = "model/gltf-binary"
@@ -9701,20 +9705,24 @@ if ($sessRole -ne "viewer") {
             }
             $contentType = if ($mimeMap.ContainsKey($ext)) { $mimeMap[$ext] } else { "application/octet-stream" }
 
-            $isStaticMedia = ($ext -in @(".webp", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".mp3", ".wav", ".ogg", ".woff2", ".ttf", ".js", ".css", ".glb", ".gltf"))
+            $isStaticMedia = ($ext -in @(".webp", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".mp3", ".wav", ".ogg", ".mp4", ".webm", ".woff2", ".ttf", ".js", ".css", ".glb", ".gltf"))
 
             if (-not $script:staticFileByteCache) {
                 $script:staticFileByteCache = [System.Collections.Generic.Dictionary[string, byte[]]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                $script:staticFileTimeCache = [System.Collections.Generic.Dictionary[string, long]]::new([System.StringComparer]::OrdinalIgnoreCase)
             }
 
+            $currentWriteTime = try { [System.IO.File]::GetLastWriteTimeUtc($filePath).Ticks } catch { 0 }
             $bytes = $null
-            if ($isStaticMedia -and $script:staticFileByteCache.ContainsKey($filePath)) {
+
+            if ($isStaticMedia -and $script:staticFileByteCache.ContainsKey($filePath) -and ($script:staticFileTimeCache.ContainsKey($filePath) -and $script:staticFileTimeCache[$filePath] -eq $currentWriteTime)) {
                 $bytes = $script:staticFileByteCache[$filePath]
             } else {
                 try {
                     $bytes = [System.IO.File]::ReadAllBytes($filePath)
                     if ($isStaticMedia -and $bytes.Length -lt 10485760) {
                         $script:staticFileByteCache[$filePath] = $bytes
+                        $script:staticFileTimeCache[$filePath] = $currentWriteTime
                     }
                 } catch {
                     $bytes = [System.IO.File]::ReadAllBytes($filePath)
@@ -9730,8 +9738,13 @@ if ($sessRole -ne "viewer") {
             $response.ContentLength64 = $bytes.Length
 
             try {
-                if ($isStaticMedia) {
-                    # Cache images, audio, js and css for instant render
+                if ($ext -in @(".js", ".css", ".html", ".htm")) {
+                    # Never cache application code and markup to prevent stale UI / freezes
+                    $response.Headers.Add("Cache-Control", "no-cache, must-revalidate")
+                    $response.Headers.Add("Pragma", "no-cache")
+                    $response.Headers.Add("Expires", "0")
+                } elseif ($isStaticMedia) {
+                    # Cache heavy media (images, audio, fonts) for fast render
                     $response.Headers.Add("Cache-Control", "public, max-age=86400")
                 } else {
                     $response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate")

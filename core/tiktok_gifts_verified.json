@@ -738,7 +738,7 @@
     "coins": 10,
     "icon": "images/tiktok-gifts/6560_tiny_diny.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3851a489dea62b3a9fe99f61de5470ae~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "638002",
@@ -901,7 +901,7 @@
     "coins": 30,
     "icon": "images/tiktok-gifts/14488_capybara.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6703facdac34caefbd0617a6321afe9b.png~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "59316",
@@ -1350,7 +1350,7 @@
     "coins": 100,
     "icon": "images/tiktok-gifts/5524_tsar.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cb1c3e6263d4b6c08301f8798dcb5a9b.png~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "1354584",
@@ -1610,7 +1610,7 @@
     "coins": 199,
     "icon": "images/tiktok-gifts/5794_coconut.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb0923dbab5251f4c2e0496b11b55c4f~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "17101",
@@ -4328,7 +4328,7 @@
     "coins": 1000,
     "icon": "images/tiktok-gifts/6842_gerry_the_giraffe.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e2c021bc1ec2e83448ddc91c6123caf~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "11476",
@@ -4344,7 +4344,7 @@
     "coins": 1000,
     "icon": "images/tiktok-gifts/11491_giraffe.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/4e2c021bc1ec2e83448ddc91c6123caf.png~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "973086",
@@ -4385,7 +4385,7 @@
     "coins": 1000,
     "icon": "images/tiktok-gifts/12277_silver_sports_car.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f9d784269da31a71e58b10de6fc34cde.png~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "15708",
@@ -5046,7 +5046,7 @@
     "coins": 3000,
     "icon": "images/tiktok-gifts/8086_car_drifting.webp",
     "cdnIcon": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d214113a72527ce758ca79c1106f784d~tplv-obj.webp",
-    "isCommunity": false
+    "isCommunity": true
   },
   {
     "id": "6563",

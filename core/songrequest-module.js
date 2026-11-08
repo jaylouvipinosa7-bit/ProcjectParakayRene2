@@ -196,9 +196,26 @@
     // 🎧 SPOTIFY OAUTH & API INTEGRATION
     // =========================================================================
 
-    // Generate random code verifier for PKCE
-    function generateRandomString(length) {
+    // Dynamic & Centralized Redirect URI resolution:
+    // Spotify strictly forbids "localhost" in Redirect URIs, requiring "127.0.0.1" for local loopback or real https origin online
+    function getSpotifyRedirectUri() {
+        let origin = window.location.origin;
+        if (window.location.hostname === 'localhost') {
+            const port = window.location.port ? `:${window.location.port}` : '';
+            origin = `${window.location.protocol}//127.0.0.1${port}`;
+        }
+        const pathname = window.location.pathname && window.location.pathname !== '/' ? window.location.pathname : '/app.html';
+        return `${origin}${pathname}`;
+    }
+
+    // Generate random string for PKCE verifier & CSRF state
+    function generateRandomString(length = 64) {
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+        if (window.crypto && window.crypto.getRandomValues) {
+            const values = new Uint8Array(length);
+            window.crypto.getRandomValues(values);
+            return Array.from(values).map(v => possible[v % possible.length]).join('');
+        }
         let text = '';
         for (let i = 0; i < length; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -206,34 +223,185 @@
         return text;
     }
 
+    // SHA-256 base64url PKCE Code Challenge generator
     async function generateCodeChallenge(codeVerifier) {
         const encoder = new TextEncoder();
         const data = encoder.encode(codeVerifier);
         const digest = await window.crypto.subtle.digest('SHA-256', data);
-        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
+        const bytes = new Uint8Array(digest);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary)
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
             .replace(/=+$/, '');
     }
 
-    // Show in-app modal instead of full page redirect or prompt
+    // User-Friendly Spotify Connection Notice Modal
+    function showSpotifyErrorModal(errType, customMsg) {
+        const redirectUri = getSpotifyRedirectUri();
+        let title = 'Spotify Connection Notice';
+        let message = customMsg || 'An error occurred with Spotify authentication.';
+        let fix = '';
+
+        if (errType === 'INVALID_CLIENT' || errType === 'invalid_client' || errType === 'redirect_uri_mismatch') {
+            title = '⚠️ Redirect URI Mismatch / Invalid Client';
+            message = 'Spotify rejected authorization because the Redirect URI does not match what you entered in the Spotify Developer Dashboard.';
+            fix = `1. Go to <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: #38bdf8; text-decoration: underline;">developer.spotify.com/dashboard</a>.<br>2. In your App Settings under <strong>Redirect URIs</strong>, paste:<br><div style="display:flex; align-items:center; gap:6px; margin:6px 0;"><code style="color:#4ade80; background:#000; padding:4px 8px; border-radius:6px; font-size:11px; flex:1; word-break:break-all;">${redirectUri}</code><button type="button" onclick="window.copySpotifyRedirectUri()" style="background:#1e293b; color:#fff; border:1px solid #475569; padding:3px 8px; border-radius:5px; font-size:10.5px; cursor:pointer;">Copy</button></div>3. Click <strong>Save</strong> at the bottom of the Spotify Settings page.`;
+        } else if (errType === 'access_denied') {
+            title = '🚫 Spotify Authorization Canceled';
+            message = 'You canceled the Spotify permission prompt or denied permission access.';
+            fix = 'Click <strong>"Sign In with Spotify"</strong> again and click <strong>"Agree"</strong> to link your queue.';
+        } else if (errType === 'USER_NOT_REGISTERED' || errType === '403_USER') {
+            title = '🔒 User Not Registered in Dashboard (403)';
+            message = 'Your Spotify Developer App is in Development Mode and your login account is not on the user allowlist.';
+            fix = `1. Open <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: #38bdf8; text-decoration: underline;">developer.spotify.com/dashboard</a> and click your app.<br>2. Navigate to the <strong>Users and Access</strong> tab.<br>3. Add your Spotify personal login email address and click <strong>Save</strong>.`;
+        } else if (errType === 'PREMIUM_REQUIRED' || errType === '403_PLAYER') {
+            title = '⭐ Spotify Premium Required';
+            message = 'Controlling live playback queue on real desktop/mobile devices via Spotify Web API requires an active Spotify Premium account.';
+            fix = 'Ensure your account has Spotify Premium, or click <strong>"Keep Using Built-in Player"</strong> which plays live music previews and animated vinyl discs with zero developer setup.';
+        } else if (errType === 'NO_ACTIVE_DEVICE' || errType === '404_PLAYER') {
+            title = '📱 No Active Spotify Device Found';
+            message = 'Spotify could not find an active player device to queue the song to.';
+            fix = 'Please open the Spotify desktop or mobile app on your device, start playing any song for 2 seconds, and keep Spotify open.';
+        }
+
+        const existing = document.getElementById('spotifyNoticeModal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'spotifyNoticeModal';
+        modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999999; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);';
+        modal.innerHTML = `
+            <div style="background: #0f172a; border: 1.5px solid #ef4444; border-radius: 18px; width: 100%; max-width: 500px; padding: 22px 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.9); font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #f87171;">${title}</div>
+                    <button type="button" onclick="document.getElementById('spotifyNoticeModal').remove()" style="background: transparent; border: none; color: #94a3b8; font-size: 22px; cursor: pointer; line-height: 1;">&times;</button>
+                </div>
+                <p style="font-size: 12.5px; color: #e2e8f0; margin-bottom: 14px; line-height: 1.5;">${message}</p>
+                ${fix ? `
+                    <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 14px; font-size: 11.5px; color: #cbd5e1; line-height: 1.6; margin-bottom: 16px;">
+                        <strong style="color: #38bdf8; display: block; margin-bottom: 4px;">🔧 How to Fix:</strong>
+                        ${fix}
+                    </div>
+                ` : ''}
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" onclick="document.getElementById('spotifyNoticeModal').remove()" style="background: #1e293b; color: #fff; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Close</button>
+                    <button type="button" onclick="document.getElementById('spotifyNoticeModal').remove(); window.loginWithSpotify();" style="background: #1db954; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Open Setup Again</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    // Token Auto-Refresh timer & scheduling
+    let tokenRefreshTimer = null;
+    function scheduleTokenRefresh(expiresInSeconds) {
+        if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
+        // Refresh 60 seconds before expiration, minimum 10 seconds
+        const delayMs = Math.max(10000, (expiresInSeconds - 60) * 1000);
+        tokenRefreshTimer = setTimeout(async () => {
+            console.log('[SongRequest] Auto-refreshing Spotify access token before expiration...');
+            await refreshSpotifyToken();
+        }, delayMs);
+    }
+
+    // Refresh access token via PKCE grant_type: 'refresh_token'
+    async function refreshSpotifyToken() {
+        const refreshToken = localStorage.getItem('spotify_refresh_token') || songState.spotifyRefreshToken;
+        const clientId = localStorage.getItem('spotify_client_id') || songState.spotifyClientId;
+        if (!refreshToken || !clientId) return false;
+
+        try {
+            const res = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    client_id: clientId,
+                    grant_type: 'refresh_token',
+                    refresh_token: refreshToken
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                songState.spotifyAccessToken = data.access_token;
+                localStorage.setItem('spotify_access_token', data.access_token);
+                if (data.refresh_token) {
+                    songState.spotifyRefreshToken = data.refresh_token;
+                    localStorage.setItem('spotify_refresh_token', data.refresh_token);
+                }
+                const expiresAt = Date.now() + ((data.expires_in || 3600) * 1000);
+                songState.spotifyExpiresAt = expiresAt;
+                localStorage.setItem('spotify_expires_at', expiresAt.toString());
+                scheduleTokenRefresh(data.expires_in || 3600);
+                return true;
+            } else {
+                console.warn('[SongRequest] Token refresh returned non-200 status');
+                return false;
+            }
+        } catch (e) {
+            console.warn('[SongRequest] Network error during token refresh');
+            return false;
+        }
+    }
+
+    // Centralized Spotify API fetcher with proactive expiry check & automatic 401 retry
+    async function fetchSpotifyWithRetry(url, options = {}) {
+        if (!songState.spotifyAccessToken) {
+            throw new Error('No Spotify access token available');
+        }
+
+        // Proactively refresh if expiring within 30 seconds
+        const expiresAt = Number(localStorage.getItem('spotify_expires_at') || songState.spotifyExpiresAt || 0);
+        if (expiresAt && (Date.now() + 30000 > expiresAt)) {
+            await refreshSpotifyToken();
+        }
+
+        const headers = Object.assign({}, options.headers || {}, {
+            'Authorization': 'Bearer ' + songState.spotifyAccessToken
+        });
+        let res = await fetch(url, Object.assign({}, options, { headers }));
+
+        // Automatic retry once on 401 Unauthorized
+        if (res.status === 401) {
+            console.log('[SongRequest] Received 401 from Spotify, attempting token refresh & retry...');
+            const refreshed = await refreshSpotifyToken();
+            if (refreshed) {
+                headers['Authorization'] = 'Bearer ' + songState.spotifyAccessToken;
+                res = await fetch(url, Object.assign({}, options, { headers }));
+            } else {
+                disconnectSpotify();
+            }
+        }
+        return res;
+    }
+
+    // Show in-app Playback Setup modal with Step-by-Step Guide, Realtime Redirect URI & Client ID Validation
     function showSpotifyModal() {
         const existing = document.getElementById('spotifyConnectModal');
         if (existing) existing.remove();
+
+        const redirectUri = getSpotifyRedirectUri();
+        const isLocalhost = window.location.hostname === 'localhost';
+        const currentClientId = localStorage.getItem('spotify_client_id') || songState.spotifyClientId || '';
+        const isClientValid = /^[0-9a-zA-Z]{32}$/.test(currentClientId);
 
         const modal = document.createElement('div');
         modal.id = 'spotifyConnectModal';
         modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);';
 
         modal.innerHTML = `
-            <div style="background: #0f172a; border: 1.5px solid rgba(29, 185, 84, 0.4); border-radius: 20px; width: 100%; max-width: 520px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
-                <div style="background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(15, 23, 42, 0.95)); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: #0f172a; border: 1.5px solid rgba(29, 185, 84, 0.45); border-radius: 20px; width: 100%; max-width: 560px; max-height: 94vh; box-shadow: 0 25px 60px rgba(0,0,0,0.85); overflow-y: auto; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+                <div style="background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(15, 23, 42, 0.95)); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px);">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 40px; height: 40px; border-radius: 12px; background: #1db954; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(29,185,84,0.4); flex-shrink: 0;">
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: #1db954; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(29,185,84,0.4); flex-shrink: 0;">
                             <svg viewBox="0 0 24 24" width="24" height="24" fill="#ffffff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.217.354-.68.468-1.034.252-2.83-1.728-6.393-2.12-10.592-1.16-.406.094-.816-.16-.91-.565-.093-.406.16-.816.566-.91 4.593-1.05 8.528-.606 11.718 1.348.354.217.468.68.252 1.035zm1.465-3.26c-.273.444-.858.588-1.302.315-3.24-1.99-8.178-2.566-12.01-1.402-.497.15-1.026-.135-1.177-.633-.15-.497.136-1.025.633-1.176 4.383-1.33 9.818-.69 13.54 1.602.445.272.589.857.316 1.294zm.126-3.414C15.207 8.35 8.828 8.14 5.14 9.26c-.6.183-1.238-.16-1.42-.76-.184-.6.16-1.238.76-1.42 4.238-1.286 11.28-1.042 15.753 1.614.54.32.716 1.02.395 1.56-.32.54-1.02.716-1.56.396l.02.002z"/></svg>
                         </div>
                         <div>
-                            <h3 style="margin: 0; color: #ffffff; font-size: 16.5px; font-weight: 800;">Song Request Playback Setup</h3>
+                            <h3 style="margin: 0; color: #ffffff; font-size: 17px; font-weight: 800;">Song Request Playback Setup</h3>
                             <div style="color: #94a3b8; font-size: 12px; margin-top: 2px;">Choose your music streaming engine</div>
                         </div>
                     </div>
@@ -241,6 +409,23 @@
                 </div>
 
                 <div style="padding: 22px 24px; display: flex; flex-direction: column; gap: 16px;">
+                    
+                    ${isLocalhost ? `
+                        <!-- LOCALHOST WARNING BANNER (SPOTIFY BLOCKS LOCALHOST) -->
+                        <div style="background: rgba(245, 158, 11, 0.14); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 20px;">⚠️</span>
+                                <div style="font-size: 11.5px; color: #fde68a; line-height: 1.4;">
+                                    <strong>Spotify rejects "localhost":</strong> Spotify requires the loopback IP <code style="color: #fff; background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 4px;">127.0.0.1</code> for authorization.
+                                </div>
+                            </div>
+                            <button type="button" onclick="window.reopenAtLoopback()"
+                                style="background: #f59e0b; color: #000; border: none; font-weight: 800; font-size: 11.5px; padding: 7px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);">
+                                Switch to 127.0.0.1 ↗
+                            </button>
+                        </div>
+                    ` : ''}
+
                     <!-- OPTION 1: RECOMMENDED BUILT-IN PLAYER -->
                     <div style="background: rgba(16, 185, 129, 0.08); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 16px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
@@ -259,20 +444,56 @@
                     </div>
 
                     <!-- OPTION 2: SPOTIFY DEVELOPER ACCOUNT -->
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 16px;">
-                        <div style="font-size: 13px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <span>🎧</span><span>Connect Spotify Developer App</span>
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 18px;">
+                        <div style="font-size: 13.5px; font-weight: 800; color: #f8fafc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>🎧</span><span>Connect Spotify Developer App (Real Queue Control)</span>
                         </div>
-                        <p style="font-size: 11.5px; color: #94a3b8; margin: 0 0 10px 0; line-height: 1.45;">
-                            To route songs into your real desktop Spotify app queue, enter your registered Spotify Developer App Client ID (from <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: #38bdf8;">developer.spotify.com</a> with redirect URI <code style="color: #4ade80;">http://localhost:8080/app.html</code>):
-                        </p>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" id="spotifyCustomClientId" placeholder="Paste 32-character Client ID"
-                                style="flex: 1; background: #0b1120; border: 1px solid rgba(255,255,255,0.15); color: #f8fafc; padding: 8px 12px; border-radius: 8px; font-size: 12px; outline: none; font-family: monospace;">
-                            <button type="button" onclick="window.submitSpotifyAuth()"
-                                style="background: #1db954; color: #fff; border: none; font-weight: 800; font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; white-space: nowrap;">
+
+                        <!-- 4 STEPS SETUP GUIDE -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: #cbd5e1; margin-bottom: 14px; line-height: 1.5;">
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span style="background: #1db954; color: #000; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10.5px; flex-shrink: 0; margin-top: 1px;">1</span>
+                                <div>Open <a href="https://developer.spotify.com/dashboard" target="_blank" style="color: #38bdf8; font-weight: 700; text-decoration: underline;">developer.spotify.com/dashboard</a> and click <strong>Create app</strong>.</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span style="background: #1db954; color: #000; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10.5px; flex-shrink: 0; margin-top: 1px;">2</span>
+                                <div style="flex: 1;">
+                                    Under <strong>Redirect URIs</strong>, paste this exact URI and select <strong>Web API</strong>:
+                                    <div style="display: flex; align-items: center; gap: 6px; background: #070c18; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px 10px; margin-top: 5px;">
+                                        <code id="spotifyRedirectUriDisplay" style="flex: 1; color: #4ade80; font-family: monospace; font-size: 11px; word-break: break-all;">${redirectUri}</code>
+                                        <button type="button" onclick="window.copySpotifyRedirectUri()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">Copy</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span style="background: #1db954; color: #000; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10.5px; flex-shrink: 0; margin-top: 1px;">3</span>
+                                <div>Copy the <strong>Client ID</strong> from Basic Information and paste it below:</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span style="background: #1db954; color: #000; font-weight: 900; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10.5px; flex-shrink: 0; margin-top: 1px;">4</span>
+                                <div>Click <strong>Authorize</strong> to connect your account.</div>
+                            </div>
+                        </div>
+
+                        <!-- Client ID Input & Authorize Button -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                            <input type="text" id="spotifyCustomClientId" placeholder="Paste 32-character Client ID" value="${currentClientId}" maxlength="32"
+                                oninput="window.validateSpotifyClientIdInput(this.value)"
+                                style="flex: 1; background: #0b1120; border: 1px solid ${isClientValid ? 'rgba(34, 197, 94, 0.6)' : 'rgba(255,255,255,0.2)'}; color: #f8fafc; padding: 9px 12px; border-radius: 8px; font-size: 12px; outline: none; font-family: monospace;">
+                            <button type="button" id="btnSpotifyAuthorize" onclick="window.submitSpotifyAuth()" ${isClientValid ? '' : 'disabled'}
+                                style="background: #1db954; color: #fff; border: none; font-weight: 800; font-size: 12.5px; padding: 9px 18px; border-radius: 8px; cursor: ${isClientValid ? 'pointer' : 'not-allowed'}; opacity: ${isClientValid ? '1' : '0.5'}; white-space: nowrap; transition: all 0.2s;">
                                 Authorize ↗
                             </button>
+                        </div>
+                        <div id="spotifyClientIdHint" style="font-size: 11px; color: ${isClientValid ? '#4ade80' : '#94a3b8'}; margin-bottom: 12px;">
+                            ${isClientValid ? '✓ Valid 32-character Client ID format.' : 'Enter your 32-character Client ID (letters & numbers only).'}
+                        </div>
+
+                        <!-- IMPORTANT NOTES ON DEV MODE & PREMIUM -->
+                        <div style="background: rgba(30, 41, 59, 0.7); border-left: 3px solid #38bdf8; border-radius: 6px; padding: 8px 12px; font-size: 11px; color: #94a3b8; line-height: 1.45;">
+                            <div style="color: #38bdf8; font-weight: 700; margin-bottom: 2px;">📌 Important Developer & Playback Notes:</div>
+                            <div>• <strong>Users & Access:</strong> In Spotify Dashboard, add your Spotify login email under <em>Users and Access</em> (required for Apps in Development Mode).</div>
+                            <div>• <strong>Spotify Premium:</strong> Controlling real device playback queue via Spotify Web API requires a <em>Spotify Premium</em> account.</div>
                         </div>
                     </div>
                 </div>
@@ -282,7 +503,7 @@
         document.body.appendChild(modal);
     }
 
-    // Connect using developer Client ID via popup window (never replaces main app)
+    // Connect using developer Client ID via Authorization Code with PKCE only
     async function startSpotifyOAuth(clientId) {
         if (!clientId || !clientId.trim()) {
             if (typeof showToast === 'function') showToast('⚠️ Please enter a valid Spotify Developer Client ID', 'warning');
@@ -290,12 +511,20 @@
         }
 
         const cleanId = clientId.trim();
+        if (!/^[0-9a-zA-Z]{32}$/.test(cleanId)) {
+            showSpotifyErrorModal('INVALID_CLIENT', 'The Client ID must be exactly 32 alphanumeric characters.');
+            return;
+        }
+
         songState.spotifyClientId = cleanId;
         localStorage.setItem('spotify_client_id', cleanId);
 
-        const redirectUri = window.location.origin + window.location.pathname;
+        const redirectUri = getSpotifyRedirectUri();
         const codeVerifier = generateRandomString(64);
+        const state = generateRandomString(16);
+
         localStorage.setItem('spotify_code_verifier', codeVerifier);
+        localStorage.setItem('spotify_auth_state', state);
 
         const codeChallenge = await generateCodeChallenge(codeVerifier);
         const scope = 'user-read-playback-state user-modify-playback-state user-read-currently-playing';
@@ -305,6 +534,7 @@
             client_id: cleanId,
             scope: scope,
             redirect_uri: redirectUri,
+            state: state,
             code_challenge_method: 'S256',
             code_challenge: codeChallenge
         });
@@ -313,31 +543,49 @@
         const modal = document.getElementById('spotifyConnectModal');
         if (modal) modal.remove();
 
-        // Open in popup window so the main app is NEVER closed or replaced
         const authUrl = 'https://accounts.spotify.com/authorize?' + args.toString();
-        window.open(authUrl, 'spotify_oauth_window', 'width=540,height=720,menubar=no,toolbar=no,status=no');
+        const popup = window.open(authUrl, 'spotify_oauth_window', 'width=540,height=720,menubar=no,toolbar=no,status=no');
+        if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+            // Popup blocked: redirect current tab directly
+            window.location.href = authUrl;
+        }
     }
 
     // Handle Spotify OAuth Callback on page load
     async function handleSpotifyCallback() {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        const state = urlParams.get('state');
         const error = urlParams.get('error');
 
         if (error) {
-            console.warn('[SongRequest] Spotify auth error:', error);
+            console.warn('[SongRequest] Spotify auth callback returned error:', error);
+            showSpotifyErrorModal(error);
             window.history.replaceState({}, document.title, window.location.pathname);
-            if (window.opener) window.close();
+            if (window.opener && window.opener !== window) window.close();
             return;
         }
 
         if (!code) return;
 
+        // Verify state against stored CSRF state
+        const storedState = localStorage.getItem('spotify_auth_state');
+        if (state && storedState && state !== storedState) {
+            console.warn('[SongRequest] State mismatch in Spotify OAuth callback');
+            if (typeof showToast === 'function') showToast('⚠️ Spotify state mismatch (CSRF protection). Please authorize again.', 'error');
+            window.history.replaceState({}, document.title, window.location.pathname);
+            if (window.opener && window.opener !== window) window.close();
+            return;
+        }
+
         const codeVerifier = localStorage.getItem('spotify_code_verifier');
         const clientId = localStorage.getItem('spotify_client_id') || songState.spotifyClientId;
-        const redirectUri = window.location.origin + window.location.pathname;
+        const redirectUri = getSpotifyRedirectUri();
 
-        if (!codeVerifier || !clientId) return;
+        if (!codeVerifier || !clientId) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
 
         try {
             const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -355,59 +603,81 @@
             if (res.ok) {
                 const data = await res.json();
                 songState.spotifyAccessToken = data.access_token;
-                songState.spotifyRefreshToken = data.refresh_token;
+                if (data.refresh_token) {
+                    songState.spotifyRefreshToken = data.refresh_token;
+                    localStorage.setItem('spotify_refresh_token', data.refresh_token);
+                }
                 songState.spotifyConnected = true;
                 localStorage.setItem('spotify_access_token', data.access_token);
-                if (data.refresh_token) localStorage.setItem('spotify_refresh_token', data.refresh_token);
+                const expiresAt = Date.now() + ((data.expires_in || 3600) * 1000);
+                songState.spotifyExpiresAt = expiresAt;
+                localStorage.setItem('spotify_expires_at', expiresAt.toString());
+                scheduleTokenRefresh(data.expires_in || 3600);
 
-                // Clean URL query params
+                // Clean URL query params immediately
                 window.history.replaceState({}, document.title, window.location.pathname);
-                await checkSpotifyProfile();
+                
+                await checkSpotifyProfile(true);
                 await saveSongState();
                 renderSongRequestUI();
-                if (typeof showToast === 'function') showToast('✅ Connected to Spotify successfully!', 'success');
 
-                // If this is a popup, notify opener and close
+                // If running in popup window, broadcast success to opener and close
                 if (window.opener && window.opener !== window) {
                     try {
-                        window.opener.location.reload();
+                        window.opener.postMessage({ type: 'spotify_auth_success', token: data.access_token }, '*');
                         window.close();
-                    } catch (e) {}
+                    } catch (e) {
+                        try { window.close(); } catch (_) {}
+                    }
                 }
             } else {
-                localStorage.removeItem('spotify_client_id');
+                const errData = await res.json().catch(() => ({}));
+                console.warn('[SongRequest] Token exchange error response:', res.status, errData);
+                showSpotifyErrorModal(errData.error || 'INVALID_CLIENT', errData.error_description);
                 window.history.replaceState({}, document.title, window.location.pathname);
+                if (window.opener && window.opener !== window) window.close();
             }
         } catch (e) {
-            console.error('[SongRequest] Error exchanging code for Spotify token:', e);
-            localStorage.removeItem('spotify_client_id');
+            console.error('[SongRequest] Network error exchanging code for Spotify token:', e);
             window.history.replaceState({}, document.title, window.location.pathname);
+            if (window.opener && window.opener !== window) window.close();
         }
     }
 
     // Check profile with Spotify API
-    async function checkSpotifyProfile() {
-        if (!songState.spotifyAccessToken) return;
+    async function checkSpotifyProfile(showToastFeedback = false) {
+        if (!songState.spotifyAccessToken) return false;
         try {
-            const res = await fetch('https://api.spotify.com/v1/me', {
-                headers: { 'Authorization': 'Bearer ' + songState.spotifyAccessToken }
-            });
+            const res = await fetchSpotifyWithRetry('https://api.spotify.com/v1/me');
             if (res.ok) {
                 const user = await res.json();
                 songState.spotifyUser = {
                     name: user.display_name || user.id,
                     email: user.email,
-                    product: user.product, // premium or free
+                    product: user.product, // 'premium' or 'free'
+                    country: user.country,
                     avatar: (user.images && user.images.length > 0) ? user.images[0].url : ''
                 };
                 songState.spotifyConnected = true;
+                localStorage.setItem('spotify_user_name', songState.spotifyUser.name);
                 renderSongRequestUI();
+                if (showToastFeedback && typeof showToast === 'function') {
+                    const isPremium = (user.product || '').toLowerCase() === 'premium';
+                    showToast(`✅ Connected to Spotify as ${songState.spotifyUser.name} (${isPremium ? 'Spotify Premium' : 'Free Plan - Premium needed for queue'})`, 'success');
+                }
+                return true;
+            } else if (res.status === 403) {
+                showSpotifyErrorModal('USER_NOT_REGISTERED');
+                disconnectSpotify();
+                return false;
             } else if (res.status === 401) {
                 disconnectSpotify();
+                return false;
             }
         } catch (e) {
-            console.warn('[SongRequest] Could not fetch Spotify profile:', e);
+            console.warn('[SongRequest] Could not fetch Spotify profile');
         }
+        return false;
     }
 
     function simulateSpotifyLogin(username = 'StreamerHost') {
@@ -424,13 +694,22 @@
     }
 
     function disconnectSpotify() {
+        if (tokenRefreshTimer) {
+            clearTimeout(tokenRefreshTimer);
+            tokenRefreshTimer = null;
+        }
         songState.spotifyConnected = false;
         songState.spotifyUser = null;
         songState.spotifyAccessToken = '';
         songState.spotifyRefreshToken = '';
+        songState.spotifyExpiresAt = 0;
         localStorage.removeItem('spotify_access_token');
         localStorage.removeItem('spotify_refresh_token');
+        localStorage.removeItem('spotify_expires_at');
+        localStorage.removeItem('spotify_auth_state');
+        localStorage.removeItem('spotify_code_verifier');
         localStorage.removeItem('spotify_connected_demo');
+        localStorage.removeItem('spotify_user_name');
         saveSongState();
         renderSongRequestUI();
         if (typeof showToast === 'function') showToast('🔌 Disconnected from Spotify', 'info');
@@ -519,15 +798,34 @@
         };
     }
 
-    // Add track to Spotify real playback queue
+    // Add track to Spotify real playback queue with device detection & error handling
     async function queueOnSpotifyPlayer(uri) {
-        if (!songState.spotifyAccessToken || !uri) return;
+        if (!songState.spotifyAccessToken || !uri) return false;
         try {
-            await fetch(`https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(uri)}`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + songState.spotifyAccessToken }
+            const res = await fetchSpotifyWithRetry(`https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(uri)}`, {
+                method: 'POST'
             });
-        } catch (e) {}
+            if (res.ok || res.status === 204) {
+                if (typeof showToast === 'function') {
+                    showToast('🎧 Added song directly to your Spotify queue!', 'success');
+                }
+                return true;
+            } else if (res.status === 404) {
+                console.warn('[SongRequest] No active Spotify playback device found (404)');
+                showSpotifyErrorModal('NO_ACTIVE_DEVICE');
+                return false;
+            } else if (res.status === 403) {
+                console.warn('[SongRequest] Spotify queue returned 403 (Premium Required)');
+                showSpotifyErrorModal('PREMIUM_REQUIRED');
+                return false;
+            } else {
+                console.warn('[SongRequest] Spotify queue request returned status:', res.status);
+                return false;
+            }
+        } catch (e) {
+            console.warn('[SongRequest] Error queuing track on Spotify:', e);
+            return false;
+        }
     }
 
     // =========================================================================
@@ -1295,8 +1593,16 @@
     }
 
     // Clear whole queue
-    function clearWholeQueue() {
-        if (!confirm('Clear all upcoming songs from queue?')) return;
+    async function clearWholeQueue() {
+        const ok = typeof showConfirm === 'function'
+            ? await showConfirm({
+                variant: 'danger',
+                title: 'Clear Song Queue?',
+                message: 'Clear all upcoming songs from queue? This will remove all pending viewer requests.',
+                confirmText: 'Clear Queue'
+            })
+            : confirm('Clear all upcoming songs from queue?');
+        if (!ok) return;
         songState.queue = [];
         saveSongState();
         renderSongRequestUI();
@@ -1354,7 +1660,7 @@
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <h2 style="font-size: 22px; font-weight: 800; color: #f8fafc; letter-spacing: -0.5px;">Live Stream Song Request</h2>
                                 <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px; ${isConnected ? 'background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981;' : 'background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444;'}">
-                                    ${isConnected ? '● SPOTIFY CONNECTED' : '○ DISCONNECTED'}
+                                    ${isConnected ? `● CONNECTED: ${(user && user.name) ? user.name : (localStorage.getItem('spotify_user_name') || 'Spotify User')}` : '○ DISCONNECTED'}
                                 </span>
                             </div>
                             <p style="font-size: 13px; color: #94a3b8; margin-top: 3px;">
@@ -1364,15 +1670,20 @@
                     </div>
 
                     <!-- CONNECTION ACTION BUTTONS -->
-                    <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
                         ${isConnected ? `
                             <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
                                 ${user && user.avatar ? `<img src="${user.avatar}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">` : '<span style="font-size: 18px;">👤</span>'}
                                 <div style="text-align: left;">
-                                    <div style="font-size: 12px; font-weight: 800; color: #f8fafc;">${user ? user.name : 'Spotify Active'}</div>
+                                    <div style="font-size: 12px; font-weight: 800; color: #f8fafc;">${user ? user.name : (localStorage.getItem('spotify_user_name') || 'Spotify Active')}</div>
                                     <div style="font-size: 10px; color: #34d399; font-weight: 700;">${user ? (user.product || 'Premium') : 'Connected'}</div>
                                 </div>
                             </div>
+                            <button type="button" onclick="window.testSpotifyConnection()"
+                                title="Test connection to Spotify API"
+                                style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8; padding: 10px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;">
+                                <span>🔍</span><span>Test Connection</span>
+                            </button>
                             <button type="button" onclick="window.disconnectSpotifyAccount()"
                                 style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 10px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
                                 🔌 Disconnect
@@ -1779,6 +2090,104 @@
             if (typeof showToast === 'function') showToast('⚠️ Please paste your Spotify Developer App Client ID', 'warning');
         }
     };
+
+    window.validateSpotifyClientIdInput = function(val) {
+        const input = document.getElementById('spotifyCustomClientId');
+        const btn = document.getElementById('btnSpotifyAuthorize');
+        const hint = document.getElementById('spotifyClientIdHint');
+        const clean = (val || '').trim();
+        const isValid = /^[0-9a-zA-Z]{32}$/.test(clean);
+
+        if (input) {
+            input.style.border = isValid ? '1px solid rgba(34, 197, 94, 0.7)' : (clean.length > 0 ? '1px solid rgba(239, 68, 68, 0.7)' : '1px solid rgba(255,255,255,0.2)');
+        }
+        if (btn) {
+            btn.disabled = !isValid;
+            btn.style.cursor = isValid ? 'pointer' : 'not-allowed';
+            btn.style.opacity = isValid ? '1' : '0.5';
+        }
+        if (hint) {
+            if (isValid) {
+                hint.style.color = '#4ade80';
+                hint.textContent = '✓ Valid 32-character Client ID format.';
+            } else if (clean.length === 0) {
+                hint.style.color = '#94a3b8';
+                hint.textContent = 'Enter your 32-character Client ID (letters & numbers only).';
+            } else {
+                hint.style.color = '#f87171';
+                hint.textContent = `Client ID must be exactly 32 alphanumeric characters (${clean.length}/32).`;
+            }
+        }
+    };
+
+    window.copySpotifyRedirectUri = function() {
+        const uri = getSpotifyRedirectUri();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(uri).then(() => {
+                if (typeof showToast === 'function') showToast(`📋 Copied Redirect URI: ${uri}`, 'success');
+            }).catch(() => {
+                if (typeof showPrompt === 'function') {
+                    showPrompt({ variant: 'info', title: 'Copy Spotify Redirect URI', defaultValue: uri });
+                } else {
+                    prompt('Copy this Spotify Redirect URI:', uri);
+                }
+            });
+        } else {
+            if (typeof showPrompt === 'function') {
+                showPrompt({ variant: 'info', title: 'Copy Spotify Redirect URI', defaultValue: uri });
+            } else {
+                prompt('Copy this Spotify Redirect URI:', uri);
+            }
+        }
+    };
+
+    window.reopenAtLoopback = function() {
+        const cur = window.location.href;
+        const loopback = cur.replace('://localhost', '://127.0.0.1');
+        window.location.href = loopback;
+    };
+
+    window.testSpotifyConnection = async function() {
+        if (!songState.spotifyAccessToken) {
+            if (typeof showToast === 'function') showToast('⚠️ Spotify is not connected yet.', 'warning');
+            return;
+        }
+        if (typeof showToast === 'function') showToast('🔍 Testing Spotify connection...', 'info');
+        try {
+            const res = await fetchSpotifyWithRetry('https://api.spotify.com/v1/me');
+            if (res.ok) {
+                const user = await res.json();
+                const userName = user.display_name || user.id || 'User';
+                const plan = (user.product || 'free').toUpperCase();
+                
+                let deviceNote = 'No active player device found';
+                try {
+                    const devRes = await fetchSpotifyWithRetry('https://api.spotify.com/v1/me/player/devices');
+                    if (devRes.ok) {
+                        const devData = await devRes.json();
+                        const active = (devData.devices || []).find(d => d.is_active) || (devData.devices || [])[0];
+                        if (active) {
+                            deviceNote = `Active Device: ${active.name} (${active.type})`;
+                        }
+                    }
+                } catch (_) {}
+
+                if (typeof showToast === 'function') {
+                    showToast(`✅ Spotify OK! User: ${userName} [${plan}]. ${deviceNote}.`, 'success');
+                }
+            } else if (res.status === 403) {
+                showSpotifyErrorModal('USER_NOT_REGISTERED');
+            } else if (res.status === 401) {
+                if (typeof showToast === 'function') showToast('⚠️ Spotify token expired and could not refresh.', 'error');
+                disconnectSpotify();
+            } else {
+                if (typeof showToast === 'function') showToast(`⚠️ Spotify test returned HTTP ${res.status}`, 'warning');
+            }
+        } catch (e) {
+            if (typeof showToast === 'function') showToast(`❌ Spotify connection test failed: ${e.message}`, 'error');
+        }
+    };
+
     window.enableBuiltinMode = () => {
         const modal = document.getElementById('spotifyConnectModal');
         if (modal) modal.remove();

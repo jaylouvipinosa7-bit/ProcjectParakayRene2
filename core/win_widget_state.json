@@ -1,4 +1,4 @@
-﻿{
+{
     "enabled":  true,
     "score":  1,
     "target":  5,
@@ -8,7 +8,8 @@
     "hotkeysEnabled":  true,
     "label":  "Win",
     "style":  "badge",
-    "trophyIcon":  "cup",
+    "trophyIcon":  "pvz_sun",
+    "iconSize":  64,
     "colorNegative":  "#ff007f",
     "colorPositive":  "#10b981",
     "colorZero":  "#38bdf8",

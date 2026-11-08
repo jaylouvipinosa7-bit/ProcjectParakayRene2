@@ -1,0 +1,15 @@
+{
+  "synonyms": {
+    "gift": ["rose", "perfume", "heart", "coins", "diamonds", "regalo", "galaxy", "gifts", "donations", "tip"],
+    "overlay": ["obs", "browser source", "stream", "visualizer", "screen", "widget", "hud", "display", "canvas"],
+    "spawn": ["summon", "drop", "deploy", "call", "generate", "create", "labas", "ilabas"],
+    "wheel": ["spinner", "reel", "roulette", "slot", "gacha", "claw", "ufo", "roleta"],
+    "song": ["music", "spotify", "!play", "!sr", "vinyl", "kanta", "tugtog", "audio", "track"],
+    "mod": ["melonloader", "injection", "bridge", "hook", "vscript", "cleo"],
+    "connect": ["link", "tiktok", "username", "room", "sync", "ikabit", "ikonek", "login"],
+    "game": ["platform", "studio", "laro", "pc game", "pvz", "hybrid", "fusion"],
+    "troubleshoot": ["fix", "error", "broken", "sira", "ayaw", "problem", "disconnected", "bug", "stuck"],
+    "size": ["resolution", "width", "height", "canvas", "sukat", "haba", "lapad"]
+  }
+}
+

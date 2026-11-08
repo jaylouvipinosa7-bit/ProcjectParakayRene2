@@ -11,6 +11,14 @@
               ],
     "history":  [
                     {
+                        "id":  "hist_1794106302334",
+                        "title":  "Starting Over Again",
+                        "artist":  "Natalie Cole",
+                        "requestedBy":  "TestViewer",
+                        "timestamp":  "10:51 AM",
+                        "status":  "skipped"
+                    },
+                    {
                         "id":  "hist_1793368204888",
                         "title":  "Bomba (Radio Mix) (Remix Klass)",
                         "artist":  "Jessy",

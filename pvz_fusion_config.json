@@ -35,7 +35,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_knight_captain.webp",
-      "funcName": "Viewer Likes Event Action"
+      "funcName": "Viewer Likes Event Action",
+      "audio": {
+        "file": "sounds/ahh_gLSTOu4.mp3",
+        "title": "Ahh Glstou4",
+        "duration": "00:01:00",
+        "volume": 0.48,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1793333183209",
@@ -72,7 +80,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_black_horse.webp",
-      "funcName": "Stream Goal Celebration Event"
+      "funcName": "Stream Goal Celebration Event",
+      "audio": {
+        "file": "sounds/fahhh.mp3",
+        "title": "Fahhh",
+        "duration": "00:02:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1793333262680",
@@ -109,7 +125,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_ultimatesnowzombie.webp",
-      "funcName": "Stream Goal Celebration Event"
+      "funcName": "Stream Goal Celebration Event",
+      "audio": {
+        "file": "sounds/ssstik__mp3cut.net_.mp3",
+        "title": "ssstik (mp3cut.net)",
+        "duration": "00:17:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1793333399248",
@@ -154,7 +178,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_ultimate_machine_nut_zombie.webp",
-      "funcName": "Stream Goal Celebration Event"
+      "funcName": "Stream Goal Celebration Event",
+      "audio": {
+        "file": "sounds/fahhhhhhhhhhhhhh.mp3",
+        "title": "Fahhhhhhhhhhhhhh",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "3",
@@ -199,7 +231,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_ultimatehorse.webp",
-      "funcName": "Stream Goal Celebration Event"
+      "funcName": "Stream Goal Celebration Event",
+      "audio": {
+        "file": "sounds/fahhh-pump-sound.mp3",
+        "title": "Fahhh Pump Sound",
+        "duration": "00:02:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "4",
@@ -236,7 +276,15 @@
       "availableFor": "Anyone",
       "allowImport": true,
       "funcImg": "images/game-icons/pvz/spawn_summonedhorse.webp",
-      "funcName": "New Follower Alert & Sound Effect"
+      "funcName": "New Follower Alert & Sound Effect",
+      "audio": {
+        "file": "sounds/yeah-boiii-i-i-i.mp3",
+        "title": "Yeah Boiii I I I",
+        "duration": "00:08:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1792301314168",
@@ -271,7 +319,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/strongpunch.mp3",
+        "title": "Strongpunch",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "6",
@@ -306,7 +362,15 @@
       "triggerValue": "",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/a-train-zoom.mp3",
+        "title": "A Train Zoom",
+        "duration": "00:05:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "7",
@@ -341,7 +405,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-e-lutador.mp3",
+        "title": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa E Lutador",
+        "duration": "00:06:00",
+        "volume": 0.46,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1792325312723",
@@ -351,7 +423,7 @@
       "icon": "images/tiktok-gifts/1347121_mirwas_beat.webp",
       "unitIcon": "images/game-icons/pvz/spawn_boat_imp.webp",
       "actionType": "zombie",
-      "command": "spawn_boat_imp",
+      "command": "spawn_boat_imp;spawn_chicken_imp",
       "label": "Spawn Hydrofowl Zombie (71)",
       "amount": 5,
       "enabled": true,
@@ -363,7 +435,15 @@
           "label": "Spawn Hydrofowl Zombie (71)",
           "icon": "images/game-icons/pvz/spawn_boat_imp.webp",
           "actionType": "zombie",
-          "amount": 1
+          "amount": 5
+        },
+        {
+          "name": "Commands #2",
+          "command": "spawn_chicken_imp",
+          "label": "Spawn Chicken Jockey Zombie (68)",
+          "icon": "images/game-icons/pvz/spawn_chickenimp.webp",
+          "actionType": "zombie",
+          "amount": 5
         }
       ],
       "functionName": "Spawn Hydrofowl Zombie (71)",
@@ -376,7 +456,17 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/anime_wow.mp3",
+        "title": "Anime Wow Sound Effect",
+        "duration": "00:04:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      },
+      "funcImg": "images/game-icons/pvz/spawn_boat_imp.webp",
+      "funcName": "Spawn Hydrofowl Zombie (71)"
     },
     {
       "id": "1792325299503",
@@ -419,7 +509,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/correct.mp3",
+        "title": "Correct",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "8",
@@ -454,7 +552,15 @@
       "triggerValue": "",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/bruh.mp3",
+        "title": "Bruh",
+        "duration": "00:00:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "5",
@@ -489,7 +595,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/five-nights-at-freddys-full-scream-sound_2.mp3",
+        "title": "Five Nights At Freddys Full Scream Sound 2",
+        "duration": "00:05:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1792307359731",
@@ -524,7 +638,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/ka-ching.mp3",
+        "title": "Ka Ching",
+        "duration": "00:02:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "64",
@@ -559,7 +681,15 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/munch-sound-effect.mp3",
+        "title": "Munch Sound Effect",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "1792305417166",
@@ -594,7 +724,15 @@
       "triggerValue": "5",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/hehehehhehehehhehehheheehehe.mp3",
+        "title": "Hehehehhehehehhehehheheehehe",
+        "duration": "00:01:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "11",
@@ -742,7 +880,15 @@
       "triggerValue": "",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "audio": {
+        "file": "sounds/woody-woodpecker-laugh.mp3",
+        "title": "Woody Woodpecker Laugh",
+        "duration": "00:03:00",
+        "volume": 1,
+        "multiplier": true,
+        "playerType": "Short"
+      }
     },
     {
       "id": "17",
@@ -754,9 +900,9 @@
       "actionType": "zombie",
       "command": "spawn_horseboss",
       "label": "Spawn HorseBoss",
-      "amount": 5,
+      "amount": 2,
       "enabled": true,
-      "likeThreshold": null,
+      "likeThreshold": 50,
       "commands": [
         {
           "name": "Commands #1",
@@ -764,20 +910,22 @@
           "label": "Spawn HorseBoss",
           "icon": "images/game-icons/pvz/spawn_horseboss.webp",
           "actionType": "zombie",
-          "amount": 1
+          "amount": 2
         }
       ],
       "functionName": "Spawn HorseBoss",
-      "repetition": 5,
+      "repetition": 2,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
-      "triggerValue": "",
+      "triggerValue": "10",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "funcImg": "images/game-icons/pvz/spawn_horseboss.webp",
+      "funcName": "Spawn HorseBoss"
     },
     {
       "id": "18",
@@ -1332,7 +1480,7 @@
       "id": "1",
       "giftName": "Team plants likes",
       "giftId": "",
-      "coins": 1,
+      "coins": 0,
       "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22taptapGrad%22%20cx%3D%2235%25%22%20cy%3D%2230%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff4b72%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23fe2c55%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2290%25%22%20stop-color%3D%22%23e0123c%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23b00628%22%2F%3E%0A%20%20%20%20%3C%2FradialGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22badgeShadow%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%222%22%20stdDeviation%3D%223%22%20flood-color%3D%22%23000000%22%20flood-opacity%3D%220.5%22%2F%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%220%22%20stdDeviation%3D%225%22%20flood-color%3D%22%23fe2c55%22%20flood-opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22url(%23taptapGrad)%22%20filter%3D%22url(%23badgeShadow)%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.4)%22%20stroke-width%3D%221.8%22%2F%3E%0A%20%20%3Cellipse%20cx%3D%2250%22%20cy%3D%2224%22%20rx%3D%2226%22%20ry%3D%2212%22%20fill%3D%22rgba(255%2C255%2C255%2C0.22)%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%22%20y%3D%2252%22%20font-family%3D%22'Inter'%2C%20-apple-system%2C%20'Segoe%20UI'%2C%20'Arial%20Black'%2C%20Impact%2C%20sans-serif%22%20font-size%3D%2242%22%20font-weight%3D%22900%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%20letter-spacing%3D%22-0.5%22%3E50%3C%2Ftext%3E%0A%3C%2Fsvg%3E",
       "unitIcon": "images/game-icons/pvz/spawn_overclocked_cherrybomber.webp",
       "actionType": "plant",
@@ -1361,7 +1509,9 @@
       "triggerValue": "50",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "funcImg": "images/game-icons/pvz/spawn_snipurr.webp",
+      "funcName": "Spawn Blazer Snipea (1167)"
     },
     {
       "id": "32",
@@ -1404,25 +1554,25 @@
       "giftId": "6064",
       "coins": 1,
       "icon": "images/tiktok-gifts/6064_gg.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_solarsunflower.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_laser_umbrella.webp",
       "actionType": "plant",
-      "command": "spawn_solar_sunflower",
+      "command": "spawn_laser_umbrella",
       "label": "Spawn Squalour Zombie",
-      "amount": 1,
+      "amount": 5,
       "enabled": true,
       "likeThreshold": 50,
       "commands": [
         {
           "name": "Commands #1",
-          "command": "spawn_solar_sunflower",
-          "label": "Spawn Enlightened Solarnova (304)",
-          "icon": "images/game-icons/pvz/spawn_solarsunflower.webp",
+          "command": "spawn_laser_umbrella",
+          "label": "Spawn Laser Umbrella",
+          "icon": "images/game-icons/pvz/spawn_laser_umbrella.webp",
           "actionType": "plant",
-          "amount": 1
+          "amount": 5
         }
       ],
       "functionName": "Spawn Squalour Zombie",
-      "repetition": 1,
+      "repetition": 5,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
@@ -1431,7 +1581,9 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "funcImg": "images/game-icons/pvz/spawn_laser_umbrella.webp",
+      "funcName": "Spawn Squalour Zombie"
     },
     {
       "id": "38",
@@ -1534,41 +1686,6 @@
       "hideInOverlay": false,
       "triggerType": "gift",
       "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "37",
-      "giftName": "Good Job",
-      "giftId": "231955",
-      "coins": 1,
-      "icon": "images/tiktok-gifts/231955_good_job.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-      "actionType": "plant",
-      "command": "spawn_ultimate_corn",
-      "label": "Spawn Ultimate Corn",
-      "amount": 2,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_ultimate_corn",
-          "label": "Spawn Ultimate Corn",
-          "icon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn Ultimate Corn",
-      "repetition": 2,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
       "platform": "tiktok",
       "availableFor": "Anyone",
       "allowImport": true
@@ -1773,6 +1890,41 @@
       ],
       "functionName": "Spawn DoomSniper",
       "repetition": 6,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "1792325308925",
+      "giftName": "Mantap",
+      "giftId": "1167779",
+      "coins": 1,
+      "icon": "images/tiktok-gifts/1167779_mantap.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+      "actionType": "plant",
+      "command": "spawn_ultimate_winter_melon",
+      "label": "Spawn Maelonstorm (957)",
+      "amount": 5,
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_winter_melon",
+          "label": "Spawn Maelonstorm (957)",
+          "icon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Maelonstorm (957)",
+      "repetition": 5,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
@@ -2029,6 +2181,43 @@
       "allowImport": true
     },
     {
+      "id": "1793515837720",
+      "giftName": "Star Light",
+      "giftId": "12963",
+      "coins": 5,
+      "icon": "images/tiktok-gifts/12963_shining_starlight.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimate_portal_nut.webp",
+      "actionType": "plant",
+      "command": "spawn_ultimate_portal_nut",
+      "label": "Spawn Axion Orbiter (989)",
+      "amount": 10,
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimate_portal_nut",
+          "label": "Spawn Astro-nut (945)",
+          "icon": "images/game-icons/pvz/spawn_ultimate_portal_nut.webp",
+          "actionType": "plant",
+          "amount": 10
+        }
+      ],
+      "functionName": "Spawn Axion Orbiter (989)",
+      "repetition": 10,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "funcImg": "images/game-icons/pvz/spawn_ultimate_portal_nut.webp",
+      "funcName": "Spawn Axion Orbiter (989)"
+    },
+    {
       "id": "49",
       "giftName": "Friendship Necklace",
       "giftId": "9947",
@@ -2102,216 +2291,6 @@
       "hideInOverlay": false,
       "triggerType": "gift",
       "triggerValue": "10",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "1792325308925",
-      "giftName": "Mantap",
-      "giftId": "1167779",
-      "coins": 1,
-      "icon": "images/tiktok-gifts/1167779_mantap.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
-      "actionType": "plant",
-      "command": "spawn_ultimate_winter_melon",
-      "label": "Spawn Maelonstorm (957)",
-      "amount": 5,
-      "enabled": true,
-      "likeThreshold": 50,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_ultimate_winter_melon",
-          "label": "Spawn Maelonstorm (957)",
-          "icon": "images/game-icons/pvz/spawn_ultimatewintermelon.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn Maelonstorm (957)",
-      "repetition": 5,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "51",
-      "giftName": "Mystic Ney",
-      "giftId": "919332",
-      "coins": 149,
-      "icon": "images/tiktok-gifts/919332_mystic_ney.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
-      "actionType": "plant",
-      "command": "spawn_ultimatejalanut",
-      "label": "Spawn UltimateJalaNut",
-      "amount": 100,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_ultimatejalanut",
-          "label": "Spawn UltimateJalaNut",
-          "icon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn UltimateJalaNut",
-      "repetition": 100,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "52",
-      "giftName": "Night Star",
-      "giftId": "13215",
-      "coins": 199,
-      "icon": "images/tiktok-gifts/13215_night_star.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
-      "actionType": "plant",
-      "command": "spawn_ultimatesunnut",
-      "label": "Spawn UltimateSunNut",
-      "amount": 100,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_ultimatesunnut",
-          "label": "Spawn UltimateSunNut",
-          "icon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn UltimateSunNut",
-      "repetition": 100,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "53",
-      "giftName": "Fruit Friends",
-      "giftId": "9465",
-      "coins": 299,
-      "icon": "images/tiktok-gifts/9465_fruit_friends.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
-      "actionType": "plant",
-      "command": "spawn_cherry_jalapeno",
-      "label": "Spawn Cherry Jalapeno",
-      "amount": 500,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_cherry_jalapeno",
-          "label": "Spawn Cherry Jalapeno",
-          "icon": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn Cherry Jalapeno",
-      "repetition": 500,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "54",
-      "giftName": "Boxing Gloves",
-      "giftId": "6007",
-      "coins": 299,
-      "icon": "images/tiktok-gifts/6007_boxing_gloves.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-      "actionType": "plant",
-      "command": "spawn_nucleardoomcherry",
-      "label": "Spawn NuclearDoomCherry",
-      "amount": 500,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_nucleardoomcherry",
-          "label": "Spawn NuclearDoomCherry",
-          "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-          "actionType": "plant",
-          "amount": 1
-        }
-      ],
-      "functionName": "Spawn NuclearDoomCherry",
-      "repetition": 500,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "55",
-      "giftName": "LIVE Ranking Crown",
-      "giftId": "15382",
-      "coins": 299,
-      "icon": "images/tiktok-gifts/15382_live_ranking_crown.webp",
-      "unitIcon": "images/game-icons/pvz/kill_all_zombies.webp",
-      "actionType": "power",
-      "command": "kill_all_zombies",
-      "label": "Kill all Zombies",
-      "amount": 1,
-      "enabled": true,
-      "likeThreshold": null,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "kill_all_zombies",
-          "label": "Kill all Zombies",
-          "icon": "images/game-icons/pvz/kill_all_zombies.webp",
-          "actionType": "power",
-          "amount": 1
-        }
-      ],
-      "functionName": "Kill all Zombies",
-      "repetition": 1,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "",
       "platform": "tiktok",
       "availableFor": "Anyone",
       "allowImport": true
@@ -2457,76 +2436,6 @@
       "allowImport": true
     },
     {
-      "id": "1792310064286",
-      "giftName": "Plant Everywhere",
-      "giftId": "",
-      "coins": 1,
-      "icon": "images/trig_3.svg",
-      "unitIcon": "images/game-icons/pvz/plant_everywahre.webp",
-      "actionType": "power",
-      "command": "plant_everywahre",
-      "label": "Plant Everywhere",
-      "amount": 1,
-      "enabled": true,
-      "likeThreshold": 50,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "plant_everywahre",
-          "label": "Plant Everywhere",
-          "icon": "images/game-icons/pvz/plant_everywahre.webp",
-          "actionType": "power",
-          "amount": 1
-        }
-      ],
-      "functionName": "Plant Everywhere",
-      "repetition": 1,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": true,
-      "triggerType": "custom",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
-      "id": "1793515837720",
-      "giftName": "Star Light",
-      "giftId": "12963",
-      "coins": 5,
-      "icon": "images/tiktok-gifts/12963_shining_starlight.webp",
-      "unitIcon": "images/game-icons/pvz/spawn_super_furnace.webp",
-      "actionType": "plant",
-      "command": "spawn_super_furnace",
-      "label": "Spawn Axion Orbiter (989)",
-      "amount": 10,
-      "enabled": true,
-      "likeThreshold": 50,
-      "commands": [
-        {
-          "name": "Commands #1",
-          "command": "spawn_super_furnace",
-          "label": "Spawn Firnurse (1234)",
-          "icon": "images/game-icons/pvz/spawn_super_furnace.webp",
-          "actionType": "plant",
-          "amount": 10
-        }
-      ],
-      "functionName": "Spawn Axion Orbiter (989)",
-      "repetition": 10,
-      "delay": 0,
-      "interval": 100,
-      "repetitionMultiplier": true,
-      "hideInOverlay": false,
-      "triggerType": "gift",
-      "triggerValue": "1",
-      "platform": "tiktok",
-      "availableFor": "Anyone",
-      "allowImport": true
-    },
-    {
       "id": "1793515984987",
       "giftName": "Carnival Tent",
       "giftId": "1487605",
@@ -2536,7 +2445,7 @@
       "actionType": "plant",
       "command": "spawn_big_wall_nut",
       "label": "Spawn Big Wall Nut",
-      "amount": 50,
+      "amount": 100,
       "enabled": true,
       "likeThreshold": 50,
       "commands": [
@@ -2546,11 +2455,11 @@
           "label": "Spawn Big Wall Nut",
           "icon": "images/game-icons/pvz/spawn_big_wall_nut.webp",
           "actionType": "plant",
-          "amount": 1
+          "amount": 100
         }
       ],
       "functionName": "Spawn Big Wall Nut",
-      "repetition": 50,
+      "repetition": 100,
       "delay": 0,
       "interval": 100,
       "repetitionMultiplier": true,
@@ -2559,7 +2468,9 @@
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
-      "allowImport": true
+      "allowImport": true,
+      "funcImg": "images/game-icons/pvz/spawn_big_wall_nut.webp",
+      "funcName": "Spawn Big Wall Nut"
     },
     {
       "id": "1793516058048",
@@ -2591,6 +2502,219 @@
       "repetitionMultiplier": true,
       "hideInOverlay": false,
       "triggerType": "gift",
+      "triggerValue": "1",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "53",
+      "giftName": "Breakthrough Star",
+      "giftId": "14453",
+      "coins": 99,
+      "icon": "images/tiktok-gifts/14453_breakthrough_star.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
+      "actionType": "plant",
+      "command": "spawn_cherry_jalapeno",
+      "label": "Spawn Cherry Jalapeno",
+      "amount": 500,
+      "enabled": true,
+      "likeThreshold": null,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_cherry_jalapeno",
+          "label": "Spawn Cherry Jalapeno",
+          "icon": "images/game-icons/pvz/spawn_cherry_jalapeno.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn Cherry Jalapeno",
+      "repetition": 500,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "99",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true,
+      "trigImg": "images/tiktok-gifts/14453_breakthrough_star.webp",
+      "action": "SelectedGift",
+      "eventType": "gift"
+    },
+    {
+      "id": "51",
+      "giftName": "Mystic Ney",
+      "giftId": "919332",
+      "coins": 149,
+      "icon": "images/tiktok-gifts/919332_mystic_ney.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
+      "actionType": "plant",
+      "command": "spawn_ultimatejalanut",
+      "label": "Spawn UltimateJalaNut",
+      "amount": 100,
+      "enabled": true,
+      "likeThreshold": null,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatejalanut",
+          "label": "Spawn UltimateJalaNut",
+          "icon": "images/game-icons/pvz/spawn_ultimatejalanut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateJalaNut",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "52",
+      "giftName": "Night Star",
+      "giftId": "13215",
+      "coins": 199,
+      "icon": "images/tiktok-gifts/13215_night_star.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
+      "actionType": "plant",
+      "command": "spawn_ultimatesunnut",
+      "label": "Spawn UltimateSunNut",
+      "amount": 100,
+      "enabled": true,
+      "likeThreshold": null,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_ultimatesunnut",
+          "label": "Spawn UltimateSunNut",
+          "icon": "images/game-icons/pvz/spawn_ultimatesunnut.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn UltimateSunNut",
+      "repetition": 100,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "54",
+      "giftName": "Boxing Gloves",
+      "giftId": "6007",
+      "coins": 299,
+      "icon": "images/tiktok-gifts/6007_boxing_gloves.webp",
+      "unitIcon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+      "actionType": "plant",
+      "command": "spawn_nucleardoomcherry",
+      "label": "Spawn NuclearDoomCherry",
+      "amount": 500,
+      "enabled": true,
+      "likeThreshold": null,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "spawn_nucleardoomcherry",
+          "label": "Spawn NuclearDoomCherry",
+          "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
+          "actionType": "plant",
+          "amount": 1
+        }
+      ],
+      "functionName": "Spawn NuclearDoomCherry",
+      "repetition": 500,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "55",
+      "giftName": "LIVE Ranking Crown",
+      "giftId": "15382",
+      "coins": 299,
+      "icon": "images/tiktok-gifts/15382_live_ranking_crown.webp",
+      "unitIcon": "images/game-icons/pvz/kill_all_zombies.webp",
+      "actionType": "power",
+      "command": "kill_all_zombies",
+      "label": "Kill all Zombies",
+      "amount": 1,
+      "enabled": true,
+      "likeThreshold": null,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "kill_all_zombies",
+          "label": "Kill all Zombies",
+          "icon": "images/game-icons/pvz/kill_all_zombies.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Kill all Zombies",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": false,
+      "triggerType": "gift",
+      "triggerValue": "",
+      "platform": "tiktok",
+      "availableFor": "Anyone",
+      "allowImport": true
+    },
+    {
+      "id": "1792310064286",
+      "giftName": "Plant Everywhere",
+      "giftId": "",
+      "coins": 1,
+      "icon": "images/trig_3.svg",
+      "unitIcon": "images/game-icons/pvz/plant_everywahre.webp",
+      "actionType": "power",
+      "command": "plant_everywahre",
+      "label": "Plant Everywhere",
+      "amount": 1,
+      "enabled": true,
+      "likeThreshold": 50,
+      "commands": [
+        {
+          "name": "Commands #1",
+          "command": "plant_everywahre",
+          "label": "Plant Everywhere",
+          "icon": "images/game-icons/pvz/plant_everywahre.webp",
+          "actionType": "power",
+          "amount": 1
+        }
+      ],
+      "functionName": "Plant Everywhere",
+      "repetition": 1,
+      "delay": 0,
+      "interval": 100,
+      "repetitionMultiplier": true,
+      "hideInOverlay": true,
+      "triggerType": "custom",
       "triggerValue": "1",
       "platform": "tiktok",
       "availableFor": "Anyone",
@@ -2630,6 +2754,42 @@
       "platform": "tiktok",
       "availableFor": "Anyone",
       "allowImport": true
+    },
+    {
+      "id": "1794110177281",
+      "giftName": "Tiny Blush",
+      "giftId": "1473096",
+      "coins": 20,
+      "icon": "images/tiktok-gifts/1473096_tiny_blush.webp",
+      "unitIcon": "images/spinner_wheel_icon.svg",
+      "actionType": "spinner",
+      "command": "spinner_1794110177281",
+      "spinnerId": "spinner_1794110177281",
+      "label": "Win Score Numbers (+/-)",
+      "functionName": "Win Score Numbers (+/-)",
+      "amount": 1,
+      "enabled": true,
+      "platform": "tiktok",
+      "triggerType": "gift",
+      "availableFor": "Anyone"
+    },
+    {
+      "id": "1794110204965",
+      "giftName": "LOL",
+      "giftId": "1473098",
+      "coins": 20,
+      "icon": "images/tiktok-gifts/1473098_lol.webp",
+      "unitIcon": "images/spinner_wheel_icon.svg",
+      "actionType": "spinner",
+      "command": "spinner_hat",
+      "spinnerId": "spinner_hat",
+      "label": "Win Streak Penalty (-)",
+      "functionName": "Win Streak Penalty (-)",
+      "amount": 1,
+      "enabled": true,
+      "platform": "tiktok",
+      "triggerType": "gift",
+      "availableFor": "Anyone"
     }
   ],
   "spinners": [
@@ -2640,7 +2800,7 @@
       "coins": 20,
       "giftId": "5658",
       "giftIcon": "images/tiktok-gifts/5658_perfume.webp",
-      "mode": "reel",
+      "mode": "wheel",
       "style": "modern",
       "groupId": "5",
       "enabled": true,
@@ -3179,16 +3339,16 @@
     {
       "id": "spinner_hat",
       "name": "Win Streak Penalty (-)",
-      "giftName": "Hat and Mustache",
-      "coins": 99,
-      "giftId": "6427",
-      "giftIcon": "images/tiktok-gifts/6427_hat_and_mustache.webp",
+      "giftName": "LOL",
+      "coins": 20,
+      "giftId": "1473098",
+      "giftIcon": "images/tiktok-gifts/1473098_lol.webp",
       "mode": "reel",
       "style": "modern",
-      "groupId": "8",
+      "groupId": 8,
       "enabled": true,
       "duration": 4000,
-      "ticks": true,
+      "ticks": 100,
       "slices": [
         {
           "id": "h1",
@@ -3323,7 +3483,194 @@
           "weight": 1
         }
       ],
-      "category": "numbers"
+      "category": "numbers",
+      "audience": "Anyone"
+    },
+    {
+      "id": "spinner_1794110177281",
+      "category": "numbers",
+      "groupId": 9,
+      "name": "Win Score Numbers (+/-)",
+      "duration": 2500,
+      "ticks": 100,
+      "giftName": "Tiny Blush",
+      "giftId": "1473096",
+      "giftIcon": "images/tiktok-gifts/1473096_tiny_blush.webp",
+      "coins": 20,
+      "audience": "Anyone",
+      "enabled": true,
+      "mode": "reel",
+      "style": "neon",
+      "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
+      "slices": [
+        {
+          "id": "num_1794110177281_0",
+          "label": "+1",
+          "actionType": "score",
+          "delta": 1,
+          "command": "score_add_1",
+          "amount": 1,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_1.svg",
+          "rarity": "Normal",
+          "weight": 50,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_1",
+          "label": "+2",
+          "actionType": "score",
+          "delta": 2,
+          "command": "score_add_2",
+          "amount": 2,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_2.svg",
+          "rarity": "Normal",
+          "weight": 50,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_2",
+          "label": "+5",
+          "actionType": "score",
+          "delta": 5,
+          "command": "score_add_5",
+          "amount": 5,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_5.svg",
+          "rarity": "Uncommon",
+          "weight": 25,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_3",
+          "label": "+10",
+          "actionType": "score",
+          "delta": 10,
+          "command": "score_add_10",
+          "amount": 10,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_10.svg",
+          "rarity": "Rare",
+          "weight": 12,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_4",
+          "label": "+20",
+          "actionType": "score",
+          "delta": 20,
+          "command": "score_add_20",
+          "amount": 20,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_20.svg",
+          "rarity": "Rare",
+          "weight": 12,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_5",
+          "label": "+50",
+          "actionType": "score",
+          "delta": 50,
+          "command": "score_add_50",
+          "amount": 50,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_50.svg",
+          "rarity": "Epic",
+          "weight": 6,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_6",
+          "label": "+100",
+          "actionType": "score",
+          "delta": 100,
+          "command": "score_add_100",
+          "amount": 100,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_100.svg",
+          "rarity": "Legendary",
+          "weight": 2,
+          "isNumber": true
+        },
+        {
+          "id": "num_1794110177281_7",
+          "label": "+500",
+          "actionType": "score",
+          "delta": 500,
+          "command": "score_add_500",
+          "amount": 500,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_500.svg",
+          "rarity": "Mythic",
+          "weight": 1,
+          "isNumber": true
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 15,
+          "value": 15,
+          "label": "+15",
+          "functionName": "+15",
+          "amount": 15,
+          "rarity": "Epic",
+          "weight": 6,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_15.svg",
+          "icon": "images/numbers/num_pos_15.svg",
+          "command": "score_add_15",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "pm_1794110243938"
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 25,
+          "value": 25,
+          "label": "+25",
+          "functionName": "+25",
+          "amount": 25,
+          "rarity": "Epic",
+          "weight": 6,
+          "color": "#10b981",
+          "unitIcon": "images/numbers/num_pos_25.svg",
+          "icon": "images/numbers/num_pos_25.svg",
+          "command": "score_add_25",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "pm_1794110247608"
+        },
+        {
+          "actionType": "score",
+          "isNumber": true,
+          "delta": 30,
+          "value": 30,
+          "label": "+30",
+          "functionName": "+30",
+          "amount": 30,
+          "rarity": "Epic",
+          "weight": 6,
+          "color": "#06b6d4",
+          "unitIcon": "images/numbers/num_pos_30.svg",
+          "icon": "images/numbers/num_pos_30.svg",
+          "command": "score_add_30",
+          "hideInOverlay": false,
+          "repetition": 1,
+          "delay": 0,
+          "interval": 100,
+          "repetitionMultiplier": false,
+          "id": "pm_1794110251061"
+        }
+      ]
     }
   ],
   "streamer": {
@@ -3331,240 +3678,190 @@
   },
   "activePresetId": "preset_pvz_custom",
   "spinner": {
-    "id": "spinner_1",
-    "name": "Plants Lucky Wheel",
-    "giftName": "Perfume",
+    "id": "spinner_1794110177281",
+    "category": "numbers",
+    "groupId": 9,
+    "name": "Win Score Numbers (+/-)",
+    "duration": 2500,
+    "ticks": 100,
+    "giftName": "Tiny Blush",
+    "giftId": "1473096",
+    "giftIcon": "images/tiktok-gifts/1473096_tiny_blush.webp",
     "coins": 20,
-    "giftId": "5658",
-    "giftIcon": "images/tiktok-gifts/5658_perfume.webp",
-    "mode": "reel",
-    "style": "modern",
-    "groupId": "5",
+    "audience": "Anyone",
     "enabled": true,
-    "duration": 4000,
-    "ticks": true,
+    "mode": "reel",
+    "style": "neon",
+    "pointerIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
     "slices": [
       {
-        "id": "p1",
-        "label": "Nuclear Doom Cherry",
-        "actionType": "plant",
-        "command": "spawn_nucleardoomcherry",
+        "id": "num_1794110177281_0",
+        "label": "+1",
+        "actionType": "score",
+        "delta": 1,
+        "command": "score_add_1",
         "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-        "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-        "color": "#ef4444",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_nucleardoomcherry",
-            "label": "Spawn NuclearDoomCherry",
-            "icon": "images/game-icons/pvz/spawn_nucleardoomcherry.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Mythic",
-        "weight": 1
-      },
-      {
-        "id": "p2",
-        "label": "Super Threepeater SP",
-        "actionType": "plant",
-        "command": "spawn_superthreepeater_sp",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
-        "icon": "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
-        "color": "#f59e0b",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_superthreepeater_sp",
-            "label": "Spawn Super Threepeater SP",
-            "icon": "images/game-icons/pvz/spawn_superthreepeater_sp.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Legendary",
-        "weight": 2
-      },
-      {
-        "id": "p3",
-        "label": "Ultimate Cattail",
-        "actionType": "plant",
-        "command": "spawn_ultimatecattail",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
-        "icon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
-        "color": "#a855f7",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_ultimatecattail",
-            "label": "Spawn Ultimate Cattail",
-            "icon": "images/game-icons/pvz/spawn_ultimatecattail.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Mythic",
-        "weight": 1
-      },
-      {
-        "id": "p4",
-        "label": "Ultimate Sniper Gatling",
-        "actionType": "plant",
-        "command": "spawn_ultimatesnipergatling",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
-        "icon": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
         "color": "#10b981",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_ultimatesnipergatling",
-            "label": "Spawn Ultimate Sniper Gatling",
-            "icon": "images/game-icons/pvz/spawn_ultimatesnipergatling.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
+        "unitIcon": "images/numbers/num_pos_1.svg",
+        "rarity": "Normal",
+        "weight": 50,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_1",
+        "label": "+2",
+        "actionType": "score",
+        "delta": 2,
+        "command": "score_add_2",
+        "amount": 2,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_2.svg",
+        "rarity": "Normal",
+        "weight": 50,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_2",
+        "label": "+5",
+        "actionType": "score",
+        "delta": 5,
+        "command": "score_add_5",
+        "amount": 5,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_5.svg",
+        "rarity": "Uncommon",
+        "weight": 25,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_3",
+        "label": "+10",
+        "actionType": "score",
+        "delta": 10,
+        "command": "score_add_10",
+        "amount": 10,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_10.svg",
+        "rarity": "Rare",
+        "weight": 12,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_4",
+        "label": "+20",
+        "actionType": "score",
+        "delta": 20,
+        "command": "score_add_20",
+        "amount": 20,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_20.svg",
+        "rarity": "Rare",
+        "weight": 12,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_5",
+        "label": "+50",
+        "actionType": "score",
+        "delta": 50,
+        "command": "score_add_50",
+        "amount": 50,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_50.svg",
+        "rarity": "Epic",
+        "weight": 6,
+        "isNumber": true
+      },
+      {
+        "id": "num_1794110177281_6",
+        "label": "+100",
+        "actionType": "score",
+        "delta": 100,
+        "command": "score_add_100",
+        "amount": 100,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_100.svg",
         "rarity": "Legendary",
-        "weight": 2
+        "weight": 2,
+        "isNumber": true
       },
       {
-        "id": "p5",
-        "label": "Ultimate Big Sniper",
-        "actionType": "plant",
-        "command": "spawn_ultimate_big_sniper",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
-        "icon": "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
-        "color": "#3b82f6",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_ultimate_big_sniper",
-            "label": "Spawn Ultimate Big Sniper",
-            "icon": "images/game-icons/pvz/spawn_ultimate_big_sniper.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Epic",
-        "weight": 6
-      },
-      {
-        "id": "p6",
-        "label": "Charm All Zombies",
-        "actionType": "plant",
-        "command": "charm_all_zombies",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/charm_all_zombies.webp",
-        "icon": "images/game-icons/pvz/charm_all_zombies.webp",
-        "color": "#ec4899",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "charm_all_zombies",
-            "label": "Charm All Zombies",
-            "icon": "images/game-icons/pvz/charm_all_zombies.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
+        "id": "num_1794110177281_7",
+        "label": "+500",
+        "actionType": "score",
+        "delta": 500,
+        "command": "score_add_500",
+        "amount": 500,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_500.svg",
         "rarity": "Mythic",
-        "weight": 1
+        "weight": 1,
+        "isNumber": true
       },
       {
-        "id": "p7",
-        "label": "Launch Lawnmowers",
-        "actionType": "plant",
-        "command": "start_lawnmowers",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/start_lawnmowers.webp",
-        "icon": "images/game-icons/pvz/start_lawnmowers.webp",
-        "color": "#14b8a6",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "start_lawnmowers",
-            "label": "Launch Lawnmowers",
-            "icon": "images/game-icons/pvz/start_lawnmowers.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
+        "actionType": "score",
+        "isNumber": true,
+        "delta": 15,
+        "value": 15,
+        "label": "+15",
+        "functionName": "+15",
+        "amount": 15,
         "rarity": "Epic",
-        "weight": 6
+        "weight": 6,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_15.svg",
+        "icon": "images/numbers/num_pos_15.svg",
+        "command": "score_add_15",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false,
+        "id": "pm_1794110243938"
       },
       {
-        "id": "p8",
-        "label": "Big Sun Nut",
-        "actionType": "plant",
-        "command": "spawn_big_sun_nut",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_big_sun_nut.webp",
-        "icon": "images/game-icons/pvz/spawn_big_sun_nut.webp",
-        "color": "#facc15",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_big_sun_nut",
-            "label": "Spawn Big Sun Nut",
-            "icon": "images/game-icons/pvz/spawn_big_sun_nut.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Rare",
-        "weight": 12
+        "actionType": "score",
+        "isNumber": true,
+        "delta": 25,
+        "value": 25,
+        "label": "+25",
+        "functionName": "+25",
+        "amount": 25,
+        "rarity": "Epic",
+        "weight": 6,
+        "color": "#10b981",
+        "unitIcon": "images/numbers/num_pos_25.svg",
+        "icon": "images/numbers/num_pos_25.svg",
+        "command": "score_add_25",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false,
+        "id": "pm_1794110247608"
       },
       {
-        "id": "p9",
-        "label": "Bedrock Tall Nut",
-        "actionType": "plant",
-        "command": "spawn_bedrocktallnut",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_bedrocktallnut.webp",
-        "icon": "images/game-icons/pvz/spawn_bedrocktallnut.webp",
-        "color": "#64748b",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_bedrocktallnut",
-            "label": "Spawn Bedrock Tall Nut",
-            "icon": "images/game-icons/pvz/spawn_bedrocktallnut.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Rare",
-        "weight": 12
-      },
-      {
-        "id": "p10",
-        "label": "Ultimate Corn",
-        "actionType": "plant",
-        "command": "spawn_ultimate_corn",
-        "amount": 1,
-        "unitIcon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-        "icon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-        "color": "#eab308",
-        "commands": [
-          {
-            "name": "Commands #1",
-            "command": "spawn_ultimate_corn",
-            "label": "Spawn Ultimate Corn",
-            "icon": "images/game-icons/pvz/spawn_ultimate_corn.webp",
-            "actionType": "plant",
-            "amount": 1
-          }
-        ],
-        "rarity": "Rare",
-        "weight": 12
+        "actionType": "score",
+        "isNumber": true,
+        "delta": 30,
+        "value": 30,
+        "label": "+30",
+        "functionName": "+30",
+        "amount": 30,
+        "rarity": "Epic",
+        "weight": 6,
+        "color": "#06b6d4",
+        "unitIcon": "images/numbers/num_pos_30.svg",
+        "icon": "images/numbers/num_pos_30.svg",
+        "command": "score_add_30",
+        "hideInOverlay": false,
+        "repetition": 1,
+        "delay": 0,
+        "interval": 100,
+        "repetitionMultiplier": false,
+        "id": "pm_1794110251061"
       }
-    ],
-    "category": "plants_zombies"
-  }
+    ]
+  },
+  "activeSpinnerId": "spinner_1794110177281"
 }

@@ -29,13 +29,13 @@ start "PvZ Fusion Live Server" powershell.exe -NoProfile -ExecutionPolicy Bypass
 ping 127.0.0.1 -n 3 >nul
 
 echo  [4/4] Launching Control Studio Dashboard...
-start http://localhost:8080/app.html
+start http://127.0.0.1:8080/app.html
 
 echo.
 echo ===============================================================================
 echo   SUCCESS! The Stream Control Studio is now running!
 echo.
-echo   * Control Dashboard    : http://localhost:8080/app.html
+echo   * Control Dashboard    : http://127.0.0.1:8080/app.html
 echo   * TikTok LIVE Overlay  : http://localhost:8080/overlay.html
 echo   * Stream Overlay       : http://localhost:8080/stream-overlay.html
 echo.

@@ -1,4 +1,17 @@
-[
+﻿[
+    {
+        "isLocal":  true,
+        "id":  "snd_cbdad8ef",
+        "multiplier":  true,
+        "volume":  1,
+        "buttonColor":  "#10b981",
+        "playerType":  "Short",
+        "name":  "ssstik__mp3cut.net_.mp3",
+        "tag":  "Local",
+        "title":  "ssstik (mp3cut.net)",
+        "duration":  "00:17:00",
+        "file":  "sounds/ssstik__mp3cut.net_.mp3"
+    },
     {
         "id":  "snd_e9cbead1",
         "name":  "459781__metzik__laser-gun.wav",

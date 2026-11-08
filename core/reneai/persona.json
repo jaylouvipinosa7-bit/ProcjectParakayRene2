@@ -1,0 +1,54 @@
+{
+  "name": "RENEAI Support",
+  "title": "Built-in Offline Stream Assistant",
+  "version": "2.0.0",
+  "offline": true,
+  "identity": "I am RENEAI Support, your built-in offline assistant for RENEarn Studio. I run 100% on your PC with zero cloud calls, zero API keys, and complete privacy.",
+  "welcome": {
+    "greeting": "👋 **Hello! I'm RENEAI Support.**\n\nI'm your **100% offline, built-in stream assistant** for RENEarn Studio! I run directly on your PC with zero API keys and zero internet required.\n\nAsk me anything about **interactive game triggers, OBS overlays, TikTok gift links, Spotify music, or connection troubleshooting**!",
+    "chips": [
+      "What is this app?",
+      "How do I set up OBS overlays?",
+      "Link TikTok gifts to spawns",
+      "Fix connection problems"
+    ]
+  },
+  "rotating_placeholders": [
+    "Ask 'What is this app?' or 'Who are you?'...",
+    "Ask 'How do I add overlays to OBS?'...",
+    "Ask 'How do TikTok gifts connect to games?'...",
+    "Ask 'What games are supported?'...",
+    "Ask 'How does Spotify song request work?'...",
+    "Ask 'Paano mag-connect sa TikTok?'..."
+  ],
+  "fallbacks": {
+    "en": [
+      "I'm not completely sure about that specific detail, but here are the key topics I can help you with right away:",
+      "I don't have that in my local knowledge base yet! Take a look at these popular stream topics instead:",
+      "That seems outside my current offline guides. Here are the core areas I'm trained on:"
+    ],
+    "tl": [
+      "Pasensya na, hindi ko pa kabisado yan! Pero heto ang mga madalas itanong na kaya kong sagutin agad:",
+      "Wala pa yan sa offline guide ko. Subukan mong i-click ang isa sa mga topics na ito:",
+      "Hindi ko lubos na nasapol yan, pero heto ang mga pwede kong itulong sa RENEarn Studio:"
+    ]
+  },
+  "jokes": [
+    "Why do zombies love live streamers? Because of all the fresh *brains* chatting in the comments! 🧟‍♂️🧠",
+    "Why did the streamer bring a ladder to Twitch? Because they heard the viewer numbers were through the roof! 🪜📈",
+    "What's a PvZ zombie's favorite social media? *Tik-Toc-Toc-Brains!* 📱🧟",
+    "Why did the keyboard go to the gym? It wanted to improve its *space-bar*! ⌨️💪",
+    "How does a streamer stay cool during a hot gaming session? They stand right next to their *fans*! 🪭🎮",
+    "Why couldn't the skeleton stream Left 4 Dead? He didn't have the *guts*! 💀🕹️",
+    "What do you call a live streamer who plays Plants vs Zombies all night? A *night-shade* warrior! 🌻🌙",
+    "Why did the computer catch a cold? Because someone left a *Windows* open! 🪟❄️",
+    "Why did the gamer put his console in the fridge? He wanted to play some *cool* games! 🧊🎮",
+    "What did one OBS overlay say to the other? *'I've got you covered on stream!'* 🎬✨",
+    "Why was the modder always calm? Because they knew how to *handle exceptions*! 🛡️💻",
+    "Why did the live stream stop? Because the Wi-Fi router needed a *stream nap*! 💤📶",
+    "How do you organize a space tournament in RENEarn? You *planet*! 🪐🏆",
+    "Why did the gamer sit on the clock? He wanted to be *on stream on time*! ⏰🎯",
+    "What kind of tea do gamers drink during 24-hour marathons? *Responsi-tea*! 🍵🔥"
+  ]
+}
+

@@ -1,0 +1,69 @@
+{
+  "articles": [
+    {
+      "id": "obs_overlays",
+      "title": "OBS & TikTok Live Studio Overlay Setup",
+      "keywords": ["obs", "tiktok live studio", "browser source", "overlay", "url", "canvas", "size", "resolution", "stream", "add overlay"],
+      "answer_en": "### 🎬 How to Add Overlays in OBS & TikTok Live Studio:\n\n1. Open **OBS Studio** or **TikTok Live Studio**.\n2. In your **Scenes / Sources** panel, click **+ Add Source** and choose **Browser**.\n3. Enter the local URL of the overlay you want to display:\n   - **Wheel & Reel**: `http://localhost:8080/overlay-spinner.html`\n   - **Live Gift Counter**: `http://localhost:8080/overlay-counter.html`\n   - **Side Overlay (Leaderboard & Triggers)**: `http://localhost:8080/overlay-side.html`\n   - **Gacha Capsule Machine**: `http://localhost:8080/overlay-gacha.html`\n   - **Song Request & Spinning Vinyl**: `http://localhost:8080/overlay-songrequest.html`\n   - **Team Battle (Red vs Blue)**: `http://localhost:8080/overlay-teambattle.html`\n   - **Physics Coin Jar**: `http://localhost:8080/overlay-jar.html`\n4. Set the Recommended Canvas Size:\n   - **Vertical Mobile Stream (9:16)**: Width `1080` × Height `1920`\n   - **Horizontal Standard Stream (16:9)**: Width `1920` × Height `1080`\n5. Check the box **'Shutdown source when not visible'** (optional) and click **OK**.\n6. Make sure RENEarn Studio is running on **port 8080**!",
+      "answer_tl": "### 🎬 Paano Maglagay ng Overlays sa OBS / TikTok Live Studio:\n\n1. Buksan ang **OBS Studio** o **TikTok Live Studio**.\n2. Sa **Sources** panel, i-click ang **+** at piliin ang **Browser Source**.\n3. I-paste ang local URL ng gusto mong overlay:\n   - **Wheel & Reel**: `http://localhost:8080/overlay-spinner.html`\n   - **Live Gift Counter**: `http://localhost:8080/overlay-counter.html`\n   - **Side Overlay**: `http://localhost:8080/overlay-side.html`\n   - **Gacha Machine**: `http://localhost:8080/overlay-gacha.html`\n   - **Song Request & Vinyl**: `http://localhost:8080/overlay-songrequest.html`\n   - **Team Battle**: `http://localhost:8080/overlay-teambattle.html`\n   - **Interactive Jar**: `http://localhost:8080/overlay-jar.html`\n4. Recommended Resolution:\n   - **Vertical (Mobile 9:16)**: `1080` width × `1920` height\n   - **Horizontal (16:9)**: `1920` width × `1080` height\n5. Siguraduhing tumatakbo ang Studio server sa **port 8080**!",
+      "related_ids": ["wheels_gacha", "song_requests", "troubleshooting"]
+    },
+    {
+      "id": "song_requests",
+      "title": "Song Request & Spinning Vinyl Player Overlay",
+      "keywords": ["song", "music", "spotify", "!play", "!sr", "vinyl", "queue", "audio", "track", "request"],
+      "answer_en": "### 🎶 Setting Up the Song Request & Vinyl Overlay:\n\n1. **Add the Overlay to OBS**:\n   - Add a Browser Source with URL: `http://localhost:8080/overlay-songrequest.html`\n   - Recommended resolution: Width `1080` × Height `1920` (or `600` × `350` for just the player widget).\n2. **Viewer Chat Commands**:\n   - Viewers can type `!play <song name>` or `!sr <song title or artist>` directly in your live stream chat to request songs.\n3. **Spotify Integration**:\n   - Connect Spotify in the **Song Request** dashboard tab to automatically push viewer requests directly into your active Spotify playback queue.\n4. **Streamer Controls**:\n   - Streamers can skip (`!skip`), clear the queue, or blacklist inappropriate tracks directly from the dashboard.",
+      "answer_tl": "### 🎶 Song Request at Vinyl Player Overlay Guide:\n\n1. **Ilagay sa OBS**:\n   - Mag-add ng Browser Source gamit ang URL: `http://localhost:8080/overlay-songrequest.html`\n2. **Chat Commands ng Viewers**:\n   - Mag-type lang ang viewers ng `!play <pangalan ng kanta>` sa live stream chat para pumila ang kanta.\n3. **Spotify Integration**:\n   - Sa **Song Request** tab, i-connect ang Spotify para kusang pumasok sa queue ang mga kanta!\n4. **Overlay Animation**:\n   - May animated 33 RPM spinning vinyl record, cover art, requester username, at audio visualizer!",
+      "related_ids": ["obs_overlays", "tts_voice"]
+    },
+    {
+      "id": "gift_mapping",
+      "title": "Linking TikTok Gifts to In-Game Spawns & Commands",
+      "keywords": ["gift", "link", "rose", "perfume", "heart", "spawn", "summon", "action", "trigger", "spawns", "command", "mapping", "paano i-link"],
+      "answer_en": "### 🎁 How to Link TikTok Gifts to In-Game Spawns:\n\n1. Go to the **Gift Commands** tab in the left sidebar navigation.\n2. Choose which gift to map (e.g. **Rose**, **Perfume**, **Heart Me**, **GG**, **Galaxy**, etc.).\n3. Click the **+** button on the trigger card to assign in-game commands:\n   - **In-Game Unit Summons**: Select unit (e.g. *Ultimate Spruce*, *Titan Gargantuar*, *Nuclear Doom Cherry*).\n   - **Simulated Keystrokes**: Assign hotkeys (1–9, Space, Q, E) to trigger spells or activate in-game items.\n   - **Coordinate Clicks**: Assign calibrated screen coordinates to click buttons or tiles inside your game.\n   - **Lucky Wheel Spin**: Trigger a reel or wheel spin whenever the gift is received.\n4. Configure **Repetition**, **Interval (ms)**, and **Multiplier** (spawns scale with gift count).\n5. Click **Save**—triggers are live instantly with 0ms latency!",
+      "answer_tl": "### 🎁 Paano I-link ang TikTok Gifts sa In-Game Actions:\n\n1. Pumunta sa **Gift Commands** sa kaliwang navigation menu.\n2. Piliin ang regalong gusto mong i-assign (hal. **Rose**, **Perfume**, **Heart Me**, **Galaxy**).\n3. I-click ang **+** para magdagdag ng command:\n   - **Unit Spawn**: Pumili ng unit (hal. *Titan Gargantuar*, *Ultimate Spruce*).\n   - **Keystrokes**: Magpindot ng hotkey (1-9, Space, Q, E).\n   - **Screen Click**: Mag-click sa eksaktong coordinate sa screen ng laro.\n   - **Lucky Wheel**: Magpaikot ng roulette tuwing may nag-regalo.\n4. I-set ang dami (Repetition) at multiplier kung gaano karami ang lalabas.\n5. I-save at aktibo na agad ito sa live stream mo!",
+      "related_ids": ["tiktok_connection", "supported_games", "wheels_gacha"]
+    },
+    {
+      "id": "tiktok_connection",
+      "title": "Connecting TikTok LIVE to RENEarn Studio",
+      "keywords": ["tiktok", "connect", "connection", "link", "username", "room id", "live", "paano mag-connect", "mag-connect", "studio link"],
+      "answer_en": "### 📱 How to Connect TikTok LIVE Stream:\n\n1. Open **TikTok LIVE Studio** on your PC and start your live stream.\n2. In RENEarn Studio, locate the **TikTok LIVE Stream Connection** card on the main dashboard.\n3. Type your TikTok `@username` in the input field.\n4. Click the pink **Connect** button.\n5. The status pill will flip to **LIVE CONNECTED ✓** and your Webcast Room ID, live Viewers, and Likes will appear in real-time!\n\n*(Note: Your TikTok account must be actively streaming LIVE before clicking Connect, otherwise the TikTok server will report 'Room not found'.)*",
+      "answer_tl": "### 📱 Paano I-connect ang TikTok LIVE sa Studio:\n\n1. Buksan ang **TikTok LIVE Studio** sa PC at simulan ang iyong live stream.\n2. Sa RENEarn Studio dashboard, hanapin ang **TikTok LIVE Stream Connection** card.\n3. I-type ang iyong TikTok `@username` sa kahon.\n4. I-click ang pink **Connect** button.\n5. Magiging **LIVE CONNECTED ✓** ang status at lalabas agad ang iyong Room ID, Viewers, at Likes!\n\n*(Tandaan: Dapat LIVE ka na muna sa TikTok bago mag-click ng Connect para mahanap ang live room mo.)*",
+      "related_ids": ["gift_mapping", "troubleshooting"]
+    },
+    {
+      "id": "supported_games",
+      "title": "Supported Games & Game Engines Roster",
+      "keywords": ["supported games", "games", "list", "game roster", "pvz", "hybrid", "fusion", "minecraft", "left 4 dead", "gta", "fortnite", "roblox", "anong laro"],
+      "answer_en": "### 🕹️ Supported Games in RENEarn Studio:\n\nRENEarn Studio features direct support and preset configs for:\n1. 🌻 **Plants vs. Zombies Fusion 4.0** (Direct MelonLoader mod link, 150+ actions)\n2. 🧟 **Plants vs. Zombies: Hybrid Edition** (Mutations, hybrid plants & zombies)\n3. 🌿 **Plants vs. Zombies: Classic / GOTY** (Memory injection)\n4. 🌊 **Zombie Tsunami (PC)** (Crowd horde runner automation)\n5. ⛏️ **Minecraft & Universal** (Universal Mod injection & socket link)\n6. 🧟‍♂️ **Left 4 Dead 2** (Source Engine VPK hook & VScript bridge)\n7. 🚗 **GTA San Andreas** (CLEO & ASI memory link)\n8. 💥 **GTA V Chaos** (Chaos mod bridge)\n9. 🏰 **Resident Evil 4** (Survival horror memory hooks)\n10. ⚔️ **TABS Simulator** (Physics warfare sandbox)\n\n*(Note: Games not listed above—like **Fortnite** or **Valorant**—are not natively supported because they run aggressive anti-cheat systems that block input automation and overlay injection.)*",
+      "answer_tl": "### 🕹️ Mga Larong Suportado ng RENEarn Studio:\n\nMay direct mod links at preset triggers para sa:\n1. 🌻 **PvZ Fusion 4.0** (MelonLoader mod bridge)\n2. 🧟 **PvZ Hybrid Edition**\n3. 🌿 **PvZ Classic / GOTY**\n4. 🌊 **Zombie Tsunami (PC)**\n5. ⛏️ **Minecraft & Universal**\n6. 🧟‍♂️ **Left 4 Dead 2** (VPK hook)\n7. 🚗 **GTA San Andreas** (CLEO link)\n8. 💥 **GTA V Chaos**\n9. 🏰 **Resident Evil 4**\n10. ⚔️ **TABS Simulator**\n\n*(Paalala: Ang mga larong tulad ng **Fortnite** ay hindi suportado dahil sa mahigpit nilang anti-cheat na nagba-block ng stream automation.)*",
+      "related_ids": ["gift_mapping", "platform_identity"]
+    },
+    {
+      "id": "wheels_gacha",
+      "title": "Lucky Wheel, 3D Slots & Gacha Box Overlays",
+      "keywords": ["wheel", "spinner", "reel", "slot", "gacha", "claw", "ufo", "odds", "prizes", "weights"],
+      "answer_en": "### 🎡 Lucky Wheel & Gacha Overlay Modes:\n\nThe studio provides 4 dynamic visualizer modes via `http://localhost:8080/overlay-spinner.html`:\n1. **Horizontal CS:GO Reel**: Ticker tape with rarity borders and sound effects.\n2. **Classic 2D Wheel**: High-precision spinning wheel with customizable sector weights.\n3. **3D Vegas Slot Machine**: 3-cylinder reel spinner with jackpot alerts.\n4. **3D Gacha Box / UFO Claw**: Japanese capsule dropper with physics bounces.\n\nCustomize prizes, weights, rarity colors, and avatar needles in the **Lucky Wheel** tab!",
+      "answer_tl": "### 🎡 Lucky Wheel at 3D Gacha Modes:\n\nPwede kang pumili sa 4 na iba't ibang styles gamit ang `http://localhost:8080/overlay-spinner.html`:\n1. **Horizontal Reel**: Parang CS:GO case opening ticker.\n2. **Classic 2D Wheel**: Roulette wheel of fortune.\n3. **3D Slot Machine**: Vegas 3-reel slots.\n4. **3D Gacha Box**: Capsule toy machine na may physics drops.\n\nI-customize ang prizes at odds sa **Lucky Wheel** navigation tab!",
+      "related_ids": ["obs_overlays", "gift_mapping"]
+    },
+    {
+      "id": "tts_voice",
+      "title": "AI Voice TTS Setup & Personas",
+      "keywords": ["tts", "voice", "speech", "personas", "boses", "text to speech", "read", "audio"],
+      "answer_en": "### 🗣️ AI Voice TTS (Text-to-Speech) System:\n\nThe studio can read viewer questions and chat comments aloud on your stream using 8 built-in personas:\n- **Adam Gamer** (Hype male gamer)\n- **Sakura Anime** (Cheerful upbeat voice)\n- **Robot X** (Futuristic synth cyborg)\n- **Jenny Host** (Professional podcast presenter)\n- **Ate May Pinay** (Warm Tagalog/English bilingual voice)\n- **Marcus Radio** (Deep bass FM radio DJ)\n- **Flash Speedrunner** (High-energy fast paced)\n- **Luna ASMR** (Soft whispering voice)\n\nAdjust pitch, speed, and volume in the **Audio -> Voice TTS** menu!",
+      "answer_tl": "### 🗣️ AI Voice TTS (Text-to-Speech) Gabay:\n\nBinabasa nito ang comments at tanong ng viewers gamit ang 8 boses:\n- **Ate May Pinay** (Tagalog/English boses)\n- **Adam Gamer**, **Sakura Anime**, **Robot X**, **Jenny Host**, **Marcus Radio**, **Flash**, at **Luna ASMR**.\n\nPwede mong i-tune ang bilis, tono, at volume sa **Audio -> Voice TTS** tab!",
+      "related_ids": ["song_requests", "obs_overlays"]
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting & Common Fixes",
+      "keywords": ["troubleshooting", "fix", "blank", "not working", "disconnected", "error", "sira", "ayaw", "solusyon", "remedy"],
+      "answer_en": "### 🔧 Quick Troubleshooting Checklist:\n\n1. **Overlay is Blank in OBS**:\n   - Verify `Launch_Studio.bat` or `RENEarn_Studio.exe` is running.\n   - Open `http://localhost:8080` in your web browser. If it loads, right-click the browser source in OBS and click **'Refresh cache of current page'**.\n2. **Game Commands Not Executing**:\n   - Make sure your game window is running in **Borderless** or **Windowed** mode (not exclusive full-screen).\n   - Check the header: the **Game Connected** pill should be green.\n   - For PvZ Fusion, verify MelonLoader is installed and game port 5003 is open.\n3. **TikTok LIVE Disconnects**:\n   - Ensure you are already LIVE in TikTok LIVE Studio before pressing Connect.\n   - Check that you typed the username without extra spaces.",
+      "answer_tl": "### 🔧 Gabay sa Pag-aayos ng Problema:\n\n1. **Blanko ang Overlay sa OBS**:\n   - Siguraduhing tumatakbo ang Studio server sa port 8080.\n   - Sa OBS, i-right click ang Browser Source at piliin ang **'Refresh cache of current page'**.\n2. **Hindi gumagana ang in-game spawns**:\n   - I-set ang laro sa **Borderless** o **Windowed** mode (huwag full-screen).\n   - Tignan ang top bar kung green ang indicator ng game.\n3. **Ayaw mag-connect sa TikTok**:\n   - Siguraduhing LIVE ka na sa TikTok LIVE Studio bago mo i-click ang Connect sa dashboard.",
+      "related_ids": ["obs_overlays", "tiktok_connection", "gift_mapping"]
+    }
+  ]
+}
+

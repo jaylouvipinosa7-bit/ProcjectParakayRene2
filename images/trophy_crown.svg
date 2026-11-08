@@ -1,48 +1,147 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 16 104 96" width="128" height="128">
   <defs>
-    <linearGradient id="crownGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a" />
-      <stop offset="40%" stop-color="#f59e0b" />
-      <stop offset="80%" stop-color="#d97706" />
+    <!-- Master Gold Gradients -->
+    <linearGradient id="goldPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb" />
+      <stop offset="20%" stop-color="#fde047" />
+      <stop offset="55%" stop-color="#f59e0b" />
+      <stop offset="85%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#92400e" />
     </linearGradient>
-    <linearGradient id="rubyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fda4af" />
-      <stop offset="50%" stop-color="#e11d48" />
-      <stop offset="100%" stop-color="#881337" />
+
+    <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="45%" stop-color="#fef08a" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
     </linearGradient>
-    <filter id="crownGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3.5" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
+
+    <linearGradient id="goldDarkRim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="50%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+
+    <!-- Jewels -->
+    <radialGradient id="rubyGlow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffe4e6" />
+      <stop offset="30%" stop-color="#fb7185" />
+      <stop offset="70%" stop-color="#e11d48" />
+      <stop offset="100%" stop-color="#881337" />
+    </radialGradient>
+
+    <radialGradient id="sapphireGlow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="30%" stop-color="#38bdf8" />
+      <stop offset="75%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#075985" />
+    </radialGradient>
+
+    <radialGradient id="emeraldGlow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#d1fae5" />
+      <stop offset="35%" stop-color="#34d399" />
+      <stop offset="80%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </radialGradient>
+
+    <radialGradient id="pearlShine" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </radialGradient>
+
+    <!-- Drop Shadows & Glows -->
+    <filter id="crownSoftGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#f59e0b" flood-opacity="0.4" />
+    </filter>
+
+    <filter id="jewelSparkle" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000000" flood-opacity="0.5" />
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#ffffff" flood-opacity="0.6" />
     </filter>
   </defs>
 
-  <!-- Sparkles -->
-  <polygon points="100,20 102,28 110,30 102,32 100,40 98,32 90,30 98,28" fill="#fef08a" opacity="0.9" />
-  <circle cx="35" cy="55" r="3" fill="#fde68a" opacity="0.8" />
-  <circle cx="165" cy="55" r="3" fill="#fde68a" opacity="0.8" />
+  <g filter="url(#crownSoftGlow)">
+    <!-- Base Pillow/Interior Velvet Cushion (Dark Royal Maroon) -->
+    <path d="M 30 88 C 30 76 42 66 64 66 C 86 66 98 76 98 88 Z" fill="url(#rubyGlow)" opacity="0.45" />
 
-  <!-- Crown Body -->
-  <path d="M 35 140 L 40 75 L 75 110 L 100 50 L 125 110 L 160 75 L 165 140 Z" fill="url(#crownGold)" stroke="#b45309" stroke-width="3" filter="url(#crownGlow)" />
+    <!-- Back Peak Ornaments / Tips -->
+    <circle cx="46" cy="46" r="4.5" fill="url(#pearlShine)" stroke="#78350f" stroke-width="1.2" />
+    <circle cx="82" cy="46" r="4.5" fill="url(#pearlShine)" stroke="#78350f" stroke-width="1.2" />
 
-  <!-- Crown Base Band -->
-  <path d="M 30 140 L 170 140 L 165 160 L 35 160 Z" fill="url(#crownGold)" stroke="#92400e" stroke-width="2.5" />
+    <!-- Main Crown Body -->
+    <path d="M 22 92 L 24 54 C 24 52 27 50 29 52 L 44 68 L 61 32 C 62.5 29 65.5 29 67 32 L 84 68 L 99 52 C 101 50 104 52 104 54 L 106 92 C 92 98 36 98 22 92 Z"
+          fill="url(#goldPlate)" stroke="#78350f" stroke-width="2.5" stroke-linejoin="round" />
 
-  <!-- Pearls / Jewels on Crown Peaks -->
-  <circle cx="40" cy="73" r="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
-  <circle cx="100" cy="48" r="11" fill="url(#rubyGrad)" stroke="#ffe4e6" stroke-width="2" />
-  <circle cx="160" cy="73" r="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
-  <circle cx="75" cy="108" r="6" fill="#38bdf8" stroke="#bae6fd" stroke-width="1.5" />
-  <circle cx="125" cy="108" r="6" fill="#38bdf8" stroke="#bae6fd" stroke-width="1.5" />
+    <!-- Bevel Facet Shading on Peaks (Left-facing highlight sides) -->
+    <path d="M 64 33 L 44 68 L 64 88 L 64 33 Z" fill="url(#goldHighlight)" opacity="0.35" />
+    <path d="M 25 54 L 44 68 L 30 89 L 24 91 Z" fill="url(#goldHighlight)" opacity="0.4" />
+    <path d="M 103 54 L 84 68 L 98 89 L 104 91 Z" fill="#78350f" opacity="0.25" />
 
-  <!-- Base Jewels -->
-  <circle cx="60" cy="150" r="5" fill="url(#rubyGrad)" stroke="#ffe4e6" stroke-width="1" />
-  <circle cx="100" cy="150" r="6" fill="#38bdf8" stroke="#bae6fd" stroke-width="1.5" />
-  <circle cx="140" cy="150" r="5" fill="url(#rubyGrad)" stroke="#ffe4e6" stroke-width="1" />
+    <!-- Crown Base Band Outer Structure -->
+    <path d="M 20 90 C 40 98 88 98 108 90 L 107 101 C 87 109 41 109 21 101 Z"
+          fill="url(#goldPlate)" stroke="#78350f" stroke-width="2.5" stroke-linejoin="round" />
 
-  <!-- Inner Shine highlight -->
-  <path d="M 45 136 L 50 88 L 75 116 L 100 68 L 125 116 L 150 88 L 155 136 Z" fill="#ffffff" opacity="0.2" />
+    <!-- Inner Filigree Groove on Band -->
+    <path d="M 25 93 C 44 100 84 100 103 93" fill="none" stroke="#78350f" stroke-width="1.8" opacity="0.6" />
+    <path d="M 25 98 C 44 105 84 105 103 98" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
+
+    <!-- Crown Peak Finials (Spheres on tips) -->
+    <!-- Left peak finial -->
+    <circle cx="26" cy="52" r="5.5" fill="url(#pearlShine)" stroke="#78350f" stroke-width="1.5" />
+    <!-- Center top peak finial (Majestic Pearl) -->
+    <circle cx="64" cy="30" r="7.5" fill="url(#pearlShine)" stroke="#78350f" stroke-width="1.8" />
+    <!-- Right peak finial -->
+    <circle cx="102" cy="52" r="5.5" fill="url(#pearlShine)" stroke="#78350f" stroke-width="1.5" />
+
+    <!-- Inner highlights on finials -->
+    <circle cx="62" cy="28" r="2.2" fill="#ffffff" opacity="0.9" />
+    <circle cx="24.5" cy="50.5" r="1.6" fill="#ffffff" opacity="0.9" />
+    <circle cx="100.5" cy="50.5" r="1.6" fill="#ffffff" opacity="0.9" />
+
+    <!-- Center Grand Royal Ruby Gem -->
+    <g filter="url(#jewelSparkle)">
+      <!-- Gold Bezel Rim -->
+      <ellipse cx="64" cy="62" rx="9.5" ry="12" fill="url(#goldPlate)" stroke="#78350f" stroke-width="1.8" />
+      <!-- Ruby Oval -->
+      <ellipse cx="64" cy="62" rx="7.5" ry="10" fill="url(#rubyGlow)" stroke="#ffe4e6" stroke-width="0.8" />
+      <!-- Specular Highlight Arc -->
+      <path d="M 60 55 Q 64 54 67 56" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="61.5" cy="57" r="1.2" fill="#ffffff" />
+    </g>
+
+    <!-- Flanking Sapphires on Crown Body -->
+    <circle cx="43" cy="74" r="5" fill="url(#sapphireGlow)" stroke="#78350f" stroke-width="1.2" />
+    <circle cx="41.5" cy="72.5" r="1.2" fill="#ffffff" opacity="0.9" />
+
+    <circle cx="85" cy="74" r="5" fill="url(#sapphireGlow)" stroke="#78350f" stroke-width="1.2" />
+    <circle cx="83.5" cy="72.5" r="1.2" fill="#ffffff" opacity="0.9" />
+
+    <!-- Base Band Studded Jewels -->
+    <!-- Center Emerald -->
+    <circle cx="64" cy="100" r="4.2" fill="url(#emeraldGlow)" stroke="#78350f" stroke-width="1.2" />
+    <circle cx="62.5" cy="98.5" r="1.1" fill="#ffffff" opacity="0.9" />
+
+    <!-- Flanking Rubies -->
+    <circle cx="47" cy="98.5" r="3.5" fill="url(#rubyGlow)" stroke="#78350f" stroke-width="1" />
+    <circle cx="81" cy="98.5" r="3.5" fill="url(#rubyGlow)" stroke="#78350f" stroke-width="1" />
+
+    <!-- Outer Sapphires on Band -->
+    <circle cx="32" cy="95.5" r="3.2" fill="url(#sapphireGlow)" stroke="#78350f" stroke-width="1" />
+    <circle cx="96" cy="95.5" r="3.2" fill="url(#sapphireGlow)" stroke="#78350f" stroke-width="1" />
+
+    <!-- Front Curved Specular Highlights -->
+    <path d="M 28 89 C 48 95 80 95 100 89" fill="none" stroke="#ffffff" stroke-width="1.8" opacity="0.5" stroke-linecap="round" />
+    <path d="M 63 36 L 63 48" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.75" stroke-linecap="round" />
+  </g>
+
+  <!-- Sparkle Stars Floating on Top -->
+  <g opacity="0.95">
+    <!-- Star 1 (Top Right) -->
+    <polygon points="106,20 108,26 114,28 108,30 106,36 104,30 98,28 104,26" fill="#fef08a" />
+    <circle cx="106" cy="28" r="1.5" fill="#ffffff" />
+    <!-- Star 2 (Top Left) -->
+    <polygon points="22,30 23.5,34.5 28,36 23.5,37.5 22,42 20.5,37.5 16,36 20.5,34.5" fill="#fef08a" opacity="0.8" />
+    <circle cx="22" cy="36" r="1" fill="#ffffff" />
+  </g>
 </svg>

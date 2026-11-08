@@ -6276,5 +6276,104 @@
         "isCommunity":  true,
         "source":  "tiktok_live_room",
         "addedAt":  "2026-11-06T00:33:35.1375633Z"
+    },
+    {
+        "id":  "5794",
+        "name":  "Coconut",
+        "coins":  199,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb0923dbab5251f4c2e0496b11b55c4f~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.3991122Z"
+    },
+    {
+        "id":  "12277",
+        "name":  "Silver Sports Car",
+        "coins":  1000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f9d784269da31a71e58b10de6fc34cde.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4021376Z"
+    },
+    {
+        "id":  "6842",
+        "name":  "Gerry the Giraffe",
+        "coins":  1000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e2c021bc1ec2e83448ddc91c6123caf~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "14488",
+        "name":  "Capybara",
+        "coins":  30,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6703facdac34caefbd0617a6321afe9b.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "11068",
+        "name":  "Falcon",
+        "coins":  10999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d91543decd90e6905aa134ca01a9a43.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "6560",
+        "name":  "Tiny Diny",
+        "coins":  10,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3851a489dea62b3a9fe99f61de5470ae~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "14440",
+        "name":  "White Tiger",
+        "coins":  15999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/b7d2532e9e175722cac92a0685d5a5ca.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "8086",
+        "name":  "Car Drifting",
+        "coins":  3000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/d214113a72527ce758ca79c1106f784d~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "11491",
+        "name":  "Giraffe",
+        "coins":  1000,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/4e2c021bc1ec2e83448ddc91c6123caf.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "5524",
+        "name":  "Tsar",
+        "coins":  100,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/cb1c3e6263d4b6c08301f8798dcb5a9b.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4031426Z"
+    },
+    {
+        "id":  "16194",
+        "name":  "Falcon",
+        "coins":  10999,
+        "icon":  "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/1d91543decd90e6905aa134ca01a9a43.png~tplv-obj.webp",
+        "isCommunity":  true,
+        "source":  "tiktok_live_room",
+        "addedAt":  "2026-11-07T12:24:45.4041488Z"
     }
 ]

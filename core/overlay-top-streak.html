@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
-    <title>Top Streak Overlay</title>
+    <title>Top Streak Overlay - Primal Kyogre Oceanic Storm</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +17,71 @@
         }
 
         :root {
-            --streak-rose: #f43f5e;
-            --streak-light: #fb7185;
-            --streak-glow: rgba(244, 63, 94, 0.7);
+            /* ─── Default Theme Variables (Primal Kyogre Oceanic Storm) ─── */
+            --accent: #00f0ff;
+            --accent-2: #2563eb;
+            --accent-light: #7dd3fc;
+            --accent-deep: #0369a1;
+            --glow: rgba(0, 240, 255, 0.85);
+            --glow-soft: rgba(0, 240, 255, 0.35);
+            --bg-dark: #050b14;
+            --plate-bg: linear-gradient(135deg, rgba(6, 18, 36, 0.98), rgba(3, 9, 18, 0.98));
+            --vein-color: rgba(239, 68, 68, 0.85); /* Primal Kyogre's red bio-luminescent runes */
+            --badge-bg: radial-gradient(circle, #38bdf8 0%, #2563eb 100%);
+            --badge-glow: rgba(0, 240, 255, 0.95);
+
+            /* Timings & Animation Speeds */
+            --anim-speed: 1s;
+            --ring-rot-speed: 60s;
+            --chase-speed: 3s;
+            --glow-breathe-speed: 3s;
+            --pill-shine-speed: 4s;
+            --bob-speed: 3s;
+        }
+
+        /* ─── Primal Kyogre Deep-Ocean Theme ─── */
+        body.theme-kyogre {
+            --accent: #00f0ff;
+            --accent-2: #2563eb;
+            --accent-light: #7dd3fc;
+            --accent-deep: #0369a1;
+            --glow: rgba(0, 240, 255, 0.85);
+            --glow-soft: rgba(0, 240, 255, 0.35);
+            --bg-dark: #050b14;
+            --plate-bg: linear-gradient(135deg, rgba(6, 18, 36, 0.98), rgba(3, 9, 18, 0.98));
+            --vein-color: rgba(239, 68, 68, 0.85);
+            --badge-bg: radial-gradient(circle, #38bdf8 0%, #2563eb 100%);
+            --badge-glow: rgba(0, 240, 255, 0.95);
+        }
+
+        /* ─── Plasma Groudon Volcanic Magma Theme ─── */
+        body.theme-groudon {
+            --accent: #f97316;
+            --accent-2: #dc2626;
+            --accent-light: #fef08a;
+            --accent-deep: #b91c1c;
+            --glow: rgba(249, 115, 22, 0.85);
+            --glow-soft: rgba(249, 115, 22, 0.35);
+            --bg-dark: #1a0505;
+            --plate-bg: linear-gradient(135deg, rgba(38, 8, 8, 0.98), rgba(18, 4, 4, 0.98));
+            --vein-color: rgba(254, 240, 138, 0.85);
+            --badge-bg: radial-gradient(circle, #f97316 0%, #dc2626 100%);
+            --badge-glow: rgba(249, 115, 22, 0.95);
+        }
+
+        /* ─── Classic Pink Theme ─── */
+        body.theme-classic, body.theme-pink {
+            --accent: #f43f5e;
+            --accent-2: #e11d48;
+            --accent-light: #fb7185;
+            --accent-deep: #9f1239;
+            --glow: rgba(244, 63, 94, 0.85);
+            --glow-soft: rgba(244, 63, 94, 0.35);
+            --bg-dark: #1f020a;
+            --plate-bg: linear-gradient(135deg, rgba(32, 14, 22, 0.98), rgba(18, 8, 14, 0.98));
+            --vein-color: rgba(255, 255, 255, 0.8);
+            --badge-bg: radial-gradient(circle, #f43f5e 0%, #e11d48 100%);
+            --badge-glow: rgba(244, 63, 94, 0.95);
         }
 
         html, body {
@@ -32,8 +94,10 @@
             justify-content: center;
             font-family: "Oxanium", sans-serif;
             user-select: none;
+            -webkit-user-select: none;
         }
 
+        /* ─── Streak Stage (Outer Container) ─── */
         .streak-stage {
             position: relative;
             width: 320px;
@@ -43,62 +107,202 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 8px;
+            padding: 10px;
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
         }
 
+        /* Overlay dim state when idle */
+        .streak-stage.idle-dimmed {
+            opacity: 0.45;
+            transform: scale(0.96);
+        }
+
+        /* Fade/scale out on streak broken */
+        .streak-stage.streak-broken {
+            animation: streakBrokenFade 1.2s forwards;
+        }
+
+        @keyframes streakBrokenFade {
+            0% { transform: scale(1); opacity: 1; filter: grayscale(0); }
+            40% { transform: scale(0.97); opacity: 0.8; filter: grayscale(0.8) brightness(0.7); }
+            100% { transform: scale(0.92); opacity: 0.2; filter: grayscale(1) brightness(0.5); }
+        }
+
+        /* ─── Icon Stage (Center Ring & Disc) ─── */
         .icon-stage {
             position: relative;
-            width: 220px;
-            height: 220px;
+            width: 230px;
+            height: 230px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        /* ─── Fiery Spinning Sunburst Rays ─── */
-        .sunburst-bg {
+        /* ─── Ocean Atmosphere: Ambient Deep Cyan Glowing Aura ─── */
+        .streak-aura {
             position: absolute;
-            width: 220px;
-            height: 220px;
+            inset: -12%;
             border-radius: 50%;
-            opacity: 0.9;
-            animation: spinStreakRays 18s linear infinite;
-            z-index: 1;
+            background: radial-gradient(circle at 50% 50%, var(--glow) 0%, var(--glow-soft) 40%, transparent 70%);
+            animation: auraBreathe var(--glow-breathe-speed) ease-in-out infinite alternate;
             pointer-events: none;
-            background: radial-gradient(circle, rgba(244, 63, 94, 0.5) 0%, rgba(225, 29, 72, 0.22) 55%, transparent 72%),
-                        repeating-conic-gradient(from 0deg, rgba(251, 113, 133, 0.52) 0deg 12deg, transparent 12deg 30deg);
-            box-shadow: 0 0 50px rgba(244, 63, 94, 0.7);
+            z-index: 1;
+            will-change: transform, opacity;
         }
 
-        @keyframes spinStreakRays {
+        @keyframes auraBreathe {
+            0% { transform: scale(0.94); opacity: 0.6; filter: blur(14px); }
+            100% { transform: scale(1.08); opacity: 1; filter: blur(20px); }
+        }
+
+        /* ─── Thin Outer Rune Ring with Rotating Tick Marks ─── */
+        .outer-rune-ring {
+            position: absolute;
+            width: 228px;
+            height: 228px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0, 240, 255, 0.25);
+            pointer-events: none;
+            z-index: 2;
+            animation: spinCounterClockwise 45s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes spinCounterClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        /* Rune tick dashes */
+        .outer-rune-ring::before {
+            content: "";
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: repeating-conic-gradient(from 0deg, var(--accent) 0deg 2deg, transparent 2deg 15deg);
+            mask: radial-gradient(circle, transparent 65%, black 67%, black 72%, transparent 74%);
+            -webkit-mask: radial-gradient(circle, transparent 65%, black 67%, black 72%, transparent 74%);
+            opacity: 0.7;
+        }
+
+        /* ─── Segmented Ring Container (Slow Clockwise Rotation: 60s) ─── */
+        .segmented-ring-wrap {
+            position: absolute;
+            width: 216px;
+            height: 216px;
+            border-radius: 50%;
+            z-index: 2;
+            pointer-events: none;
+            animation: spinClockwise var(--ring-rot-speed) linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes spinClockwise {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* Aura Breathe */
-        .streak-aura {
+        /* Segmented Wheel Background */
+        .sunburst-bg {
             position: absolute;
-            inset: -8%;
+            inset: 0;
             border-radius: 50%;
-            background: radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.5), rgba(225, 29, 72, 0.15) 45%, transparent 70%);
-            animation: streakAuraBreathe 3s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.45) 0%, rgba(37, 99, 235, 0.25) 50%, transparent 72%),
+                        repeating-conic-gradient(from 0deg, var(--accent) 0deg 14deg, rgba(37, 99, 235, 0.3) 14deg 22.5deg);
+            box-shadow: 0 0 45px var(--glow), inset 0 0 25px rgba(37, 99, 235, 0.5);
+            mask: radial-gradient(circle, transparent 62%, black 64%, black 100%);
+            -webkit-mask: radial-gradient(circle, transparent 62%, black 64%, black 100%);
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Bright "Chase" Highlight that sweeps around segments every ~3s */
+        .ring-chase-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 30deg, #ffffff 45deg, var(--accent) 60deg, transparent 90deg);
+            mask: radial-gradient(circle, transparent 62%, black 64%, black 100%);
+            -webkit-mask: radial-gradient(circle, transparent 62%, black 64%, black 100%);
+            animation: ringChaseSweep var(--chase-speed) linear infinite;
+            pointer-events: none;
+            opacity: 0.95;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        @keyframes ringChaseSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Primal Kyogre's Bioluminescent Red Markings Flickering on Ring */
+        .ring-red-veins {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: repeating-conic-gradient(from 45deg, var(--vein-color) 0deg 4deg, transparent 4deg 45deg);
+            mask: radial-gradient(circle, transparent 64%, black 66%, black 98%);
+            -webkit-mask: radial-gradient(circle, transparent 64%, black 66%, black 98%);
+            opacity: 0;
+            pointer-events: none;
+            animation: redVeinFlicker 6.5s ease-in-out infinite;
+            will-change: opacity, filter;
+        }
+
+        @keyframes redVeinFlicker {
+            0%, 74%, 100% { opacity: 0; }
+            76% { opacity: 0.85; filter: drop-shadow(0 0 8px var(--vein-color)); }
+            80% { opacity: 0.25; }
+            84% { opacity: 0.95; filter: drop-shadow(0 0 12px var(--vein-color)); }
+            90% { opacity: 0; }
+        }
+
+        /* ─── Rising Ocean Bubbles Layer ─── */
+        .ocean-bubbles-layer {
+            position: absolute;
+            inset: -20px;
             pointer-events: none;
             z-index: 1;
+            overflow: visible;
         }
 
-        @keyframes streakAuraBreathe {
-            0%, 100% { transform: scale(0.92); opacity: 0.7; }
-            50% { transform: scale(1.08); opacity: 1; }
+        .ocean-bubble {
+            position: absolute;
+            bottom: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(0, 240, 255, 0.4) 40%, rgba(37, 99, 235, 0.15) 100%);
+            box-shadow: 0 0 6px rgba(0, 240, 255, 0.6), inset 0 0 4px rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            animation: bubbleRiseSlow 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
         }
 
-        /* Shockwave Ring Wave */
+        @keyframes bubbleRiseSlow {
+            0% {
+                transform: translate(0, 0) scale(0.4);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.85;
+            }
+            75% {
+                opacity: 0.75;
+                transform: translate(var(--drift-x, 8px), -160px) scale(1);
+            }
+            100% {
+                transform: translate(calc(var(--drift-x, 8px) * 1.5), -220px) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        /* ─── Expanding Water Shockwave Waves ─── */
         .streak-ring-wave {
             position: absolute;
-            inset: 16px;
+            inset: 12px;
             border-radius: 50%;
-            border: 2.5px solid rgba(251, 113, 133, 0.9);
-            box-shadow: 0 0 24px rgba(244, 63, 94, 0.75), inset 0 0 16px rgba(225, 29, 72, 0.45);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 24px var(--glow), inset 0 0 16px var(--accent-2);
             animation: streakRingWave 4.8s ease-out infinite;
             pointer-events: none;
             z-index: 2;
@@ -107,38 +311,28 @@
         @keyframes streakRingWave {
             0%, 60%, 100% { transform: scale(0.55); opacity: 0; }
             65% { opacity: 0.95; }
-            82% { transform: scale(1.26); opacity: 0; }
+            82% { transform: scale(1.28); opacity: 0; }
         }
 
-        .ray-ring {
-            position: absolute;
-            width: 176px;
-            height: 176px;
-            border-radius: 50%;
-            z-index: 2;
-            pointer-events: none;
-            border: 2.5px solid rgba(251, 113, 133, 0.85);
-            box-shadow: 0 0 24px rgba(244, 63, 94, 0.85);
-        }
-
-        /* Sparkles */
+        /* Floating Sparkles */
         .sparkle {
             position: absolute;
             z-index: 4;
             pointer-events: none;
-            animation: pulseSparkle 2s ease-in-out infinite alternate;
+            animation: pulseSparkle 2.2s ease-in-out infinite alternate;
+            will-change: transform, opacity;
         }
 
         @keyframes pulseSparkle {
-            0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
-            100% { transform: scale(1.2) rotate(45deg); opacity: 1; filter: drop-shadow(0 0 8px #ffeb3b); }
+            0% { transform: scale(0.7) rotate(0deg); opacity: 0.4; }
+            100% { transform: scale(1.25) rotate(45deg); opacity: 1; filter: drop-shadow(0 0 10px var(--accent-light)); }
         }
 
-        /* ─── 3D Flipping Disc (Gift <-> Profile) ─── */
+        /* ─── 3D Flipping Center Disc ─── */
         .flip-wrapper {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: 154px;
+            height: 154px;
             border-radius: 50%;
             z-index: 3;
             perspective: 1000px;
@@ -151,6 +345,7 @@
             border-radius: 50%;
             transform-style: preserve-3d;
             transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform;
         }
 
         .flip-disc.flipped {
@@ -167,38 +362,85 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            /* Inner shadow depth on center circle */
+            box-shadow: inset 0 8px 25px rgba(0, 0, 0, 0.95), inset 0 0 18px var(--glow-soft);
         }
 
         .face-front {
             transform: rotateY(0deg) translateZ(1px);
-            background: rgba(28, 12, 20, 0.92);
-            border: 2px solid rgba(251, 113, 133, 0.55);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+            background: radial-gradient(circle, rgba(10, 24, 46, 0.96) 0%, rgba(4, 10, 20, 0.98) 100%);
+            border: 2px solid var(--accent);
         }
 
         .face-back {
             transform: rotateY(180deg) translateZ(1px);
-            background: radial-gradient(circle, #4c0519 0%, #1f020a 100%);
-            border: 3px solid rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 24px rgba(244, 63, 94, 0.95);
+            background: radial-gradient(circle, #082f49 0%, #031326 100%);
+            border: 3px solid var(--accent-light);
+            box-shadow: 0 0 26px var(--glow), inset 0 0 20px rgba(0, 0, 0, 0.7);
         }
 
+        /* Glass highlight arc on top-left of center circle */
+        .center-glass-arc {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.04) 32%, transparent 60%);
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        /* Soft caustic light ripples drifting inside center circle */
+        .ocean-caustics {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 40% 40%, rgba(0, 240, 255, 0.28) 0%, transparent 65%),
+                        radial-gradient(ellipse at 70% 60%, rgba(37, 99, 235, 0.22) 0%, transparent 60%);
+            animation: causticsDrift 5s ease-in-out infinite alternate;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 2;
+            opacity: 0.7;
+            will-change: transform, opacity;
+        }
+
+        @keyframes causticsDrift {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+            50% { transform: scale(1.08) translate(-4px, 3px); opacity: 0.85; }
+            100% { transform: scale(0.96) translate(3px, -4px); opacity: 0.6; }
+        }
+
+        /* ─── Center Gift Image with Bobbing and Rim Light ─── */
         .gift-img-center {
+            position: relative;
+            z-index: 4;
             width: 104px;
             height: 104px;
             object-fit: contain;
-            filter: drop-shadow(0 6px 16px rgba(0,0,0,0.85));
-            animation: streakGiftFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 12px var(--glow-soft));
+            animation: streakGiftFloat var(--bob-speed) ease-in-out infinite;
+            transform-origin: center center;
+            transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.25s ease;
+            will-change: transform;
         }
 
         @keyframes streakGiftFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-            25% { transform: translateY(-5%) rotate(-2deg) scale(1.03); }
-            50% { transform: translateY(-1%) rotate(0deg) scale(1); }
-            75% { transform: translateY(-5%) rotate(2deg) scale(1.03); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
 
-        /* Shine Sweep Beam */
+        /* Gift Crossfade Scale-In on New Gift */
+        .gift-img-center.anim-crossfade {
+            animation: giftCrossfade 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+
+        @keyframes giftCrossfade {
+            0% { transform: scale(0.8); opacity: 0.3; }
+            60% { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Shine Sweep Beam Across Gift */
         .gift-shine-sweep {
             position: absolute;
             inset: 0;
@@ -231,84 +473,224 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 50%;
         }
 
-        /* ─── Streak Multiplier Floating Badge ─── */
+        /* ─── Combo Pill (99x) with Tiered Escalation ─── */
         .streak-badge {
             position: absolute;
             bottom: 4px;
             right: 8px;
-            z-index: 6;
-            background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #e11d48 100%);
+            z-index: 8;
+            background: var(--badge-bg);
             color: #ffffff;
             font-size: 24px;
             font-weight: 900;
             padding: 5px 14px;
             border-radius: 20px;
-            box-shadow: 0 4px 18px rgba(244, 63, 94, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.6);
             border: 2px solid #ffffff;
-            animation: badgeBounce 1.5s ease-in-out infinite alternate;
+            box-shadow: 0 4px 18px var(--badge-glow), inset 0 2px 4px rgba(255, 255, 255, 0.6);
             letter-spacing: -0.5px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
         }
 
-        @keyframes badgeBounce {
+        /* Gradient shine sweeping across pill every ~4s */
+        .streak-badge::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 60%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.75) 50%, transparent 100%);
+            transform: translateX(-150%) skewX(-20deg);
+            animation: pillShineSweep var(--pill-shine-speed) ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pillShineSweep {
+            0%, 65% { transform: translateX(-150%) skewX(-20deg); opacity: 0; }
+            70% { opacity: 1; }
+            100% { transform: translateX(250%) skewX(-20deg); opacity: 0; }
+        }
+
+        /* Pop animation on combo increase (scale 1 → 1.25 → 1) */
+        @keyframes streakPunch {
             0% { transform: scale(1); }
-            100% { transform: scale(1.12); }
+            40% { transform: scale(1.25) rotate(-3deg); filter: brightness(1.35); }
+            100% { transform: scale(1) rotate(0deg); }
         }
 
         .anim-pop {
-            animation: streakPunch 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) !important;
+            animation: streakPunch 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
         }
 
-        @keyframes streakPunch {
-            0% { transform: scale(0.8) rotate(-6deg); }
-            50% { transform: scale(1.3) rotate(6deg); filter: brightness(1.4); }
-            100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+        /* Pulsing flash ring from pill on increment */
+        .pill-flash-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 24px;
+            border: 2px solid #ffffff;
+            pointer-events: none;
+            animation: pillRingPulse 0.5s ease-out forwards;
         }
 
-        /* ─── Bottom Info Pill & Shimmer ─── */
+        @keyframes pillRingPulse {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 16px var(--accent); }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* ─── Combo Tier Escalation Styles ─── */
+        /* Tier 1 (1–9x): Cyan (Default) */
+        .streak-badge.tier-1 {
+            background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
+        }
+
+        /* Tier 2 (10–24x): Brighter electric blue */
+        .streak-badge.tier-2 {
+            background: radial-gradient(circle, #00f0ff 0%, #2563eb 100%);
+            box-shadow: 0 0 22px var(--glow), inset 0 2px 6px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Tier 3 (25–49x): Blue-white with lightning arcs */
+        .streak-badge.tier-3 {
+            background: radial-gradient(circle, #ffffff 0%, #38bdf8 45%, #1d4ed8 100%);
+            color: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 0 0 26px rgba(255, 255, 255, 0.9), 0 0 35px var(--accent);
+            animation: lightningArcTremble 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes lightningArcTremble {
+            0% { box-shadow: 0 0 20px #ffffff, 0 0 30px var(--accent); }
+            100% { box-shadow: 0 0 28px #ffffff, 0 0 45px var(--accent-light); }
+        }
+
+        /* Tier 4 (50–98x): Gold-tinged glow */
+        .streak-badge.tier-4 {
+            background: radial-gradient(circle, #ffd35a 0%, #2563eb 85%);
+            border-color: #ffd35a;
+            box-shadow: 0 0 26px rgba(255, 211, 90, 0.95), 0 0 35px var(--accent);
+        }
+
+        /* Tier 5 (99x Max Tier): Constant intense energy aura + orbiting electric sparks */
+        .streak-badge.tier-5 {
+            background: radial-gradient(circle, #ffffff 0%, #38bdf8 30%, #2563eb 80%, #ffd35a 100%);
+            border-color: #ffffff;
+            box-shadow: 0 0 28px #ffffff, 0 0 45px var(--accent), 0 0 60px rgba(255, 211, 90, 0.8);
+            animation: maxTierAuraPulse 1.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes maxTierAuraPulse {
+            0% { transform: scale(1); filter: brightness(1.05); }
+            100% { transform: scale(1.06); filter: brightness(1.3); }
+        }
+
+        /* ─── Bottom Info Name Plate ─── */
         .info-pill {
+            position: relative;
             z-index: 5;
-            background: linear-gradient(135deg, rgba(32, 14, 22, 0.96), rgba(18, 8, 14, 0.98));
-            border: 1.5px solid rgba(251, 113, 133, 0.55);
+            background: var(--plate-bg);
+            border: 1.5px solid var(--accent);
             border-radius: 16px;
-            padding: 8px 22px;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 18px rgba(244, 63, 94, 0.35);
+            padding: 9px 24px 11px 24px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.85), 0 0 20px var(--glow-soft);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            transition: transform 0.2s ease;
+            overflow: hidden;
+            animation: nameplateSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: transform 0.25s ease, border-color 0.3s ease;
+        }
+
+        @keyframes nameplateSlideUp {
+            0% { transform: translateY(16px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Border draw line across top */
+        .info-pill::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+            animation: drawBorderLine 0.9s ease-out forwards;
+        }
+
+        @keyframes drawBorderLine {
+            0% { transform: scaleX(0); opacity: 0; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* Subtle water-wave shimmer along bottom edge */
+        .info-pill::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-light) 30%, #ffffff 50%, var(--accent-light) 70%, transparent 100%);
+            background-size: 200% 100%;
+            animation: waterWaveBottom 3.5s linear infinite;
+        }
+
+        @keyframes waterWaveBottom {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .info-top-tag {
             font-size: 11px;
             font-weight: 900;
-            color: #fb7185;
-            letter-spacing: 1px;
+            color: var(--accent-light);
+            letter-spacing: 1.2px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(251, 113, 133, 0.5);
+            text-shadow: 0 0 10px var(--glow);
+            white-space: nowrap;
         }
 
+        /* Slightly larger, crisper typography for gift name */
         .info-main-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 900;
             letter-spacing: -0.2px;
-            background: linear-gradient(96deg, #ffffff, #ffe4e6 50%, #fb7185 100%);
+            background: linear-gradient(96deg, #ffffff 0%, #e0f2fe 50%, var(--accent-light) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            white-space: nowrap;
+            transition: transform 0.2s ease;
+        }
+
+        /* Quick text shimmer on gift name change */
+        .info-main-title.title-shimmer {
+            animation: textShimmerSweep 0.75s ease-out forwards;
+        }
+
+        @keyframes textShimmerSweep {
+            0% { filter: brightness(1); transform: scale(0.96); }
+            50% { filter: brightness(2) drop-shadow(0 0 12px #ffffff); transform: scale(1.05); }
+            100% { filter: brightness(1); transform: scale(1); }
         }
 
         .info-sub-value {
             font-size: 13px;
             font-weight: 800;
-            background: linear-gradient(96deg, #fb7185, #ffffff 40%, #f43f5e 80%);
+            background: linear-gradient(96deg, var(--accent-deep), #f0f9ff 22%, var(--accent) 44%, #ffffff 57%, var(--accent) 66%, var(--accent-deep));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             background-size: 260% 100%;
             animation: streakTextShift 6s linear infinite;
+            white-space: nowrap;
         }
 
         @keyframes streakTextShift {
@@ -316,235 +698,98 @@
             100% { background-position: 260% 50%; }
         }
 
-        /* ================= PLASMA GROUDON DESOLATE LIGHTNING THEME ================= */
-        body.theme-groudon {
-            --streak-rose: #00f0ff;
-            --streak-light: #67e8f9;
-            --streak-glow: rgba(0, 240, 255, 0.85);
-            --streak-plasma: #2563eb;
-            --streak-dark: #070e1b;
+        /* Water splash ring wipe on new streaker */
+        .water-splash-wipe {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 35px var(--accent), inset 0 0 25px var(--accent-2);
+            pointer-events: none;
+            z-index: 20;
+            animation: splashRingWipe 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
         }
 
-        body.theme-groudon .sunburst-bg {
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.6) 0%, rgba(37, 99, 235, 0.3) 48%, transparent 72%),
-                        repeating-conic-gradient(from 0deg, rgba(0, 240, 255, 0.8) 0deg 12deg, rgba(37, 99, 235, 0.2) 12deg 20deg, transparent 20deg 30deg);
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.85), inset 0 0 35px rgba(37, 99, 235, 0.5);
+        @keyframes splashRingWipe {
+            0% { transform: scale(0.3); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
         }
 
-        body.theme-groudon .streak-aura {
-            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.6), rgba(37, 99, 235, 0.25) 45%, transparent 70%);
-        }
-
-        body.theme-groudon .streak-ring-wave {
-            border: 2.5px solid rgba(0, 240, 255, 0.95);
-            box-shadow: 0 0 28px rgba(0, 240, 255, 0.85), inset 0 0 18px rgba(37, 99, 235, 0.6);
-        }
-
-        body.theme-groudon .ray-ring {
-            border: 2.5px solid rgba(56, 189, 248, 0.85);
-            box-shadow: 0 0 28px rgba(0, 240, 255, 0.9), inset 0 0 16px rgba(37, 99, 235, 0.5);
-        }
-
-        body.theme-groudon .face-front {
-            background: radial-gradient(circle, rgba(10, 24, 46, 0.95) 0%, rgba(4, 10, 20, 0.98) 100%);
-            border: 2.5px solid rgba(0, 240, 255, 0.65);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(0, 240, 255, 0.45);
-        }
-
-        body.theme-groudon .face-back {
-            background: radial-gradient(circle, #082f49 0%, #031326 100%);
-            border: 3px solid #38bdf8;
-            box-shadow: 0 0 26px rgba(0, 240, 255, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
-        }
-
-        body.theme-groudon .info-pill {
-            background: linear-gradient(135deg, rgba(8, 20, 38, 0.98), rgba(4, 10, 20, 0.98));
-            border: 1.5px solid rgba(0, 240, 255, 0.65);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 240, 255, 0.45);
-        }
-
-        body.theme-groudon .info-top-tag {
-            color: #38bdf8;
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.75);
-        }
-
-        body.theme-groudon .info-main-title {
-            background: linear-gradient(96deg, #ffffff, #e0f2fe 50%, #7dd3fc 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-
-        /* ================= PRIMAL KYOGRE OCEANIC STORM THEME ================= */
-        body.theme-kyogre {
-            --streak-rose: #00f0ff;
-            --streak-light: #67e8f9;
-            --streak-glow: rgba(0, 240, 255, 0.85);
-            --streak-plasma: #2563eb;
-            --streak-dark: #070e1b;
-        }
-        body.theme-kyogre .sunburst-bg {
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.6) 0%, rgba(37, 99, 235, 0.35) 48%, transparent 72%),
-                        repeating-conic-gradient(from 0deg, rgba(0, 240, 255, 0.8) 0deg 12deg, rgba(37, 99, 235, 0.25) 12deg 20deg, transparent 20deg 30deg);
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.85), inset 0 0 35px rgba(37, 99, 235, 0.5);
-        }
-        body.theme-kyogre .streak-aura {
-            background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.6), rgba(37, 99, 235, 0.25) 45%, transparent 70%);
-        }
-        body.theme-kyogre .streak-ring-wave {
-            border: 2.5px solid rgba(0, 240, 255, 0.95);
-            box-shadow: 0 0 28px rgba(0, 240, 255, 0.85), inset 0 0 18px rgba(37, 99, 235, 0.6);
-        }
-        body.theme-kyogre .ray-ring {
-            border: 2.5px solid rgba(56, 189, 248, 0.85);
-            box-shadow: 0 0 28px rgba(0, 240, 255, 0.9), inset 0 0 16px rgba(37, 99, 235, 0.5);
-        }
-        body.theme-kyogre .face-front {
-            background: radial-gradient(circle, rgba(10, 24, 46, 0.95) 0%, rgba(4, 10, 20, 0.98) 100%);
-            border: 2.5px solid rgba(0, 240, 255, 0.65);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(0, 240, 255, 0.45);
-        }
-        body.theme-kyogre .face-back {
-            background: radial-gradient(circle, #082f49 0%, #031326 100%);
-            border: 3px solid #38bdf8;
-            box-shadow: 0 0 26px rgba(0, 240, 255, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
-        }
-        body.theme-kyogre .info-pill {
-            background: linear-gradient(135deg, rgba(8, 20, 38, 0.98), rgba(4, 10, 20, 0.98));
-            border: 1.5px solid rgba(0, 240, 255, 0.65);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 240, 255, 0.45);
-        }
-        body.theme-kyogre .info-top-tag {
-            color: #38bdf8;
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.75);
-        }
-        body.theme-kyogre .info-main-title {
-            background: linear-gradient(96deg, #ffffff, #e0f2fe 50%, #7dd3fc 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-        body.theme-kyogre .info-sub-value {
-            background: linear-gradient(96deg, #0284c7, #f0f9ff 22%, #38bdf8 44%, #ffffff 57%, #38bdf8 66%, #0284c7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            background-size: 260% 100%;
-        }
-        body.theme-kyogre .streak-badge {
-            background: radial-gradient(circle, #38bdf8 0%, #2563eb 100%);
-            border-color: #ffffff;
-            color: #ffffff;
-            box-shadow: 0 0 16px rgba(0, 240, 255, 0.95), 0 4px 10px rgba(0,0,0,0.8);
-        }
-        body.theme-kyogre .groudon-lightning-badge {
-            background: radial-gradient(circle, #38bdf8 0%, #1d4ed8 100%);
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 16px rgba(0, 240, 255, 0.95), 0 4px 12px rgba(0,0,0,0.8);
-        }
-
-        /* ================= PLASMA GROUDON VOLCANIC MAGMA THEME ================= */
-        body.theme-groudon {
-            --streak-rose: #f97316;
-            --streak-light: #fb923c;
-            --streak-glow: rgba(249, 115, 22, 0.85);
-            --streak-plasma: #dc2626;
-            --streak-dark: #1a0505;
-        }
-        body.theme-groudon .sunburst-bg {
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.7) 0%, rgba(249, 115, 22, 0.35) 48%, transparent 72%),
-                        repeating-conic-gradient(from 0deg, rgba(239, 68, 68, 0.85) 0deg 12deg, rgba(245, 158, 11, 0.3) 12deg 20deg, transparent 20deg 30deg);
-            box-shadow: 0 0 60px rgba(239, 68, 68, 0.85), inset 0 0 35px rgba(249, 115, 22, 0.5);
-        }
-        body.theme-groudon .streak-aura {
-            background: radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.65), rgba(245, 158, 11, 0.3) 45%, transparent 70%);
-        }
-        body.theme-groudon .streak-ring-wave {
-            border: 2.5px solid rgba(249, 115, 22, 0.95);
-            box-shadow: 0 0 28px rgba(239, 68, 68, 0.85), inset 0 0 18px rgba(245, 158, 11, 0.6);
-        }
-        body.theme-groudon .ray-ring {
-            border: 2.5px solid rgba(239, 68, 68, 0.85);
-            box-shadow: 0 0 28px rgba(245, 158, 11, 0.9), inset 0 0 16px rgba(239, 68, 68, 0.5);
-        }
-        body.theme-groudon .face-front {
-            background: radial-gradient(circle, rgba(46, 12, 12, 0.95) 0%, rgba(20, 4, 4, 0.98) 100%);
-            border: 2.5px solid rgba(249, 115, 22, 0.75);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9), 0 0 20px rgba(239, 68, 68, 0.5);
-        }
-        body.theme-groudon .face-back {
-            background: radial-gradient(circle, #7f1d1d 0%, #200404 100%);
-            border: 3px solid #f97316;
-            box-shadow: 0 0 26px rgba(239, 68, 68, 0.95), inset 0 0 18px rgba(0,0,0,0.6);
-        }
-        body.theme-groudon .info-pill {
-            background: linear-gradient(135deg, rgba(38, 8, 8, 0.98), rgba(18, 4, 4, 0.98));
-            border: 1.5px solid rgba(249, 115, 22, 0.75);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 22px rgba(239, 68, 68, 0.45);
-        }
-        body.theme-groudon .info-top-tag {
-            color: #f97316;
-            text-shadow: 0 0 12px rgba(249, 115, 22, 0.85);
-        }
-        body.theme-groudon .info-main-title {
-            background: linear-gradient(96deg, #ffffff, #fef08a 50%, #f97316 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-        body.theme-groudon .info-sub-value {
-            background: linear-gradient(96deg, #dc2626, #fef08a 22%, #f97316 44%, #ffffff 57%, #f97316 66%, #dc2626);
-            -webkit-background-clip: text;
-            background-clip: text;
-            background-size: 260% 100%;
-        }
-        body.theme-groudon .streak-badge {
-            background: radial-gradient(circle, #f97316 0%, #dc2626 100%);
-            border-color: #ffffff;
-            color: #ffffff;
-            box-shadow: 0 0 16px rgba(239, 68, 68, 0.95), 0 4px 10px rgba(0,0,0,0.8);
-        }
-        body.theme-groudon .groudon-lightning-badge {
-            background: radial-gradient(circle, #f97316 0%, #b91c1c 100%);
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 16px rgba(249, 115, 22, 0.95), 0 4px 12px rgba(0,0,0,0.8);
+        /* ─── Respect prefers-reduced-motion ─── */
+        @media (prefers-reduced-motion: reduce) {
+            .streak-aura,
+            .outer-rune-ring,
+            .segmented-ring-wrap,
+            .ring-chase-overlay,
+            .ring-red-veins,
+            .ocean-caustics,
+            .gift-img-center,
+            .sparkle,
+            .ocean-bubbles-layer,
+            .streak-ring-wave {
+                animation: none !important;
+            }
+            .ocean-bubbles-layer {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body class="theme-kyogre">
 
     <div class="streak-stage" id="streakStage">
-        <div class="icon-stage">
-            <div class="sunburst-bg"></div>
+        <div class="icon-stage" id="iconStage">
+            <!-- 1. Deep Ocean Breathing Aura -->
             <div class="streak-aura"></div>
+
+            <!-- 2. Rising Ocean Bubbles -->
+            <div class="ocean-bubbles-layer" id="oceanBubbles"></div>
+
+            <!-- 3. Expanding Shockwave Ring -->
             <div class="streak-ring-wave"></div>
-            <div class="ray-ring"></div>
 
-            <!-- Lightning Spark Crest -->
-            <div class="groudon-lightning-badge" id="streakLightningBadge">⚡</div>
+            <!-- 4. Thin Outer Rune Ring (Rotating Counter-Clockwise) -->
+            <div class="outer-rune-ring"></div>
 
-            <!-- Floating Sparkles -->
-            <svg class="sparkle" style="top: 14px; left: 16px;" width="18" height="18" viewBox="0 0 24 24" fill="#38bdf8">
+            <!-- 5. Segmented Ring Container (Rotating Clockwise: 60s) -->
+            <div class="segmented-ring-wrap" id="segmentedRing">
+                <div class="sunburst-bg" id="sunburstBg"></div>
+                <!-- Bright "Chase" Sweep Highlight (~3s) -->
+                <div class="ring-chase-overlay"></div>
+                <!-- Primal Kyogre Red Bioluminescent Veins Flickering (~6.5s) -->
+                <div class="ring-red-veins"></div>
+            </div>
+
+            <!-- 6. Floating Sparkles -->
+            <svg class="sparkle" style="top: 12px; left: 14px;" width="18" height="18" viewBox="0 0 24 24" fill="#38bdf8">
                 <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
             </svg>
-            <svg class="sparkle" style="bottom: 18px; left: 20px; animation-delay: 1.2s;" width="16" height="16" viewBox="0 0 24 24" fill="#00f0ff">
+            <svg class="sparkle" style="bottom: 16px; left: 18px; animation-delay: 1.2s;" width="16" height="16" viewBox="0 0 24 24" fill="#00f0ff">
                 <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"/>
             </svg>
 
-            <!-- 3D Flipping Disc (Center Gift & Avatar) -->
+            <!-- 7. 3D Flipping Center Disc (Gift Image <-> Theme Emblem) -->
             <div class="flip-wrapper">
                 <div class="flip-disc" id="flipDisc">
-                    <div class="flip-face face-front">
+                    <!-- Front: Center Gift with Caustic Ripples and Glass Highlight -->
+                    <div class="flip-face face-front" id="faceFront">
+                        <div class="center-glass-arc"></div>
+                        <div class="ocean-caustics"></div>
                         <div class="gift-shine-sweep"></div>
                         <img id="streakGiftImg" src="images/tiktok-gifts/5655_rose.webp" alt="Streak Gift" class="gift-img-center" onerror="this.src='images/tiktok-gifts/7934_heart_me.webp'">
                     </div>
-                    <!-- Back Face: Avatar -->
-                    <div class="flip-face face-back">
-                        <img id="streakAvatarImg" src="images/groudon_top_streak.jpg" alt="Streak Avatar" class="avatar-img-back" onerror="this.src='images/groudon_icon.png'">
+                    <!-- Back: Theme-Specific Mascot Emblem (Kyogre or Groudon) -->
+                    <div class="flip-face face-back" id="faceBack">
+                        <img id="streakAvatarImg" src="images/kyogre_top_streak.png" alt="Streak Emblem" class="avatar-img-back" onerror="this.onerror=null; this.src='images/kyogre_top_streak.jpg';">
                     </div>
                 </div>
             </div>
 
-            <!-- Bouncing Combo Multiplier Badge -->
-            <div class="streak-badge" id="streakBadge">99x</div>
+            <!-- 8. Combo Multiplier Badge with Tiered Escalation -->
+            <div class="streak-badge tier-5" id="streakBadge" title="Click to test +1 Streak">99x</div>
         </div>
 
+        <!-- 9. Name Plate with Top Tag and Animated Wave Border -->
         <div class="info-pill" id="infoPill">
             <span class="info-top-tag" id="topTag">🌊 PRIMAL KYOGRE TOP STREAK</span>
             <span class="info-main-title" id="giftNameText">Rose</span>
@@ -555,82 +800,290 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const activeTheme = (params.get('theme') || 'kyogre').toLowerCase();
-        document.body.classList.remove('theme-groudon', 'theme-kyogre');
+        document.body.classList.remove('theme-groudon', 'theme-kyogre', 'theme-classic', 'theme-pink');
+
+        // Dynamic Theme & Emblem Setup
+        const avatarEl = document.getElementById('streakAvatarImg');
+        const customEmblem = params.get('emblem');
 
         if (activeTheme === 'classic' || activeTheme === 'pink') {
-            const spark = document.getElementById('streakLightningBadge');
-            if (spark) spark.style.display = 'none';
+            document.body.classList.add('theme-classic');
             document.getElementById('topTag').textContent = 'TOP STREAK';
-            document.getElementById('streakGifterSubText').textContent = 'Stream viewer • 5 Combo';
+            document.getElementById('streakGifterSubText').textContent = 'Stream Viewer • 5 Combo';
             document.getElementById('streakBadge').textContent = '5x';
+            if (avatarEl) avatarEl.src = customEmblem || 'images/tiktok-gifts/7934_heart_me.webp';
         } else if (activeTheme === 'groudon') {
             document.body.classList.add('theme-groudon');
             document.getElementById('topTag').textContent = '🌋 PLASMA GROUDON TOP STREAK';
             document.getElementById('streakGifterSubText').textContent = 'Plasma Groudon Master • 99 Combo';
             document.getElementById('streakBadge').textContent = '99x';
-            const spark = document.getElementById('streakLightningBadge');
-            if (spark) spark.textContent = '🔥';
+            if (avatarEl) {
+                avatarEl.src = customEmblem || 'images/groudon_top_streak.jpg';
+                avatarEl.onerror = () => { avatarEl.src = 'images/groudon_icon.png'; };
+            }
         } else {
-            // Default to Primal Kyogre theme
+            // Default: Primal Kyogre Theme
             document.body.classList.add('theme-kyogre');
             document.getElementById('topTag').textContent = '🌊 PRIMAL KYOGRE TOP STREAK';
             document.getElementById('streakGifterSubText').textContent = 'Primal Kyogre Master • 99 Combo';
             document.getElementById('streakBadge').textContent = '99x';
-            const spark = document.getElementById('streakLightningBadge');
-            if (spark) spark.textContent = '🌊';
+            if (avatarEl) {
+                avatarEl.src = customEmblem || 'images/kyogre_top_streak.png';
+                avatarEl.onerror = () => { avatarEl.src = 'images/kyogre_top_streak.jpg'; };
+            }
         }
 
         if (params.get('title')) document.getElementById('giftNameText').textContent = params.get('title');
         if (params.get('tag')) document.getElementById('topTag').textContent = params.get('tag');
 
-        let currentGift = 'Rose';
-        let currentGifter = 'Plasma Groudon Master';
-        let highestCombo = 99;
-        let isFlipped = false;
+        // Generate 8 Rising Ocean Bubbles
+        function initBubbles() {
+            const container = document.getElementById('oceanBubbles');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 8; i++) {
+                const b = document.createElement('div');
+                b.className = 'ocean-bubble';
+                const size = Math.floor(Math.random() * 6 + 5); // 5px - 11px
+                const left = Math.floor(Math.random() * 160 + 35); // 35px - 195px
+                const delay = (Math.random() * 4).toFixed(2);
+                const duration = (Math.random() * 1.5 + 3.8).toFixed(2);
+                const driftX = (Math.random() - 0.5) * 24;
 
-        function triggerStreakPunch() {
+                b.style.width = `${size}px`;
+                b.style.height = `${size}px`;
+                b.style.left = `${left}px`;
+                b.style.setProperty('--drift-x', `${driftX}px`);
+                b.style.animationDelay = `${delay}s`;
+                b.style.animationDuration = `${duration}s`;
+                container.appendChild(b);
+            }
+        }
+        initBubbles();
+
+        // State
+        let currentGift = 'Rose';
+        let currentGifter = activeTheme === 'groudon' ? 'Plasma Groudon Master' : 'Primal Kyogre Master';
+        let highestCombo = 99;
+        let displayedCombo = 99;
+        let isFlipped = false;
+        let idleTimer = null;
+        let comboRollRaf = null;
+
+        // Apply Combo Tier Escalation Classes (1-9x, 10-24x, 25-49x, 50-98x, 99x)
+        function applyComboTier(badgeEl, combo) {
+            badgeEl.classList.remove('tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5');
+            const ringEl = document.getElementById('segmentedRing');
+            if (combo >= 99) {
+                badgeEl.classList.add('tier-5');
+                if (ringEl) ringEl.style.animationDuration = '25s';
+            } else if (combo >= 50) {
+                badgeEl.classList.add('tier-4');
+                if (ringEl) ringEl.style.animationDuration = '32s';
+            } else if (combo >= 25) {
+                badgeEl.classList.add('tier-3');
+                if (ringEl) ringEl.style.animationDuration = '40s';
+            } else if (combo >= 10) {
+                badgeEl.classList.add('tier-2');
+                if (ringEl) ringEl.style.animationDuration = '48s';
+            } else {
+                badgeEl.classList.add('tier-1');
+                if (ringEl) ringEl.style.animationDuration = '60s';
+            }
+        }
+
+        const badgeEl = document.getElementById('streakBadge');
+        applyComboTier(badgeEl, highestCombo);
+
+        // Reset Idle Dimmer
+        function resetIdleTimer() {
+            const stage = document.getElementById('streakStage');
+            if (stage) stage.classList.remove('idle-dimmed', 'streak-broken');
+            if (idleTimer) clearTimeout(idleTimer);
+            // Configurable idle timeout (default: 60s)
+            idleTimer = setTimeout(() => {
+                if (stage) stage.classList.add('idle-dimmed');
+            }, 60000);
+        }
+        resetIdleTimer();
+
+        // Smooth Counter Roll (easeOutCubic, 400ms)
+        function animateComboRoll(startVal, endVal, duration = 400) {
             const badge = document.getElementById('streakBadge');
-            const pill = document.getElementById('infoPill');
+            if (!badge) return;
+
+            // Flash Ring Pulse
+            const ring = document.createElement('div');
+            ring.className = 'pill-flash-ring';
+            badge.appendChild(ring);
+            setTimeout(() => ring.remove(), 550);
+
+            // Pop Animation
             badge.classList.remove('anim-pop');
             void badge.offsetWidth;
             badge.classList.add('anim-pop');
-            pill.style.transform = 'scale(1.08)';
-            setTimeout(() => { pill.style.transform = 'scale(1)'; }, 350);
+
+            if (startVal === endVal) {
+                badge.textContent = `${endVal}x`;
+                applyComboTier(badge, endVal);
+                return;
+            }
+
+            if (comboRollRaf) cancelAnimationFrame(comboRollRaf);
+
+            const startTime = performance.now();
+            function step(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const currentInterp = Math.round(startVal + (endVal - startVal) * ease);
+
+                displayedCombo = currentInterp;
+                badge.textContent = `${currentInterp}x`;
+                applyComboTier(badge, currentInterp);
+
+                if (progress < 1) {
+                    comboRollRaf = requestAnimationFrame(step);
+                } else {
+                    displayedCombo = endVal;
+                    badge.textContent = `${endVal}x`;
+                    applyComboTier(badge, endVal);
+                    comboRollRaf = null;
+                }
+            }
+            comboRollRaf = requestAnimationFrame(step);
         }
 
-        function updateTopStreak(name, giftName, icon, combo, avatar) {
+        // Streak Extended: ripple + sparkle burst + pill pop
+        function triggerStreakExtendAnimation(oldCombo, newCombo) {
+            resetIdleTimer();
+            animateComboRoll(oldCombo, newCombo, 400);
+
+            const pill = document.getElementById('infoPill');
+            if (pill) {
+                pill.style.transform = 'scale(1.05)';
+                setTimeout(() => { pill.style.transform = 'scale(1)'; }, 280);
+            }
+        }
+
+        // New Top Streaker Event: Wipe transition + Bubbles burst + Scale In
+        function triggerNewStreakerTransition(name, giftName, icon, combo, avatar) {
+            resetIdleTimer();
+            const stage = document.getElementById('streakStage');
+            const iconStage = document.getElementById('iconStage');
+
+            // 1. Water splash wipe ring
+            if (iconStage) {
+                const splash = document.createElement('div');
+                splash.className = 'water-splash-wipe';
+                iconStage.appendChild(splash);
+                setTimeout(() => splash.remove(), 800);
+            }
+
+            // 2. Gift Name Shimmer & Swap
+            const titleEl = document.getElementById('giftNameText');
+            if (titleEl) {
+                titleEl.classList.remove('title-shimmer');
+                void titleEl.offsetWidth;
+                titleEl.classList.add('title-shimmer');
+                titleEl.textContent = giftName;
+                setTimeout(() => titleEl.classList.remove('title-shimmer'), 800);
+            }
+
+            // 3. Center Gift Image Crossfade & Ripple
+            const giftImg = document.getElementById('streakGiftImg');
+            if (giftImg) {
+                if (icon) giftImg.src = icon;
+                giftImg.classList.remove('anim-crossfade');
+                void giftImg.offsetWidth;
+                giftImg.classList.add('anim-crossfade');
+            }
+
+            // 4. Update Texts & Subtitle
             currentGifter = name || currentGifter;
             currentGift = giftName || currentGift;
+            const prevCombo = highestCombo;
             highestCombo = Math.max(highestCombo, Number(combo) || 1);
 
-            document.getElementById('giftNameText').textContent = currentGift;
-            document.getElementById('streakBadge').textContent = `${highestCombo}x`;
             document.getElementById('streakGifterSubText').textContent = `${currentGifter} • ${highestCombo} Combo`;
+            if (avatar && avatarEl) avatarEl.src = avatar;
 
-            if (icon) {
-                document.getElementById('streakGiftImg').src = icon;
-            }
-            if (avatar) {
-                document.getElementById('streakAvatarImg').src = avatar;
-            }
+            triggerStreakExtendAnimation(prevCombo, highestCombo);
 
-            triggerStreakPunch();
-
+            // Flip to emblem/avatar for 2.2s, then return to gift
             const disc = document.getElementById('flipDisc');
-            disc.classList.add('flipped');
-            setTimeout(() => { disc.classList.remove('flipped'); }, 2200);
+            if (disc) {
+                disc.classList.add('flipped');
+                setTimeout(() => { disc.classList.remove('flipped'); }, 2200);
+            }
         }
 
-        // Auto-cycle disc flip every 6s
-        setInterval(() => {
-            const disc = document.getElementById('flipDisc');
-            isFlipped = !isFlipped;
-            if (isFlipped) {
-                disc.classList.add('flipped');
+        // Streak Broken / Expired Event
+        function triggerStreakBroken() {
+            const stage = document.getElementById('streakStage');
+            if (stage) stage.classList.add('streak-broken');
+        }
+
+        // Update Top Streak (Central Handler)
+        function updateTopStreak(name, giftName, icon, combo, avatar) {
+            const numCombo = Number(combo) || 1;
+            const isNewUser = name && name !== currentGifter;
+
+            if (isNewUser || numCombo > highestCombo) {
+                triggerNewStreakerTransition(name, giftName, icon, numCombo, avatar);
             } else {
-                disc.classList.remove('flipped');
+                highestCombo = numCombo;
+                triggerStreakExtendAnimation(displayedCombo, highestCombo);
             }
-        }, 6000);
+        }
+
+        // Auto-cycle disc flip every 6s (Gift <-> Mascot Emblem)
+        const forceFlipped = params.get('flipped') === '1' || params.get('emblem') === '1';
+        if (forceFlipped) {
+            const disc = document.getElementById('flipDisc');
+            if (disc) disc.classList.add('flipped');
+        } else {
+            setInterval(() => {
+                const disc = document.getElementById('flipDisc');
+                isFlipped = !isFlipped;
+                if (disc) {
+                    if (isFlipped) {
+                        disc.classList.add('flipped');
+                    } else {
+                        disc.classList.remove('flipped');
+                    }
+                }
+            }, 6000);
+        }
+
+        // Click on streak badge to test +1 streak
+        badgeEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const add = e.shiftKey ? 10 : 1;
+            window.testStreak(highestCombo + add);
+        });
+
+        // ========================================================
+        // CONSOLE TESTING HOOKS
+        // ========================================================
+        window.testStreak = function(combo) {
+            const target = Number(combo) || (highestCombo + 1);
+            const prev = highestCombo;
+            highestCombo = target;
+            document.getElementById('streakGifterSubText').textContent = `${currentGifter} • ${highestCombo} Combo`;
+            triggerStreakExtendAnimation(prev, target);
+            console.log(`%c[TEST] Streak extended to ${target}x!`, 'color: #00f0ff; font-weight: bold;');
+        };
+
+        window.testNewStreaker = function(name = 'Kyogre Champion', gift = 'Whale', combo = 99) {
+            triggerNewStreakerTransition(name, gift, 'images/tiktok-gifts/5655_rose.webp', combo, '');
+            console.log(`%c[TEST] New top streaker: ${name} (${combo}x)!`, 'color: #38bdf8; font-weight: bold;');
+        };
+
+        window.testBreakStreak = function() {
+            triggerStreakBroken();
+            console.log(`%c[TEST] Streak broken / expired.`, 'color: #ef4444; font-weight: bold;');
+        };
 
         // Real-time Event polling from local TikTok bridge
         let lastEventTimestamp = Date.now() - 5000;

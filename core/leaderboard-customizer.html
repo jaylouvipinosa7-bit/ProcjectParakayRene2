@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="modal.css">
+    <script src="modal.js"></script>
     <style>
         :root {
             --bg-deep: #090d14;
@@ -1305,7 +1307,15 @@
         }
 
         async function resetLeaderboard(type) {
-            if (!confirm(`Are you sure you want to reset leaderboard rankings?`)) return;
+            const confirmed = typeof showConfirm === 'function'
+                ? await showConfirm({
+                    variant: 'warning',
+                    title: 'Reset Leaderboard Rankings?',
+                    message: 'Are you sure you want to reset leaderboard rankings?',
+                    confirmText: 'Reset Rankings'
+                })
+                : confirm(`Are you sure you want to reset leaderboard rankings?`);
+            if (!confirmed) return;
             try {
                 const res = await fetch('/api/leaderboard/reset', {
                     method: 'POST',

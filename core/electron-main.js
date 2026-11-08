@@ -70,7 +70,7 @@ function createWindow() {
 
     // Wait 1.5 seconds for backend server to bind port 8080
     setTimeout(() => {
-        mainWindow.loadURL('http://localhost:8080/app.html');
+        mainWindow.loadURL('http://127.0.0.1:8080/app.html');
     }, 1500);
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {

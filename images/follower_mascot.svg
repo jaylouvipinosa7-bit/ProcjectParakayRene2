@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <!-- Filter for soft 3D glow & drop shadow -->
+    <filter id="mascotShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.35" />
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#FF4D8D" flood-opacity="0.35" />
+    </filter>
+    <filter id="badgeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.4" />
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFD35A" flood-opacity="0.65" />
+    </filter>
+
+    <!-- Warm Pink-to-Coral 3D Gradient for Head & Body -->
+    <radialGradient id="head3DGrad" cx="36%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#FFE4EC" />
+      <stop offset="22%" stop-color="#FF6B97" />
+      <stop offset="62%" stop-color="#FF3366" />
+      <stop offset="88%" stop-color="#D81B60" />
+      <stop offset="100%" stop-color="#88042B" />
+    </radialGradient>
+
+    <radialGradient id="body3DGrad" cx="42%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#FFA8C5" />
+      <stop offset="28%" stop-color="#FF4D85" />
+      <stop offset="68%" stop-color="#E91E63" />
+      <stop offset="92%" stop-color="#AD1457" />
+      <stop offset="100%" stop-color="#600022" />
+    </radialGradient>
+
+    <!-- Gold Bevel Gradient -->
+    <linearGradient id="goldBevelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDE7" />
+      <stop offset="25%" stop-color="#FFE27A" />
+      <stop offset="70%" stop-color="#FFB020" />
+      <stop offset="100%" stop-color="#E65100" />
+    </linearGradient>
+
+    <!-- Crown Gold Gradient -->
+    <linearGradient id="crownGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDE7" />
+      <stop offset="35%" stop-color="#FFD54F" />
+      <stop offset="80%" stop-color="#FFA000" />
+      <stop offset="100%" stop-color="#E65100" />
+    </linearGradient>
+
+    <!-- Specular Highlight Gradients -->
+    <linearGradient id="specularWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.88" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#mascotShadow)">
+    <!-- USER BODY / SHOULDERS -->
+    <!-- Gold Rim Body -->
+    <path d="M 38 168 C 38 132, 64 120, 100 120 C 136 120, 162 132, 162 168 C 162 178, 150 183, 100 183 C 50 183, 38 178, 38 168 Z" 
+          fill="none" stroke="url(#goldBevelGrad)" stroke-width="5" stroke-linejoin="round" />
+    <!-- 3D Body Fill -->
+    <path d="M 40 167 C 40 134, 65 122, 100 122 C 135 122, 160 134, 160 167 C 160 176, 148 181, 100 181 C 52 181, 40 176, 40 167 Z" 
+          fill="url(#body3DGrad)" />
+    <!-- Body Glossy Specular Arc -->
+    <ellipse cx="100" cy="133" rx="36" ry="8" fill="url(#specularWhite)" opacity="0.65" />
+
+    <!-- USER HEAD -->
+    <!-- Gold Rim Head -->
+    <circle cx="100" cy="76" r="42" fill="none" stroke="url(#goldBevelGrad)" stroke-width="5" />
+    <!-- 3D Head Fill -->
+    <circle cx="100" cy="76" r="40" fill="url(#head3DGrad)" />
+    
+    <!-- Glossy Highlight Pill on top-left of head -->
+    <ellipse cx="85" cy="55" rx="15" ry="7.5" transform="rotate(-30 85 55)" fill="url(#specularWhite)" opacity="0.82" />
+    <circle cx="74" cy="65" r="3.5" fill="#FFFFFF" opacity="0.75" />
+
+    <!-- Cute Cheeks / Glow -->
+    <ellipse cx="76" cy="87" rx="8" ry="4.5" fill="#FF80AB" opacity="0.5" />
+    <ellipse cx="124" cy="87" rx="8" ry="4.5" fill="#FF80AB" opacity="0.5" />
+
+    <!-- Cute Stylized Face (Eyes & Smile) matching the mascot aesthetic -->
+    <ellipse cx="84" cy="78" rx="4.5" ry="6.2" fill="#24030D" />
+    <circle cx="82.5" cy="75.5" r="2.2" fill="#FFFFFF" />
+    <circle cx="85.8" cy="80.2" r="1.1" fill="#FFFFFF" />
+
+    <ellipse cx="116" cy="78" rx="4.5" ry="6.2" fill="#24030D" />
+    <circle cx="114.5" cy="75.5" r="2.2" fill="#FFFFFF" />
+    <circle cx="117.8" cy="80.2" r="1.1" fill="#FFFFFF" />
+
+    <!-- Happy curved open smile with tongue -->
+    <path d="M 91 87 Q 100 97 109 87 Z" fill="#7A0022" />
+    <path d="M 94 91 Q 100 97 106 91 Z" fill="#FF5252" />
+    <path d="M 91 87 Q 100 97 109 87" fill="none" stroke="#24030D" stroke-width="2" stroke-linecap="round" />
+
+    <!-- MINI GOLD CROWN ON TOP -->
+    <g transform="translate(100, 32) rotate(-8) translate(-100, -32)">
+      <!-- Crown Base & Spikes -->
+      <path d="M 80 38 L 78 22 L 89 29 L 100 16 L 111 29 L 122 22 L 120 38 Z" 
+            fill="url(#crownGold)" stroke="#FFF9C4" stroke-width="1.6" stroke-linejoin="round" />
+      <!-- Crown Pearls -->
+      <circle cx="78" cy="21" r="2.8" fill="#FFFFFF" stroke="#FFB020" stroke-width="1.1" />
+      <circle cx="100" cy="15" r="3.5" fill="#FFFFFF" stroke="#FFB020" stroke-width="1.1" />
+      <circle cx="122" cy="21" r="2.8" fill="#FFFFFF" stroke="#FFB020" stroke-width="1.1" />
+      <!-- Crown Ruby / Jewel -->
+      <circle cx="100" cy="30" r="2.8" fill="#FF1744" stroke="#FFE27A" stroke-width="0.8" />
+    </g>
+
+    <!-- NEW FOLLOWER "+" BADGE (Bottom-Right) -->
+    <g filter="url(#badgeGlow)">
+      <!-- Gold Rim for Badge -->
+      <circle cx="146" cy="148" r="24" fill="url(#crownGold)" stroke="#FFFFFF" stroke-width="1.5" />
+      <!-- Badge Core (Vibrant Coral-Pink) -->
+      <circle cx="146" cy="148" r="20.5" fill="url(#head3DGrad)" />
+      <!-- Glossy top half of badge -->
+      <path d="M 127 145 A 20 20 0 0 1 165 145 Z" fill="url(#specularWhite)" opacity="0.45" />
+      <!-- Thick Crisp Bold White Plus Sign -->
+      <path d="M 146 136 L 146 160 M 134 148 L 158 148" 
+            stroke="#FFFFFF" stroke-width="4.8" stroke-linecap="round" />
+    </g>
+  </g>
+</svg>

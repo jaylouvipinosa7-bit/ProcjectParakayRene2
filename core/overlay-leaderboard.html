@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=Titan+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="modal.css">
+    <script src="modal.js"></script>
     <style>
         :root {
             --accent-coin: #f59e0b;
@@ -2040,7 +2042,14 @@
         }
 
         async function resetBorderCoins(type = 'coins') {
-            const confirmed = confirm(`Are you sure you want to reset the ${type === 'coins' ? 'Coins' : 'Likes'} leaderboard?`);
+            const confirmed = typeof showConfirm === 'function'
+                ? await showConfirm({
+                    variant: 'warning',
+                    title: `Reset ${type === 'coins' ? 'Coins' : 'Likes'} Leaderboard?`,
+                    message: `Are you sure you want to reset the ${type === 'coins' ? 'Coins' : 'Likes'} leaderboard?`,
+                    confirmText: 'Reset'
+                })
+                : confirm(`Are you sure you want to reset the ${type === 'coins' ? 'Coins' : 'Likes'} leaderboard?`);
             if (!confirmed) return;
             try {
                 const res = await fetch('/api/leaderboard/reset', {
@@ -2456,7 +2465,15 @@
         async function saveModalEntry() {
             const newUsername = document.getElementById('lbModalUsername').value.trim();
             if (!newUsername) {
-                alert('Please enter a username or supporter name.');
+                if (typeof showAlert === 'function') {
+                    showAlert({
+                        variant: 'warning',
+                        title: 'Username Required',
+                        message: 'Please enter a username or supporter name.'
+                    });
+                } else {
+                    alert('Please enter a username or supporter name.');
+                }
                 return;
             }
 
@@ -2508,7 +2525,15 @@
         }
 
         async function deleteModalEntry() {
-            if (!confirm(`Are you sure you want to delete ${currentEditingEntry.oldUsername} from the leaderboard?`)) {
+            const confirmed = typeof showConfirm === 'function'
+                ? await showConfirm({
+                    variant: 'danger',
+                    title: 'Delete from Leaderboard?',
+                    message: `Are you sure you want to delete ${currentEditingEntry.oldUsername} from the leaderboard?`,
+                    confirmText: 'Delete Entry'
+                })
+                : confirm(`Are you sure you want to delete ${currentEditingEntry.oldUsername} from the leaderboard?`);
+            if (!confirmed) {
                 return;
             }
 
